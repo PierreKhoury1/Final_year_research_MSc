@@ -1,0 +1,18 @@
+# Smallest GPU check: build, selftest (decoder + stage profile), tune, one idle run.
+[run]
+slots = 2000
+warmup_s = 2
+settle_s = 1
+repeats = 1
+out_root = "runs"
+driver_core = -1
+collector_core = -1
+fifo = 0
+lock_clocks = false
+sizes = ""
+
+[matrix]
+mechanisms = ["M1"]
+workloads = ["sgemm"]
+duties = [0]
+solo = false

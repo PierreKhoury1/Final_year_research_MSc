@@ -52,6 +52,9 @@ bool ldpc_decoder_setup(int device, int cols, int Z, bool *app_fp16, size_t *sme
 // app_out[c][v] gets the final a posteriori LLR of every variable (fp32).
 void launch_ldpc_decode(const LdpcDevCode &code, const float *cw_llr, float *msg, float *app_out, int n_cw,
                         int iters, float alpha, bool app_fp16, size_t smem_bytes, cudaStream_t s);
+// Selftest diagnostics only: serial = 1 updates one check node at a time in z order (host order).
+void launch_ldpc_decode_debug(const LdpcDevCode &code, const float *cw_llr, float *msg, float *app_out, int n_cw,
+                              int iters, float alpha, bool app_fp16, size_t smem_bytes, int serial, cudaStream_t s);
 
 // S11: bits[c][w] bit b = (app[c][32 w + b] < 0) for the first k_bits variables of each codeword;
 // words per codeword = (k_bits + 31) / 32, unused high bits of the last word are 0.

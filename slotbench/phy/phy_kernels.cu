@@ -117,7 +117,7 @@ struct DevAcc {
 template <typename T>
 __global__ void __launch_bounds__(384) k_ldpc_decode(LdpcDevCode code, const float *__restrict__ cw_llr,
                                                      float *__restrict__ msg, float *__restrict__ app_out, int iters,
-                                                     float alpha) {
+                                                     float alpha, int serial = 0) {
     extern __shared__ __align__(16) unsigned char smem_raw[];
     T *app = reinterpret_cast<T *>(smem_raw);
     const int Z = code.Z, z = threadIdx.x, n = code.cols * Z;
@@ -129,7 +129,14 @@ __global__ void __launch_bounds__(384) k_ldpc_decode(LdpcDevCode code, const flo
     for (int it = 0; it < iters; it++) {
         for (int r = 0; r < code.rows; r++) {
             int e0 = __ldg(code.row_start + r), deg = __ldg(code.row_start + r + 1) - e0;
-            ms_row_update(acc, e0, deg, z, Z, alpha, it == 0);
+            if (!serial) {
+                ms_row_update(acc, e0, deg, z, Z, alpha, it == 0);
+            } else {  // debug: one check node at a time, in z order, like the host reference
+                for (int zz = 0; zz < Z; zz++) {
+                    if (z == zz) ms_row_update(acc, e0, deg, z, Z, alpha, it == 0);
+                    __syncthreads();
+                }
+            }
             __syncthreads();
         }
     }
@@ -215,6 +222,15 @@ void launch_ldpc_decode(const LdpcDevCode &code, const float *cw_llr, float *msg
         k_ldpc_decode<__half><<<n_cw, code.Z, smem_bytes, s>>>(code, cw_llr, msg, app_out, iters, alpha);
     else
         k_ldpc_decode<float><<<n_cw, code.Z, smem_bytes, s>>>(code, cw_llr, msg, app_out, iters, alpha);
+    CK(cudaGetLastError());
+}
+
+void launch_ldpc_decode_debug(const LdpcDevCode &code, const float *cw_llr, float *msg, float *app_out, int n_cw,
+                              int iters, float alpha, bool app_fp16, size_t smem_bytes, int serial, cudaStream_t s) {
+    if (app_fp16)
+        k_ldpc_decode<__half><<<n_cw, code.Z, smem_bytes, s>>>(code, cw_llr, msg, app_out, iters, alpha, serial);
+    else
+        k_ldpc_decode<float><<<n_cw, code.Z, smem_bytes, s>>>(code, cw_llr, msg, app_out, iters, alpha, serial);
     CK(cudaGetLastError());
 }
 

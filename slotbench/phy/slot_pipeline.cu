@@ -78,6 +78,9 @@ struct SlotPipeline::Impl {
     int *d_row_start = nullptr, *d_edge_col = nullptr, *d_edge_shift = nullptr;
     bool app_fp16 = false;
     size_t dec_smem = 0;
+    cudaEvent_t prof_ev[16] = {};  // selftest stage profile: events recorded between stages when prof_on
+    bool prof_on = false;
+    int prof_n = 0;
     int smem_optin = 0;
 
     cufftHandle plan = 0;
@@ -277,36 +280,52 @@ void SlotPipeline::enqueue(cudaStream_t s) {
     m.bind(s);
     auto cx = [](Cf *p) { return reinterpret_cast<cuComplex *>(p); };
 
+    m.prof_n = 0;
+    auto mark = [&]() {
+        if (m.prof_on) CK(cudaEventRecord(m.prof_ev[m.prof_n++], s));
+    };
     // S0
     launch_stamp_start(m.d_stamps, m.d_counter, s);
+    mark();
     // S1: out of place, so the time-domain input is identical every slot
     CUFFT_CK(cufftExecC2C(m.plan, reinterpret_cast<cufftComplex *>(m.d_time), reinterpret_cast<cufftComplex *>(m.d_freq),
                           CUFFT_FORWARD));
+    mark();
     // S2
     launch_pilot_gather(m.d_freq, m.d_Yp, m.d_Yd, cfg_.fft, S, nd, s);
+    mark();
     // S3: H = Yp Xp^H / 4   (antennas x layers)
     CUBLAS_CK(cublasCgemmStridedBatched(m.blas, CUBLAS_OP_N, CUBLAS_OP_C, 4, 4, 4, &m.c_quarter, cx(m.d_Yp), 4, 16,
                                         cx(m.d_Xp), 4, 0, &m.c_zero, cx(m.d_H), 4, 16, S));
+    mark();
     // S4: G = H^H H + sigma2 I
     CUBLAS_CK(cublasCgemmStridedBatched(m.blas, CUBLAS_OP_C, CUBLAS_OP_N, 4, 4, 4, &m.c_one, cx(m.d_H), 4, 16,
                                         cx(m.d_H), 4, 16, &m.c_zero, cx(m.d_G), 4, 16, S));
     launch_add_sigma2(m.d_G, S, cfg_.sigma2, s);
+    mark();
     // S5: R = H^H Yd   (layers x data symbols)
     CUBLAS_CK(cublasCgemmStridedBatched(m.blas, CUBLAS_OP_C, CUBLAS_OP_N, 4, nd, 4, &m.c_one, cx(m.d_H), 4, 16,
                                         cx(m.d_Yd), 4, (long long)4 * nd, &m.c_zero, cx(m.d_R), 4, (long long)4 * nd, S));
+    mark();
     // S6, S7: G X = R, X overwrites R
     CUBLAS_CK(cublasCgetrfBatched(m.blas, 4, m.d_Gptr, 4, m.d_piv, m.d_info, S));
+    mark();
     CUBLAS_CK(cublasCgetrsBatched(m.blas, CUBLAS_OP_N, 4, nd, (const cuComplex *const *)m.d_Gptr, 4, m.d_piv,
                                   m.d_Rptr, 4, &m.getrs_info, S));
+    mark();
     // S8: LLR scale 1/sigma2 (post-equalisation noise is not tracked; the data is synthetic)
     launch_demod(m.d_R, m.d_llr, S, nd, cfg_.qam, 1.0f / cfg_.sigma2, s);
+    mark();
     // S9
     launch_rate_dematch(m.d_llr, m.n_llr, m.d_cw, cfg_.ldpc_cb, code.n_bits(), 2 * code.Z, s);
+    mark();
     // S10
     launch_ldpc_decode(m.dcode, m.d_cw, m.d_msg, m.d_app, cfg_.ldpc_cb, cfg_.ldpc_iters, kAlpha, m.app_fp16,
                        m.dec_smem, s);
+    mark();
     // S11
     launch_hard_pack(m.d_app, code.n_bits(), code.k_bits(), m.d_bits, cfg_.ldpc_cb, s);
+    mark();
     // S12
     launch_stamp_end(m.d_stamps, m.d_counter, s);
 }
@@ -450,6 +469,26 @@ bool SlotPipeline::selftest(std::string &report) {
             say("  FAIL: errors at the high-SNR point");
             ok = false;
         }
+        if (p == 2) {  // diagnostics: serial check-node order, and 0 iterations (channel decisions only)
+            const int variants[2][2] = {{1, iters}, {0, 0}};
+            const char *names[2] = {"serial z order", "0 iterations"};
+            for (int vi = 0; vi < 2; vi++) {
+                launch_ldpc_decode_debug(m.dcode, d_llr, d_msg, d_app, n_cw, variants[vi][1], kAlpha, m.app_fp16,
+                                         m.dec_smem, variants[vi][0], s);
+                CK(cudaStreamSynchronize(s));
+                std::vector<float> a2 = to_host(d_app, n_cw * nb);
+                long e2 = 0, e2all = 0;
+                for (int k = 0; k < n_cw; k++)
+                    for (size_t i = 0; i < nb; i++) {
+                        bool bad = (a2[k * nb + i] < 0.0f) != (truth[k * nb + i] != 0);
+                        e2all += bad && i >= (size_t)2 * c.Z;
+                        if ((int)i < c.k_bits()) e2 += bad;
+                    }
+                snprintf(line, sizeof line, "  diag %-15s: GPU info BER %.3e, transmitted-bit BER %.3e", names[vi],
+                         e2 / kbits, e2all / ((double)c.n_tx_bits() * n_cw));
+                say(line);
+            }
+        }
     }
     double agreement = (double)agree / (double)compared;
     snprintf(line, sizeof line, "  GPU/host hard-decision agreement %.6f over %lld bits (need >= 0.999)", agreement, compared);
@@ -459,6 +498,41 @@ bool SlotPipeline::selftest(std::string &report) {
     cudaFree(d_app);
     cudaFree(d_msg);
     cudaFree(d_bits);
+
+    // ---- 1b. stage profile (median over repeats, events between stages) ----
+    {
+        static const char *names[] = {"S1 FFT", "S2 gather", "S3 chan est", "S4 Gram+sigma", "S5 matched filt",
+                                      "S6 LU (getrf)", "S7 solve (getrs)", "S8 demod", "S9 de-match", "S10 LDPC",
+                                      "S11 hard pack"};
+        const int nst = 11, reps = 30;
+        for (auto &e : m.prof_ev) CK(cudaEventCreate(&e));
+        std::vector<std::vector<float>> t(nst);
+        m.prof_on = true;
+        for (int r = 0; r < reps + 3; r++) {
+            enqueue(s);
+            CK(cudaStreamSynchronize(s));
+            if (r < 3) continue;  // warm-up
+            for (int i = 0; i < nst && i + 1 < m.prof_n; i++) {
+                float ms = 0;
+                CK(cudaEventElapsedTime(&ms, m.prof_ev[i], m.prof_ev[i + 1]));
+                t[i].push_back(ms * 1000.0f);
+            }
+        }
+        m.prof_on = false;
+        for (auto &e : m.prof_ev) CK(cudaEventDestroy(e));
+        say("selftest stage profile (median us over 30 slots, event-to-event):");
+        double tot = 0;
+        for (int i = 0; i < nst; i++) {
+            if (t[i].empty()) continue;
+            std::sort(t[i].begin(), t[i].end());
+            double med = t[i][t[i].size() / 2];
+            tot += med;
+            snprintf(line, sizeof line, "  %-18s %9.1f", names[i], med);
+            say(line);
+        }
+        snprintf(line, sizeof line, "  %-18s %9.1f", "total", tot);
+        say(line);
+    }
 
     // ---- 2. one full slot on the synthetic signal ----
     const unsigned long long seq0 = stamps_host_->end_seq;
