@@ -651,12 +651,23 @@ def run(api, args, out=print, now=time.time, sleep=time.sleep):
             if reason:
                 break
         out(f"stopping: {reason}")
-        try:
-            text = api.logs(iid, tail=args.collect_tail)
-            rep = collect_text(text, out_dir, out=out)
-            rc = 0 if rep["done"] and rep["done_status"] == "ok" and not rep["blocks_bad"] else 1
-        except VastError as e:
-            out(f"collect failed: {e}")
+        # The log snapshot behind result_url can lag or be partial; when the poll already saw DONE, retry
+        # until the collected text has it too, so results are never lost before the destroy.
+        want_done = reason.startswith("DONE")
+        for attempt in range(1, 7):
+            try:
+                text = api.logs(iid, tail=args.collect_tail)
+                if want_done and not scan_markers(text)[0] and attempt < 6:
+                    out(f"  collect attempt {attempt}: DONE marker not in fetched logs yet ({len(text)} bytes); retrying")
+                    sleep(20)
+                    continue
+                rep = collect_text(text, out_dir, out=out)
+                rc = 0 if rep["done"] and rep["done_status"] == "ok" and not rep["blocks_bad"] else 1
+                break
+            except VastError as e:
+                out(f"collect attempt {attempt} failed: {e}")
+                if attempt < 6:
+                    sleep(20)
         if args.keep and info:
             out(f"--keep: instance {iid} left running (${dph:.3f}/h). Raw slots.bin files are under "
                 f"/root/sb/repo/{SUBDIR}/runs on the instance; e.g. "
