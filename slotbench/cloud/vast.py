@@ -27,6 +27,8 @@ import urllib.error
 import urllib.parse
 import urllib.request
 
+MAX_LOG_TAIL = 20000  # vast.ai rejects request_logs with tail > 20000 lines
+
 API_BASE = "https://console.vast.ai/api/v0"
 KEY_ENV = "VAST_API_KEY"
 DEFAULT_REPO = "https://github.com/PierreKhoury1/Final_year_research_MSc"
@@ -190,7 +192,7 @@ class Api:
 
     def logs(self, iid, tail=None, wait_s=60.0):
         """Request container logs; fetch the returned result_url (no auth header: it is a storage URL)."""
-        body = {"tail": str(int(tail))} if tail else {}
+        body = {"tail": str(min(int(tail), MAX_LOG_TAIL))} if tail else {}
         r = self.request("PUT", f"/instances/request_logs/{int(iid)}/", body=body)
         url = r.get("result_url")
         if not url:
@@ -802,7 +804,7 @@ def build_parser():
     p = sub.add_parser("collect", help="extract result blocks from the log into --out")
     p.add_argument("id", type=int)
     p.add_argument("--out", default=None, help="default results/<id>")
-    p.add_argument("--tail", type=int, default=1000000)
+    p.add_argument("--tail", type=int, default=MAX_LOG_TAIL)
     p.set_defaults(fn=cmd_collect)
 
     p = sub.add_parser("destroy", help="destroy an instance")
@@ -817,7 +819,7 @@ def build_parser():
     p.add_argument("--max-cost", type=float, default=5.0, help="USD, computed locally as dph_total x elapsed")
     p.add_argument("--poll-s", type=float, default=60.0)
     p.add_argument("--poll-tail", type=int, default=400, help="log lines fetched per poll")
-    p.add_argument("--collect-tail", type=int, default=1000000)
+    p.add_argument("--collect-tail", type=int, default=MAX_LOG_TAIL)
     p.add_argument("--max-load-min", type=float, default=30.0, help="give up if not running after this")
     p.add_argument("--error-grace-s", type=float, default=600.0)
     p.add_argument("--out", default=None, help="default results/<id>")
