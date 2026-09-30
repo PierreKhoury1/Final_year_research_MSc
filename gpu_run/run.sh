@@ -2,7 +2,7 @@
 # Runs the lockstep test in three conditions and writes results.jsonl.
 set -euo pipefail
 cd "$(dirname "$0")"
-nvidia-smi --query-gpu=name,driver_version,clocks.max.sm --format=csv | tee gpu_info.txt
+{ date -u; hostname; uname -r; echo "vast instance: ${CONTAINER_ID:-unknown}"; nvidia-smi --query-gpu=name,driver_version,clocks.max.sm --format=csv; } | tee gpu_info.txt
 nvcc -O2 -std=c++17 -o lockstep lockstep.cu -lpthread
 : > results.jsonl
 
