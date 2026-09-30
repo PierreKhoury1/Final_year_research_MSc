@@ -28,6 +28,27 @@ Caveat on the last row: the self-timed kernel only stamped the time and did no r
 | `storyboard/` | Experiment visual for an alternative idea (distributed MIMO holdover): diagram page plus AI-generated illustrations |
 | `GPU_Clock_Findings.pptx` | 13-slide summary of the laptop clock findings |
 
+## Why a rented GPU (vast.ai)
+
+The laptop results come from an AMD integrated GPU, whose clock is locked to the CPU and which shares memory with it. The research question is about NVIDIA GPUs, because that is what GPU-based 5G stacks (NVIDIA Aerial) run on. A discrete NVIDIA card differs in the ways that matter here: it has its own crystal (so its clock can drift from the CPU's), sits across PCIe, exposes `%globaltimer`, and supports CUDA Graphs, which is the launch mechanism Aerial's cuPHY uses every slot.
+
+The test is rented rather than bought:
+
+| Option | Cost | Why / why not |
+|---|---|---|
+| Rent an A100 on vast.ai | about $0.70–1.50 per hour; this test needs ~15 minutes | Compute capability 8.0 is what NVIDIA's cuPHY is built and tested for. Hourly billing makes a first answer cost a few dollars |
+| Buy a DGX Spark | about £4,900 | Aerial-capable, but far too much before the question is known to be worth pursuing |
+| Buy a used A100 | from about $14,700 | Worse value than renting or a Spark |
+| KCL research computing | likely free | To check after enrolment; the preferred home for the full study |
+
+The first run is a go/no-go check. If launch jitter on NVIDIA is already small, the lockstep idea is dropped for a few dollars. If it is large, or grows when an AI job shares the GPU, it becomes the thesis direction.
+
+Caveats of rented machines, to be recorded with every result:
+- They run in containers on shared hosts, so timing can include virtualisation effects. The host GPU model, driver and machine ID are logged in `gpu_info.txt`.
+- NVIDIA's full Aerial container may need system privileges a rented container does not grant. `gpu_run/` therefore depends only on CUDA; Aerial's cuPHY pipeline is an optional second step.
+
+To run: rent an A100 with a PyTorch "devel" image (it includes `nvcc`), copy `gpu_run/` to the machine, then `bash run.sh`. It writes `results.jsonl` and prints a table. Destroy the instance afterwards, because a stopped instance still bills for storage.
+
 ## Open questions
 
 1. On NVIDIA GPUs, how large is kernel-launch timing jitter, and how much does a co-located AI job inflate it?
