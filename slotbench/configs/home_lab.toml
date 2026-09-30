@@ -1,0 +1,27 @@
+# home_lab.toml: the full home-lab plan (RTX 3060 on an isolated PREEMPT_RT host).
+#   python3 scripts/run_matrix.py configs/home_lab.toml
+# 3 SOLO cells + 6 mechanisms x (1 idle D=0 cell + 3 workloads x 4 duties) = 81 cells.
+# Per cell: 300 s warm-up + 30 s settle + 1e6 x 500 us = 500 s of slots + ~30 s overhead, about
+# 14 min; the whole matrix is about 19 h and 81 x 64 MB = 5.2 GB of slots.bin.
+# Run it overnight in pieces with --only, e.g. --only 'SOLO_*,M0_*,M1_*'; it resumes (ok cells skipped).
+# Optional keys ([matrix] solo, [run] gpu/driver_flags/adversary_flags/solo_seconds/cell_overhead_s,
+# [overrides.<M>]) are documented in configs/quick.toml.
+
+[run]
+slots = 1000000
+warmup_s = 300          # adversary warm-up before the driver starts, per run procedure
+settle_s = 30
+repeats = 1             # repeat a cell on other days with --repeat-from 2 --only '<cell glob>'
+out_root = "runs"
+driver_core = 4         # isolcpus=4,5 (scripts/setup_os.sh --cores 4,5)
+collector_core = 5
+fifo = 99
+lock_clocks = true      # scripts/gpu_lock.sh lock before each run (M5 unlocks instead)
+sizes = "--ldpc-cb 50 --ldpc-iters 20"   # replace with the flags printed by --tune-us
+solo_seconds = 120
+
+[matrix]
+mechanisms = ["M0", "M1", "M2", "M3", "M4", "M5"]
+workloads = ["sgemm", "llm", "vision"]
+duties = [0, 25, 50, 75, 100]
+solo = true
