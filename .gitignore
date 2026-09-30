@@ -1,0 +1,5 @@
+*.exe
+*.pdf
+__pycache__/
+*.pyc
+storyboard/*.png

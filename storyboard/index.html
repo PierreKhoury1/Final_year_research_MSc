@@ -1,0 +1,298 @@
+<title>Shared-Clock MIMO Testbed</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a lab brief read top to bottom: question, setup diagram, what happens after GPS is lost, storyboard, what gets measured. */
+:root {
+  --bg: #f4f6f7;
+  --surface: #ffffff;
+  --ink: #15212b;
+  --muted: #5a6975;
+  --rule: #d3dbe1;
+  --clock: #1f5fbf;      /* reference clock paths (10 MHz + PPS) */
+  --rf: #b86b0e;         /* RF signal path */
+  --data: #6b7a86;       /* IQ samples / logs */
+  --cut: #c62f2f;        /* the GPS outage */
+  --good: #2f8a55;
+  --display: "Archivo Narrow", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+  --body: "IBM Plex Sans", "Segoe UI", Helvetica, Arial, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f161c; --surface: #16202a; --ink: #e3eaf0; --muted: #9aa9b5; --rule: #2b3946;
+    --clock: #6ea2f2; --rf: #e2a24c; --data: #8e9ca8; --cut: #ef6b6b; --good: #5cc28a;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f161c; --surface: #16202a; --ink: #e3eaf0; --muted: #9aa9b5; --rule: #2b3946;
+  --clock: #6ea2f2; --rf: #e2a24c; --data: #8e9ca8; --cut: #ef6b6b; --good: #5cc28a;
+  color-scheme: dark;
+}
+body { background: var(--bg); color: var(--ink); font: 400 16px/1.6 var(--body); }
+.wrap { max-width: 1060px; margin: 0 auto; padding-inline: 20px; padding-block: 40px 64px; display: grid; gap: 48px; }
+h1, h2 { font-family: var(--display); font-weight: 700; letter-spacing: 0.005em; text-wrap: balance; margin: 0; line-height: 1.1; }
+h1 { font-size: clamp(2.1rem, 5vw, 3.2rem); }
+h2 { font-size: 1.6rem; }
+p { margin: 0; max-width: 68ch; }
+.eyebrow { font: 500 0.78rem/1 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+header { display: grid; gap: 14px; }
+.lede { font-size: 1.15rem; color: var(--ink); }
+.lede strong { color: var(--clock); font-weight: 600; }
+section { display: grid; gap: 16px; min-width: 0; }
+.fig { background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; padding: 16px; margin: 0; display: grid; gap: 12px; min-width: 0; }
+.scroll { overflow-x: auto; }
+.scroll svg { min-width: 760px; }
+svg { width: 100%; height: auto; display: block; color: var(--ink); }
+figcaption { font-size: 0.92rem; color: var(--muted); max-width: 80ch; }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 20px; font: 500 0.8rem/1.2 var(--mono); color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 8px; }
+.legend i { display: inline-block; width: 26px; height: 0; border-top: 2.5px solid; }
+.lg-clock { border-color: var(--clock) !important; }
+.lg-rf { border-color: var(--rf) !important; }
+.lg-data { border-color: var(--data) !important; border-top-style: dashed !important; }
+.lg-gps { border-color: var(--muted) !important; border-top-width: 1.5px !important; }
+
+/* SVG styling from tokens */
+.box { fill: var(--surface); stroke: var(--ink); stroke-width: 1.3; }
+.box-soft { fill: var(--bg); stroke: var(--rule); stroke-width: 1.3; }
+.box-clock { fill: var(--surface); stroke: var(--clock); stroke-width: 1.6; }
+.t { fill: var(--ink); font: 600 13px var(--body); }
+.ts { fill: var(--muted); font: 400 11.5px var(--body); }
+.tl { fill: var(--muted); font: 500 11px var(--mono); }
+.tc { fill: var(--clock); font: 500 11px var(--mono); }
+.tr { fill: var(--rf); font: 500 11px var(--mono); }
+.tcut { fill: var(--cut); font: 600 11.5px var(--mono); }
+.ln-clock { stroke: var(--clock); stroke-width: 2.4; fill: none; }
+.ln-rf { stroke: var(--rf); stroke-width: 2.4; fill: none; }
+.ln-data { stroke: var(--data); stroke-width: 2; fill: none; stroke-dasharray: 6 4; }
+.ln-gps { stroke: var(--muted); stroke-width: 1.5; fill: none; }
+.ln-ink { stroke: var(--ink); stroke-width: 1.4; fill: none; }
+.halo { stroke: var(--surface); stroke-width: 7; fill: none; }
+.mk-clock { fill: var(--clock); } .mk-rf { fill: var(--rf); } .mk-data { fill: var(--data); } .mk-ink { fill: var(--ink); }
+.cut { stroke: var(--cut); stroke-width: 3; }
+.grid { stroke: var(--rule); stroke-width: 1; }
+.axis { stroke: var(--muted); stroke-width: 1.2; }
+.lim { stroke-width: 1.4; stroke-dasharray: 5 4; }
+.lim-tdd { stroke: var(--cut); } .lim-cp { stroke: var(--muted); }
+.c-tcxo { stroke: var(--cut); stroke-width: 2.6; fill: none; }
+.c-ocxo { stroke: var(--rf); stroke-width: 2.6; fill: none; }
+.c-pred { stroke: var(--good); stroke-width: 2.6; fill: none; }
+.c-ideal { stroke: var(--clock); stroke-width: 2.6; fill: none; }
+.lbl-tcxo { fill: var(--cut); font: 600 12px var(--body); } .lbl-ocxo { fill: var(--rf); font: 600 12px var(--body); }
+.lbl-pred { fill: var(--good); font: 600 12px var(--body); } .lbl-ideal { fill: var(--clock); font: 600 12px var(--body); }
+.cutband { fill: var(--cut); opacity: 0.08; }
+
+.story { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 20px; }
+.shot { margin: 0; display: grid; gap: 8px; min-width: 0; }
+.shot img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 4px; border: 1px solid var(--rule); background: var(--surface); }
+.shot b { font: 600 0.8rem/1 var(--mono); color: var(--clock); letter-spacing: 0.04em; }
+.shot figcaption { font-size: 0.9rem; color: var(--ink); }
+.note { font-size: 0.85rem; color: var(--muted); }
+
+.cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; }
+.cols > div { min-width: 0; display: grid; gap: 10px; align-content: start; }
+h3 { margin: 0; font: 600 1rem/1.3 var(--body); }
+ul { margin: 0; padding-left: 1.1em; display: grid; gap: 6px; }
+li { max-width: 60ch; }
+code, .num { font-family: var(--mono); font-size: 0.9em; font-variant-numeric: tabular-nums; }
+.claim { border-left: 3px solid var(--clock); padding: 4px 0 4px 16px; font-size: 1.08rem; max-width: 72ch; }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">MSc Advanced Computing · experiment design · draft</div>
+    <h1>Shared-Clock MIMO Testbed</h1>
+    <p class="lede">Several radios act as one antenna array, and a GPU combines their signals. That only works while the radios share time. The question: <strong>after GPS is lost, how long does the combining gain survive, and how much longer can a better oscillator plus drift prediction keep it?</strong></p>
+  </header>
+
+  <section aria-labelledby="setup-h">
+    <h2 id="setup-h">The setup</h2>
+    <figure class="fig">
+      <div class="legend" aria-hidden="true">
+        <span><i class="lg-clock"></i>reference clock · 10 MHz + PPS</span>
+        <span><i class="lg-rf"></i>RF signal, by cable</span>
+        <span><i class="lg-data"></i>IQ samples / logs</span>
+        <span><i class="lg-gps"></i>GPS feed</span>
+      </div>
+      <div class="scroll">
+        <svg viewBox="0 0 1000 420" role="img" aria-label="Two radio sites, each with its own GPS-disciplined timing board, receive the same test signal by cable. A GPU host combines both radios. Cutting the shared GPS feed forces both boards into holdover, and a PPS comparator logs how far apart they drift.">
+          <defs>
+            <marker id="a-clock" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="mk-clock" d="M0 0 L10 5 L0 10 z"/></marker>
+            <marker id="a-rf" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="mk-rf" d="M0 0 L10 5 L0 10 z"/></marker>
+            <marker id="a-data" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="mk-data" d="M0 0 L10 5 L0 10 z"/></marker>
+            <marker id="a-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="mk-ink" d="M0 0 L10 5 L0 10 z"/></marker>
+          </defs>
+
+          <!-- GPS antenna + splitter -->
+          <path class="ln-ink" d="M38 70 L58 40 L78 70 Z"/>
+          <line class="ln-ink" x1="58" y1="70" x2="58" y2="96"/>
+          <text class="ts" x="58" y="28" text-anchor="middle">GPS antenna</text>
+          <line class="ln-gps" x1="58" y1="96" x2="58" y2="190"/>
+          <line class="cut" x1="48" y1="130" x2="68" y2="150"/><line class="cut" x1="68" y1="130" x2="48" y2="150"/>
+          <text class="tcut" x="76" y="136">cut = GPS outage</text>
+          <text class="tcut" x="76" y="151">(both sites at once)</text>
+          <rect class="box" x="18" y="190" width="80" height="40" rx="4"/>
+          <text class="t" x="58" y="215" text-anchor="middle">splitter</text>
+          <polyline class="ln-gps" marker-end="url(#a-ink)" points="98,200 150,200 150,80 196,80"/>
+          <polyline class="ln-gps" marker-end="url(#a-ink)" points="98,220 150,220 150,340 196,340"/>
+
+          <!-- Site A timing board -->
+          <rect class="box-clock" x="200" y="40" width="250" height="80" rx="5"/>
+          <text class="tc" x="210" y="34">SITE A · timing board (your PCB)</text>
+          <rect class="box-soft" x="212" y="58" width="92" height="46" rx="3"/>
+          <text class="t" x="258" y="80" text-anchor="middle">GNSS</text><text class="ts" x="258" y="96" text-anchor="middle">receiver</text>
+          <line class="ln-ink" marker-end="url(#a-ink)" x1="304" y1="81" x2="336" y2="81"/>
+          <text class="tl" x="320" y="72" text-anchor="middle">steers</text>
+          <rect class="box-soft" x="340" y="58" width="98" height="46" rx="3"/>
+          <text class="t" x="389" y="80" text-anchor="middle">oscillator</text><text class="ts" x="389" y="96" text-anchor="middle">TCXO or OCXO</text>
+
+          <!-- Site B timing board -->
+          <rect class="box-clock" x="200" y="300" width="250" height="80" rx="5"/>
+          <text class="tc" x="210" y="396">SITE B · timing board (your PCB)</text>
+          <rect class="box-soft" x="212" y="318" width="92" height="46" rx="3"/>
+          <text class="t" x="258" y="340" text-anchor="middle">GNSS</text><text class="ts" x="258" y="356" text-anchor="middle">receiver</text>
+          <line class="ln-ink" marker-end="url(#a-ink)" x1="304" y1="341" x2="336" y2="341"/>
+          <text class="tl" x="320" y="332" text-anchor="middle">steers</text>
+          <rect class="box-soft" x="340" y="318" width="98" height="46" rx="3"/>
+          <text class="t" x="389" y="340" text-anchor="middle">oscillator</text><text class="ts" x="389" y="356" text-anchor="middle">TCXO or OCXO</text>
+
+          <!-- clock to radios -->
+          <line class="ln-clock" marker-end="url(#a-clock)" x1="450" y1="80" x2="546" y2="80"/>
+          <text class="tc" x="498" y="72" text-anchor="middle">10 MHz + PPS</text>
+          <line class="ln-clock" marker-end="url(#a-clock)" x1="450" y1="340" x2="546" y2="340"/>
+          <text class="tc" x="498" y="332" text-anchor="middle">10 MHz + PPS</text>
+
+          <!-- PPS comparator -->
+          <polyline class="ln-clock" marker-end="url(#a-clock)" points="232,120 232,190 172,190"/>
+          <polyline class="ln-clock" marker-end="url(#a-clock)" points="232,300 232,230 172,230"/>
+          <rect class="box" x="112" y="176" width="58" height="68" rx="4"/>
+          <text class="t" x="141" y="200" text-anchor="middle">PPS</text>
+          <text class="ts" x="141" y="215" text-anchor="middle">compare</text>
+          <text class="tl" x="141" y="233" text-anchor="middle">A − B</text>
+
+          <!-- test transmitter + RF splitter -->
+          <rect class="box" x="288" y="180" width="150" height="60" rx="4"/>
+          <text class="t" x="363" y="206" text-anchor="middle">test transmitter</text>
+          <text class="ts" x="363" y="223" text-anchor="middle">plays the phone</text>
+          <line class="ln-rf" x1="438" y1="210" x2="556" y2="210"/>
+          <rect class="box" x="476" y="202" width="34" height="16" rx="2"/>
+          <text class="tr" x="493" y="196" text-anchor="middle">atten.</text>
+          <rect class="box" x="556" y="188" width="72" height="44" rx="4"/>
+          <text class="t" x="592" y="215" text-anchor="middle">1:2 split</text>
+          <line class="ln-rf" marker-end="url(#a-rf)" x1="592" y1="188" x2="592" y2="124"/>
+          <line class="ln-rf" marker-end="url(#a-rf)" x1="592" y1="232" x2="592" y2="296"/>
+          <text class="tr" x="600" y="160">cable only,</text>
+          <text class="tr" x="600" y="174">no over-the-air</text>
+
+          <!-- radios -->
+          <rect class="box" x="550" y="40" width="120" height="80" rx="4"/>
+          <text class="t" x="610" y="72" text-anchor="middle">radio A</text>
+          <text class="ts" x="610" y="89" text-anchor="middle">SDR, ref clock in</text>
+          <rect class="box" x="550" y="300" width="120" height="80" rx="4"/>
+          <text class="t" x="610" y="332" text-anchor="middle">radio B</text>
+          <text class="ts" x="610" y="349" text-anchor="middle">SDR, ref clock in</text>
+
+          <!-- data to GPU -->
+          <polyline class="ln-data" marker-end="url(#a-data)" points="670,80 730,80 730,188 766,188"/>
+          <polyline class="ln-data" marker-end="url(#a-data)" points="670,340 730,340 730,232 766,232"/>
+          <text class="tl" x="736" y="130">IQ samples</text>
+          <rect class="box" x="770" y="170" width="200" height="80" rx="4"/>
+          <text class="t" x="870" y="200" text-anchor="middle">GPU host</text>
+          <text class="ts" x="870" y="217" text-anchor="middle">joint combining (MMSE)</text>
+          <text class="ts" x="870" y="233" text-anchor="middle">vs each radio alone</text>
+          <line class="ln-ink" marker-end="url(#a-ink)" x1="870" y1="250" x2="870" y2="296"/>
+          <rect class="box-soft" x="770" y="300" width="200" height="80" rx="4"/>
+          <text class="t" x="870" y="326" text-anchor="middle">measured</text>
+          <text class="ts" x="870" y="343" text-anchor="middle">combining gain (dB), error rate,</text>
+          <text class="ts" x="870" y="359" text-anchor="middle">throughput, offset A − B</text>
+        </svg>
+      </div>
+      <figcaption>Each site gets its own timing board, as real distributed sites would. Both share one GPS feed, so pulling that cable is a clean, repeatable outage. Baseline run: a single board feeds both radios, the ideal case where the radios can never drift apart.</figcaption>
+    </figure>
+  </section>
+
+  <section aria-labelledby="after-h">
+    <h2 id="after-h">What happens after GPS is lost</h2>
+    <figure class="fig">
+      <svg viewBox="0 0 680 320" role="img" aria-label="Expected shape: after GPS is lost, the time offset between sites grows fastest with a cheap crystal, slower with an OCXO, and slowest with an OCXO plus drift prediction. A single shared reference stays at zero. Two limits are marked: the 3 microsecond 5G TDD budget and the roughly 4.7 microsecond cyclic prefix.">
+        <rect class="cutband" x="140" y="30" width="500" height="230"/>
+        <line class="grid" x1="70" y1="30" x2="640" y2="30"/>
+        <line class="grid" x1="70" y1="106.7" x2="640" y2="106.7"/>
+        <line class="grid" x1="70" y1="183.3" x2="640" y2="183.3"/>
+        <line class="axis" x1="70" y1="260" x2="640" y2="260"/>
+        <line class="axis" x1="70" y1="30" x2="70" y2="260"/>
+        <text class="tl" x="62" y="264" text-anchor="end">0</text>
+        <text class="tl" x="62" y="187" text-anchor="end">2</text>
+        <text class="tl" x="62" y="110" text-anchor="end">4</text>
+        <text class="tl" x="62" y="34" text-anchor="end">6</text>
+        <text class="tl" x="20" y="150" text-anchor="middle" transform="rotate(-90 20 150)">offset between sites (µs)</text>
+        <line class="lim lim-tdd" x1="70" y1="145" x2="640" y2="145"/>
+        <text class="tcut" x="636" y="139" text-anchor="end">3 µs · 5G TDD cell-to-cell budget</text>
+        <line class="lim lim-cp" x1="70" y1="79.8" x2="640" y2="79.8"/>
+        <text class="tl" x="636" y="73" text-anchor="end">≈4.7 µs · cyclic prefix at 15 kHz</text>
+        <line class="axis" x1="140" y1="30" x2="140" y2="260" stroke-dasharray="3 3"/>
+        <text class="tcut" x="146" y="252">GPS cut</text>
+        <text class="tl" x="355" y="292" text-anchor="middle">time since GPS lost →</text>
+        <!-- curves: shapes only -->
+        <path class="c-ideal" d="M70 258 L640 258"/>
+        <path class="c-tcxo" d="M70 258 L140 258 Q 190 255 222 30"/>
+        <path class="c-ocxo" d="M70 258 L140 258 Q 330 252 430 30"/>
+        <path class="c-pred" d="M70 258 L140 258 Q 470 252 640 96"/>
+        <text class="lbl-tcxo" x="228" y="46">cheap crystal</text>
+        <text class="lbl-ocxo" x="436" y="46">OCXO</text>
+        <text class="lbl-pred" x="560" y="128" text-anchor="end">OCXO + drift prediction</text>
+        <text class="lbl-ideal" x="636" y="250" text-anchor="end">one shared reference (baseline)</text>
+      </svg>
+      <figcaption>Expected shapes only, not data. The curves show the hypothesis. The pilot measures the real ones. The two limits are real: 3GPP sets a 3 µs cell-to-cell phase budget for TDD, and joint OFDM combining breaks down as the offset approaches the cyclic prefix.</figcaption>
+    </figure>
+  </section>
+
+  <section aria-labelledby="story-h">
+    <h2 id="story-h">Storyboard</h2>
+    <div class="story">
+      <figure class="shot"><img src="shot1.jpg" alt="Custom circuit board with a metal-can OCXO, a GPS module and a patch antenna on a lab bench"><b>1 · The timing board</b><figcaption>Your PCB: GNSS receiver steering an OCXO, with 10 MHz and PPS outputs.</figcaption></figure>
+      <figure class="shot"><img src="shot2.jpg" alt="One small board with coaxial cables fanning out to four software radios"><b>2 · Baseline wiring</b><figcaption>One reference feeding every radio. The ideal case the sites are compared against.</figcaption></figure>
+      <figure class="shot"><img src="shot3.jpg" alt="Four radios connected through inline attenuators and a splitter to a small transmitter"><b>3 · The RF path</b><figcaption>Test transmitter through attenuators and a splitter into the radios. All by cable, so no licence and nothing radiated.</figcaption></figure>
+      <figure class="shot"><img src="shot4.jpg" alt="Open workstation with a large graphics card, cabled to radios, monitor showing constellations"><b>4 · Joint processing</b><figcaption>The GPU host combines every radio's samples into one receiver and logs the gain.</figcaption></figure>
+      <figure class="shot"><img src="shot5.jpg" alt="A hand unplugging the GPS antenna cable from the timing board"><b>5 · The outage</b><figcaption>Pull the GPS feed. Every site is now running on its own oscillator.</figcaption></figure>
+      <figure class="shot"><img src="shot6.jpg" alt="Researcher watching diverging lines cross a red threshold and a smearing constellation"><b>6 · Watching it drift</b><figcaption>Offsets climb toward the limit and the combined constellation starts to smear. The better the oscillator and prediction, the later that happens.</figcaption></figure>
+    </div>
+    <p class="note">Storyboard images are AI-generated illustrations (Higgsfield). The diagrams above are the accurate reference.</p>
+  </section>
+
+  <section aria-labelledby="measure-h">
+    <h2 id="measure-h">Runs and measurements</h2>
+    <div class="cols">
+      <div>
+        <h3>Runs</h3>
+        <ul>
+          <li>Each radio alone (no combining)</li>
+          <li>Combined, one shared reference (ideal)</li>
+          <li>Combined, per-site boards, GPS locked</li>
+          <li>GPS cut, with cheap crystal / OCXO / OCXO + prediction</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Measured</h3>
+        <ul>
+          <li>Offset A − B over time, from the PPS comparator</li>
+          <li>Combining gain in dB versus a single radio</li>
+          <li>Error rate and throughput at the receiver</li>
+          <li>Time until each limit is crossed</li>
+        </ul>
+      </div>
+      <div>
+        <h3>First two weeks</h3>
+        <ul>
+          <li>One timing board, log oscillator versus GPS for a week</li>
+          <li>Fit a simple Kalman predictor; test on hidden outages</li>
+          <li>Stop here if prediction adds nothing measurable</li>
+        </ul>
+      </div>
+    </div>
+    <p class="claim">The claim this could support: <em>joint processing gives +X dB for cell-edge users; after losing GPS, a cheap clock keeps that gain for Y minutes, and an OCXO with drift prediction keeps it for Z hours.</em> X, Y and Z come from the measurements.</p>
+  </section>
+</div>

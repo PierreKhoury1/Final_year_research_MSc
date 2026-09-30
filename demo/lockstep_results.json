@@ -1,0 +1,65 @@
+{
+ "clock_bound_us": 0.7,
+ "calib_brackets_used": 187,
+ "results": {
+  "normal launch|idle": {
+   "n": 250,
+   "median_us": 94.16221093749999,
+   "p99_us": 238.4954083789055,
+   "max_us": 1127.222759765625,
+   "min_us": 40.49191015625,
+   "jitter_us": 179.24682796874924
+  },
+  "pre-loaded launch|idle": {
+   "n": 250,
+   "median_us": 88.4708603515625,
+   "p99_us": 190.04221093749933,
+   "max_us": 319.69965625,
+   "min_us": 38.852916015625,
+   "jitter_us": 141.09879660156184
+  },
+  "persistent kernel|idle": {
+   "n": 0
+  },
+  "GPU self-timed|idle": {
+   "n": 250,
+   "median_us": 0.0238759765625,
+   "p99_us": 0.04342353515625,
+   "max_us": 0.05130078125,
+   "min_us": 0.00351953125,
+   "jitter_us": 0.03945333984375
+  },
+  "normal launch|GPU busy with AI job": {
+   "n": 250,
+   "median_us": 78.51320898437501,
+   "p99_us": 156.38453751953114,
+   "max_us": 425.386681640625,
+   "min_us": 42.55514453125,
+   "jitter_us": 111.84102859374988
+  },
+  "pre-loaded launch|GPU busy with AI job": {
+   "n": 250,
+   "median_us": 63.216283203125,
+   "p99_us": 140.94649097656233,
+   "max_us": 278.016458984375,
+   "min_us": 28.54708984375,
+   "jitter_us": 109.54423884765608
+  },
+  "persistent kernel|GPU busy with AI job": {
+   "n": 2,
+   "median_us": 668.793787109375,
+   "p99_us": 832.9674506640625,
+   "max_us": 836.31793359375,
+   "min_us": 501.269640625,
+   "jitter_us": 328.34732710937504
+  },
+  "GPU self-timed|GPU busy with AI job": {
+   "n": 250,
+   "median_us": 0.0209501953125,
+   "p99_us": 0.060999765624999966,
+   "max_us": 0.076125,
+   "min_us": 0.0001796875,
+   "jitter_us": 0.060647910156249964
+  }
+ }
+}
