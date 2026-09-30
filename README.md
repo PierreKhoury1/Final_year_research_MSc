@@ -49,13 +49,16 @@ Caveats of rented machines, to be recorded with every result:
 
 ### Running the NVIDIA test
 
-Decision rule, written down before the run so the result means something either way:
+What the run is for, and what we expect, written down before running it. A literature check (30 Sep 2026) changed the purpose: the size of NVIDIA launch jitter is already known, and NVIDIA Aerial never asks the GPU to start at an exact instant (see *What is already known* below). The run now validates the measurement tool and gives the first numbers nobody has published.
 
-| Result of the separate-process load condition | Reading |
-|---|---|
-| p99 start lateness of a normal or CUDA Graph launch under 50 µs (a tenth of a 500 µs slot) | Launch jitter is too small to build a thesis on. Drop the lockstep direction. |
-| p99 in the hundreds of µs, or millisecond tails from context time-slicing, and the self-timed block stays within its clock bound | The mechanism is worth a proper study: a slot-shaped pipeline, minutes not seconds, with stream priorities and MPS as baselines, deadline misses per million slots as the metric. |
-| Self-timed block also loses precision under the other process's load | The resident-kernel idea does not survive time-slicing. The thesis becomes a characterisation, not a mechanism. |
+| Measurement | Prediction | If the prediction fails |
+|---|---|---|
+| `globaltimer` update step | ~1 µs on an A100 (pre-Hopper); 32 ns only if a profiler has reconfigured it | A 32 ns step means the timer was left reconfigured by an earlier tool on that host; note it, the self-timed floor changes |
+| Normal and CUDA Graph launch, idle | median 5–15 µs late, p99 under ~30 µs on a rented box | Much worse points to host noise (no isolated cores, no `SCHED_FIFO`): check `pinned` and `sched_fifo` in the output before blaming the GPU |
+| Self-timed block, idle and same-process load | within the clock bound, quantised to the timer step | Loses precision with same-process load on a high-priority stream: real result, record it |
+| Every method, separate-process PyTorch load | millisecond stalls in all four methods, self-timed included, from 1–2 ms context time-slicing | If the resident block is *not* preempted, that contradicts the published scheduling model and is worth a second run |
+| Clock ping-pong | brackets of a few µs over PCIe; a measurable rate offset between `globaltimer` and the CPU TSC, since a discrete GPU has its own crystal | A rate offset of exactly zero would mean the driver disciplines the timer, which NVIDIA says it does not |
+| Certified clock bound | a few µs after ~3000 brackets, from the tightest 5 % | This is the first such number on NVIDIA in public; whatever it is, it goes in the write-up |
 
 Three ways to run it, cheapest first:
 
@@ -65,15 +68,36 @@ Three ways to run it, cheapest first:
 
 Destroy the instance afterwards, because a stopped instance still bills for storage. The run takes about four minutes plus image load.
 
+## What is already known (checked 30 Sep 2026)
+
+- NVIDIA Aerial does not need the GPU to start at an exact instant. The ConnectX NIC's PTP hardware clock owns time; downlink packets carry a transmit timestamp and the NIC emits them at that instant, so GPU work only has to finish before the send time. Uplink already uses a GPU-resident "order kernel", launched ahead of the slot, that waits on `%globaltimer` while polling the NIC. Budgets are hundreds of µs to ~1.2 ms; the L2 tick runs 1.5 ms ahead of air time with a 100 µs jitter tolerance. This answers the old open question 3: ~90 µs of launch lateness is absorbed by slack.
+- Spinning a resident kernel on `%globaltimer` until a target time was published in 2019 (tt-gpu, OSPERT'19, Jetson TX2), which also found the timer advances only every 1 µs on pre-Hopper GPUs.
+- Bracketing a device clock read between two host reads and reporting the bracket as the bound is the model behind Vulkan's calibrated-timestamps extension (2018) and Intel's Xe kernel driver.
+- Launch-to-running latency on an A100 is measured: 0–99th percentile in roughly 6–10 µs on clean Linux, unchanged by MPS or MIG (Bakita & Anderson, ECRTS 2025). Millisecond tails come from the launching CPU thread being descheduled, not from the GPU.
+- Separate processes' contexts are time-sliced at ~1–2 ms and a resident kernel is preempted when its slice ends; only MPS, MIG or green contexts avoid it. Deployments co-locate AI with RAN through MIG partitions.
+- The OCXO + GPS + FPGA "time referee" card on the slides exists as the open-hardware OCP Time Card (about £1,200, mainline Linux driver). PTM-capable NICs give host time to 30–50 ns. Designing a board would be redundant.
+- The AMD `clGetDeviceAndHostTimer` behaviour is by design in ROCm CLR's source; Mesa's rusticl takes the mirror shortcut. Unreported, and a conformance-test proposal rather than a research result.
+
 ## Open questions
 
-1. On NVIDIA GPUs, how large is kernel-launch timing jitter, and how much does a co-located AI job inflate it?
-2. Does GPU self-timed execution keep its precision when it does real work under contention?
-3. How much slot-budget safety margin do GPU 5G stacks (e.g. NVIDIA Aerial) actually reserve for that jitter?
+1. A certified CPU↔GPU clock mapping for NVIDIA GPUs: CUPTI and Nsight interpolate and publish no error bound, and CUDA has no calibrated-timestamp API. What bound does min-filtered bracketing reach on a discrete GPU, how does it hold under load, and how does the GPU crystal drift against a PTM-traceable host reference over hours and temperature?
+2. A "cyclictest for GPUs": no tool measures how late GPU work starts against an absolute deadline with a certified clock bound, across launch methods and isolation modes (time-slicing, MPS, MIG, green contexts).
+3. Deadline-miss behaviour of a slot-shaped GPU pipeline with a co-located AI job, per isolation mode, in misses per million slots. NVIDIA publishes throughput only.
+
+Candidate thesis framings, sharing the tool from question 2: (A) the clock-metrology thesis built on question 1, with a bought PTM reference rather than a custom board; (B) the systems thesis built on question 3. "Start GPU work at exact instant T" stays as one launch mode inside the benchmark, not as the headline.
 
 ## References
 
+- NVIDIA Aerial CUDA-Accelerated RAN, source: https://github.com/NVIDIA/aerial-cuda-accelerated-ran (uplink order kernel `cuPHY-CP/cuphydriver/src/uplink/order_cuda_kernels.cu`; NIC wait-on-time transmit `cuPHY-CP/aerial-fh-driver/lib/gpu_comm_doca.cu`; slot tick generator `cuPHY-CP/cuphyl2adapter/lib/nvPHY/nv_tick_generator.cpp`)
+- Kreiliger, Matějka, Sojka, Hanzálek, time-triggered GPU execution on `%globaltimer` (tt-gpu), OSPERT 2019: https://ospert19.tudos.org/ospert19-proceedings.pdf and https://github.com/CTU-IIG/tt-gpu
+- Bakita & Anderson, NVIDIA launch latency and partitioning measurements, ECRTS 2025: https://www.cs.unc.edu/~jbakita/ecrts25.pdf; RTAS 2024: https://www.cs.unc.edu/~jbakita/rtas24.pdf
+- Vulkan VK_EXT_calibrated_timestamps proposal (the bracket-as-bound model): https://github.com/KhronosGroup/Vulkan-Docs/blob/main/proposals/VK_EXT_calibrated_timestamps.adoc
+- NVIDIA on `%globaltimer` resolution and update rate: https://forums.developer.nvidia.com/t/questions-about-globaltimer-functionality-accessing-and-configuring/304268
+- NVIDIA libcudacxx time library note that the GPU clock is not synchronised with the host: https://github.com/NVIDIA/cccl/blob/main/docs/libcudacxx/standard_api/time_library.rst
+- OCP Time Appliances Project, Time Card: https://github.com/Time-Appliances-Project/Time-Card
+- ROCm CLR `clGetDeviceAndHostTimer` (both outputs from the host clock): https://github.com/ROCm/clr/blob/develop/opencl/amdocl/cl_execute.cpp
+- Holohub green-context benchmark (launch-to-start under a competing kernel): https://nvidia-holoscan.github.io/holohub/benchmarks/green_context_benchmarking/
+- ConnectX accurate send scheduling characterised: https://arxiv.org/abs/2607.11305
 - TempoTrace, arXiv:2609.23301 (unreviewed white paper; GPU timestamp claims are design targets): https://arxiv.org/abs/2609.23301
-- NVIDIA Aerial CUDA-Accelerated RAN: https://github.com/NVIDIA/aerial-cuda-accelerated-ran
 - REEF, microsecond-scale GPU preemption (OSDI 2022): https://ipads.se.sjtu.edu.cn/_media/publications/reef-osdi22.pdf
 - RTGPU, real-time GPU scheduling: https://arxiv.org/pdf/2101.10463

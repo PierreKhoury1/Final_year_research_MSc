@@ -61,7 +61,10 @@ def show(offers, n=8):
 
 
 def instance(iid):
-    for i in vast("show", "instances"):
+    lst = vast("show", "instances")
+    if isinstance(lst, dict):
+        lst = lst.get("instances", [])
+    for i in lst:
         if i.get("id") == iid:
             return i
     return None
