@@ -4,3 +4,5 @@ runs/
 report/
 results/
 *.o
+cloud/.state/
+__pycache__/
