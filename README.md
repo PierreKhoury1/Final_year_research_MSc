@@ -24,7 +24,7 @@ Caveat on the last row: the self-timed kernel only stamped the time and did no r
 | `code/` | Clock experiments: `probe*.py`, `exp.py` (Python/OpenCL v1), `pingpong.c` (native C ping-pong, build with `py -m ziglang cc -O2 -target x86_64-windows-gnu pingpong.c -o pingpong.exe -lwinmm`), `ana2.py`, `improve.py` (min-filter calibration and time-to-sync), `pingpong_cuda.cu` (NVIDIA port), `build.js` (slide deck generator) |
 | `data/` | Raw measurements (`pp_default.bin`, `pp_tuned.bin`, `data.npz`) and `summary.json` |
 | `demo/` | `lockstep.py` (four ways to start GPU work at time T) with `lockstep_results.json`; `phy.py` (unfinished GPU 5G receiver chain, paused) |
-| `gpu_run/` | NVIDIA A100 test, not yet run: `lockstep.cu` (normal launch, CUDA Graph, persistent block, GPU self-timed via `%globaltimer`), `load_torch.py` (competing AI load), `run.sh` |
+| `gpu_run/` | NVIDIA test, not yet run: `lockstep.cu` (normal launch, CUDA Graph, persistent block, GPU self-timed via `%globaltimer`), `load_torch.py` (competing AI load), `run.sh` (three conditions plus a short clock ping-pong), `onstart.sh` (vast.ai on-start wrapper), `vast_run.py` (rent, run, collect, destroy through the vast API) |
 | `storyboard/` | Experiment visual for an alternative idea (distributed MIMO holdover): diagram page plus AI-generated illustrations |
 | `GPU_Clock_Findings.pptx` | 13-slide summary of the laptop clock findings |
 
@@ -47,7 +47,23 @@ Caveats of rented machines, to be recorded with every result:
 - They run in containers on shared hosts, so timing can include virtualisation effects. The host GPU model, driver and machine ID are logged in `gpu_info.txt`.
 - NVIDIA's full Aerial container may need system privileges a rented container does not grant. `gpu_run/` therefore depends only on CUDA; Aerial's cuPHY pipeline is an optional second step.
 
-To run: rent an A100 with a PyTorch "devel" image (it includes `nvcc`), copy `gpu_run/` to the machine, then `bash run.sh`. It writes `results.jsonl` and prints a table. Destroy the instance afterwards, because a stopped instance still bills for storage.
+### Running the NVIDIA test
+
+Decision rule, written down before the run so the result means something either way:
+
+| Result of the separate-process load condition | Reading |
+|---|---|
+| p99 start lateness of a normal or CUDA Graph launch under 50 µs (a tenth of a 500 µs slot) | Launch jitter is too small to build a thesis on. Drop the lockstep direction. |
+| p99 in the hundreds of µs, or millisecond tails from context time-slicing, and the self-timed block stays within its clock bound | The mechanism is worth a proper study: a slot-shaped pipeline, minutes not seconds, with stream priorities and MPS as baselines, deadline misses per million slots as the metric. |
+| Self-timed block also loses precision under the other process's load | The resident-kernel idea does not survive time-slicing. The thesis becomes a characterisation, not a mechanism. |
+
+Three ways to run it, cheapest first:
+
+1. **Driver script (no SSH).** `pip install vastai`, put the API key in `VAST_API_KEY`, then `python3 gpu_run/vast_run.py --search` to see offers and `python3 gpu_run/vast_run.py` to rent the cheapest fit, run, collect and destroy. Results land in `gpu_run/vast_results/<instance>/`.
+2. **By hand on vast.ai.** Rent an A100 with a PyTorch `devel` image (it has `nvcc`) and paste this as the on-start command: `bash -c "curl -fsSL https://raw.githubusercontent.com/PierreKhoury1/Final_year_research_MSc/claude/modest-ride-bc8yxa/gpu_run/onstart.sh | bash"`. Read the results from the instance log; they sit between `LOCKSTEP_RESULTS_BEGIN` and `LOCKSTEP_RESULTS_END`.
+3. **From a shell on any CUDA machine.** Clone the repo and `bash gpu_run/run.sh`. It writes `results_<utc>.tgz` next to itself.
+
+Destroy the instance afterwards, because a stopped instance still bills for storage. The run takes about four minutes plus image load.
 
 ## Open questions
 
