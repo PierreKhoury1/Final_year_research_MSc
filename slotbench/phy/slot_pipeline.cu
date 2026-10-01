@@ -118,7 +118,8 @@ struct SlotPipeline::Impl {
     }
 };
 
-SlotPipeline::SlotPipeline(const PhyConfig &cfg) : cfg_(cfg) {
+SlotPipeline::SlotPipeline(const PhyConfig &cfg_in) : cfg_(cfg_in) {
+    PhyConfig &cfg = cfg_;  // ldpc_cb 0 is resolved below, so config() reports what actually runs
     // ---- validation ----
     if (cfg.antennas != kAnt || cfg.layers != kAnt) config_error("antennas and layers must both be 4");
     if (cfg.fft < 16 || cfg.fft > (1 << 16)) config_error("fft must be in [16, 65536]");
@@ -126,7 +127,7 @@ SlotPipeline::SlotPipeline(const PhyConfig &cfg) : cfg_(cfg) {
         config_error("subcarriers must be even and in [2, fft]");
     if (cfg.symbols < 12 || cfg.symbols > 28) config_error("symbols must be in [12, 28] (DMRS on symbols 2 and 11)");
     if (qam_bits(cfg.qam) == 0) config_error("qam must be 4, 16, 64 or 256");
-    if (cfg.ldpc_cb < 1 || cfg.ldpc_cb > 65535) config_error("ldpc-cb must be in [1, 65535]");
+    if (cfg.ldpc_cb < 0 || cfg.ldpc_cb > 65535) config_error("ldpc-cb must be in [0, 65535] (0 = auto)");
     if (cfg.ldpc_iters < 0 || cfg.ldpc_iters > 1000) config_error("ldpc-iters must be in [0, 1000]");
     if (!(cfg.sigma2 > 0.0f) || !std::isfinite(cfg.sigma2)) config_error("sigma2 must be > 0");
     if (ldpc_set_index(cfg.ldpc_z) < 0) config_error("ldpc-z " + std::to_string(cfg.ldpc_z) + " is not a 38.212 lifting size");
@@ -140,6 +141,9 @@ SlotPipeline::SlotPipeline(const PhyConfig &cfg) : cfg_(cfg) {
     m.n_data = cfg.symbols - 2;
     m.qm = qam_bits(cfg.qam);
     m.n_llr = (long long)cfg.subcarriers * m.n_data * kAnt * m.qm;
+    // auto: as many codewords as the slot's coded bits fill (38.212 segmentation, no filler bits)
+    if (cfg.ldpc_cb == 0) cfg.ldpc_cb = (int)((m.n_llr + m.code.n_tx_bits() - 1) / m.code.n_tx_bits());
+    if (cfg.ldpc_cb > 65535) config_error("auto ldpc-cb exceeds 65535");
     const int S = cfg.subcarriers, nd = m.n_data;
     const LdpcCode &code = m.code;
 
@@ -252,8 +256,10 @@ SlotPipeline::SlotPipeline(const PhyConfig &cfg) : cfg_(cfg) {
     CUFFT_CK(cufftSetStream(m.plan, 0));
     CUFFT_CK(cufftExecC2C(m.plan, reinterpret_cast<cufftComplex *>(m.d_freq), reinterpret_cast<cufftComplex *>(m.d_time),
                           CUFFT_INVERSE));
-    CK(cudaDeviceSynchronize());
     CK(cudaMemset(m.d_freq, 0, n_time * sizeof(Cf)));
+    // Init work ran on the legacy default stream, which does not order with the non-blocking slot
+    // streams: finish it here so no slot can overlap a late memset or copy.
+    CK(cudaDeviceSynchronize());
 }
 
 SlotPipeline::~SlotPipeline() {
@@ -428,7 +434,10 @@ bool SlotPipeline::selftest(std::string &report) {
                 ch_err += (y < 0) != (cw[i] != 0);
             }
         }
-        CK(cudaMemcpy(d_llr, llr.data(), llr.size() * sizeof(float), cudaMemcpyHostToDevice));
+        // Ordered on s: a plain cudaMemcpy runs on the legacy stream, which a non-blocking stream does not
+        // wait for, and a pageable H2D copy can return before the DMA lands (this let the decoder read
+        // the previous point's LLRs on the first RTX 3060 run).
+        CK(cudaMemcpyAsync(d_llr, llr.data(), llr.size() * sizeof(float), cudaMemcpyHostToDevice, s));
         launch_ldpc_decode(m.dcode, d_llr, d_msg, d_app, n_cw, iters, kAlpha, m.app_fp16, m.dec_smem, s);
         launch_hard_pack(d_app, c.n_bits(), c.k_bits(), d_bits, n_cw, s);
         CK(cudaStreamSynchronize(s));

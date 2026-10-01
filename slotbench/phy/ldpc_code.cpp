@@ -142,6 +142,8 @@ LdpcCode make_ldpc_code(int bg, int Z, int rows) {
         c.max_row_degree = std::max(c.max_row_degree, c.row_start[r + 1]);
         c.row_start[r + 1] += c.row_start[r];
     }
+    if (c.max_row_degree > kMaxRowDegree)
+        throw std::logic_error("make_ldpc_code: row degree exceeds kMaxRowDegree in phy_ops.h");
     return c;
 }
 

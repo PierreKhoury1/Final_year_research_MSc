@@ -15,9 +15,9 @@ struct PhyConfig {
     int layers = 4;          // spatial layers (pipeline supports exactly 4)
     int subcarriers = 3276;  // used subcarriers (<= fft)
     int qam = 256;           // 4, 16, 64 or 256
-    int ldpc_cb = 50;        // codewords per slot
-    int ldpc_iters = 20;     // fixed decoder iterations
-    int ldpc_rows = 46;      // BG1 rows used (4..46)
+    int ldpc_cb = 0;         // codewords per slot; 0 = auto (fill the slot's coded bits)
+    int ldpc_iters = 10;     // fixed decoder iterations
+    int ldpc_rows = 8;       // BG1 rows used (4..46): 8 -> code rate 0.79, typical with 256-QAM
     int ldpc_z = 384;        // lifting size
     int ldpc_bg = 1;         // base graph
     float sigma2 = 0.01f;    // noise variance used in the MMSE Gram matrix and LLR scaling

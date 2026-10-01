@@ -166,6 +166,8 @@ HD void qam_llr(Cf y, int qam, float inv_n0, float *llr) {
 }
 
 // ---------------- normalized min-sum ----------------
+// Largest check-node degree of either base graph (BG1 row 0 has 19 edges; BG2 at most 10).
+constexpr int kMaxRowDegree = 19;
 // Accumulates |t| minima and the sign parity of the variable-to-check messages of one check node.
 struct MsAcc {
     float min1, min2;  // smallest and second smallest |t|
@@ -209,24 +211,34 @@ HD float ms_out(const MsAcc &a, float t, int j, float alpha) {
 #endif
 template <class Acc>
 HD void ms_row_update(Acc &s, int e0, int deg, int z, int Z, float alpha, bool first) {
+    // One pass over the edges: the variable index and t = app - old stay in registers (fixed-size
+    // arrays with a runtime guard), so app and the old message are each read once per edge.
+    int v[kMaxRowDegree];
+    float t[kMaxRowDegree];
     MsAcc a;
     ms_init(a);
-    for (int j = 0; j < deg; j++) {
-        int e = e0 + j;
-        int sh = z + s.shift(e);
-        int v = s.col(e) * Z + (sh >= Z ? sh - Z : sh);
-        float old = first ? 0.0f : s.msg(e);
-        ms_add(a, fsub_rn(s.app(v), old), j);
+#if defined(__CUDA_ARCH__)
+#pragma unroll
+#endif
+    for (int j = 0; j < kMaxRowDegree; j++) {
+        if (j < deg) {
+            int e = e0 + j;
+            int sh = z + s.shift(e);
+            v[j] = s.col(e) * Z + (sh >= Z ? sh - Z : sh);
+            float old = first ? 0.0f : s.msg(e);
+            t[j] = fsub_rn(s.app(v[j]), old);
+            ms_add(a, t[j], j);
+        }
     }
-    for (int j = 0; j < deg; j++) {
-        int e = e0 + j;
-        int sh = z + s.shift(e);
-        int v = s.col(e) * Z + (sh >= Z ? sh - Z : sh);
-        float old = first ? 0.0f : s.msg(e);
-        float t = fsub_rn(s.app(v), old);
-        float n = ms_out(a, t, j, alpha);
-        s.set_msg(e, n);
-        s.set_app(v, fadd_rn(t, n));
+#if defined(__CUDA_ARCH__)
+#pragma unroll
+#endif
+    for (int j = 0; j < kMaxRowDegree; j++) {
+        if (j < deg) {
+            float n = ms_out(a, t[j], j, alpha);
+            s.set_msg(e0 + j, n);
+            s.set_app(v[j], fadd_rn(t[j], n));
+        }
     }
 }
 

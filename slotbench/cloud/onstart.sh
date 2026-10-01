@@ -284,7 +284,7 @@ fi
 log "slot_driver --tune-us $SB_TUNE_US"
 TUNE_RC=0
 ./bin/slot_driver --tune-us "$SB_TUNE_US" 2>&1 | tee "$LOGS/tune.txt" || TUNE_RC=$?
-SIZES="$(grep -oE -- '--ldpc-cb [0-9]+ --ldpc-iters [0-9]+' "$LOGS/tune.txt" | tail -1 || true)"
+SIZES="$(grep -oE -- '--subcarriers [0-9]+ --ldpc-cb [0-9]+ --ldpc-iters [0-9]+' "$LOGS/tune.txt" | tail -1 || true)"
 mkdir -p "$WORK/configs"
 CFG="$WORK/configs/$SB_CONFIG"   # same file name, so run dirs are still runs/<config stem>/
 if [ "$TUNE_RC" = 0 ] && [ -n "$SIZES" ]; then
@@ -295,8 +295,8 @@ src, dst, tuned = sys.argv[1:4]
 lines = open(src).read().splitlines()
 
 def merged(old):
-    # keep any non-LDPC flags already in sizes, replace --ldpc-cb/--ldpc-iters with the tuned values
-    rest = re.sub(r"--ldpc-(cb|iters)\s+\S+", "", old or "")
+    # keep other flags already in sizes, replace --subcarriers/--ldpc-cb/--ldpc-iters with the tuned values
+    rest = re.sub(r"--(subcarriers|ldpc-cb|ldpc-iters)\s+\S+", "", old or "")
     return " ".join((rest.split() + tuned.split()))
 
 def line(old):

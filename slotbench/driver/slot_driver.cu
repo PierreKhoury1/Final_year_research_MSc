@@ -91,9 +91,9 @@ void usage(FILE *f) {
             "  --core N (-1)  --collector-core N (-1)  --fifo P (0)  --spin-us F (50)  --gpu N (0)\n"
             "  --calib-samples N (20000)  --label S\n"
             "  sizes: --fft 4096 --symbols 14 --antennas 4 --layers 4 --subcarriers 3276 --qam 256\n"
-            "         --ldpc-cb 50 --ldpc-iters 20 --ldpc-rows 46 --ldpc-z 384\n"
+            "         --ldpc-cb 0 (auto) --ldpc-iters 10 --ldpc-rows 8 --ldpc-z 384\n"
             "  --selftest            GPU decoder check + one pipeline run, exit 0/1 (no --out needed)\n"
-            "  --tune-us F           largest ldpc-cb (then ldpc-iters) with idle median <= F us, print flags\n"
+            "  --tune-us F           widest carrier (then most ldpc-iters) with idle median <= F us, print flags\n"
             "  --print-config        print resolved config JSON and exit (no GPU needed)\n"
             "exit codes: 0 ok, 1 selftest/tune failed, 2 usage/setup, 3 fatal in run, 4 signal, 5 wall guard\n");
 }
@@ -162,7 +162,7 @@ Opts parse_args(int argc, char **argv) {
         else if (f == "--layers") o.phy.layers = (int)parse_ll(f, v, 1, IMAX);
         else if (f == "--subcarriers") o.phy.subcarriers = (int)parse_ll(f, v, 1, IMAX);
         else if (f == "--qam") o.phy.qam = (int)parse_ll(f, v, 1, IMAX);
-        else if (f == "--ldpc-cb") o.phy.ldpc_cb = (int)parse_ll(f, v, 1, IMAX);
+        else if (f == "--ldpc-cb") o.phy.ldpc_cb = (int)parse_ll(f, v, 0, IMAX);
         else if (f == "--ldpc-iters") o.phy.ldpc_iters = (int)parse_ll(f, v, 1, IMAX);
         else if (f == "--ldpc-rows") o.phy.ldpc_rows = (int)parse_ll(f, v, 1, IMAX);
         else if (f == "--ldpc-z") o.phy.ldpc_z = (int)parse_ll(f, v, 1, IMAX);
@@ -585,34 +585,44 @@ int do_tune(const Opts &o) {
     cudaEvent_t ev;
     CK(cudaStreamCreateWithPriority(&s, cudaStreamNonBlocking, d.prio_greatest));
     CK(cudaEventCreateWithFlags(&ev, cudaEventDisableTiming));
-    // candidates: ldpc_cb from the given value down to 1, then ldpc_iters down with ldpc_cb = 1
-    std::vector<std::pair<int, int>> cand;
-    for (int cb = o.phy.ldpc_cb; cb >= 1; cb--) cand.push_back({cb, o.phy.ldpc_iters});
-    for (int it = o.phy.ldpc_iters - 1; it >= 1; it--) cand.push_back({1, it});
+    // Candidates, largest workload first: carrier bandwidth steps at 30 kHz SCS (273/217/162/106/51 PRB =
+    // 100/80/60/40/20 MHz, never wider than requested) with codewords filling the slot (ldpc-cb auto),
+    // then fewer decoder iterations at the narrowest carrier. Shrinking the carrier keeps every stage in
+    // proportion, unlike cutting codewords alone.
+    struct Cand { int sc, iters; };
+    std::vector<Cand> cand;
+    for (int prb : {273, 217, 162, 106, 51})
+        if (12 * prb <= o.phy.subcarriers) cand.push_back({12 * prb, o.phy.ldpc_iters});
+    if (cand.empty()) cand.push_back({o.phy.subcarriers, o.phy.ldpc_iters});
+    const int narrow = cand.back().sc;
+    for (int it = o.phy.ldpc_iters - 1; it >= 1; it--) cand.push_back({narrow, it});
     std::string tried = "[";
     int best = -1;
     double best_us = NAN;
     for (size_t i = 0; i < cand.size() && !g_stop; i++) {
         sb::PhyConfig c = o.phy;
-        c.ldpc_cb = cand[i].first;
-        c.ldpc_iters = cand[i].second;
+        c.subcarriers = cand[i].sc;
+        c.ldpc_cb = 0;
+        c.ldpc_iters = cand[i].iters;
         double med = tune_measure(c, s, ev);
-        fprintf(stderr, "tune: ldpc_cb %d ldpc_iters %d -> median %.1f us\n", c.ldpc_cb, c.ldpc_iters, med);
+        fprintf(stderr, "tune: subcarriers %d ldpc_iters %d -> median %.1f us\n", c.subcarriers, c.ldpc_iters, med);
         sb::Json j;
-        j.add("ldpc_cb", c.ldpc_cb).add("ldpc_iters", c.ldpc_iters).add("median_us", med);
+        j.add("subcarriers", c.subcarriers).add("ldpc_iters", c.ldpc_iters).add("median_us", med);
         tried += (i ? "," : "") + j.str();
         if (med <= o.tune_us) { best = (int)i; best_us = med; break; }
     }
     tried += "]";
+    std::string flags;
+    if (best >= 0)
+        flags = "--subcarriers " + std::to_string(cand[best].sc) + " --ldpc-cb 0 --ldpc-iters " +
+                std::to_string(cand[best].iters);
     sb::Json j;
     j.add("tune_us", o.tune_us).add("gpu", d.prop.name).add("uuid", uuid_str(d.prop.uuid)).add("ok", best >= 0);
-    if (best >= 0) {
-        j.add("ldpc_cb", cand[best].first).add("ldpc_iters", cand[best].second).add("median_us", best_us)
-            .add("flags", "--ldpc-cb " + std::to_string(cand[best].first) + " --ldpc-iters " +
-                              std::to_string(cand[best].second));
-    }
+    if (best >= 0)
+        j.add("subcarriers", cand[best].sc).add("ldpc_iters", cand[best].iters).add("median_us", best_us)
+            .add("flags", flags);
     j.add("runs", kTuneRuns).add_raw("candidates", tried);
-    if (best >= 0) printf("--ldpc-cb %d --ldpc-iters %d\n", cand[best].first, cand[best].second);
+    if (best >= 0) printf("%s\n", flags.c_str());
     else printf("no configuration reaches a median of %.1f us\n", o.tune_us);
     printf("%s\n", j.str().c_str());
     CK(cudaEventDestroy(ev));

@@ -57,6 +57,8 @@ with `make SM=86`. Link: -lcudart -lcublas -lcufft -lpthread.
 Defaults model a 100 MHz carrier at 30 kHz SCS (273 PRB = 3276 subcarriers), 4 receive antennas,
 4 layers, 14 OFDM symbols of which 2 carry DMRS pilots (symbols 2 and 11), 256-QAM.
 Every size is a CLI flag so the graph can be tuned to about 200 us idle on the card under test.
+First RTX 3060 runs (2026-09-30): rate-1/3 decoding (46 rows, 20 iterations, 50 codewords) took 5.4 ms per
+slot, far over budget, so the defaults moved to the high code rate a 256-QAM slot actually uses.
 
 | Stage | Implementation | Default size |
 |---|---|---|
@@ -70,8 +72,8 @@ Every size is a CLI flag so the graph can be tuned to about 200 us idle on the c
 | S7 solve | cublasCgetrsBatched G X = R | batch 3276, nrhs 12 |
 | S8 demod | kernel: max-log LLRs for Gray square QAM | 3276 x 12 x 4 symbols, 8 LLR each |
 | S9 rate de-match | kernel: copy LLRs into per-codeword buffers (wrap modulo LLR count), zero the 2Z punctured bits | ldpc_cb codewords |
-| S10 LDPC decode | layered normalized min-sum (alpha 0.75), fixed iterations, no early termination | 50 CB, BG1, Z 384, 20 iters, 46 rows |
-| S11 hard decision | kernel: sign -> packed bits of the 22Z systematic part | 50 CB |
+| S10 LDPC decode | layered normalized min-sum (alpha 0.75), fixed iterations, no early termination | BG1, Z 384, 8 rows (rate 0.79, typical for 256-QAM), 10 iters, codewords auto-filled (117 at 100 MHz) |
+| S11 hard decision | kernel: sign -> packed bits of the 22Z systematic part | all codewords |
 | S12 stamp end | 1-thread kernel: writes %globaltimer and seq, then __threadfence_system() | 1 |
 
 LDPC decoder contract: one thread block per codeword, blockDim = Z threads; each layer is one base
@@ -114,9 +116,9 @@ priority.
 | --gpu N | 0 | device |
 | --calib-samples N | 20000 | clock calibration brackets before and after the run |
 | --label S | "" | free text copied to meta.json |
-| sizes | section 2 | --fft 4096 --symbols 14 --antennas 4 --layers 4 --subcarriers 3276 --qam 256 --ldpc-cb 50 --ldpc-iters 20 --ldpc-rows 46 --ldpc-z 384 |
+| sizes | section 2 | --fft 4096 --symbols 14 --antennas 4 --layers 4 --subcarriers 3276 --qam 256 --ldpc-cb 0 (auto) --ldpc-iters 10 --ldpc-rows 8 --ldpc-z 384 |
 | --selftest | off | run GPU decoder check (and one pipeline run) then exit 0/1 |
-| --tune-us F | off | measure idle graph time, search ldpc-cb then ldpc-iters for the largest workload whose median idle time <= F, print the flags, exit |
+| --tune-us F | off | measure idle graph time; try carrier widths 273/217/162/106/51 PRB (100/80/60/40/20 MHz) with codewords auto-filled, then fewer iterations at 51 PRB; print the flags (`--subcarriers N --ldpc-cb 0 --ldpc-iters M`) of the largest workload whose median idle time <= F, exit |
 | --print-config | off | print resolved config JSON, exit (no GPU needed) |
 
 Process: cudaSetDeviceFlags(cudaDeviceScheduleSpin | cudaDeviceMapHost), build pipeline, lock
@@ -252,7 +254,7 @@ driver_core = 4
 collector_core = 5
 fifo = 99
 lock_clocks = true      # scripts/gpu_lock.sh lock before, per mechanism
-sizes = "--ldpc-cb 50 --ldpc-iters 20"   # extra driver flags from --tune-us
+sizes = "--subcarriers 1272 --ldpc-cb 0 --ldpc-iters 10"   # extra driver flags from --tune-us
 
 [matrix]
 mechanisms = ["M0","M1","M2","M3","M4","M5"]
