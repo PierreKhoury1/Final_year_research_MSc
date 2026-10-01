@@ -1,0 +1,2 @@
+mkdir -p bin
+/usr/local/cuda/bin/nvcc -O2 -g -lineinfo -std=c++17 -gencode arch=compute_80,code=sm_80 -gencode arch=compute_80,code=compute_80 -Icommon -Iphy -Xcompiler -Wall -o bin/adversary adversary/adversary.cu -lcublas -lcufft -lpthread -ldl

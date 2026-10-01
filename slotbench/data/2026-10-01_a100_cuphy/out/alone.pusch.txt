@@ -1,0 +1,55 @@
+File extension: h5
+PuschRx Pipeline[0]: Failed to set scheduling algo pid 19219, prio 99, return code -1: err Operation not permitted
+PuschRx Pipeline[0]: pid 19219 set affinity to CPU 0
+PuschRx Pipeline[0]: Wait for start-sync point
+Run config: GPU Id 0, # of pipelines 1
+PuschRx Pipeline[0]: start-syncpoint hit
+PuschRx Pipeline[0]: For transmission 1 using filename /workspace/tv/GPU_test_input/TVnr_7304_PUSCH_gNB_CUPHY_s0p0.h5
+slot 0 ---------------------------------------------------------------
+PuschRx Pipeline[00]: Metric - Throughput (w/ GPU runtime only): 08.0110 Gbps (encoded input bits 1277992) 
+PuschRx Pipeline[00]: Metric - GPU Time usec (using CUDA events, over 3000 runs)
+PuschRx Pipeline[00]:   Phase               Mean       Min       P90       P99       Max
+PuschRx Pipeline[00]:   Run-P1             2.761     2.720     2.912     2.976     3.392
+PuschRx Pipeline[00]:   Run-P2           143.701   138.304   146.432   147.488   155.616
+PuschRx Pipeline[00]:   Run-P3            13.068     9.568    17.824    18.240    42.176
+PuschRx Pipeline[00]:   Setup-P1           8.358     8.192     9.216     9.216     9.216
+PuschRx Pipeline[00]:   Setup-P2         132.784   107.808   125.926   138.562 52267.168
+PuschRx Pipeline[00]:   Total            300.672   270.848   294.013   311.362 52460.383
+PuschRx Pipeline[00]: Metric - CPU Time usec (using wall clock w/ 1 ms delay kernel, over 3000 runs)
+PuschRx Pipeline[00]:   Phase               Mean       Min       P90       P99       Max
+PuschRx Pipeline[00]:   Run-P1             0.040     0.020     0.060     0.070     0.800
+PuschRx Pipeline[00]:   Run-P2            13.633    12.401    14.680    18.841    24.460
+PuschRx Pipeline[00]:   Run-P3             8.280     7.790     8.510     9.890    19.770
+PuschRx Pipeline[00]:   Setup-P1           9.896     9.161    10.200    14.011    31.040
+PuschRx Pipeline[00]:   Setup-P2          35.286    16.701    17.992    23.451 53099.969
+PuschRx Pipeline[00]:   Total             67.134    46.860    51.623    56.981 53157.348
+PuschRx Pipeline[00]: Debug - start-event record to notify delay in usec (wall clock) 000.126 (000.040, 001.120)
+PuschRx Pipeline[00]: Debug - start-event notify to pipelne launch start delay in usec (wall clock) 055.368 (035.971, 53140.480)
+dim[0]: resDim 1 refDim 1
+[0][0][0][0] refScaler 47.194748 cuphyScaler 47.194748
+dim[0]: resDim 1 refDim 1
+[0][0][0][0] refScaler 6.015484 cuphyScaler 6.015482
+dim[0]: resDim 1 refDim 1
+[0][0][0][0] refScaler 46.359959 cuphyScaler 46.359940
+PuschRx Pipeline[0]: Joining worker thread
+nvlog_fmtlog_close: fmtlog thread already stopped
+16:23:21.468890 nvlog.cpp:267    CON[19214 ] [NVLOG.CPP] Using /workspace/cuPHY/nvlog/config/nvlog_config.yaml for nvlog configuration
+16:23:21.471919 exit_handler.cpp:44 CON[19216 ] [NVLOG.EXIT_HANDLER] [exit_watchdog] thread started on core 36
+16:23:21.485394 nvlog.cpp:338    ERR[19214 ] [AERIAL_YAML_PARSER_EVENT] [NVLOG.CPP] Failed to load yaml file: /workspace/cuPHY/nvlog/config/nvlog_config.yaml (bad file: /workspace/cuPHY/nvlog/config/nvlog_config.yaml)
+16:23:21.648151 datasets.cpp:1026 CON[19219 ] [CUPHY.PUSCH_RX] PUSCH 7.2a O-RAN functional split.
+16:23:21.658802 datasets.cpp:1041 CON[19219 ] [CUPHY.PUSCH_RX] run PUSCH pipeline.
+16:23:21.658803 datasets.cpp:1066 CON[19219 ] [CUPHY.PUSCH_RX] run PUSCH pipeline with UCI-on-PUSCH.
+16:23:21.674353 datasets.cpp:1189 CON[19219 ] [CUPHY.PUSCH_RX] LDPC throughput mode enabled
+16:23:21.743833 cuphy.hpp:105    CON[19219 ] [CUPHY.MEMFOOT] cuphyMemoryFootprint - GPU allocation: 697.727 MiB for cuPHY PUSCH channel object (0x7735a0056720).
+16:23:21.743845 pusch_rx.cpp:1449 CON[19219 ] [CUPHY.PUSCH_RX] PuschRx: Running with eqCoeffAlgo 3
+16:23:26.150014 datasets.cpp:2673 CON[19219 ] [CUPHY.PUSCH_RX] Cell # 0 : TbIdx: 0 Metric - Block Error Rate      : 0.0000 (Error CBs 0, Mismatched CBs 0, MismatchedCRC CBs 0, Total CBs 152)
+16:23:26.150016 datasets.cpp:2710 CON[19219 ] [CUPHY.PUSCH_RX] Cell # 0 :          Metric - TB CRC Error      :(MismatchedCRC TBs 0, Total TBs 1)
+16:23:26.150017 datasets.cpp:2996 CON[19219 ] [CUPHY.PUSCH_RX] Cell # 0 : No UCI
+16:23:26.150102 datasets.cpp:2386 CON[19219 ] [CUPHY.PUSCH_RX] RSSI reference comparison SNR inf     for UEGRP[0]
+16:23:26.150117 datasets.cpp:2408 CON[19219 ] [CUPHY.PUSCH_RX] RSRP reference comparison SNR 129.9768
+16:23:26.150129 datasets.cpp:2411 CON[19219 ] [CUPHY.PUSCH_RX] RSRP reference comparison difference (dB) 1.9073486328125e-06
+16:23:26.150140 datasets.cpp:2462 CON[19219 ] [CUPHY.PUSCH_RX] NoiseVarPreEqIntf interface reference comparison SNR 126.5071
+16:23:26.150153 datasets.cpp:2467 CON[19219 ] [CUPHY.PUSCH_RX] SINR PreEq interface reference comparison SNR 127.7143
+16:23:26.150167 datasets.cpp:2484 CON[19219 ] [CUPHY.PUSCH_RX] NoiseVarPostEqIntf interface reference comparison SNR 118.7108
+16:23:26.150180 datasets.cpp:2500 CON[19219 ] [CUPHY.PUSCH_RX] SINR PostEq interface reference comparison SNR 118.7108
+16:23:26.163269 nvlog.cpp:189    CON[19214 ] [NVLOG.CPP] nvlog_fmtlog_close: closing FMT log from [cuphy_ex_pusch_] thread on core 4, last file path is /tmp
