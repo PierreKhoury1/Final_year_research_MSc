@@ -1,0 +1,20 @@
+# Real AI neighbours (Qwen2.5-1.5B LLM via transformers, YOLOv8n via Ultralytics) next to their proxies,
+# under no isolation, stream priority and MPS. cloud/onstart.sh installs torch and prefetches the models.
+[run]
+slots = 100000
+warmup_s = 30
+settle_s = 45          # real models take ~10-30 s to load before they start loading the GPU
+repeats = 1
+out_root = "runs"
+driver_core = -1
+collector_core = -1
+fifo = 0
+lock_clocks = false
+sizes = ""
+solo_seconds = 60
+
+[matrix]
+mechanisms = ["M0", "M1", "M2"]
+workloads = ["real-llm", "llm", "real-vision", "vision"]
+duties = [0, 50, 100]
+solo = true

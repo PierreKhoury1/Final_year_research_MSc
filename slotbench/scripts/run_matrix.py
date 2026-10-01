@@ -37,7 +37,7 @@ ROOT = os.path.dirname(HERE)
 RUN_ONE = os.path.join(HERE, "run_one.sh")
 
 MECHANISMS = {"M0", "M1", "M2", "M3", "M4", "M5", "M6"}
-WORKLOADS = {"sgemm", "llm", "vision"}
+WORKLOADS = {"sgemm", "llm", "vision", "real-llm", "real-vision"}  # real-*: adversary/real/real_ai.py
 # Per-cell settings a [overrides.<M>] table (or [overrides.SOLO]) may change.
 OVERRIDABLE = {"slots", "warmup_s", "settle_s", "driver_flags", "adversary_flags", "solo_seconds",
                "lock_clocks"}

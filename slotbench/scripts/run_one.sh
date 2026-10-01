@@ -2,7 +2,7 @@
 # shellcheck disable=SC2329  # cleanup/as_root/write_run_json are invoked via traps and run_logged
 # run_one.sh: one cell of the run matrix, following the run procedure end to end.
 #
-#   run_one.sh --out DIR --mechanism M0..M6|SOLO --workload sgemm|llm|vision|idle --duty D
+#   run_one.sh --out DIR --mechanism M0..M6|SOLO --workload sgemm|llm|vision|real-llm|real-vision|idle --duty D
 #              --slots N --warmup-s S --settle-s S
 #              [--driver-core C] [--collector-core C] [--fifo P]
 #              [--driver-flags "..."] [--adversary-flags "..."] [--solo-seconds S]
@@ -67,7 +67,8 @@ isnum() { [[ $1 =~ ^[0-9]+([.][0-9]+)?$ ]]; }
 isint() { [[ $1 =~ ^-?[0-9]+$ ]]; }
 [[ -n $out ]] || bad "--out is required"
 [[ $mech =~ ^(M[0-6]|SOLO)$ ]] || bad "--mechanism must be M0..M6 or SOLO (got '$mech')"
-[[ $workload =~ ^(sgemm|llm|vision|idle)$ ]] || bad "--workload must be sgemm|llm|vision|idle (got '$workload')"
+[[ $workload =~ ^(sgemm|llm|vision|real-llm|real-vision|idle)$ ]] \
+  || bad "--workload must be sgemm|llm|vision|real-llm|real-vision|idle (got '$workload')"
 [[ $mech == SOLO ]] && duty=100
 if ! [[ $duty =~ ^[0-9]+$ ]] || (( duty > 100 )); then bad "--duty must be an integer 0..100"; fi
 [[ $mech == SOLO ]] && slots=${slots:-0}
@@ -122,7 +123,13 @@ drv_cmd=("$bin/slot_driver" --out "$out" --slots "$slots" --prio "$drv_prio" --m
 (( fifo > 0 )) && drv_cmd+=(--fifo "$fifo")
 drv_cmd+=("${xdrv[@]}")
 
-adv_base=("$bin/adversary" --workload "$workload" --duty "$duty" --prio "$adv_prio" --gpu "$adv_gpu")
+if [[ $workload == real-* ]]; then
+  # real models (Qwen2.5 LLM, YOLOv8n) need torch; SB_AI_PYTHON points at the venv that has it
+  adv_base=("${SB_AI_PYTHON:-python3}" "$here/../adversary/real/real_ai.py" --workload "$workload" --duty "$duty"
+            --prio "$adv_prio" --gpu "$adv_gpu")
+else
+  adv_base=("$bin/adversary" --workload "$workload" --duty "$duty" --prio "$adv_prio" --gpu "$adv_gpu")
+fi
 warm_cmd=("${adv_base[@]}" --seconds "$warmup_s" --out "$out/warmup_adversary.json" "${xadv[@]}")
 if [[ $mech == SOLO ]]; then
   adv_cmd=("${adv_base[@]}" --seconds "$solo_seconds" --out "$out/adversary.json"

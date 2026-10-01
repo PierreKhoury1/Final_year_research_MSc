@@ -331,6 +331,28 @@ else
 fi
 cp "$CFG" "$LOGS/config_used.toml"
 
+# ---- 6b. real AI models (configs using real-llm / real-vision): torch venv + weights -------------
+if grep -qE '"real-(llm|vision)"' "$CFG"; then
+    log "real AI workloads: creating torch venv (log: $LOGS/ai_env.log)"
+    AI_VENV="$WORK/aienv"
+    if { python3 -m venv "$AI_VENV" && "$AI_VENV/bin/pip" install -q --upgrade pip \
+         && "$AI_VENV/bin/pip" install -q torch transformers accelerate ultralytics; } >>"$LOGS/ai_env.log" 2>&1; then
+        export SB_AI_PYTHON="$AI_VENV/bin/python"
+        for w in real-llm real-vision; do
+            if grep -q "\"$w\"" "$CFG"; then
+                if "$SB_AI_PYTHON" adversary/real/real_ai.py --workload "$w" --prefetch \
+                        --out "$LOGS/prefetch_$w.json" >>"$LOGS/ai_env.log" 2>&1; then
+                    log "prefetch $w: ok"
+                else
+                    log "prefetch $w: FAILED (see ai_env.log)"
+                fi
+            fi
+        done
+    else
+        log "torch venv install FAILED (see ai_env.log); real-* cells will fail"
+    fi
+fi
+
 # ---- 7. matrix (output to a file; the emitter prints finished cells meanwhile) --------------------
 log "run_matrix $CFG (progress: $LOGS/matrix.out)"
 emitter_loop &
