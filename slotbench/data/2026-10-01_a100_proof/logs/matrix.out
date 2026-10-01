@@ -1,0 +1,130 @@
+[2026-10-01T04:50:44.708Z] start /root/sb/configs/proof.toml: 15 cells, 0 already ok, 15 to run, estimated 0h28m45s
+[2026-10-01T04:50:44.708Z] [1/15] SOLO_sgemm: start (~0h01m15s, ETA for the rest 0h28m45s)
+[2026-10-01T04:50:44.708Z]   /root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/proof/SOLO_sgemm --mechanism SOLO --workload sgemm --duty 100 --slots 100000 --warmup-s 15 --settle-s 30 --gpu 0 --lock-clocks 0 --cell SOLO_sgemm --solo-seconds 30 --driver-flags '--subcarriers 612 --ldpc-cb 0 --ldpc-iters 4'
+[2026-10-01T04:50:44.806Z] cell SOLO_sgemm: SOLO sgemm d100 -> /root/sb/repo/slotbench/runs/proof/SOLO_sgemm
+[2026-10-01T04:50:48.480Z] warm-up 15s
+[2026-10-01T04:51:04.217Z] adversary start
+[2026-10-01T04:51:35.499Z] status: ok
+[2026-10-01T04:51:35.536Z] [1/15] SOLO_sgemm: ok (rc 0, 0h00m50s)
+[2026-10-01T04:51:35.538Z] [2/15] SOLO_llm: start (~0h01m15s, ETA for the rest 0h18m38s)
+[2026-10-01T04:51:35.538Z]   /root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/proof/SOLO_llm --mechanism SOLO --workload llm --duty 100 --slots 100000 --warmup-s 15 --settle-s 30 --gpu 0 --lock-clocks 0 --cell SOLO_llm --solo-seconds 30 --driver-flags '--subcarriers 612 --ldpc-cb 0 --ldpc-iters 4'
+[2026-10-01T04:51:35.635Z] cell SOLO_llm: SOLO llm d100 -> /root/sb/repo/slotbench/runs/proof/SOLO_llm
+[2026-10-01T04:51:39.376Z] warm-up 15s
+[2026-10-01T04:51:55.244Z] adversary start
+[2026-10-01T04:52:26.486Z] status: ok
+[2026-10-01T04:52:26.533Z] [2/15] SOLO_llm: ok (rc 0, 0h00m50s)
+[2026-10-01T04:52:26.534Z] [3/15] SOLO_real-llm: start (~0h01m15s, ETA for the rest 0h17m49s)
+[2026-10-01T04:52:26.534Z]   /root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/proof/SOLO_real-llm --mechanism SOLO --workload real-llm --duty 100 --slots 100000 --warmup-s 15 --settle-s 30 --gpu 0 --lock-clocks 0 --cell SOLO_real-llm --solo-seconds 30 --driver-flags '--subcarriers 612 --ldpc-cb 0 --ldpc-iters 4'
+[2026-10-01T04:52:26.623Z] cell SOLO_real-llm: SOLO real-llm d100 -> /root/sb/repo/slotbench/runs/proof/SOLO_real-llm
+[2026-10-01T04:52:30.272Z] warm-up 15s
+[2026-10-01T04:52:40.716Z] status: invalid:warmup_adversary_rc1
+[2026-10-01T04:52:40.763Z] [3/15] SOLO_real-llm: invalid:warmup_adversary_rc1 (rc 1, 0h00m14s)
+[2026-10-01T04:52:40.764Z] [4/15] M0_idle_d0_r1: start (~0h02m05s, ETA for the rest 0h12m53s)
+[2026-10-01T04:52:40.764Z]   /root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/proof/M0_idle_d0_r1 --mechanism M0 --workload idle --duty 0 --slots 100000 --warmup-s 15 --settle-s 30 --gpu 0 --lock-clocks 0 --cell M0_idle_d0_r1 --rep 1 --driver-flags '--subcarriers 612 --ldpc-cb 0 --ldpc-iters 4'
+[2026-10-01T04:52:40.855Z] cell M0_idle_d0_r1: M0 idle d0 -> /root/sb/repo/slotbench/runs/proof/M0_idle_d0_r1
+[2026-10-01T04:52:44.544Z] warm-up 15s
+[2026-10-01T04:53:00.096Z] adversary start
+[2026-10-01T04:53:00.106Z] settle 30s
+[2026-10-01T04:53:30.122Z] driver start: 100000 slots
+[2026-10-01T04:54:22.223Z] driver exited rc=0
+[2026-10-01T04:54:23.351Z] status: ok
+[2026-10-01T04:54:24.111Z] [4/15] M0_idle_d0_r1: ok (rc 0, 0h01m43s)
+[2026-10-01T04:54:24.113Z] [5/15] M0_sgemm_d100_r1: start (~0h02m05s, ETA for the rest 0h14m21s)
+[2026-10-01T04:54:24.113Z]   /root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/proof/M0_sgemm_d100_r1 --mechanism M0 --workload sgemm --duty 100 --slots 100000 --warmup-s 15 --settle-s 30 --gpu 0 --lock-clocks 0 --cell M0_sgemm_d100_r1 --rep 1 --driver-flags '--subcarriers 612 --ldpc-cb 0 --ldpc-iters 4'
+[2026-10-01T04:54:24.213Z] cell M0_sgemm_d100_r1: M0 sgemm d100 -> /root/sb/repo/slotbench/runs/proof/M0_sgemm_d100_r1
+[2026-10-01T04:54:27.873Z] warm-up 15s
+[2026-10-01T04:54:43.591Z] adversary start
+[2026-10-01T04:54:43.600Z] settle 30s
+[2026-10-01T04:55:13.618Z] driver start: 100000 slots
+[2026-10-01T04:59:28.538Z] driver exited rc=0
+[2026-10-01T04:59:29.895Z] status: ok
+[2026-10-01T04:59:30.596Z] [5/15] M0_sgemm_d100_r1: ok (rc 0, 0h05m06s)
+[2026-10-01T04:59:30.599Z] [6/15] M0_llm_d100_r1: start (~0h02m05s, ETA for the rest 0h23m03s)
+[2026-10-01T04:59:30.599Z]   /root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/proof/M0_llm_d100_r1 --mechanism M0 --workload llm --duty 100 --slots 100000 --warmup-s 15 --settle-s 30 --gpu 0 --lock-clocks 0 --cell M0_llm_d100_r1 --rep 1 --driver-flags '--subcarriers 612 --ldpc-cb 0 --ldpc-iters 4'
+[2026-10-01T04:59:30.691Z] cell M0_llm_d100_r1: M0 llm d100 -> /root/sb/repo/slotbench/runs/proof/M0_llm_d100_r1
+[2026-10-01T04:59:34.350Z] warm-up 15s
+[2026-10-01T04:59:50.167Z] adversary start
+[2026-10-01T04:59:50.177Z] settle 30s
+[2026-10-01T05:00:20.195Z] driver start: 100000 slots
+[2026-10-01T05:03:36.325Z] driver exited rc=0
+[2026-10-01T05:03:37.445Z] status: ok
+[2026-10-01T05:03:38.162Z] [6/15] M0_llm_d100_r1: ok (rc 0, 0h04m07s)
+[2026-10-01T05:03:38.164Z] [7/15] M0_real-llm_d100_r1: start (~0h02m05s, ETA for the rest 0h24m10s)
+[2026-10-01T05:03:38.164Z]   /root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/proof/M0_real-llm_d100_r1 --mechanism M0 --workload real-llm --duty 100 --slots 100000 --warmup-s 15 --settle-s 30 --gpu 0 --lock-clocks 0 --cell M0_real-llm_d100_r1 --rep 1 --driver-flags '--subcarriers 612 --ldpc-cb 0 --ldpc-iters 4'
+[2026-10-01T05:03:38.254Z] cell M0_real-llm_d100_r1: M0 real-llm d100 -> /root/sb/repo/slotbench/runs/proof/M0_real-llm_d100_r1
+[2026-10-01T05:03:41.922Z] warm-up 15s
+[2026-10-01T05:03:52.894Z] status: invalid:warmup_adversary_rc1
+[2026-10-01T05:03:52.931Z] [7/15] M0_real-llm_d100_r1: invalid:warmup_adversary_rc1 (rc 1, 0h00m14s)
+[2026-10-01T05:03:52.933Z] [8/15] M1_idle_d0_r1: start (~0h02m05s, ETA for the rest 0h18m07s)
+[2026-10-01T05:03:52.933Z]   /root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/proof/M1_idle_d0_r1 --mechanism M1 --workload idle --duty 0 --slots 100000 --warmup-s 15 --settle-s 30 --gpu 0 --lock-clocks 0 --cell M1_idle_d0_r1 --rep 1 --driver-flags '--subcarriers 612 --ldpc-cb 0 --ldpc-iters 4'
+[2026-10-01T05:03:53.030Z] cell M1_idle_d0_r1: M1 idle d0 -> /root/sb/repo/slotbench/runs/proof/M1_idle_d0_r1
+[2026-10-01T05:03:56.758Z] warm-up 15s
+[2026-10-01T05:04:12.274Z] adversary start
+[2026-10-01T05:04:12.286Z] settle 30s
+[2026-10-01T05:04:42.305Z] driver start: 100000 slots
+[2026-10-01T05:05:34.065Z] driver exited rc=0
+[2026-10-01T05:05:34.521Z] status: ok
+[2026-10-01T05:05:35.251Z] [8/15] M1_idle_d0_r1: ok (rc 0, 0h01m42s)
+[2026-10-01T05:05:35.253Z] [9/15] M1_sgemm_d100_r1: start (~0h02m05s, ETA for the rest 0h15m16s)
+[2026-10-01T05:05:35.253Z]   /root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/proof/M1_sgemm_d100_r1 --mechanism M1 --workload sgemm --duty 100 --slots 100000 --warmup-s 15 --settle-s 30 --gpu 0 --lock-clocks 0 --cell M1_sgemm_d100_r1 --rep 1 --driver-flags '--subcarriers 612 --ldpc-cb 0 --ldpc-iters 4'
+[2026-10-01T05:05:35.342Z] cell M1_sgemm_d100_r1: M1 sgemm d100 -> /root/sb/repo/slotbench/runs/proof/M1_sgemm_d100_r1
+[2026-10-01T05:05:38.921Z] warm-up 15s
+[2026-10-01T05:05:54.569Z] adversary start
+[2026-10-01T05:05:54.579Z] settle 30s
+[2026-10-01T05:06:24.595Z] driver start: 100000 slots
+[2026-10-01T05:10:40.633Z] driver exited rc=0
+[2026-10-01T05:10:41.861Z] status: ok
+[2026-10-01T05:10:42.583Z] [9/15] M1_sgemm_d100_r1: ok (rc 0, 0h05m07s)
+[2026-10-01T05:10:42.585Z] [10/15] M1_llm_d100_r1: start (~0h02m05s, ETA for the rest 0h15m21s)
+[2026-10-01T05:10:42.585Z]   /root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/proof/M1_llm_d100_r1 --mechanism M1 --workload llm --duty 100 --slots 100000 --warmup-s 15 --settle-s 30 --gpu 0 --lock-clocks 0 --cell M1_llm_d100_r1 --rep 1 --driver-flags '--subcarriers 612 --ldpc-cb 0 --ldpc-iters 4'
+[2026-10-01T05:10:42.668Z] cell M1_llm_d100_r1: M1 llm d100 -> /root/sb/repo/slotbench/runs/proof/M1_llm_d100_r1
+[2026-10-01T05:10:46.381Z] warm-up 15s
+[2026-10-01T05:11:02.162Z] adversary start
+[2026-10-01T05:11:02.171Z] settle 30s
+[2026-10-01T05:11:32.190Z] driver start: 100000 slots
+[2026-10-01T05:14:49.371Z] driver exited rc=0
+[2026-10-01T05:14:50.499Z] status: ok
+[2026-10-01T05:14:51.244Z] [10/15] M1_llm_d100_r1: ok (rc 0, 0h04m08s)
+[2026-10-01T05:14:51.246Z] [11/15] M1_real-llm_d100_r1: start (~0h02m05s, ETA for the rest 0h13m41s)
+[2026-10-01T05:14:51.246Z]   /root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/proof/M1_real-llm_d100_r1 --mechanism M1 --workload real-llm --duty 100 --slots 100000 --warmup-s 15 --settle-s 30 --gpu 0 --lock-clocks 0 --cell M1_real-llm_d100_r1 --rep 1 --driver-flags '--subcarriers 612 --ldpc-cb 0 --ldpc-iters 4'
+[2026-10-01T05:14:51.338Z] cell M1_real-llm_d100_r1: M1 real-llm d100 -> /root/sb/repo/slotbench/runs/proof/M1_real-llm_d100_r1
+[2026-10-01T05:14:55.151Z] warm-up 15s
+[2026-10-01T05:15:06.852Z] status: invalid:warmup_adversary_rc1
+[2026-10-01T05:15:06.898Z] [11/15] M1_real-llm_d100_r1: invalid:warmup_adversary_rc1 (rc 1, 0h00m15s)
+[2026-10-01T05:15:06.900Z] [12/15] M2_idle_d0_r1: start (~0h02m05s, ETA for the rest 0h09m56s)
+[2026-10-01T05:15:06.901Z]   /root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/proof/M2_idle_d0_r1 --mechanism M2 --workload idle --duty 0 --slots 100000 --warmup-s 15 --settle-s 30 --gpu 0 --lock-clocks 0 --cell M2_idle_d0_r1 --rep 1 --driver-flags '--subcarriers 612 --ldpc-cb 0 --ldpc-iters 4'
+[2026-10-01T05:15:06.990Z] cell M2_idle_d0_r1: M2 idle d0 -> /root/sb/repo/slotbench/runs/proof/M2_idle_d0_r1
+[2026-10-01T05:15:10.834Z] warm-up 15s
+[2026-10-01T05:15:26.416Z] adversary start
+[2026-10-01T05:15:26.427Z] settle 30s
+[2026-10-01T05:15:56.492Z] driver start: 100000 slots
+[2026-10-01T05:16:48.224Z] driver exited rc=0
+[2026-10-01T05:16:48.673Z] status: ok
+[2026-10-01T05:16:49.514Z] [12/15] M2_idle_d0_r1: ok (rc 0, 0h01m42s)
+[2026-10-01T05:16:49.516Z] [13/15] M2_sgemm_d100_r1: start (~0h02m05s, ETA for the rest 0h07m14s)
+[2026-10-01T05:16:49.516Z]   /root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/proof/M2_sgemm_d100_r1 --mechanism M2 --workload sgemm --duty 100 --slots 100000 --warmup-s 15 --settle-s 30 --gpu 0 --lock-clocks 0 --cell M2_sgemm_d100_r1 --rep 1 --driver-flags '--subcarriers 612 --ldpc-cb 0 --ldpc-iters 4'
+[2026-10-01T05:16:49.610Z] cell M2_sgemm_d100_r1: M2 sgemm d100 -> /root/sb/repo/slotbench/runs/proof/M2_sgemm_d100_r1
+[2026-10-01T05:16:53.497Z] warm-up 15s
+[2026-10-01T05:17:09.233Z] adversary start
+[2026-10-01T05:17:09.242Z] settle 30s
+[2026-10-01T05:17:39.302Z] driver start: 100000 slots
+[2026-10-01T05:18:36.283Z] driver exited rc=0
+[2026-10-01T05:18:37.525Z] status: ok
+[2026-10-01T05:18:38.401Z] [13/15] M2_sgemm_d100_r1: ok (rc 0, 0h01m48s)
+[2026-10-01T05:18:38.403Z] [14/15] M2_llm_d100_r1: start (~0h02m05s, ETA for the rest 0h04m43s)
+[2026-10-01T05:18:38.404Z]   /root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/proof/M2_llm_d100_r1 --mechanism M2 --workload llm --duty 100 --slots 100000 --warmup-s 15 --settle-s 30 --gpu 0 --lock-clocks 0 --cell M2_llm_d100_r1 --rep 1 --driver-flags '--subcarriers 612 --ldpc-cb 0 --ldpc-iters 4'
+[2026-10-01T05:18:38.490Z] cell M2_llm_d100_r1: M2 llm d100 -> /root/sb/repo/slotbench/runs/proof/M2_llm_d100_r1
+[2026-10-01T05:18:42.326Z] warm-up 15s
+[2026-10-01T05:18:58.236Z] adversary start
+[2026-10-01T05:18:58.247Z] settle 30s
+[2026-10-01T05:19:28.307Z] driver start: 100000 slots
+[2026-10-01T05:20:20.282Z] driver exited rc=0
+[2026-10-01T05:20:21.510Z] status: ok
+[2026-10-01T05:20:22.357Z] [14/15] M2_llm_d100_r1: ok (rc 0, 0h01m43s)
+[2026-10-01T05:20:22.359Z] [15/15] M2_real-llm_d100_r1: start (~0h02m05s, ETA for the rest 0h02m18s)
+[2026-10-01T05:20:22.359Z]   /root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/proof/M2_real-llm_d100_r1 --mechanism M2 --workload real-llm --duty 100 --slots 100000 --warmup-s 15 --settle-s 30 --gpu 0 --lock-clocks 0 --cell M2_real-llm_d100_r1 --rep 1 --driver-flags '--subcarriers 612 --ldpc-cb 0 --ldpc-iters 4'
+[2026-10-01T05:20:22.450Z] cell M2_real-llm_d100_r1: M2 real-llm d100 -> /root/sb/repo/slotbench/runs/proof/M2_real-llm_d100_r1
+[2026-10-01T05:20:26.325Z] warm-up 15s
+[2026-10-01T05:20:36.711Z] status: invalid:warmup_adversary_rc1
+[2026-10-01T05:20:36.882Z] [15/15] M2_real-llm_d100_r1: invalid:warmup_adversary_rc1 (rc 1, 0h00m14s)
+[2026-10-01T05:20:36.886Z] finished: 11/15 cells ok, 4 not ok this pass

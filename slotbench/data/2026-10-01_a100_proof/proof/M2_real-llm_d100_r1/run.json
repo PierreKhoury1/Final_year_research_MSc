@@ -1,0 +1,90 @@
+{
+ "cell": "M2_real-llm_d100_r1",
+ "commands": [
+  {
+   "cmd": "/root/sb/repo/slotbench/scripts/env_capture.sh /root/sb/repo/slotbench/runs/proof/M2_real-llm_d100_r1/env.txt",
+   "t": "2026-10-01T05:20:22.456Z",
+   "what": "env_capture"
+  },
+  {
+   "cmd": "/root/sb/repo/slotbench/scripts/mps.sh stop --all",
+   "t": "2026-10-01T05:20:25.828Z",
+   "what": "mps_reset"
+  },
+  {
+   "cmd": "/root/sb/repo/slotbench/scripts/gpu_lock.sh status --gpu 0",
+   "t": "2026-10-01T05:20:25.874Z",
+   "what": "clocks_status"
+  },
+  {
+   "cmd": "/root/sb/repo/slotbench/scripts/mps.sh start --gpu 0 --dir /tmp/sb-mps-33048 --log-dir /root/sb/repo/slotbench/runs/proof/M2_real-llm_d100_r1/mps_log",
+   "t": "2026-10-01T05:20:26.260Z",
+   "what": "mps_start"
+  },
+  {
+   "cmd": "env CUDA_MPS_PIPE_DIRECTORY=/tmp/sb-mps-33048/pipe CUDA_MPS_LOG_DIRECTORY=/root/sb/repo/slotbench/runs/proof/M2_real-llm_d100_r1/mps_log CUDA_MPS_ACTIVE_THREAD_PERCENTAGE=50 /root/sb/aienv/bin/python /root/sb/repo/slotbench/scripts/../adversary/real/real_ai.py --workload real-llm --duty 100 --prio default --gpu 0 --seconds 15 --out /root/sb/repo/slotbench/runs/proof/M2_real-llm_d100_r1/warmup_adversary.json",
+   "t": "2026-10-01T05:20:26.330Z",
+   "what": "warmup_adversary"
+  },
+  {
+   "cmd": "/root/sb/repo/slotbench/scripts/mps.sh stop --dir /tmp/sb-mps-33048",
+   "t": "2026-10-01T05:20:36.718Z",
+   "what": "mps_stop"
+  }
+ ],
+ "duty": 100,
+ "exit_codes": {
+  "clocks_status": 0,
+  "env_capture": 0,
+  "mps_reset": 0,
+  "mps_start": 0,
+  "mps_stop": 0,
+  "warmup_adversary": 1
+ },
+ "mechanism": "M2",
+ "notes": [],
+ "rep": 1,
+ "settings": {
+  "adversary_active_thread_percentage": "50",
+  "adversary_flags": "",
+  "adversary_prio": "default",
+  "bin": "/root/sb/repo/slotbench/bin",
+  "cell": "M2_real-llm_d100_r1",
+  "clock_clocks_applications_graphics": "[Requestedfunctionalityhasbeendeprecated]",
+  "clock_clocks_default_applications_graphics": "[Requestedfunctionalityhasbeendeprecated]",
+  "clock_clocks_max_mem": "1215",
+  "clock_clocks_max_sm": "1410",
+  "clock_clocks_mem": "1215",
+  "clock_clocks_sm": "210",
+  "clock_gpu": "0",
+  "clock_name": "NVIDIA A100-SXM4-40GB",
+  "clock_persistence_mode": "Enabled",
+  "clock_power_limit": "400.00",
+  "clocks_locked_requested": "0",
+  "collector_core": "-1",
+  "driver_core": "-1",
+  "driver_flags": "--subcarriers 612 --ldpc-cb 0 --ldpc-iters 4",
+  "driver_mode": "graph",
+  "driver_prio": "high",
+  "duty": "100",
+  "ended": "2026-10-01T05:20:36.840Z",
+  "fifo": "0",
+  "gpu": "0",
+  "host": "9269989bc36a",
+  "lock_clocks": "0",
+  "mechanism": "M2",
+  "mps_pipe_dir": "/tmp/sb-mps-33048/pipe",
+  "rep": "1",
+  "settle_s": "30",
+  "slots": "100000",
+  "started": "2026-10-01T05:20:22.380Z",
+  "status": "invalid:warmup_adversary_rc1",
+  "user": "root",
+  "warmup_s": "15",
+  "workload": "real-llm"
+ },
+ "slots": 100000,
+ "status": "invalid:warmup_adversary_rc1",
+ "unsupported": [],
+ "workload": "real-llm"
+}

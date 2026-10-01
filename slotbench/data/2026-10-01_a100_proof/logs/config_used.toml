@@ -1,0 +1,20 @@
+# Quick proof run (~30 min): the key contrast only. No isolation vs stream priority vs MPS, with a heavy
+# GEMM, an LLM proxy and a real LLM (Qwen2.5-1.5B) as neighbours, idle vs 100% busy.
+[run]
+slots = 100000
+warmup_s = 15
+settle_s = 30           # real model load
+repeats = 1
+out_root = "runs"
+driver_core = -1
+collector_core = -1
+fifo = 0
+lock_clocks = false
+sizes = "--subcarriers 612 --ldpc-cb 0 --ldpc-iters 4"   # set by cloud/onstart.sh from --tune-us
+solo_seconds = 30
+
+[matrix]
+mechanisms = ["M0", "M1", "M2"]
+workloads = ["sgemm", "llm", "real-llm"]
+duties = [0, 100]
+solo = true

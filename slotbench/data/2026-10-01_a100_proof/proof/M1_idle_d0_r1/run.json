@@ -1,0 +1,102 @@
+{
+ "cell": "M1_idle_d0_r1",
+ "commands": [
+  {
+   "cmd": "/root/sb/repo/slotbench/scripts/env_capture.sh /root/sb/repo/slotbench/runs/proof/M1_idle_d0_r1/env.txt",
+   "t": "2026-10-01T05:03:53.035Z",
+   "what": "env_capture"
+  },
+  {
+   "cmd": "/root/sb/repo/slotbench/scripts/mps.sh stop --all",
+   "t": "2026-10-01T05:03:56.330Z",
+   "what": "mps_reset"
+  },
+  {
+   "cmd": "/root/sb/repo/slotbench/scripts/gpu_lock.sh status --gpu 0",
+   "t": "2026-10-01T05:03:56.375Z",
+   "what": "clocks_status"
+  },
+  {
+   "cmd": "/root/sb/repo/slotbench/bin/adversary --workload idle --duty 0 --prio low --gpu 0 --seconds 15 --out /root/sb/repo/slotbench/runs/proof/M1_idle_d0_r1/warmup_adversary.json",
+   "t": "2026-10-01T05:03:56.762Z",
+   "what": "warmup_adversary"
+  },
+  {
+   "cmd": "/root/sb/repo/slotbench/scripts/telemetry.sh /root/sb/repo/slotbench/runs/proof/M1_idle_d0_r1/telemetry.csv --gpu 0 --interval-ms 1000",
+   "t": "2026-10-01T05:04:12.269Z",
+   "what": "telemetry"
+  },
+  {
+   "cmd": "/root/sb/repo/slotbench/bin/adversary --workload idle --duty 0 --prio low --gpu 0 --out /root/sb/repo/slotbench/runs/proof/M1_idle_d0_r1/adversary.json --timeline /root/sb/repo/slotbench/runs/proof/M1_idle_d0_r1/adversary_timeline.csv",
+   "t": "2026-10-01T05:04:12.282Z",
+   "what": "adversary"
+  },
+  {
+   "cmd": "/root/sb/repo/slotbench/bin/slot_driver --out /root/sb/repo/slotbench/runs/proof/M1_idle_d0_r1 --slots 100000 --prio high --mode graph --gpu 0 --label M1_idle_d0_r1 --subcarriers 612 --ldpc-cb 0 --ldpc-iters 4",
+   "t": "2026-10-01T05:04:42.311Z",
+   "what": "driver"
+  },
+  {
+   "cmd": "env -C /root/sb/repo/slotbench python3 -m analysis.summarize /root/sb/repo/slotbench/runs/proof/M1_idle_d0_r1",
+   "t": "2026-10-01T05:05:34.525Z",
+   "what": "summarize"
+  }
+ ],
+ "duty": 0,
+ "exit_codes": {
+  "adversary": 0,
+  "clocks_status": 0,
+  "driver": 0,
+  "env_capture": 0,
+  "mps_reset": 0,
+  "summarize": 0,
+  "telemetry": 0,
+  "warmup_adversary": 0
+ },
+ "mechanism": "M1",
+ "notes": [],
+ "rep": 1,
+ "settings": {
+  "adversary_alive_at_driver_end": "1",
+  "adversary_flags": "",
+  "adversary_prio": "low",
+  "bin": "/root/sb/repo/slotbench/bin",
+  "cell": "M1_idle_d0_r1",
+  "clock_clocks_applications_graphics": "[Requestedfunctionalityhasbeendeprecated]",
+  "clock_clocks_default_applications_graphics": "[Requestedfunctionalityhasbeendeprecated]",
+  "clock_clocks_max_mem": "1215",
+  "clock_clocks_max_sm": "1410",
+  "clock_clocks_mem": "1215",
+  "clock_clocks_sm": "210",
+  "clock_gpu": "0",
+  "clock_name": "NVIDIA A100-SXM4-40GB",
+  "clock_persistence_mode": "Enabled",
+  "clock_power_limit": "400.00",
+  "clocks_locked_requested": "0",
+  "collector_core": "-1",
+  "driver_core": "-1",
+  "driver_flags": "--subcarriers 612 --ldpc-cb 0 --ldpc-iters 4",
+  "driver_mode": "graph",
+  "driver_prio": "high",
+  "duty": "0",
+  "ended": "2026-10-01T05:05:35.206Z",
+  "fifo": "0",
+  "gpu": "0",
+  "host": "9269989bc36a",
+  "lock_clocks": "0",
+  "mechanism": "M1",
+  "rep": "1",
+  "ring_overflows": "0",
+  "settle_s": "30",
+  "slots": "100000",
+  "started": "2026-10-01T05:03:52.956Z",
+  "status": "ok",
+  "user": "root",
+  "warmup_s": "15",
+  "workload": "idle"
+ },
+ "slots": 100000,
+ "status": "ok",
+ "unsupported": [],
+ "workload": "idle"
+}

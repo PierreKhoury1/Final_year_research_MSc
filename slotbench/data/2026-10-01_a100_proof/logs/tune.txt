@@ -1,0 +1,13 @@
+tune: subcarriers 3276 ldpc_iters 10 -> median 712.8 us
+tune: subcarriers 2604 ldpc_iters 10 -> median 526.1 us
+tune: subcarriers 1944 ldpc_iters 10 -> median 505.8 us
+tune: subcarriers 1272 ldpc_iters 10 -> median 485.9 us
+tune: subcarriers 612 ldpc_iters 10 -> median 467.3 us
+tune: subcarriers 612 ldpc_iters 9 -> median 428.6 us
+tune: subcarriers 612 ldpc_iters 8 -> median 389.3 us
+tune: subcarriers 612 ldpc_iters 7 -> median 350.3 us
+tune: subcarriers 612 ldpc_iters 6 -> median 311.6 us
+tune: subcarriers 612 ldpc_iters 5 -> median 272.7 us
+tune: subcarriers 612 ldpc_iters 4 -> median 233.6 us
+--subcarriers 612 --ldpc-cb 0 --ldpc-iters 4
+{"tune_us":250,"gpu":"NVIDIA A100-SXM4-40GB","uuid":"GPU-9a7cab6c-e12e-050c-99b3-4eab660d1055","ok":true,"subcarriers":612,"ldpc_iters":4,"median_us":233.58799999999999,"flags":"--subcarriers 612 --ldpc-cb 0 --ldpc-iters 4","runs":300,"candidates":[{"subcarriers":3276,"ldpc_iters":10,"median_us":712.82399999999996},{"subcarriers":2604,"ldpc_iters":10,"median_us":526.13499999999999},{"subcarriers":1944,"ldpc_iters":10,"median_us":505.83699999999999},{"subcarriers":1272,"ldpc_iters":10,"median_us":485.86000000000001},{"subcarriers":612,"ldpc_iters":10,"median_us":467.33499999999998},{"subcarriers":612,"ldpc_iters":9,"median_us":428.58300000000003},{"subcarriers":612,"ldpc_iters":8,"median_us":389.339},{"subcarriers":612,"ldpc_iters":7,"median_us":350.286},{"subcarriers":612,"ldpc_iters":6,"median_us":311.59399999999999},{"subcarriers":612,"ldpc_iters":5,"median_us":272.70100000000002},{"subcarriers":612,"ldpc_iters":4,"median_us":233.58799999999999}]}

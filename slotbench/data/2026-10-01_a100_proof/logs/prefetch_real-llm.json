@@ -1,0 +1,26 @@
+{
+ "cuda_runtime_version": "12.4",
+ "cuda_visible_devices": "",
+ "duty": 100,
+ "end_time": "2026-10-01T04:50:43Z",
+ "exit_reason": "error: TypeError: embedding(): argument 'indices' (position 2) must be Tensor, not BatchEncoding",
+ "gpu": 0,
+ "gpu_name": "NVIDIA A100-SXM4-40GB",
+ "host": "9269989bc36a",
+ "mps_active_thread_percentage": "",
+ "ok": false,
+ "period_ms": 100,
+ "pid": 5205,
+ "prio": "default",
+ "prio_range": [
+  0,
+  -3
+ ],
+ "prio_value": 0,
+ "real_model": true,
+ "seconds_requested": 0,
+ "seconds_total": 254.23752092686482,
+ "start_time": "2026-10-01T04:46:28Z",
+ "torch": "2.6.0+cu124",
+ "workload": "real-llm"
+}

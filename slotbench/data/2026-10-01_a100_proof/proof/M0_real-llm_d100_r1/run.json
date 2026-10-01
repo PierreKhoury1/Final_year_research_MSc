@@ -1,0 +1,76 @@
+{
+ "cell": "M0_real-llm_d100_r1",
+ "commands": [
+  {
+   "cmd": "/root/sb/repo/slotbench/scripts/env_capture.sh /root/sb/repo/slotbench/runs/proof/M0_real-llm_d100_r1/env.txt",
+   "t": "2026-10-01T05:03:38.258Z",
+   "what": "env_capture"
+  },
+  {
+   "cmd": "/root/sb/repo/slotbench/scripts/mps.sh stop --all",
+   "t": "2026-10-01T05:03:41.486Z",
+   "what": "mps_reset"
+  },
+  {
+   "cmd": "/root/sb/repo/slotbench/scripts/gpu_lock.sh status --gpu 0",
+   "t": "2026-10-01T05:03:41.527Z",
+   "what": "clocks_status"
+  },
+  {
+   "cmd": "/root/sb/aienv/bin/python /root/sb/repo/slotbench/scripts/../adversary/real/real_ai.py --workload real-llm --duty 100 --prio default --gpu 0 --seconds 15 --out /root/sb/repo/slotbench/runs/proof/M0_real-llm_d100_r1/warmup_adversary.json",
+   "t": "2026-10-01T05:03:41.926Z",
+   "what": "warmup_adversary"
+  }
+ ],
+ "duty": 100,
+ "exit_codes": {
+  "clocks_status": 0,
+  "env_capture": 0,
+  "mps_reset": 0,
+  "warmup_adversary": 1
+ },
+ "mechanism": "M0",
+ "notes": [],
+ "rep": 1,
+ "settings": {
+  "adversary_flags": "",
+  "adversary_prio": "default",
+  "bin": "/root/sb/repo/slotbench/bin",
+  "cell": "M0_real-llm_d100_r1",
+  "clock_clocks_applications_graphics": "[Requestedfunctionalityhasbeendeprecated]",
+  "clock_clocks_default_applications_graphics": "[Requestedfunctionalityhasbeendeprecated]",
+  "clock_clocks_max_mem": "1215",
+  "clock_clocks_max_sm": "1410",
+  "clock_clocks_mem": "1215",
+  "clock_clocks_sm": "210",
+  "clock_gpu": "0",
+  "clock_name": "NVIDIA A100-SXM4-40GB",
+  "clock_persistence_mode": "Enabled",
+  "clock_power_limit": "400.00",
+  "clocks_locked_requested": "0",
+  "collector_core": "-1",
+  "driver_core": "-1",
+  "driver_flags": "--subcarriers 612 --ldpc-cb 0 --ldpc-iters 4",
+  "driver_mode": "graph",
+  "driver_prio": "default",
+  "duty": "100",
+  "ended": "2026-10-01T05:03:52.898Z",
+  "fifo": "0",
+  "gpu": "0",
+  "host": "9269989bc36a",
+  "lock_clocks": "0",
+  "mechanism": "M0",
+  "rep": "1",
+  "settle_s": "30",
+  "slots": "100000",
+  "started": "2026-10-01T05:03:38.182Z",
+  "status": "invalid:warmup_adversary_rc1",
+  "user": "root",
+  "warmup_s": "15",
+  "workload": "real-llm"
+ },
+ "slots": 100000,
+ "status": "invalid:warmup_adversary_rc1",
+ "unsupported": [],
+ "workload": "real-llm"
+}

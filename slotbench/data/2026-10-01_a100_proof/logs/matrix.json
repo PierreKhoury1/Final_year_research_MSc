@@ -1,0 +1,302 @@
+{
+ "config": "proof",
+ "config_path": "/root/sb/configs/proof.toml",
+ "matrix": {
+  "duties": [
+   0,
+   100
+  ],
+  "mechanisms": [
+   "M0",
+   "M1",
+   "M2"
+  ],
+  "solo": true,
+  "workloads": [
+   "sgemm",
+   "llm",
+   "real-llm"
+  ]
+ },
+ "matrix_dir": "/root/sb/repo/slotbench/runs/proof",
+ "only": null,
+ "outcomes": {
+  "M0_idle_d0_r1": {
+   "duration_s": 103.3,
+   "ended": "2026-10-01T04:54:24.111Z",
+   "returncode": 0,
+   "started": "2026-10-01T04:52:40.764Z",
+   "status": "ok"
+  },
+  "M0_llm_d100_r1": {
+   "duration_s": 247.6,
+   "ended": "2026-10-01T05:03:38.162Z",
+   "returncode": 0,
+   "started": "2026-10-01T04:59:30.599Z",
+   "status": "ok"
+  },
+  "M0_real-llm_d100_r1": {
+   "duration_s": 14.8,
+   "ended": "2026-10-01T05:03:52.930Z",
+   "returncode": 1,
+   "started": "2026-10-01T05:03:38.164Z",
+   "status": "invalid:warmup_adversary_rc1"
+  },
+  "M0_sgemm_d100_r1": {
+   "duration_s": 306.5,
+   "ended": "2026-10-01T04:59:30.596Z",
+   "returncode": 0,
+   "started": "2026-10-01T04:54:24.113Z",
+   "status": "ok"
+  },
+  "M1_idle_d0_r1": {
+   "duration_s": 102.3,
+   "ended": "2026-10-01T05:05:35.251Z",
+   "returncode": 0,
+   "started": "2026-10-01T05:03:52.933Z",
+   "status": "ok"
+  },
+  "M1_llm_d100_r1": {
+   "duration_s": 248.7,
+   "ended": "2026-10-01T05:14:51.244Z",
+   "returncode": 0,
+   "started": "2026-10-01T05:10:42.585Z",
+   "status": "ok"
+  },
+  "M1_real-llm_d100_r1": {
+   "duration_s": 15.7,
+   "ended": "2026-10-01T05:15:06.898Z",
+   "returncode": 1,
+   "started": "2026-10-01T05:14:51.247Z",
+   "status": "invalid:warmup_adversary_rc1"
+  },
+  "M1_sgemm_d100_r1": {
+   "duration_s": 307.3,
+   "ended": "2026-10-01T05:10:42.582Z",
+   "returncode": 0,
+   "started": "2026-10-01T05:05:35.253Z",
+   "status": "ok"
+  },
+  "M2_idle_d0_r1": {
+   "duration_s": 102.6,
+   "ended": "2026-10-01T05:16:49.514Z",
+   "returncode": 0,
+   "started": "2026-10-01T05:15:06.901Z",
+   "status": "ok"
+  },
+  "M2_llm_d100_r1": {
+   "duration_s": 104.0,
+   "ended": "2026-10-01T05:20:22.357Z",
+   "returncode": 0,
+   "started": "2026-10-01T05:18:38.404Z",
+   "status": "ok"
+  },
+  "M2_real-llm_d100_r1": {
+   "duration_s": 14.5,
+   "ended": "2026-10-01T05:20:36.882Z",
+   "returncode": 1,
+   "started": "2026-10-01T05:20:22.359Z",
+   "status": "invalid:warmup_adversary_rc1"
+  },
+  "M2_sgemm_d100_r1": {
+   "duration_s": 108.9,
+   "ended": "2026-10-01T05:18:38.401Z",
+   "returncode": 0,
+   "started": "2026-10-01T05:16:49.516Z",
+   "status": "ok"
+  },
+  "SOLO_llm": {
+   "duration_s": 51.0,
+   "ended": "2026-10-01T04:52:26.533Z",
+   "returncode": 0,
+   "started": "2026-10-01T04:51:35.538Z",
+   "status": "ok"
+  },
+  "SOLO_real-llm": {
+   "duration_s": 14.2,
+   "ended": "2026-10-01T04:52:40.763Z",
+   "returncode": 1,
+   "started": "2026-10-01T04:52:26.534Z",
+   "status": "invalid:warmup_adversary_rc1"
+  },
+  "SOLO_sgemm": {
+   "duration_s": 50.8,
+   "ended": "2026-10-01T04:51:35.536Z",
+   "returncode": 0,
+   "started": "2026-10-01T04:50:44.709Z",
+   "status": "ok"
+  }
+ },
+ "overrides": {},
+ "plan": [
+  {
+   "command": "/root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/proof/SOLO_sgemm --mechanism SOLO --workload sgemm --duty 100 --slots 100000 --warmup-s 15 --settle-s 30 --gpu 0 --lock-clocks 0 --cell SOLO_sgemm --solo-seconds 30 --driver-flags '--subcarriers 612 --ldpc-cb 0 --ldpc-iters 4'",
+   "dir": "/root/sb/repo/slotbench/runs/proof/SOLO_sgemm",
+   "duty": 100,
+   "estimate_s": 75.0,
+   "mechanism": "SOLO",
+   "name": "SOLO_sgemm",
+   "rep": null,
+   "workload": "sgemm"
+  },
+  {
+   "command": "/root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/proof/SOLO_llm --mechanism SOLO --workload llm --duty 100 --slots 100000 --warmup-s 15 --settle-s 30 --gpu 0 --lock-clocks 0 --cell SOLO_llm --solo-seconds 30 --driver-flags '--subcarriers 612 --ldpc-cb 0 --ldpc-iters 4'",
+   "dir": "/root/sb/repo/slotbench/runs/proof/SOLO_llm",
+   "duty": 100,
+   "estimate_s": 75.0,
+   "mechanism": "SOLO",
+   "name": "SOLO_llm",
+   "rep": null,
+   "workload": "llm"
+  },
+  {
+   "command": "/root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/proof/SOLO_real-llm --mechanism SOLO --workload real-llm --duty 100 --slots 100000 --warmup-s 15 --settle-s 30 --gpu 0 --lock-clocks 0 --cell SOLO_real-llm --solo-seconds 30 --driver-flags '--subcarriers 612 --ldpc-cb 0 --ldpc-iters 4'",
+   "dir": "/root/sb/repo/slotbench/runs/proof/SOLO_real-llm",
+   "duty": 100,
+   "estimate_s": 75.0,
+   "mechanism": "SOLO",
+   "name": "SOLO_real-llm",
+   "rep": null,
+   "workload": "real-llm"
+  },
+  {
+   "command": "/root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/proof/M0_idle_d0_r1 --mechanism M0 --workload idle --duty 0 --slots 100000 --warmup-s 15 --settle-s 30 --gpu 0 --lock-clocks 0 --cell M0_idle_d0_r1 --rep 1 --driver-flags '--subcarriers 612 --ldpc-cb 0 --ldpc-iters 4'",
+   "dir": "/root/sb/repo/slotbench/runs/proof/M0_idle_d0_r1",
+   "duty": 0,
+   "estimate_s": 125.0,
+   "mechanism": "M0",
+   "name": "M0_idle_d0_r1",
+   "rep": 1,
+   "workload": "idle"
+  },
+  {
+   "command": "/root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/proof/M0_sgemm_d100_r1 --mechanism M0 --workload sgemm --duty 100 --slots 100000 --warmup-s 15 --settle-s 30 --gpu 0 --lock-clocks 0 --cell M0_sgemm_d100_r1 --rep 1 --driver-flags '--subcarriers 612 --ldpc-cb 0 --ldpc-iters 4'",
+   "dir": "/root/sb/repo/slotbench/runs/proof/M0_sgemm_d100_r1",
+   "duty": 100,
+   "estimate_s": 125.0,
+   "mechanism": "M0",
+   "name": "M0_sgemm_d100_r1",
+   "rep": 1,
+   "workload": "sgemm"
+  },
+  {
+   "command": "/root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/proof/M0_llm_d100_r1 --mechanism M0 --workload llm --duty 100 --slots 100000 --warmup-s 15 --settle-s 30 --gpu 0 --lock-clocks 0 --cell M0_llm_d100_r1 --rep 1 --driver-flags '--subcarriers 612 --ldpc-cb 0 --ldpc-iters 4'",
+   "dir": "/root/sb/repo/slotbench/runs/proof/M0_llm_d100_r1",
+   "duty": 100,
+   "estimate_s": 125.0,
+   "mechanism": "M0",
+   "name": "M0_llm_d100_r1",
+   "rep": 1,
+   "workload": "llm"
+  },
+  {
+   "command": "/root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/proof/M0_real-llm_d100_r1 --mechanism M0 --workload real-llm --duty 100 --slots 100000 --warmup-s 15 --settle-s 30 --gpu 0 --lock-clocks 0 --cell M0_real-llm_d100_r1 --rep 1 --driver-flags '--subcarriers 612 --ldpc-cb 0 --ldpc-iters 4'",
+   "dir": "/root/sb/repo/slotbench/runs/proof/M0_real-llm_d100_r1",
+   "duty": 100,
+   "estimate_s": 125.0,
+   "mechanism": "M0",
+   "name": "M0_real-llm_d100_r1",
+   "rep": 1,
+   "workload": "real-llm"
+  },
+  {
+   "command": "/root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/proof/M1_idle_d0_r1 --mechanism M1 --workload idle --duty 0 --slots 100000 --warmup-s 15 --settle-s 30 --gpu 0 --lock-clocks 0 --cell M1_idle_d0_r1 --rep 1 --driver-flags '--subcarriers 612 --ldpc-cb 0 --ldpc-iters 4'",
+   "dir": "/root/sb/repo/slotbench/runs/proof/M1_idle_d0_r1",
+   "duty": 0,
+   "estimate_s": 125.0,
+   "mechanism": "M1",
+   "name": "M1_idle_d0_r1",
+   "rep": 1,
+   "workload": "idle"
+  },
+  {
+   "command": "/root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/proof/M1_sgemm_d100_r1 --mechanism M1 --workload sgemm --duty 100 --slots 100000 --warmup-s 15 --settle-s 30 --gpu 0 --lock-clocks 0 --cell M1_sgemm_d100_r1 --rep 1 --driver-flags '--subcarriers 612 --ldpc-cb 0 --ldpc-iters 4'",
+   "dir": "/root/sb/repo/slotbench/runs/proof/M1_sgemm_d100_r1",
+   "duty": 100,
+   "estimate_s": 125.0,
+   "mechanism": "M1",
+   "name": "M1_sgemm_d100_r1",
+   "rep": 1,
+   "workload": "sgemm"
+  },
+  {
+   "command": "/root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/proof/M1_llm_d100_r1 --mechanism M1 --workload llm --duty 100 --slots 100000 --warmup-s 15 --settle-s 30 --gpu 0 --lock-clocks 0 --cell M1_llm_d100_r1 --rep 1 --driver-flags '--subcarriers 612 --ldpc-cb 0 --ldpc-iters 4'",
+   "dir": "/root/sb/repo/slotbench/runs/proof/M1_llm_d100_r1",
+   "duty": 100,
+   "estimate_s": 125.0,
+   "mechanism": "M1",
+   "name": "M1_llm_d100_r1",
+   "rep": 1,
+   "workload": "llm"
+  },
+  {
+   "command": "/root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/proof/M1_real-llm_d100_r1 --mechanism M1 --workload real-llm --duty 100 --slots 100000 --warmup-s 15 --settle-s 30 --gpu 0 --lock-clocks 0 --cell M1_real-llm_d100_r1 --rep 1 --driver-flags '--subcarriers 612 --ldpc-cb 0 --ldpc-iters 4'",
+   "dir": "/root/sb/repo/slotbench/runs/proof/M1_real-llm_d100_r1",
+   "duty": 100,
+   "estimate_s": 125.0,
+   "mechanism": "M1",
+   "name": "M1_real-llm_d100_r1",
+   "rep": 1,
+   "workload": "real-llm"
+  },
+  {
+   "command": "/root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/proof/M2_idle_d0_r1 --mechanism M2 --workload idle --duty 0 --slots 100000 --warmup-s 15 --settle-s 30 --gpu 0 --lock-clocks 0 --cell M2_idle_d0_r1 --rep 1 --driver-flags '--subcarriers 612 --ldpc-cb 0 --ldpc-iters 4'",
+   "dir": "/root/sb/repo/slotbench/runs/proof/M2_idle_d0_r1",
+   "duty": 0,
+   "estimate_s": 125.0,
+   "mechanism": "M2",
+   "name": "M2_idle_d0_r1",
+   "rep": 1,
+   "workload": "idle"
+  },
+  {
+   "command": "/root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/proof/M2_sgemm_d100_r1 --mechanism M2 --workload sgemm --duty 100 --slots 100000 --warmup-s 15 --settle-s 30 --gpu 0 --lock-clocks 0 --cell M2_sgemm_d100_r1 --rep 1 --driver-flags '--subcarriers 612 --ldpc-cb 0 --ldpc-iters 4'",
+   "dir": "/root/sb/repo/slotbench/runs/proof/M2_sgemm_d100_r1",
+   "duty": 100,
+   "estimate_s": 125.0,
+   "mechanism": "M2",
+   "name": "M2_sgemm_d100_r1",
+   "rep": 1,
+   "workload": "sgemm"
+  },
+  {
+   "command": "/root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/proof/M2_llm_d100_r1 --mechanism M2 --workload llm --duty 100 --slots 100000 --warmup-s 15 --settle-s 30 --gpu 0 --lock-clocks 0 --cell M2_llm_d100_r1 --rep 1 --driver-flags '--subcarriers 612 --ldpc-cb 0 --ldpc-iters 4'",
+   "dir": "/root/sb/repo/slotbench/runs/proof/M2_llm_d100_r1",
+   "duty": 100,
+   "estimate_s": 125.0,
+   "mechanism": "M2",
+   "name": "M2_llm_d100_r1",
+   "rep": 1,
+   "workload": "llm"
+  },
+  {
+   "command": "/root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/proof/M2_real-llm_d100_r1 --mechanism M2 --workload real-llm --duty 100 --slots 100000 --warmup-s 15 --settle-s 30 --gpu 0 --lock-clocks 0 --cell M2_real-llm_d100_r1 --rep 1 --driver-flags '--subcarriers 612 --ldpc-cb 0 --ldpc-iters 4'",
+   "dir": "/root/sb/repo/slotbench/runs/proof/M2_real-llm_d100_r1",
+   "duty": 100,
+   "estimate_s": 125.0,
+   "mechanism": "M2",
+   "name": "M2_real-llm_d100_r1",
+   "rep": 1,
+   "workload": "real-llm"
+  }
+ ],
+ "repeat_from": 1,
+ "run": {
+  "adversary_flags": "",
+  "cell_overhead_s": 30,
+  "collector_core": -1,
+  "driver_core": -1,
+  "driver_flags": "",
+  "fifo": 0,
+  "gpu": 0,
+  "lock_clocks": false,
+  "out_root": "runs",
+  "repeats": 1,
+  "settle_s": 30,
+  "sizes": "--subcarriers 612 --ldpc-cb 0 --ldpc-iters 4",
+  "slots": 100000,
+  "solo_seconds": 30,
+  "warmup_s": 15
+ },
+ "updated": "2026-10-01T05:20:36.884Z"
+}

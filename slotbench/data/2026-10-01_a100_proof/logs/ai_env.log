@@ -1,0 +1,5 @@
+torch 2.6.0+cu124 12.4 NVIDIA A100-SXM4-40GB
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights:   0%|          | 0/338 [00:00<?, ?it/s]Loading weights:  33%|███▎      | 112/338 [00:00<00:00, 1112.72it/s]Loading weights:  66%|██████▋   | 224/338 [00:00<00:00, 767.97it/s] Loading weights:  91%|█████████ | 307/338 [00:00<00:00, 755.21it/s]Loading weights: 100%|██████████| 338/338 [00:00<00:00, 825.29it/s]
+real_ai: real-llm error: TypeError: embedding(): argument 'indices' (position 2) must be Tensor, not BatchEncoding units=None units/s=None

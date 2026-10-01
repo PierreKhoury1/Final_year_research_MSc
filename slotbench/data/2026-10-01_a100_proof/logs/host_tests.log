@@ -1,0 +1,26 @@
+== bin/test_ldpc
+  code: BG1 Z=384 set=1 rows=46 cols=68 kb=22 edges=316 K=8448 N=26112 Ntx=25344 rate=0.3333
+  Eb/N0 3.0 dB: channel BER 0.1253, decoded bit errors fp32 0 fp16 0
+  Eb/N0 1.5 dB: channel BER 0.1653 -> decoded BER 0.00e+00, codeword errors 0/16
+  Eb/N0 0.5 dB: decoded BER 1.95e-01, codeword errors 8/8 (informational)
+  BG1 Z=384 set=1 rows=4 cols=26 kb=22 edges=76 K=8448 N=9984 Ntx=9216 rate=0.9167 @ 7.67 dB: bit errors 0
+  BG1 Z=384 set=1 rows=10 cols=32 kb=22 edges=122 K=8448 N=12288 Ntx=11520 rate=0.7333 @ 6.20 dB: bit errors 0
+  BG2 Z=384 set=1 rows=42 cols=52 kb=10 edges=197 K=3840 N=19968 Ntx=19200 rate=0.2000 @ 3.00 dB: bit errors 0
+  BG1 Z=64 set=0 rows=46 cols=68 kb=22 edges=316 K=1408 N=4352 Ntx=4224 rate=0.3333 @ 3.00 dB: bit errors 0
+test_ldpc: 109 passed, 0 failed (4.1 s)
+== bin/test_phy_ops
+test_phy_ops: 43 passed, 0 failed
+== bin/test_ring
+  10M items ordered, 470462 retried pushes counted as overflows
+  paced 1M records: received 1000000, overflows 0
+  stalled consumer: accepted 4096, overflows 195904
+test_ring: 38 passed, 0 failed
+== bin/test_clock_fit
+   +37.00 ppm seed 1: rate err 4.70e-08 ppm, offset err 0.06 ns (asym 99.5), max err 100.0 ns, eps 560.5 ns, kept 201, min width 1103
+   +37.00 ppm seed 2: rate err 2.87e-10 ppm, offset err 0.00 ns (asym 99.9), max err 99.9 ns, eps 561.5 ns, kept 214, min width 1102
+   +37.00 ppm seed 3: rate err 3.18e-08 ppm, offset err 0.06 ns (asym 99.9), max err 100.2 ns, eps 560.0 ns, kept 201, min width 1103
+   -37.00 ppm seed 4: rate err 3.98e-08 ppm, offset err 0.00 ns (asym 99.4), max err 99.9 ns, eps 561.0 ns, kept 212, min width 1102
+    +0.00 ppm seed 5: rate err 8.30e-08 ppm, offset err 0.06 ns (asym 99.9), max err 100.7 ns, eps 562.0 ns, kept 205, min width 1103
+  +250.00 ppm seed 6: rate err 1.15e-08 ppm, offset err 0.00 ns (asym 99.9), max err 100.1 ns, eps 561.0 ns, kept 200, min width 1102
+  symmetric +37 ppm: rate err 3.61e-08 ppm, offset err 0.25 ns, max err 0.62 ns, eps 561.0 ns
+test_clock_fit: 77 passed, 0 failed
