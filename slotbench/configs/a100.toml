@@ -1,0 +1,20 @@
+# Datacenter comparison: the same mechanisms and neighbours as the RTX 3060 runs (cloud.toml + real.toml),
+# on an A100 rented as a container (MIG and clock locking need host access; recorded if refused).
+[run]
+slots = 100000
+warmup_s = 30
+settle_s = 45           # real models take ~10-30 s to load
+repeats = 1
+out_root = "runs"
+driver_core = -1
+collector_core = -1
+fifo = 0
+lock_clocks = true
+sizes = ""
+solo_seconds = 60
+
+[matrix]
+mechanisms = ["M0", "M1", "M2", "M4"]
+workloads = ["sgemm", "llm", "vision", "real-llm", "real-vision"]
+duties = [0, 50, 100]
+solo = true
