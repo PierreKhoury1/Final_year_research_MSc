@@ -4,6 +4,8 @@ Early feasibility work for an MSc research project: how precisely can a CPU and 
 
 Status: exploratory. Everything so far ran on a laptop iGPU (AMD Ryzen AI 7 350, Radeon 860M, OpenCL). The NVIDIA version is written but not yet run.
 
+**Main study: [`slotbench/`](slotbench/README.md).** Can a GPU meet every 500 us 5G slot deadline while an AI workload shares it, which sharing setting gets misses to zero most cheaply, and does an RTX 3060 behave like an A100? The harness (slot workload, timed driver, co-located workloads, clock calibration, analysis, vast.ai automation) is built and running on rented GPUs.
+
 ## Findings so far (laptop, AMD Radeon 860M)
 
 | Finding | Result |
