@@ -1,0 +1,20 @@
+[2026-09-30T23:22:43.597Z] start /root/sb/configs/quick.toml: 6 cells, 0 already ok, 6 to run, estimated 0h05m30s
+[2026-09-30T23:22:43.597Z] [1/6] M0_idle_d0_r1: start (~0h00m55s, ETA for the rest 0h05m30s)
+[2026-09-30T23:22:43.598Z]   /root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/quick/M0_idle_d0_r1 --mechanism M0 --workload idle --duty 0 --slots 20000 --warmup-s 10 --settle-s 5 --gpu 0 --lock-clocks 1 --cell M0_idle_d0_r1 --rep 1
+[2026-09-30T23:25:03.348Z] [1/6] M0_idle_d0_r1: ok (rc 0, 0h02m19s)
+[2026-09-30T23:25:03.348Z] [2/6] M0_sgemm_d100_r1: start (~0h00m55s, ETA for the rest 0h11m38s)
+[2026-09-30T23:25:03.348Z]   /root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/quick/M0_sgemm_d100_r1 --mechanism M0 --workload sgemm --duty 100 --slots 20000 --warmup-s 10 --settle-s 5 --gpu 0 --lock-clocks 1 --cell M0_sgemm_d100_r1 --rep 1
+[2026-09-30T23:29:40.330Z] [2/6] M0_sgemm_d100_r1: ok (rc 0, 0h04m36s)
+[2026-09-30T23:29:40.332Z] [3/6] M1_idle_d0_r1: start (~0h00m55s, ETA for the rest 0h13m53s)
+[2026-09-30T23:29:40.332Z]   /root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/quick/M1_idle_d0_r1 --mechanism M1 --workload idle --duty 0 --slots 20000 --warmup-s 10 --settle-s 5 --gpu 0 --lock-clocks 1 --cell M1_idle_d0_r1 --rep 1
+[2026-09-30T23:32:00.077Z] [3/6] M1_idle_d0_r1: ok (rc 0, 0h02m19s)
+[2026-09-30T23:32:00.079Z] [4/6] M1_sgemm_d100_r1: start (~0h00m55s, ETA for the rest 0h09m16s)
+[2026-09-30T23:32:00.079Z]   /root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/quick/M1_sgemm_d100_r1 --mechanism M1 --workload sgemm --duty 100 --slots 20000 --warmup-s 10 --settle-s 5 --gpu 0 --lock-clocks 1 --cell M1_sgemm_d100_r1 --rep 1
+[2026-09-30T23:36:37.111Z] [4/6] M1_sgemm_d100_r1: ok (rc 0, 0h04m37s)
+[2026-09-30T23:36:37.111Z] [5/6] M4_idle_d0_r1: start (~0h00m55s, ETA for the rest 0h06m56s)
+[2026-09-30T23:36:37.111Z]   /root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/quick/M4_idle_d0_r1 --mechanism M4 --workload idle --duty 0 --slots 20000 --warmup-s 10 --settle-s 5 --gpu 0 --lock-clocks 1 --cell M4_idle_d0_r1 --rep 1
+[2026-09-30T23:38:57.087Z] [5/6] M4_idle_d0_r1: ok (rc 0, 0h02m19s)
+[2026-09-30T23:38:57.087Z] [6/6] M4_sgemm_d100_r1: start (~0h00m55s, ETA for the rest 0h03m14s)
+[2026-09-30T23:38:57.087Z]   /root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/quick/M4_sgemm_d100_r1 --mechanism M4 --workload sgemm --duty 100 --slots 20000 --warmup-s 10 --settle-s 5 --gpu 0 --lock-clocks 1 --cell M4_sgemm_d100_r1 --rep 1
+[2026-09-30T23:43:34.218Z] [6/6] M4_sgemm_d100_r1: ok (rc 0, 0h04m37s)
+[2026-09-30T23:43:34.221Z] finished: 6/6 cells ok, 0 not ok this pass

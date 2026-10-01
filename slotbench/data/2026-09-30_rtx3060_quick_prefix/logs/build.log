@@ -1,0 +1,14 @@
+mkdir -p build
+mkdir -p bin
+/usr/local/cuda/bin/nvcc -O2 -g -lineinfo -std=c++17 -gencode arch=compute_86,code=sm_86 -gencode arch=compute_86,code=compute_86 -Icommon -Iphy -Xcompiler -Wall -c -o build/slot_driver.o driver/slot_driver.cu
+/usr/local/cuda/bin/nvcc -O2 -g -lineinfo -std=c++17 -gencode arch=compute_86,code=sm_86 -gencode arch=compute_86,code=compute_86 -Icommon -Iphy -Xcompiler -Wall -c -o build/slot_pipeline.o phy/slot_pipeline.cu
+/usr/local/cuda/bin/nvcc -O2 -g -lineinfo -std=c++17 -gencode arch=compute_86,code=sm_86 -gencode arch=compute_86,code=compute_86 -Icommon -Iphy -Xcompiler -Wall -c -o build/phy_kernels.o phy/phy_kernels.cu
+g++ -O2 -g -std=c++17 -Wall -Wextra -Icommon -Iphy -c -o build/ldpc_code.o phy/ldpc_code.cpp
+/usr/local/cuda/bin/nvcc -O2 -g -lineinfo -std=c++17 -gencode arch=compute_86,code=sm_86 -gencode arch=compute_86,code=compute_86 -Icommon -Iphy -Xcompiler -Wall -o bin/adversary adversary/adversary.cu -lcublas -lcufft -lpthread -ldl
+/usr/local/cuda/bin/nvcc -O2 -g -lineinfo -std=c++17 -gencode arch=compute_86,code=sm_86 -gencode arch=compute_86,code=compute_86 -Icommon -Iphy -Xcompiler -Wall -o bin/clockcal clock/clockcal.cu -lcublas -lcufft -lpthread -ldl
+cc -O2 -g -std=gnu11 -Wall -Wextra -o bin/phc_offset clock/phc_offset.c
+g++ -O2 -g -std=c++17 -Wall -Wextra -Icommon -Iphy -o bin/test_ldpc tests/test_ldpc.cpp build/ldpc_code.o
+g++ -O2 -g -std=c++17 -Wall -Wextra -Icommon -Iphy -o bin/test_phy_ops tests/test_phy_ops.cpp
+g++ -O2 -g -std=c++17 -Wall -Wextra -Icommon -Iphy -o bin/test_ring tests/test_ring.cpp -lpthread
+g++ -O2 -g -std=c++17 -Wall -Wextra -Icommon -Iphy -o bin/test_clock_fit tests/test_clock_fit.cpp
+/usr/local/cuda/bin/nvcc -O2 -g -lineinfo -std=c++17 -gencode arch=compute_86,code=sm_86 -gencode arch=compute_86,code=compute_86 -Icommon -Iphy -Xcompiler -Wall -o bin/slot_driver build/slot_driver.o build/slot_pipeline.o build/phy_kernels.o build/ldpc_code.o -lcublas -lcufft -lpthread -ldl

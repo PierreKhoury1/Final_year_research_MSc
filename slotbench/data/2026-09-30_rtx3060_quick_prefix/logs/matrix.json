@@ -1,0 +1,147 @@
+{
+ "config": "quick",
+ "config_path": "/root/sb/configs/quick.toml",
+ "matrix": {
+  "duties": [
+   0,
+   100
+  ],
+  "mechanisms": [
+   "M0",
+   "M1",
+   "M4"
+  ],
+  "solo": false,
+  "workloads": [
+   "sgemm"
+  ]
+ },
+ "matrix_dir": "/root/sb/repo/slotbench/runs/quick",
+ "only": null,
+ "outcomes": {
+  "M0_idle_d0_r1": {
+   "duration_s": 139.7,
+   "ended": "2026-09-30T23:25:03.347Z",
+   "returncode": 0,
+   "started": "2026-09-30T23:22:43.598Z",
+   "status": "ok"
+  },
+  "M0_sgemm_d100_r1": {
+   "duration_s": 277.0,
+   "ended": "2026-09-30T23:29:40.330Z",
+   "returncode": 0,
+   "started": "2026-09-30T23:25:03.348Z",
+   "status": "ok"
+  },
+  "M1_idle_d0_r1": {
+   "duration_s": 139.7,
+   "ended": "2026-09-30T23:32:00.077Z",
+   "returncode": 0,
+   "started": "2026-09-30T23:29:40.332Z",
+   "status": "ok"
+  },
+  "M1_sgemm_d100_r1": {
+   "duration_s": 277.0,
+   "ended": "2026-09-30T23:36:37.111Z",
+   "returncode": 0,
+   "started": "2026-09-30T23:32:00.079Z",
+   "status": "ok"
+  },
+  "M4_idle_d0_r1": {
+   "duration_s": 140.0,
+   "ended": "2026-09-30T23:38:57.087Z",
+   "returncode": 0,
+   "started": "2026-09-30T23:36:37.111Z",
+   "status": "ok"
+  },
+  "M4_sgemm_d100_r1": {
+   "duration_s": 277.1,
+   "ended": "2026-09-30T23:43:34.217Z",
+   "returncode": 0,
+   "started": "2026-09-30T23:38:57.088Z",
+   "status": "ok"
+  }
+ },
+ "overrides": {},
+ "plan": [
+  {
+   "command": "/root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/quick/M0_idle_d0_r1 --mechanism M0 --workload idle --duty 0 --slots 20000 --warmup-s 10 --settle-s 5 --gpu 0 --lock-clocks 1 --cell M0_idle_d0_r1 --rep 1",
+   "dir": "/root/sb/repo/slotbench/runs/quick/M0_idle_d0_r1",
+   "duty": 0,
+   "estimate_s": 55.0,
+   "mechanism": "M0",
+   "name": "M0_idle_d0_r1",
+   "rep": 1,
+   "workload": "idle"
+  },
+  {
+   "command": "/root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/quick/M0_sgemm_d100_r1 --mechanism M0 --workload sgemm --duty 100 --slots 20000 --warmup-s 10 --settle-s 5 --gpu 0 --lock-clocks 1 --cell M0_sgemm_d100_r1 --rep 1",
+   "dir": "/root/sb/repo/slotbench/runs/quick/M0_sgemm_d100_r1",
+   "duty": 100,
+   "estimate_s": 55.0,
+   "mechanism": "M0",
+   "name": "M0_sgemm_d100_r1",
+   "rep": 1,
+   "workload": "sgemm"
+  },
+  {
+   "command": "/root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/quick/M1_idle_d0_r1 --mechanism M1 --workload idle --duty 0 --slots 20000 --warmup-s 10 --settle-s 5 --gpu 0 --lock-clocks 1 --cell M1_idle_d0_r1 --rep 1",
+   "dir": "/root/sb/repo/slotbench/runs/quick/M1_idle_d0_r1",
+   "duty": 0,
+   "estimate_s": 55.0,
+   "mechanism": "M1",
+   "name": "M1_idle_d0_r1",
+   "rep": 1,
+   "workload": "idle"
+  },
+  {
+   "command": "/root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/quick/M1_sgemm_d100_r1 --mechanism M1 --workload sgemm --duty 100 --slots 20000 --warmup-s 10 --settle-s 5 --gpu 0 --lock-clocks 1 --cell M1_sgemm_d100_r1 --rep 1",
+   "dir": "/root/sb/repo/slotbench/runs/quick/M1_sgemm_d100_r1",
+   "duty": 100,
+   "estimate_s": 55.0,
+   "mechanism": "M1",
+   "name": "M1_sgemm_d100_r1",
+   "rep": 1,
+   "workload": "sgemm"
+  },
+  {
+   "command": "/root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/quick/M4_idle_d0_r1 --mechanism M4 --workload idle --duty 0 --slots 20000 --warmup-s 10 --settle-s 5 --gpu 0 --lock-clocks 1 --cell M4_idle_d0_r1 --rep 1",
+   "dir": "/root/sb/repo/slotbench/runs/quick/M4_idle_d0_r1",
+   "duty": 0,
+   "estimate_s": 55.0,
+   "mechanism": "M4",
+   "name": "M4_idle_d0_r1",
+   "rep": 1,
+   "workload": "idle"
+  },
+  {
+   "command": "/root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/quick/M4_sgemm_d100_r1 --mechanism M4 --workload sgemm --duty 100 --slots 20000 --warmup-s 10 --settle-s 5 --gpu 0 --lock-clocks 1 --cell M4_sgemm_d100_r1 --rep 1",
+   "dir": "/root/sb/repo/slotbench/runs/quick/M4_sgemm_d100_r1",
+   "duty": 100,
+   "estimate_s": 55.0,
+   "mechanism": "M4",
+   "name": "M4_sgemm_d100_r1",
+   "rep": 1,
+   "workload": "sgemm"
+  }
+ ],
+ "repeat_from": 1,
+ "run": {
+  "adversary_flags": "",
+  "cell_overhead_s": 30,
+  "collector_core": -1,
+  "driver_core": -1,
+  "driver_flags": "",
+  "fifo": 0,
+  "gpu": 0,
+  "lock_clocks": true,
+  "out_root": "runs",
+  "repeats": 1,
+  "settle_s": 5,
+  "sizes": "",
+  "slots": 20000,
+  "solo_seconds": 120,
+  "warmup_s": 10
+ },
+ "updated": "2026-09-30T23:43:34.219Z"
+}

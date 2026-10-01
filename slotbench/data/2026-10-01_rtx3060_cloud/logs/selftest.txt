@@ -1,0 +1,27 @@
+GPU NVIDIA GeForce RTX 3060 (GPU-ecbd7065-92ef-c0f1-0967-8126c0011f8b), CC 8.6, 28 SMs
+pipeline: {"config":{"fft":4096,"symbols":14,"antennas":4,"layers":4,"subcarriers":3276,"qam":256,"ldpc_cb":117,"ldpc_iters":10,"ldpc_rows":8,"ldpc_z":384,"ldpc_bg":1,"sigma2":0.00999999978,"seed":1},"data_symbols":12,"bits_per_symbol":8,"llrs_per_slot":1257984,"ldpc_code":"BG1 Z=384 set=1 rows=8 cols=30 kb=22 edges=103 K=8448 N=11520 Ntx=10752 rate=0.7857","ldpc_k_bits":8448,"ldpc_n_bits":11520,"ldpc_n_tx_bits":10752,"ldpc_edges":103,"ldpc_alpha":0.75,"ldpc_llr_wrap":1,"decoder_smem_bytes":46080,"decoder_smem_optin_max":101376,"decoder_app_storage":"fp32","decoder_msg_storage":"compressed check-node state, 8 B (2x fp16 min + signs + index)","cublas_workspace_bytes":33554432,"graph_nodes":0,"stages":[{"stage":"S1_fft","flops":13762560,"bytes":3670016},{"stage":"S2_pilot_gather","flops":0,"bytes":3354624},{"stage":"S3_chan_est","flops":1677312,"bytes":838656},{"stage":"S4_gram","flops":1690416,"bytes":838656},{"stage":"S5_matched_filter","flops":5031936,"bytes":2935296},{"stage":"S6_lu","flops":559104,"bytes":838656},{"stage":"S7_solve","flops":5031936,"bytes":2935296},{"stage":"S8_demod","flops":35223552,"bytes":6289920},{"stage":"S9_rate_dematch","flops":0,"bytes":10782720},{"stage":"S10_ldpc_decode","flops":370206720,"bytes":380989440},{"stage":"S11_hard_decision","flops":0,"bytes":4077216}],"total_flops":433183536,"total_bytes":417550496}
+selftest decoder: BG1 Z=384 set=1 rows=8 cols=30 kb=22 edges=103 K=8448 N=11520 Ntx=10752 rate=0.7857, 10 iterations, alpha 0.75, app storage fp32, check-node state 8 B (fp16 mins), 8 codewords/point
+  Eb/N0  4.12 dB: channel BER 0.0217 | GPU BER 0.000e+00 cw errors 0/8 | host BER 0.000e+00 cw errors 0/8 | pack mismatches 0 | non-finite 0
+  Eb/N0  5.12 dB: channel BER 0.0119 | GPU BER 0.000e+00 cw errors 0/8 | host BER 0.000e+00 cw errors 0/8 | pack mismatches 0 | non-finite 0
+  Eb/N0  6.62 dB: channel BER 0.0035 | GPU BER 0.000e+00 cw errors 0/8 | host BER 0.000e+00 cw errors 0/8 | pack mismatches 0 | non-finite 0
+  diag serial z order : GPU info BER 0.000e+00, transmitted-bit BER 0.000e+00
+  diag 0 iterations   : GPU info BER 4.927e-02, transmitted-bit BER 3.453e-03
+  GPU/host hard-decision agreement 1.000000 over 276480 bits (need >= 0.999)
+selftest stage profile (median us over 30 slots, event-to-event):
+  S1 FFT                  14.3
+  S2 gather               11.3
+  S3 chan est             52.2
+  S4 Gram+sigma           60.4
+  S5 matched filt         58.4
+  S6 LU (getrf)            8.2
+  S7 solve (getrs)        18.4
+  S8 demod                46.1
+  S9 de-match             35.8
+  S10 LDPC              1012.7
+  S11 hard pack           21.5
+  total                 1339.4
+selftest slot: stamps seq 34/34 (expected 34), gpu time 1326.1 us
+  equaliser EVM -15.8 dB (limit -6.0 dB), demod BER vs transmitted 0.1226, LLR mismatches 0, de-match mismatches 0, pack mismatches 0, singular LU 0, non-finite 0
+selftest: PASS
+
+selftest: PASS

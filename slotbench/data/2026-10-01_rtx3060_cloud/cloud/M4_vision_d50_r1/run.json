@@ -1,0 +1,126 @@
+{
+ "cell": "M4_vision_d50_r1",
+ "commands": [
+  {
+   "cmd": "/root/sb/repo/slotbench/scripts/env_capture.sh /root/sb/repo/slotbench/runs/cloud/M4_vision_d50_r1/env.txt",
+   "t": "2026-10-01T01:57:17.271Z",
+   "what": "env_capture"
+  },
+  {
+   "cmd": "/root/sb/repo/slotbench/scripts/mps.sh stop --all",
+   "t": "2026-10-01T01:57:17.549Z",
+   "what": "mps_reset"
+  },
+  {
+   "cmd": "/root/sb/repo/slotbench/scripts/gpu_lock.sh lock --gpu 0",
+   "t": "2026-10-01T01:57:17.569Z",
+   "what": "clocks_lock"
+  },
+  {
+   "cmd": "/root/sb/repo/slotbench/scripts/gpu_lock.sh status --gpu 0",
+   "t": "2026-10-01T01:57:17.957Z",
+   "what": "clocks_status"
+  },
+  {
+   "cmd": "/root/sb/repo/slotbench/bin/adversary --workload vision --duty 50 --prio low --gpu 0 --seconds 30 --out /root/sb/repo/slotbench/runs/cloud/M4_vision_d50_r1/warmup_adversary.json",
+   "t": "2026-10-01T01:57:18.201Z",
+   "what": "warmup_adversary"
+  },
+  {
+   "cmd": "/root/sb/repo/slotbench/scripts/telemetry.sh /root/sb/repo/slotbench/runs/cloud/M4_vision_d50_r1/telemetry.csv --gpu 0 --interval-ms 1000",
+   "t": "2026-10-01T01:57:48.629Z",
+   "what": "telemetry"
+  },
+  {
+   "cmd": "/root/sb/repo/slotbench/bin/adversary --workload vision --duty 50 --prio low --gpu 0 --out /root/sb/repo/slotbench/runs/cloud/M4_vision_d50_r1/adversary.json --timeline /root/sb/repo/slotbench/runs/cloud/M4_vision_d50_r1/adversary_timeline.csv",
+   "t": "2026-10-01T01:57:48.633Z",
+   "what": "adversary"
+  },
+  {
+   "cmd": "/root/sb/repo/slotbench/bin/slot_driver --out /root/sb/repo/slotbench/runs/cloud/M4_vision_d50_r1 --slots 100000 --prio high --mode streams --gpu 0 --label M4_vision_d50_r1 --subcarriers 612 --ldpc-cb 0 --ldpc-iters 5",
+   "t": "2026-10-01T01:57:58.648Z",
+   "what": "driver"
+  },
+  {
+   "cmd": "env -C /root/sb/repo/slotbench python3 -m analysis.summarize /root/sb/repo/slotbench/runs/cloud/M4_vision_d50_r1",
+   "t": "2026-10-01T01:59:18.805Z",
+   "what": "summarize"
+  },
+  {
+   "cmd": "/root/sb/repo/slotbench/scripts/gpu_lock.sh unlock --gpu 0",
+   "t": "2026-10-01T01:59:19.243Z",
+   "what": "clocks_unlock"
+  }
+ ],
+ "duty": 50,
+ "exit_codes": {
+  "adversary": 0,
+  "clocks_lock": 3,
+  "clocks_status": 0,
+  "clocks_unlock": 3,
+  "driver": 0,
+  "env_capture": 0,
+  "mps_reset": 0,
+  "summarize": 0,
+  "telemetry": 0,
+  "warmup_adversary": 0
+ },
+ "mechanism": "M4",
+ "notes": [
+  {
+   "detail": "cmd: nvidia-smi -i 0 -rgc | NOT SUPPORTED: graphics clock reset (-rgc) (rc=4: The current user does not have permission to change clocks for GPU 00000000:05:00.0. Terminating early due to previous errors. ) | cmd: nvidia-smi -i 0 -rmc | NOT SUPPORTED: memory clock reset (-rmc) (rc=4: The current user does not have permission to change clocks for GPU 00000000:05:00.0. Terminating early due to previous errors. ) | gpu=0 | name=NVIDIA GeForce RTX 3060 | persistence_mode=Enabled | clocks_sm=1935 | clocks_mem=7501 | clocks_max_sm=2130 | clocks_max_mem=7501 | clocks_applications_graphics=[N/A] | clocks_default_applications_graphics=[N/A] | power_limit=170.00",
+   "t": "2026-10-01T01:59:19.502Z",
+   "what": "clocks_unlock"
+  }
+ ],
+ "rep": 1,
+ "settings": {
+  "adversary_alive_at_driver_end": "1",
+  "adversary_flags": "",
+  "adversary_prio": "low",
+  "bin": "/root/sb/repo/slotbench/bin",
+  "cell": "M4_vision_d50_r1",
+  "clock_clocks_applications_graphics": "[N/A]",
+  "clock_clocks_default_applications_graphics": "[N/A]",
+  "clock_clocks_max_mem": "7501",
+  "clock_clocks_max_sm": "2130",
+  "clock_clocks_mem": "7501",
+  "clock_clocks_sm": "1935",
+  "clock_gpu": "0",
+  "clock_name": "NVIDIA GeForce RTX 3060",
+  "clock_persistence_mode": "Enabled",
+  "clock_power_limit": "170.00",
+  "clocks_locked_requested": "1",
+  "collector_core": "-1",
+  "driver_core": "-1",
+  "driver_flags": "--subcarriers 612 --ldpc-cb 0 --ldpc-iters 5",
+  "driver_mode": "streams",
+  "driver_prio": "high",
+  "duty": "50",
+  "ended": "2026-10-01T01:59:19.504Z",
+  "fifo": "0",
+  "gpu": "0",
+  "host": "354192c505a9",
+  "lock_clocks": "1",
+  "mechanism": "M4",
+  "rep": "1",
+  "ring_overflows": "0",
+  "settle_s": "10",
+  "slots": "100000",
+  "started": "2026-10-01T01:57:17.232Z",
+  "status": "ok",
+  "user": "root",
+  "warmup_s": "30",
+  "workload": "vision"
+ },
+ "slots": 100000,
+ "status": "ok",
+ "unsupported": [
+  {
+   "detail": "rc=3: NOT SUPPORTED: graphics clock lock (-lgc 1702,1702) (rc=4: The current user does not have permission to change clocks for GPU 00000000:05:00.0. Terminating early due to previous errors. ) NOT SUPPORTED: memory clock lock (-lmc 7501,7501) (rc=4: The current user does not have permission to change clocks for GPU 00000000:05:00.0. Terminating early due to previous errors. ) ",
+   "t": "2026-10-01T01:57:17.954Z",
+   "what": "clocks_lock"
+  }
+ ],
+ "workload": "vision"
+}

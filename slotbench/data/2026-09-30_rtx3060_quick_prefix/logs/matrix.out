@@ -1,0 +1,62 @@
+[2026-09-30T23:22:43.597Z] start /root/sb/configs/quick.toml: 6 cells, 0 already ok, 6 to run, estimated 0h05m30s
+[2026-09-30T23:22:43.597Z] [1/6] M0_idle_d0_r1: start (~0h00m55s, ETA for the rest 0h05m30s)
+[2026-09-30T23:22:43.598Z]   /root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/quick/M0_idle_d0_r1 --mechanism M0 --workload idle --duty 0 --slots 20000 --warmup-s 10 --settle-s 5 --gpu 0 --lock-clocks 1 --cell M0_idle_d0_r1 --rep 1
+[2026-09-30T23:22:43.649Z] cell M0_idle_d0_r1: M0 idle d0 -> /root/sb/repo/slotbench/runs/quick/M0_idle_d0_r1
+[2026-09-30T23:22:44.664Z] warm-up 10s
+[2026-09-30T23:22:55.028Z] adversary start
+[2026-09-30T23:22:55.039Z] settle 5s
+[2026-09-30T23:23:00.061Z] driver start: 20000 slots
+[2026-09-30T23:25:01.691Z] driver exited rc=0
+[2026-09-30T23:25:02.301Z] status: ok
+[2026-09-30T23:25:03.348Z] [1/6] M0_idle_d0_r1: ok (rc 0, 0h02m19s)
+[2026-09-30T23:25:03.348Z] [2/6] M0_sgemm_d100_r1: start (~0h00m55s, ETA for the rest 0h11m38s)
+[2026-09-30T23:25:03.348Z]   /root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/quick/M0_sgemm_d100_r1 --mechanism M0 --workload sgemm --duty 100 --slots 20000 --warmup-s 10 --settle-s 5 --gpu 0 --lock-clocks 1 --cell M0_sgemm_d100_r1 --rep 1
+[2026-09-30T23:25:03.405Z] cell M0_sgemm_d100_r1: M0 sgemm d100 -> /root/sb/repo/slotbench/runs/quick/M0_sgemm_d100_r1
+[2026-09-30T23:25:04.530Z] warm-up 10s
+[2026-09-30T23:25:15.092Z] adversary start
+[2026-09-30T23:25:15.103Z] settle 5s
+[2026-09-30T23:25:20.120Z] driver start: 20000 slots
+[2026-09-30T23:29:38.388Z] driver exited rc=0
+[2026-09-30T23:29:39.352Z] status: ok
+[2026-09-30T23:29:40.330Z] [2/6] M0_sgemm_d100_r1: ok (rc 0, 0h04m36s)
+[2026-09-30T23:29:40.332Z] [3/6] M1_idle_d0_r1: start (~0h00m55s, ETA for the rest 0h13m53s)
+[2026-09-30T23:29:40.332Z]   /root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/quick/M1_idle_d0_r1 --mechanism M1 --workload idle --duty 0 --slots 20000 --warmup-s 10 --settle-s 5 --gpu 0 --lock-clocks 1 --cell M1_idle_d0_r1 --rep 1
+[2026-09-30T23:29:40.411Z] cell M1_idle_d0_r1: M1 idle d0 -> /root/sb/repo/slotbench/runs/quick/M1_idle_d0_r1
+[2026-09-30T23:29:41.463Z] warm-up 10s
+[2026-09-30T23:29:51.864Z] adversary start
+[2026-09-30T23:29:51.875Z] settle 5s
+[2026-09-30T23:29:56.892Z] driver start: 20000 slots
+[2026-09-30T23:31:58.507Z] driver exited rc=0
+[2026-09-30T23:31:59.114Z] status: ok
+[2026-09-30T23:32:00.077Z] [3/6] M1_idle_d0_r1: ok (rc 0, 0h02m19s)
+[2026-09-30T23:32:00.079Z] [4/6] M1_sgemm_d100_r1: start (~0h00m55s, ETA for the rest 0h09m16s)
+[2026-09-30T23:32:00.079Z]   /root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/quick/M1_sgemm_d100_r1 --mechanism M1 --workload sgemm --duty 100 --slots 20000 --warmup-s 10 --settle-s 5 --gpu 0 --lock-clocks 1 --cell M1_sgemm_d100_r1 --rep 1
+[2026-09-30T23:32:00.173Z] cell M1_sgemm_d100_r1: M1 sgemm d100 -> /root/sb/repo/slotbench/runs/quick/M1_sgemm_d100_r1
+[2026-09-30T23:32:01.228Z] warm-up 10s
+[2026-09-30T23:32:11.851Z] adversary start
+[2026-09-30T23:32:11.861Z] settle 5s
+[2026-09-30T23:32:16.872Z] driver start: 20000 slots
+[2026-09-30T23:36:35.423Z] driver exited rc=0
+[2026-09-30T23:36:36.154Z] status: ok
+[2026-09-30T23:36:37.111Z] [4/6] M1_sgemm_d100_r1: ok (rc 0, 0h04m37s)
+[2026-09-30T23:36:37.111Z] [5/6] M4_idle_d0_r1: start (~0h00m55s, ETA for the rest 0h06m56s)
+[2026-09-30T23:36:37.111Z]   /root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/quick/M4_idle_d0_r1 --mechanism M4 --workload idle --duty 0 --slots 20000 --warmup-s 10 --settle-s 5 --gpu 0 --lock-clocks 1 --cell M4_idle_d0_r1 --rep 1
+[2026-09-30T23:36:37.166Z] cell M4_idle_d0_r1: M4 idle d0 -> /root/sb/repo/slotbench/runs/quick/M4_idle_d0_r1
+[2026-09-30T23:36:38.218Z] warm-up 10s
+[2026-09-30T23:36:48.624Z] adversary start
+[2026-09-30T23:36:48.635Z] settle 5s
+[2026-09-30T23:36:53.652Z] driver start: 20000 slots
+[2026-09-30T23:38:55.300Z] driver exited rc=0
+[2026-09-30T23:38:55.848Z] status: ok
+[2026-09-30T23:38:57.087Z] [5/6] M4_idle_d0_r1: ok (rc 0, 0h02m19s)
+[2026-09-30T23:38:57.087Z] [6/6] M4_sgemm_d100_r1: start (~0h00m55s, ETA for the rest 0h03m14s)
+[2026-09-30T23:38:57.087Z]   /root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/quick/M4_sgemm_d100_r1 --mechanism M4 --workload sgemm --duty 100 --slots 20000 --warmup-s 10 --settle-s 5 --gpu 0 --lock-clocks 1 --cell M4_sgemm_d100_r1 --rep 1
+[2026-09-30T23:38:57.147Z] cell M4_sgemm_d100_r1: M4 sgemm d100 -> /root/sb/repo/slotbench/runs/quick/M4_sgemm_d100_r1
+[2026-09-30T23:38:58.318Z] warm-up 10s
+[2026-09-30T23:39:08.915Z] adversary start
+[2026-09-30T23:39:08.927Z] settle 5s
+[2026-09-30T23:39:13.944Z] driver start: 20000 slots
+[2026-09-30T23:43:32.280Z] driver exited rc=0
+[2026-09-30T23:43:33.232Z] status: ok
+[2026-09-30T23:43:34.218Z] [6/6] M4_sgemm_d100_r1: ok (rc 0, 0h04m37s)
+[2026-09-30T23:43:34.221Z] finished: 6/6 cells ok, 0 not ok this pass

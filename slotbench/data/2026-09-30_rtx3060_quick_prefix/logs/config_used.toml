@@ -1,0 +1,30 @@
+# quick.toml: smoke test of the whole procedure (a few minutes). Run it before any long matrix:
+#   python3 scripts/run_matrix.py configs/quick.toml
+# Schema: DESIGN.md section 7, plus these optional additions read by scripts/run_matrix.py:
+#   [run] gpu = N                 device index for driver, adversary, telemetry, clock locking (default 0)
+#   [run] driver_flags = "..."    extra slot_driver flags appended after `sizes`
+#   [run] adversary_flags = "..." extra adversary flags (e.g. "--size 8192")
+#   [run] solo_seconds = S        length of each SOLO_<W> cell (default 120)
+#   [run] cell_overhead_s = S     per-cell setup/teardown allowance used only for the time estimate (default 30)
+#   [matrix] solo = true          add SOLO_<W> cells first: adversary alone at D=100, no driver
+#   [overrides.<M>]               per-mechanism (or SOLO) replacement of slots, warmup_s, settle_s,
+#                                 driver_flags, adversary_flags, solo_seconds, lock_clocks
+# driver_core/collector_core = -1 and fifo = 0 mean "not set" (flags not passed to slot_driver).
+
+[run]
+slots = 20000           # 10 s of slots at 500 us
+warmup_s = 10
+settle_s = 5
+repeats = 1
+out_root = "runs"
+driver_core = -1        # set to the isolated cores on the home-lab machine
+collector_core = -1
+fifo = 0
+lock_clocks = true      # failures (not root, GeForce limits) are recorded, the run continues
+sizes = ""              # paste the flags printed by `bin/slot_driver --tune-us 200` here
+
+[matrix]
+mechanisms = ["M0", "M1", "M4"]
+workloads = ["sgemm"]
+duties = [0, 100]
+solo = false

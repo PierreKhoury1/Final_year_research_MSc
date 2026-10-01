@@ -1,0 +1,373 @@
+[2026-10-01T00:43:10.446Z] start /root/sb/configs/cloud.toml: 38 cells, 0 already ok, 38 to run, estimated 1h16m00s
+[2026-10-01T00:43:10.448Z] [1/38] SOLO_sgemm: start (~0h02m00s, ETA for the rest 1h16m00s)
+[2026-10-01T00:43:10.448Z]   /root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/cloud/SOLO_sgemm --mechanism SOLO --workload sgemm --duty 100 --slots 100000 --warmup-s 30 --settle-s 10 --gpu 0 --lock-clocks 1 --cell SOLO_sgemm --solo-seconds 60 --driver-flags '--subcarriers 612 --ldpc-cb 0 --ldpc-iters 5'
+[2026-10-01T00:43:10.497Z] cell SOLO_sgemm: SOLO sgemm d100 -> /root/sb/repo/slotbench/runs/cloud/SOLO_sgemm
+[2026-10-01T00:43:11.363Z] warm-up 30s
+[2026-10-01T00:43:41.767Z] adversary start
+[2026-10-01T00:44:42.992Z] status: ok
+[2026-10-01T00:44:43.277Z] [1/38] SOLO_sgemm: ok (rc 0, 0h01m32s)
+[2026-10-01T00:44:43.278Z] [2/38] SOLO_llm: start (~0h02m00s, ETA for the rest 0h57m14s)
+[2026-10-01T00:44:43.278Z]   /root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/cloud/SOLO_llm --mechanism SOLO --workload llm --duty 100 --slots 100000 --warmup-s 30 --settle-s 10 --gpu 0 --lock-clocks 1 --cell SOLO_llm --solo-seconds 60 --driver-flags '--subcarriers 612 --ldpc-cb 0 --ldpc-iters 5'
+[2026-10-01T00:44:43.326Z] cell SOLO_llm: SOLO llm d100 -> /root/sb/repo/slotbench/runs/cloud/SOLO_llm
+[2026-10-01T00:44:44.196Z] warm-up 30s
+[2026-10-01T00:45:14.806Z] adversary start
+[2026-10-01T00:46:15.947Z] status: ok
+[2026-10-01T00:46:16.242Z] [2/38] SOLO_llm: ok (rc 0, 0h01m32s)
+[2026-10-01T00:46:16.243Z] [3/38] SOLO_vision: start (~0h02m00s, ETA for the rest 0h55m44s)
+[2026-10-01T00:46:16.243Z]   /root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/cloud/SOLO_vision --mechanism SOLO --workload vision --duty 100 --slots 100000 --warmup-s 30 --settle-s 10 --gpu 0 --lock-clocks 1 --cell SOLO_vision --solo-seconds 60 --driver-flags '--subcarriers 612 --ldpc-cb 0 --ldpc-iters 5'
+[2026-10-01T00:46:16.292Z] cell SOLO_vision: SOLO vision d100 -> /root/sb/repo/slotbench/runs/cloud/SOLO_vision
+[2026-10-01T00:46:17.133Z] warm-up 30s
+[2026-10-01T00:46:47.570Z] adversary start
+[2026-10-01T00:47:48.785Z] status: ok
+[2026-10-01T00:47:49.072Z] [3/38] SOLO_vision: ok (rc 0, 0h01m32s)
+[2026-10-01T00:47:49.073Z] [4/38] M0_idle_d0_r1: start (~0h02m00s, ETA for the rest 0h54m10s)
+[2026-10-01T00:47:49.074Z]   /root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/cloud/M0_idle_d0_r1 --mechanism M0 --workload idle --duty 0 --slots 100000 --warmup-s 30 --settle-s 10 --gpu 0 --lock-clocks 1 --cell M0_idle_d0_r1 --rep 1 --driver-flags '--subcarriers 612 --ldpc-cb 0 --ldpc-iters 5'
+[2026-10-01T00:47:49.123Z] cell M0_idle_d0_r1: M0 idle d0 -> /root/sb/repo/slotbench/runs/cloud/M0_idle_d0_r1
+[2026-10-01T00:47:49.984Z] warm-up 30s
+[2026-10-01T00:48:20.607Z] adversary start
+[2026-10-01T00:48:20.612Z] settle 10s
+[2026-10-01T00:48:30.624Z] driver start: 100000 slots
+[2026-10-01T00:49:22.100Z] driver exited rc=0
+[2026-10-01T00:49:22.836Z] status: ok
+[2026-10-01T00:49:23.588Z] [4/38] M0_idle_d0_r1: ok (rc 0, 0h01m34s)
+[2026-10-01T00:49:23.590Z] [5/38] M0_sgemm_d50_r1: start (~0h02m00s, ETA for the rest 0h52m51s)
+[2026-10-01T00:49:23.590Z]   /root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/cloud/M0_sgemm_d50_r1 --mechanism M0 --workload sgemm --duty 50 --slots 100000 --warmup-s 30 --settle-s 10 --gpu 0 --lock-clocks 1 --cell M0_sgemm_d50_r1 --rep 1 --driver-flags '--subcarriers 612 --ldpc-cb 0 --ldpc-iters 5'
+[2026-10-01T00:49:23.637Z] cell M0_sgemm_d50_r1: M0 sgemm d50 -> /root/sb/repo/slotbench/runs/cloud/M0_sgemm_d50_r1
+[2026-10-01T00:49:24.541Z] warm-up 30s
+[2026-10-01T00:49:54.990Z] adversary start
+[2026-10-01T00:49:54.995Z] settle 10s
+[2026-10-01T00:50:05.006Z] driver start: 100000 slots
+[2026-10-01T00:51:47.239Z] driver exited rc=0
+[2026-10-01T00:51:48.177Z] status: ok
+[2026-10-01T00:51:48.904Z] [5/38] M0_sgemm_d50_r1: ok (rc 0, 0h02m25s)
+[2026-10-01T00:51:48.906Z] [6/38] M0_sgemm_d100_r1: start (~0h02m00s, ETA for the rest 0h57m01s)
+[2026-10-01T00:51:48.906Z]   /root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/cloud/M0_sgemm_d100_r1 --mechanism M0 --workload sgemm --duty 100 --slots 100000 --warmup-s 30 --settle-s 10 --gpu 0 --lock-clocks 1 --cell M0_sgemm_d100_r1 --rep 1 --driver-flags '--subcarriers 612 --ldpc-cb 0 --ldpc-iters 5'
+[2026-10-01T00:51:48.957Z] cell M0_sgemm_d100_r1: M0 sgemm d100 -> /root/sb/repo/slotbench/runs/cloud/M0_sgemm_d100_r1
+[2026-10-01T00:51:49.862Z] warm-up 30s
+[2026-10-01T00:52:20.323Z] adversary start
+[2026-10-01T00:52:20.329Z] settle 10s
+[2026-10-01T00:52:30.340Z] driver start: 100000 slots
+[2026-10-01T00:56:39.009Z] driver exited rc=0
+[2026-10-01T00:56:39.507Z] status: ok
+[2026-10-01T00:56:40.248Z] [6/38] M0_sgemm_d100_r1: ok (rc 0, 0h04m51s)
+[2026-10-01T00:56:40.250Z] [7/38] M0_llm_d50_r1: start (~0h02m00s, ETA for the rest 1h11m58s)
+[2026-10-01T00:56:40.251Z]   /root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/cloud/M0_llm_d50_r1 --mechanism M0 --workload llm --duty 50 --slots 100000 --warmup-s 30 --settle-s 10 --gpu 0 --lock-clocks 1 --cell M0_llm_d50_r1 --rep 1 --driver-flags '--subcarriers 612 --ldpc-cb 0 --ldpc-iters 5'
+[2026-10-01T00:56:40.298Z] cell M0_llm_d50_r1: M0 llm d50 -> /root/sb/repo/slotbench/runs/cloud/M0_llm_d50_r1
+[2026-10-01T00:56:41.186Z] warm-up 30s
+[2026-10-01T00:57:11.751Z] adversary start
+[2026-10-01T00:57:11.757Z] settle 10s
+[2026-10-01T00:57:21.767Z] driver start: 100000 slots
+[2026-10-01T00:58:50.356Z] driver exited rc=0
+[2026-10-01T00:58:50.967Z] status: ok
+[2026-10-01T00:58:51.685Z] [7/38] M0_llm_d50_r1: ok (rc 0, 0h02m11s)
+[2026-10-01T00:58:51.686Z] [8/38] M0_llm_d100_r1: start (~0h02m00s, ETA for the rest 1h09m28s)
+[2026-10-01T00:58:51.686Z]   /root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/cloud/M0_llm_d100_r1 --mechanism M0 --workload llm --duty 100 --slots 100000 --warmup-s 30 --settle-s 10 --gpu 0 --lock-clocks 1 --cell M0_llm_d100_r1 --rep 1 --driver-flags '--subcarriers 612 --ldpc-cb 0 --ldpc-iters 5'
+[2026-10-01T00:58:51.736Z] cell M0_llm_d100_r1: M0 llm d100 -> /root/sb/repo/slotbench/runs/cloud/M0_llm_d100_r1
+[2026-10-01T00:58:52.620Z] warm-up 30s
+[2026-10-01T00:59:23.176Z] adversary start
+[2026-10-01T00:59:23.181Z] settle 10s
+[2026-10-01T00:59:33.192Z] driver start: 100000 slots
+[2026-10-01T01:03:23.261Z] driver exited rc=0
+[2026-10-01T01:03:24.415Z] status: ok
+[2026-10-01T01:03:25.142Z] [8/38] M0_llm_d100_r1: ok (rc 0, 0h04m33s)
+[2026-10-01T01:03:25.143Z] [9/38] M0_vision_d50_r1: start (~0h02m00s, ETA for the rest 1h15m55s)
+[2026-10-01T01:03:25.143Z]   /root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/cloud/M0_vision_d50_r1 --mechanism M0 --workload vision --duty 50 --slots 100000 --warmup-s 30 --settle-s 10 --gpu 0 --lock-clocks 1 --cell M0_vision_d50_r1 --rep 1 --driver-flags '--subcarriers 612 --ldpc-cb 0 --ldpc-iters 5'
+[2026-10-01T01:03:25.188Z] cell M0_vision_d50_r1: M0 vision d50 -> /root/sb/repo/slotbench/runs/cloud/M0_vision_d50_r1
+[2026-10-01T01:03:26.100Z] warm-up 30s
+[2026-10-01T01:03:56.552Z] adversary start
+[2026-10-01T01:03:56.557Z] settle 10s
+[2026-10-01T01:04:06.567Z] driver start: 100000 slots
+[2026-10-01T01:05:26.132Z] driver exited rc=0
+[2026-10-01T01:05:26.743Z] status: ok
+[2026-10-01T01:05:27.470Z] [9/38] M0_vision_d50_r1: ok (rc 0, 0h02m02s)
+[2026-10-01T01:05:27.471Z] [10/38] M0_vision_d100_r1: start (~0h02m00s, ETA for the rest 1h11m48s)
+[2026-10-01T01:05:27.471Z]   /root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/cloud/M0_vision_d100_r1 --mechanism M0 --workload vision --duty 100 --slots 100000 --warmup-s 30 --settle-s 10 --gpu 0 --lock-clocks 1 --cell M0_vision_d100_r1 --rep 1 --driver-flags '--subcarriers 612 --ldpc-cb 0 --ldpc-iters 5'
+[2026-10-01T01:05:27.519Z] cell M0_vision_d100_r1: M0 vision d100 -> /root/sb/repo/slotbench/runs/cloud/M0_vision_d100_r1
+[2026-10-01T01:05:28.414Z] warm-up 30s
+[2026-10-01T01:05:58.863Z] adversary start
+[2026-10-01T01:05:58.868Z] settle 10s
+[2026-10-01T01:06:08.879Z] driver start: 100000 slots
+[2026-10-01T01:09:01.729Z] driver exited rc=0
+[2026-10-01T01:09:02.121Z] status: ok
+[2026-10-01T01:09:02.855Z] [10/38] M0_vision_d100_r1: ok (rc 0, 0h03m35s)
+[2026-10-01T01:09:02.856Z] [11/38] M1_idle_d0_r1: start (~0h02m00s, ETA for the rest 1h12m26s)
+[2026-10-01T01:09:02.856Z]   /root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/cloud/M1_idle_d0_r1 --mechanism M1 --workload idle --duty 0 --slots 100000 --warmup-s 30 --settle-s 10 --gpu 0 --lock-clocks 1 --cell M1_idle_d0_r1 --rep 1 --driver-flags '--subcarriers 612 --ldpc-cb 0 --ldpc-iters 5'
+[2026-10-01T01:09:02.905Z] cell M1_idle_d0_r1: M1 idle d0 -> /root/sb/repo/slotbench/runs/cloud/M1_idle_d0_r1
+[2026-10-01T01:09:03.755Z] warm-up 30s
+[2026-10-01T01:09:34.226Z] adversary start
+[2026-10-01T01:09:34.232Z] settle 10s
+[2026-10-01T01:09:44.243Z] driver start: 100000 slots
+[2026-10-01T01:10:35.699Z] driver exited rc=0
+[2026-10-01T01:10:36.525Z] status: ok
+[2026-10-01T01:10:37.252Z] [11/38] M1_idle_d0_r1: ok (rc 0, 0h01m34s)
+[2026-10-01T01:10:37.253Z] [12/38] M1_sgemm_d50_r1: start (~0h02m00s, ETA for the rest 1h07m22s)
+[2026-10-01T01:10:37.253Z]   /root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/cloud/M1_sgemm_d50_r1 --mechanism M1 --workload sgemm --duty 50 --slots 100000 --warmup-s 30 --settle-s 10 --gpu 0 --lock-clocks 1 --cell M1_sgemm_d50_r1 --rep 1 --driver-flags '--subcarriers 612 --ldpc-cb 0 --ldpc-iters 5'
+[2026-10-01T01:10:37.303Z] cell M1_sgemm_d50_r1: M1 sgemm d50 -> /root/sb/repo/slotbench/runs/cloud/M1_sgemm_d50_r1
+[2026-10-01T01:10:38.216Z] warm-up 30s
+[2026-10-01T01:11:08.672Z] adversary start
+[2026-10-01T01:11:08.677Z] settle 10s
+[2026-10-01T01:11:18.684Z] driver start: 100000 slots
+[2026-10-01T01:13:01.178Z] driver exited rc=0
+[2026-10-01T01:13:01.921Z] status: ok
+[2026-10-01T01:13:02.648Z] [12/38] M1_sgemm_d50_r1: ok (rc 0, 0h02m25s)
+[2026-10-01T01:13:02.650Z] [13/38] M1_sgemm_d100_r1: start (~0h02m00s, ETA for the rest 1h04m43s)
+[2026-10-01T01:13:02.650Z]   /root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/cloud/M1_sgemm_d100_r1 --mechanism M1 --workload sgemm --duty 100 --slots 100000 --warmup-s 30 --settle-s 10 --gpu 0 --lock-clocks 1 --cell M1_sgemm_d100_r1 --rep 1 --driver-flags '--subcarriers 612 --ldpc-cb 0 --ldpc-iters 5'
+[2026-10-01T01:13:02.702Z] cell M1_sgemm_d100_r1: M1 sgemm d100 -> /root/sb/repo/slotbench/runs/cloud/M1_sgemm_d100_r1
+[2026-10-01T01:13:03.602Z] warm-up 30s
+[2026-10-01T01:13:34.061Z] adversary start
+[2026-10-01T01:13:34.067Z] settle 10s
+[2026-10-01T01:13:44.077Z] driver start: 100000 slots
+[2026-10-01T01:17:52.991Z] driver exited rc=0
+[2026-10-01T01:17:53.282Z] status: ok
+[2026-10-01T01:17:54.025Z] [13/38] M1_sgemm_d100_r1: ok (rc 0, 0h04m51s)
+[2026-10-01T01:17:54.027Z] [14/38] M1_llm_d50_r1: start (~0h02m00s, ETA for the rest 1h06m46s)
+[2026-10-01T01:17:54.027Z]   /root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/cloud/M1_llm_d50_r1 --mechanism M1 --workload llm --duty 50 --slots 100000 --warmup-s 30 --settle-s 10 --gpu 0 --lock-clocks 1 --cell M1_llm_d50_r1 --rep 1 --driver-flags '--subcarriers 612 --ldpc-cb 0 --ldpc-iters 5'
+[2026-10-01T01:17:54.078Z] cell M1_llm_d50_r1: M1 llm d50 -> /root/sb/repo/slotbench/runs/cloud/M1_llm_d50_r1
+[2026-10-01T01:17:54.966Z] warm-up 30s
+[2026-10-01T01:18:25.575Z] adversary start
+[2026-10-01T01:18:25.580Z] settle 10s
+[2026-10-01T01:18:35.590Z] driver start: 100000 slots
+[2026-10-01T01:20:04.141Z] driver exited rc=0
+[2026-10-01T01:20:04.792Z] status: ok
+[2026-10-01T01:20:05.526Z] [14/38] M1_llm_d50_r1: ok (rc 0, 0h02m11s)
+[2026-10-01T01:20:05.528Z] [15/38] M1_llm_d100_r1: start (~0h02m00s, ETA for the rest 1h03m17s)
+[2026-10-01T01:20:05.528Z]   /root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/cloud/M1_llm_d100_r1 --mechanism M1 --workload llm --duty 100 --slots 100000 --warmup-s 30 --settle-s 10 --gpu 0 --lock-clocks 1 --cell M1_llm_d100_r1 --rep 1 --driver-flags '--subcarriers 612 --ldpc-cb 0 --ldpc-iters 5'
+[2026-10-01T01:20:05.577Z] cell M1_llm_d100_r1: M1 llm d100 -> /root/sb/repo/slotbench/runs/cloud/M1_llm_d100_r1
+[2026-10-01T01:20:06.474Z] warm-up 30s
+[2026-10-01T01:20:37.087Z] adversary start
+[2026-10-01T01:20:37.093Z] settle 10s
+[2026-10-01T01:20:47.104Z] driver start: 100000 slots
+[2026-10-01T01:24:37.817Z] driver exited rc=0
+[2026-10-01T01:24:38.320Z] status: ok
+[2026-10-01T01:24:39.047Z] [15/38] M1_llm_d100_r1: ok (rc 0, 0h04m33s)
+[2026-10-01T01:24:39.048Z] [16/38] M1_vision_d50_r1: start (~0h02m00s, ETA for the rest 1h03m35s)
+[2026-10-01T01:24:39.048Z]   /root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/cloud/M1_vision_d50_r1 --mechanism M1 --workload vision --duty 50 --slots 100000 --warmup-s 30 --settle-s 10 --gpu 0 --lock-clocks 1 --cell M1_vision_d50_r1 --rep 1 --driver-flags '--subcarriers 612 --ldpc-cb 0 --ldpc-iters 5'
+[2026-10-01T01:24:39.098Z] cell M1_vision_d50_r1: M1 vision d50 -> /root/sb/repo/slotbench/runs/cloud/M1_vision_d50_r1
+[2026-10-01T01:24:39.969Z] warm-up 30s
+[2026-10-01T01:25:10.456Z] adversary start
+[2026-10-01T01:25:10.462Z] settle 10s
+[2026-10-01T01:25:20.472Z] driver start: 100000 slots
+[2026-10-01T01:26:40.010Z] driver exited rc=0
+[2026-10-01T01:26:40.637Z] status: ok
+[2026-10-01T01:26:41.361Z] [16/38] M1_vision_d50_r1: ok (rc 0, 0h02m02s)
+[2026-10-01T01:26:41.362Z] [17/38] M1_vision_d100_r1: start (~0h02m00s, ETA for the rest 0h59m49s)
+[2026-10-01T01:26:41.362Z]   /root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/cloud/M1_vision_d100_r1 --mechanism M1 --workload vision --duty 100 --slots 100000 --warmup-s 30 --settle-s 10 --gpu 0 --lock-clocks 1 --cell M1_vision_d100_r1 --rep 1 --driver-flags '--subcarriers 612 --ldpc-cb 0 --ldpc-iters 5'
+[2026-10-01T01:26:41.413Z] cell M1_vision_d100_r1: M1 vision d100 -> /root/sb/repo/slotbench/runs/cloud/M1_vision_d100_r1
+[2026-10-01T01:26:42.301Z] warm-up 30s
+[2026-10-01T01:27:12.748Z] adversary start
+[2026-10-01T01:27:12.753Z] settle 10s
+[2026-10-01T01:27:22.764Z] driver start: 100000 slots
+[2026-10-01T01:30:16.126Z] driver exited rc=0
+[2026-10-01T01:30:16.945Z] status: ok
+[2026-10-01T01:30:17.682Z] [17/38] M1_vision_d100_r1: ok (rc 0, 0h03m36s)
+[2026-10-01T01:30:17.683Z] [18/38] M2_idle_d0_r1: start (~0h02m00s, ETA for the rest 0h58m12s)
+[2026-10-01T01:30:17.683Z]   /root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/cloud/M2_idle_d0_r1 --mechanism M2 --workload idle --duty 0 --slots 100000 --warmup-s 30 --settle-s 10 --gpu 0 --lock-clocks 1 --cell M2_idle_d0_r1 --rep 1 --driver-flags '--subcarriers 612 --ldpc-cb 0 --ldpc-iters 5'
+[2026-10-01T01:30:17.733Z] cell M2_idle_d0_r1: M2 idle d0 -> /root/sb/repo/slotbench/runs/cloud/M2_idle_d0_r1
+[2026-10-01T01:30:18.672Z] warm-up 30s
+[2026-10-01T01:30:49.091Z] adversary start
+[2026-10-01T01:30:49.097Z] settle 10s
+[2026-10-01T01:30:59.180Z] driver start: 100000 slots
+[2026-10-01T01:31:50.571Z] driver exited rc=0
+[2026-10-01T01:31:51.296Z] status: ok
+[2026-10-01T01:31:52.090Z] [18/38] M2_idle_d0_r1: ok (rc 0, 0h01m34s)
+[2026-10-01T01:31:52.092Z] [19/38] M2_sgemm_d50_r1: start (~0h02m00s, ETA for the rest 0h54m06s)
+[2026-10-01T01:31:52.092Z]   /root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/cloud/M2_sgemm_d50_r1 --mechanism M2 --workload sgemm --duty 50 --slots 100000 --warmup-s 30 --settle-s 10 --gpu 0 --lock-clocks 1 --cell M2_sgemm_d50_r1 --rep 1 --driver-flags '--subcarriers 612 --ldpc-cb 0 --ldpc-iters 5'
+[2026-10-01T01:31:52.143Z] cell M2_sgemm_d50_r1: M2 sgemm d50 -> /root/sb/repo/slotbench/runs/cloud/M2_sgemm_d50_r1
+[2026-10-01T01:31:53.093Z] warm-up 30s
+[2026-10-01T01:32:23.593Z] adversary start
+[2026-10-01T01:32:23.599Z] settle 10s
+[2026-10-01T01:32:33.633Z] driver start: 100000 slots
+[2026-10-01T01:33:29.381Z] driver exited rc=0
+[2026-10-01T01:33:29.780Z] status: ok
+[2026-10-01T01:33:30.569Z] [19/38] M2_sgemm_d50_r1: ok (rc 0, 0h01m38s)
+[2026-10-01T01:33:30.571Z] [20/38] M2_sgemm_d100_r1: start (~0h02m00s, ETA for the rest 0h50m20s)
+[2026-10-01T01:33:30.571Z]   /root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/cloud/M2_sgemm_d100_r1 --mechanism M2 --workload sgemm --duty 100 --slots 100000 --warmup-s 30 --settle-s 10 --gpu 0 --lock-clocks 1 --cell M2_sgemm_d100_r1 --rep 1 --driver-flags '--subcarriers 612 --ldpc-cb 0 --ldpc-iters 5'
+[2026-10-01T01:33:30.622Z] cell M2_sgemm_d100_r1: M2 sgemm d100 -> /root/sb/repo/slotbench/runs/cloud/M2_sgemm_d100_r1
+[2026-10-01T01:33:31.530Z] warm-up 30s
+[2026-10-01T01:34:02.049Z] adversary start
+[2026-10-01T01:34:02.055Z] settle 10s
+[2026-10-01T01:34:12.090Z] driver start: 100000 slots
+[2026-10-01T01:35:13.661Z] driver exited rc=0
+[2026-10-01T01:35:14.265Z] status: ok
+[2026-10-01T01:35:15.063Z] [20/38] M2_sgemm_d100_r1: ok (rc 0, 0h01m44s)
+[2026-10-01T01:35:15.064Z] [21/38] M2_llm_d50_r1: start (~0h02m00s, ETA for the rest 0h46m52s)
+[2026-10-01T01:35:15.064Z]   /root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/cloud/M2_llm_d50_r1 --mechanism M2 --workload llm --duty 50 --slots 100000 --warmup-s 30 --settle-s 10 --gpu 0 --lock-clocks 1 --cell M2_llm_d50_r1 --rep 1 --driver-flags '--subcarriers 612 --ldpc-cb 0 --ldpc-iters 5'
+[2026-10-01T01:35:15.111Z] cell M2_llm_d50_r1: M2 llm d50 -> /root/sb/repo/slotbench/runs/cloud/M2_llm_d50_r1
+[2026-10-01T01:35:16.016Z] warm-up 30s
+[2026-10-01T01:35:46.678Z] adversary start
+[2026-10-01T01:35:46.684Z] settle 10s
+[2026-10-01T01:35:56.720Z] driver start: 100000 slots
+[2026-10-01T01:36:48.199Z] driver exited rc=0
+[2026-10-01T01:36:48.817Z] status: ok
+[2026-10-01T01:36:49.608Z] [21/38] M2_llm_d50_r1: ok (rc 0, 0h01m34s)
+[2026-10-01T01:36:49.609Z] [22/38] M2_llm_d100_r1: start (~0h02m00s, ETA for the rest 0h43m25s)
+[2026-10-01T01:36:49.609Z]   /root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/cloud/M2_llm_d100_r1 --mechanism M2 --workload llm --duty 100 --slots 100000 --warmup-s 30 --settle-s 10 --gpu 0 --lock-clocks 1 --cell M2_llm_d100_r1 --rep 1 --driver-flags '--subcarriers 612 --ldpc-cb 0 --ldpc-iters 5'
+[2026-10-01T01:36:49.656Z] cell M2_llm_d100_r1: M2 llm d100 -> /root/sb/repo/slotbench/runs/cloud/M2_llm_d100_r1
+[2026-10-01T01:36:50.564Z] warm-up 30s
+[2026-10-01T01:37:21.235Z] adversary start
+[2026-10-01T01:37:21.240Z] settle 10s
+[2026-10-01T01:37:31.273Z] driver start: 100000 slots
+[2026-10-01T01:38:22.705Z] driver exited rc=0
+[2026-10-01T01:38:23.412Z] status: ok
+[2026-10-01T01:38:24.222Z] [22/38] M2_llm_d100_r1: ok (rc 0, 0h01m34s)
+[2026-10-01T01:38:24.223Z] [23/38] M2_vision_d50_r1: start (~0h02m00s, ETA for the rest 0h40m09s)
+[2026-10-01T01:38:24.223Z]   /root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/cloud/M2_vision_d50_r1 --mechanism M2 --workload vision --duty 50 --slots 100000 --warmup-s 30 --settle-s 10 --gpu 0 --lock-clocks 1 --cell M2_vision_d50_r1 --rep 1 --driver-flags '--subcarriers 612 --ldpc-cb 0 --ldpc-iters 5'
+[2026-10-01T01:38:24.274Z] cell M2_vision_d50_r1: M2 vision d50 -> /root/sb/repo/slotbench/runs/cloud/M2_vision_d50_r1
+[2026-10-01T01:38:25.184Z] warm-up 30s
+[2026-10-01T01:38:55.671Z] adversary start
+[2026-10-01T01:38:55.676Z] settle 10s
+[2026-10-01T01:39:05.711Z] driver start: 100000 slots
+[2026-10-01T01:39:57.118Z] driver exited rc=0
+[2026-10-01T01:39:57.838Z] status: ok
+[2026-10-01T01:39:58.623Z] [23/38] M2_vision_d50_r1: ok (rc 0, 0h01m34s)
+[2026-10-01T01:39:58.624Z] [24/38] M2_vision_d100_r1: start (~0h02m00s, ETA for the rest 0h37m02s)
+[2026-10-01T01:39:58.624Z]   /root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/cloud/M2_vision_d100_r1 --mechanism M2 --workload vision --duty 100 --slots 100000 --warmup-s 30 --settle-s 10 --gpu 0 --lock-clocks 1 --cell M2_vision_d100_r1 --rep 1 --driver-flags '--subcarriers 612 --ldpc-cb 0 --ldpc-iters 5'
+[2026-10-01T01:39:58.672Z] cell M2_vision_d100_r1: M2 vision d100 -> /root/sb/repo/slotbench/runs/cloud/M2_vision_d100_r1
+[2026-10-01T01:39:59.611Z] warm-up 30s
+[2026-10-01T01:40:30.131Z] adversary start
+[2026-10-01T01:40:30.137Z] settle 10s
+[2026-10-01T01:40:40.172Z] driver start: 100000 slots
+[2026-10-01T01:41:31.594Z] driver exited rc=0
+[2026-10-01T01:41:32.315Z] status: ok
+[2026-10-01T01:41:33.111Z] [24/38] M2_vision_d100_r1: ok (rc 0, 0h01m34s)
+[2026-10-01T01:41:33.112Z] [25/38] M4_idle_d0_r1: start (~0h02m00s, ETA for the rest 0h34m03s)
+[2026-10-01T01:41:33.113Z]   /root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/cloud/M4_idle_d0_r1 --mechanism M4 --workload idle --duty 0 --slots 100000 --warmup-s 30 --settle-s 10 --gpu 0 --lock-clocks 1 --cell M4_idle_d0_r1 --rep 1 --driver-flags '--subcarriers 612 --ldpc-cb 0 --ldpc-iters 5'
+[2026-10-01T01:41:33.163Z] cell M4_idle_d0_r1: M4 idle d0 -> /root/sb/repo/slotbench/runs/cloud/M4_idle_d0_r1
+[2026-10-01T01:41:34.073Z] warm-up 30s
+[2026-10-01T01:42:04.510Z] adversary start
+[2026-10-01T01:42:04.515Z] settle 10s
+[2026-10-01T01:42:14.526Z] driver start: 100000 slots
+[2026-10-01T01:43:05.985Z] driver exited rc=0
+[2026-10-01T01:43:06.729Z] status: ok
+[2026-10-01T01:43:07.458Z] [25/38] M4_idle_d0_r1: ok (rc 0, 0h01m34s)
+[2026-10-01T01:43:07.460Z] [26/38] M4_sgemm_d50_r1: start (~0h02m00s, ETA for the rest 0h31m10s)
+[2026-10-01T01:43:07.461Z]   /root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/cloud/M4_sgemm_d50_r1 --mechanism M4 --workload sgemm --duty 50 --slots 100000 --warmup-s 30 --settle-s 10 --gpu 0 --lock-clocks 1 --cell M4_sgemm_d50_r1 --rep 1 --driver-flags '--subcarriers 612 --ldpc-cb 0 --ldpc-iters 5'
+[2026-10-01T01:43:07.508Z] cell M4_sgemm_d50_r1: M4 sgemm d50 -> /root/sb/repo/slotbench/runs/cloud/M4_sgemm_d50_r1
+[2026-10-01T01:43:08.423Z] warm-up 30s
+[2026-10-01T01:43:38.854Z] adversary start
+[2026-10-01T01:43:38.860Z] settle 10s
+[2026-10-01T01:43:48.871Z] driver start: 100000 slots
+[2026-10-01T01:45:33.050Z] driver exited rc=0
+[2026-10-01T01:45:34.023Z] status: ok
+[2026-10-01T01:45:34.756Z] [26/38] M4_sgemm_d50_r1: ok (rc 0, 0h02m27s)
+[2026-10-01T01:45:34.757Z] [27/38] M4_sgemm_d100_r1: start (~0h02m00s, ETA for the rest 0h28m48s)
+[2026-10-01T01:45:34.758Z]   /root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/cloud/M4_sgemm_d100_r1 --mechanism M4 --workload sgemm --duty 100 --slots 100000 --warmup-s 30 --settle-s 10 --gpu 0 --lock-clocks 1 --cell M4_sgemm_d100_r1 --rep 1 --driver-flags '--subcarriers 612 --ldpc-cb 0 --ldpc-iters 5'
+[2026-10-01T01:45:34.807Z] cell M4_sgemm_d100_r1: M4 sgemm d100 -> /root/sb/repo/slotbench/runs/cloud/M4_sgemm_d100_r1
+[2026-10-01T01:45:35.732Z] warm-up 30s
+[2026-10-01T01:46:06.255Z] adversary start
+[2026-10-01T01:46:06.260Z] settle 10s
+[2026-10-01T01:46:16.271Z] driver start: 100000 slots
+[2026-10-01T01:50:27.337Z] driver exited rc=0
+[2026-10-01T01:50:28.488Z] status: ok
+[2026-10-01T01:50:29.218Z] [27/38] M4_sgemm_d100_r1: ok (rc 0, 0h04m54s)
+[2026-10-01T01:50:29.220Z] [28/38] M4_llm_d50_r1: start (~0h02m00s, ETA for the rest 0h27m25s)
+[2026-10-01T01:50:29.220Z]   /root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/cloud/M4_llm_d50_r1 --mechanism M4 --workload llm --duty 50 --slots 100000 --warmup-s 30 --settle-s 10 --gpu 0 --lock-clocks 1 --cell M4_llm_d50_r1 --rep 1 --driver-flags '--subcarriers 612 --ldpc-cb 0 --ldpc-iters 5'
+[2026-10-01T01:50:29.267Z] cell M4_llm_d50_r1: M4 llm d50 -> /root/sb/repo/slotbench/runs/cloud/M4_llm_d50_r1
+[2026-10-01T01:50:30.184Z] warm-up 30s
+[2026-10-01T01:51:00.808Z] adversary start
+[2026-10-01T01:51:00.814Z] settle 10s
+[2026-10-01T01:51:10.824Z] driver start: 100000 slots
+[2026-10-01T01:52:40.107Z] driver exited rc=0
+[2026-10-01T01:52:41.001Z] status: ok
+[2026-10-01T01:52:41.732Z] [28/38] M4_llm_d50_r1: ok (rc 0, 0h02m12s)
+[2026-10-01T01:52:41.733Z] [29/38] M4_llm_d100_r1: start (~0h02m00s, ETA for the rest 0h24m49s)
+[2026-10-01T01:52:41.733Z]   /root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/cloud/M4_llm_d100_r1 --mechanism M4 --workload llm --duty 100 --slots 100000 --warmup-s 30 --settle-s 10 --gpu 0 --lock-clocks 1 --cell M4_llm_d100_r1 --rep 1 --driver-flags '--subcarriers 612 --ldpc-cb 0 --ldpc-iters 5'
+[2026-10-01T01:52:41.778Z] cell M4_llm_d100_r1: M4 llm d100 -> /root/sb/repo/slotbench/runs/cloud/M4_llm_d100_r1
+[2026-10-01T01:52:42.683Z] warm-up 30s
+[2026-10-01T01:53:13.268Z] adversary start
+[2026-10-01T01:53:13.273Z] settle 10s
+[2026-10-01T01:53:23.283Z] driver start: 100000 slots
+[2026-10-01T01:57:15.543Z] driver exited rc=0
+[2026-10-01T01:57:16.482Z] status: ok
+[2026-10-01T01:57:17.219Z] [29/38] M4_llm_d100_r1: ok (rc 0, 0h04m35s)
+[2026-10-01T01:57:17.220Z] [30/38] M4_vision_d50_r1: start (~0h02m00s, ETA for the rest 0h23m00s)
+[2026-10-01T01:57:17.220Z]   /root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/cloud/M4_vision_d50_r1 --mechanism M4 --workload vision --duty 50 --slots 100000 --warmup-s 30 --settle-s 10 --gpu 0 --lock-clocks 1 --cell M4_vision_d50_r1 --rep 1 --driver-flags '--subcarriers 612 --ldpc-cb 0 --ldpc-iters 5'
+[2026-10-01T01:57:17.268Z] cell M4_vision_d50_r1: M4 vision d50 -> /root/sb/repo/slotbench/runs/cloud/M4_vision_d50_r1
+[2026-10-01T01:57:18.198Z] warm-up 30s
+[2026-10-01T01:57:48.630Z] adversary start
+[2026-10-01T01:57:48.634Z] settle 10s
+[2026-10-01T01:57:58.644Z] driver start: 100000 slots
+[2026-10-01T01:59:18.259Z] driver exited rc=0
+[2026-10-01T01:59:18.801Z] status: ok
+[2026-10-01T01:59:19.535Z] [30/38] M4_vision_d50_r1: ok (rc 0, 0h02m02s)
+[2026-10-01T01:59:19.536Z] [31/38] M4_vision_d100_r1: start (~0h02m00s, ETA for the rest 0h20m18s)
+[2026-10-01T01:59:19.536Z]   /root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/cloud/M4_vision_d100_r1 --mechanism M4 --workload vision --duty 100 --slots 100000 --warmup-s 30 --settle-s 10 --gpu 0 --lock-clocks 1 --cell M4_vision_d100_r1 --rep 1 --driver-flags '--subcarriers 612 --ldpc-cb 0 --ldpc-iters 5'
+[2026-10-01T01:59:19.581Z] cell M4_vision_d100_r1: M4 vision d100 -> /root/sb/repo/slotbench/runs/cloud/M4_vision_d100_r1
+[2026-10-01T01:59:20.463Z] warm-up 30s
+[2026-10-01T01:59:50.902Z] adversary start
+[2026-10-01T01:59:50.908Z] settle 10s
+[2026-10-01T02:00:00.919Z] driver start: 100000 slots
+[2026-10-01T02:02:55.188Z] driver exited rc=0
+[2026-10-01T02:02:56.117Z] status: ok
+[2026-10-01T02:02:56.844Z] [31/38] M4_vision_d100_r1: ok (rc 0, 0h03m37s)
+[2026-10-01T02:02:56.845Z] [32/38] M5_idle_d0_r1: start (~0h02m00s, ETA for the rest 0h18m00s)
+[2026-10-01T02:02:56.845Z]   /root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/cloud/M5_idle_d0_r1 --mechanism M5 --workload idle --duty 0 --slots 100000 --warmup-s 30 --settle-s 10 --gpu 0 --lock-clocks 1 --cell M5_idle_d0_r1 --rep 1 --driver-flags '--subcarriers 612 --ldpc-cb 0 --ldpc-iters 5'
+[2026-10-01T02:02:56.896Z] cell M5_idle_d0_r1: M5 idle d0 -> /root/sb/repo/slotbench/runs/cloud/M5_idle_d0_r1
+[2026-10-01T02:02:57.730Z] warm-up 30s
+[2026-10-01T02:03:28.147Z] adversary start
+[2026-10-01T02:03:28.153Z] settle 10s
+[2026-10-01T02:03:38.164Z] driver start: 100000 slots
+[2026-10-01T02:04:29.613Z] driver exited rc=0
+[2026-10-01T02:04:30.461Z] status: ok
+[2026-10-01T02:04:30.927Z] [32/38] M5_idle_d0_r1: ok (rc 0, 0h01m34s)
+[2026-10-01T02:04:30.929Z] [33/38] M5_sgemm_d50_r1: start (~0h02m00s, ETA for the rest 0h15m15s)
+[2026-10-01T02:04:30.929Z]   /root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/cloud/M5_sgemm_d50_r1 --mechanism M5 --workload sgemm --duty 50 --slots 100000 --warmup-s 30 --settle-s 10 --gpu 0 --lock-clocks 1 --cell M5_sgemm_d50_r1 --rep 1 --driver-flags '--subcarriers 612 --ldpc-cb 0 --ldpc-iters 5'
+[2026-10-01T02:04:30.979Z] cell M5_sgemm_d50_r1: M5 sgemm d50 -> /root/sb/repo/slotbench/runs/cloud/M5_sgemm_d50_r1
+[2026-10-01T02:04:31.802Z] warm-up 30s
+[2026-10-01T02:05:02.244Z] adversary start
+[2026-10-01T02:05:02.249Z] settle 10s
+[2026-10-01T02:05:12.259Z] driver start: 100000 slots
+[2026-10-01T02:06:55.090Z] driver exited rc=0
+[2026-10-01T02:06:55.426Z] status: ok
+[2026-10-01T02:06:55.889Z] [33/38] M5_sgemm_d50_r1: ok (rc 0, 0h02m24s)
+[2026-10-01T02:06:55.891Z] [34/38] M5_sgemm_d100_r1: start (~0h02m00s, ETA for the rest 0h12m41s)
+[2026-10-01T02:06:55.891Z]   /root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/cloud/M5_sgemm_d100_r1 --mechanism M5 --workload sgemm --duty 100 --slots 100000 --warmup-s 30 --settle-s 10 --gpu 0 --lock-clocks 1 --cell M5_sgemm_d100_r1 --rep 1 --driver-flags '--subcarriers 612 --ldpc-cb 0 --ldpc-iters 5'
+[2026-10-01T02:06:55.940Z] cell M5_sgemm_d100_r1: M5 sgemm d100 -> /root/sb/repo/slotbench/runs/cloud/M5_sgemm_d100_r1
+[2026-10-01T02:06:56.711Z] warm-up 30s
+[2026-10-01T02:07:27.115Z] adversary start
+[2026-10-01T02:07:27.121Z] settle 10s
+[2026-10-01T02:07:37.131Z] driver start: 100000 slots
+[2026-10-01T02:11:46.795Z] driver exited rc=0
+[2026-10-01T02:11:47.299Z] status: ok
+[2026-10-01T02:11:47.770Z] [34/38] M5_sgemm_d100_r1: ok (rc 0, 0h04m51s)
+[2026-10-01T02:11:47.771Z] [35/38] M5_llm_d50_r1: start (~0h02m00s, ETA for the rest 0h10m25s)
+[2026-10-01T02:11:47.771Z]   /root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/cloud/M5_llm_d50_r1 --mechanism M5 --workload llm --duty 50 --slots 100000 --warmup-s 30 --settle-s 10 --gpu 0 --lock-clocks 1 --cell M5_llm_d50_r1 --rep 1 --driver-flags '--subcarriers 612 --ldpc-cb 0 --ldpc-iters 5'
+[2026-10-01T02:11:47.820Z] cell M5_llm_d50_r1: M5 llm d50 -> /root/sb/repo/slotbench/runs/cloud/M5_llm_d50_r1
+[2026-10-01T02:11:48.608Z] warm-up 30s
+[2026-10-01T02:12:19.112Z] adversary start
+[2026-10-01T02:12:19.117Z] settle 10s
+[2026-10-01T02:12:29.127Z] driver start: 100000 slots
+[2026-10-01T02:13:57.744Z] driver exited rc=0
+[2026-10-01T02:13:58.304Z] status: ok
+[2026-10-01T02:13:58.769Z] [35/38] M5_llm_d50_r1: ok (rc 0, 0h02m10s)
+[2026-10-01T02:13:58.770Z] [36/38] M5_llm_d100_r1: start (~0h02m00s, ETA for the rest 0h07m46s)
+[2026-10-01T02:13:58.770Z]   /root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/cloud/M5_llm_d100_r1 --mechanism M5 --workload llm --duty 100 --slots 100000 --warmup-s 30 --settle-s 10 --gpu 0 --lock-clocks 1 --cell M5_llm_d100_r1 --rep 1 --driver-flags '--subcarriers 612 --ldpc-cb 0 --ldpc-iters 5'
+[2026-10-01T02:13:58.822Z] cell M5_llm_d100_r1: M5 llm d100 -> /root/sb/repo/slotbench/runs/cloud/M5_llm_d100_r1
+[2026-10-01T02:13:59.631Z] warm-up 30s
+[2026-10-01T02:14:30.221Z] adversary start
+[2026-10-01T02:14:30.228Z] settle 10s
+[2026-10-01T02:14:40.236Z] driver start: 100000 slots
+[2026-10-01T02:18:31.341Z] driver exited rc=0
+[2026-10-01T02:18:32.382Z] status: ok
+[2026-10-01T02:18:32.847Z] [36/38] M5_llm_d100_r1: ok (rc 0, 0h04m34s)
+[2026-10-01T02:18:32.848Z] [37/38] M5_vision_d50_r1: start (~0h02m00s, ETA for the rest 0h05m17s)
+[2026-10-01T02:18:32.848Z]   /root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/cloud/M5_vision_d50_r1 --mechanism M5 --workload vision --duty 50 --slots 100000 --warmup-s 30 --settle-s 10 --gpu 0 --lock-clocks 1 --cell M5_vision_d50_r1 --rep 1 --driver-flags '--subcarriers 612 --ldpc-cb 0 --ldpc-iters 5'
+[2026-10-01T02:18:32.899Z] cell M5_vision_d50_r1: M5 vision d50 -> /root/sb/repo/slotbench/runs/cloud/M5_vision_d50_r1
+[2026-10-01T02:18:33.683Z] warm-up 30s
+[2026-10-01T02:19:04.173Z] adversary start
+[2026-10-01T02:19:04.178Z] settle 10s
+[2026-10-01T02:19:14.189Z] driver start: 100000 slots
+[2026-10-01T02:20:33.787Z] driver exited rc=0
+[2026-10-01T02:20:34.397Z] status: ok
+[2026-10-01T02:20:34.864Z] [37/38] M5_vision_d50_r1: ok (rc 0, 0h02m02s)
+[2026-10-01T02:20:34.867Z] [38/38] M5_vision_d100_r1: start (~0h02m00s, ETA for the rest 0h02m37s)
+[2026-10-01T02:20:34.867Z]   /root/sb/repo/slotbench/scripts/run_one.sh --out /root/sb/repo/slotbench/runs/cloud/M5_vision_d100_r1 --mechanism M5 --workload vision --duty 100 --slots 100000 --warmup-s 30 --settle-s 10 --gpu 0 --lock-clocks 1 --cell M5_vision_d100_r1 --rep 1 --driver-flags '--subcarriers 612 --ldpc-cb 0 --ldpc-iters 5'
+[2026-10-01T02:20:34.918Z] cell M5_vision_d100_r1: M5 vision d100 -> /root/sb/repo/slotbench/runs/cloud/M5_vision_d100_r1
+[2026-10-01T02:20:35.696Z] warm-up 30s
+[2026-10-01T02:21:06.097Z] adversary start
+[2026-10-01T02:21:06.102Z] settle 10s
+[2026-10-01T02:21:16.112Z] driver start: 100000 slots
+[2026-10-01T02:24:09.203Z] driver exited rc=0
+[2026-10-01T02:24:10.358Z] status: ok
+[2026-10-01T02:24:10.831Z] [38/38] M5_vision_d100_r1: ok (rc 0, 0h03m35s)
+[2026-10-01T02:24:10.837Z] finished: 38/38 cells ok, 0 not ok this pass

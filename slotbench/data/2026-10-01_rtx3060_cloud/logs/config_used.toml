@@ -1,0 +1,28 @@
+# cloud.toml: container-friendly first pass on a rented GPU (vast.ai).
+#   python3 scripts/run_matrix.py configs/cloud.toml --out-root runs
+# 3 SOLO cells + 5 mechanisms x (1 idle D=0 cell + 3 workloads x 2 duties) = 38 cells.
+# Per cell: 30 s warm-up + 10 s settle + 1e5 x 500 us = 50 s + ~30 s overhead, about 2 min;
+# the matrix is about 1.3 h and 38 x 6.4 MB of slots.bin.
+# Containers cannot pin to isolated cores, use SCHED_FIFO or (usually) lock clocks or set the
+# time-slice, so cores/fifo are off and M3 is left out; lock_clocks is attempted and its outcome
+# recorded in each run.json. Add "M6" (with MIG_DRIVER_UUID/MIG_ADV_UUID) on a MIG-enabled A100/H100.
+# Optional keys are documented in configs/quick.toml.
+
+[run]
+slots = 100000
+warmup_s = 30
+settle_s = 10
+repeats = 1
+out_root = "runs"
+driver_core = -1
+collector_core = -1
+fifo = 0
+lock_clocks = true
+sizes = "--subcarriers 612 --ldpc-cb 0 --ldpc-iters 5"   # set by cloud/onstart.sh from --tune-us
+solo_seconds = 60
+
+[matrix]
+mechanisms = ["M0", "M1", "M2", "M4", "M5"]
+workloads = ["sgemm", "llm", "vision"]
+duties = [0, 50, 100]
+solo = true

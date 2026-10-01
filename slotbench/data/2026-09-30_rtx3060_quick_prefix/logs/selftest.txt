@@ -1,0 +1,13 @@
+GPU NVIDIA GeForce RTX 3060 (GPU-3b2c4236-bee6-f3b3-3eaf-3986f23776a4), CC 8.6, 28 SMs
+pipeline: {"config":{"fft":4096,"symbols":14,"antennas":4,"layers":4,"subcarriers":3276,"qam":256,"ldpc_cb":50,"ldpc_iters":20,"ldpc_rows":46,"ldpc_z":384,"ldpc_bg":1,"sigma2":0.00999999978,"seed":1},"data_symbols":12,"bits_per_symbol":8,"llrs_per_slot":1257984,"ldpc_code":"BG1 Z=384 set=1 rows=46 cols=68 kb=22 edges=316 K=8448 N=26112 Ntx=25344 rate=0.3333","ldpc_k_bits":8448,"ldpc_n_bits":26112,"ldpc_n_tx_bits":25344,"ldpc_edges":316,"ldpc_alpha":0.75,"ldpc_llr_wrap":1.0073260073260073,"decoder_smem_bytes":52224,"decoder_smem_optin_max":101376,"decoder_app_storage":"fp16","decoder_msg_storage":"fp32","cublas_workspace_bytes":33554432,"graph_nodes":0,"stages":[{"stage":"S1_fft","flops":13762560,"bytes":3670016},{"stage":"S2_pilot_gather","flops":0,"bytes":3354624},{"stage":"S3_chan_est","flops":1677312,"bytes":838656},{"stage":"S4_gram","flops":1690416,"bytes":838656},{"stage":"S5_matched_filter","flops":5031936,"bytes":2935296},{"stage":"S6_lu","flops":559104,"bytes":838656},{"stage":"S7_solve","flops":5031936,"bytes":2935296},{"stage":"S8_demod","flops":35223552,"bytes":6289920},{"stage":"S9_rate_dematch","flops":0,"bytes":10444800},{"stage":"S10_ldpc_decode","flops":970752000,"bytes":981196800},{"stage":"S11_hard_decision","flops":0,"bytes":1742400}],"total_flops":1033728816,"total_bytes":1015085120}
+selftest decoder: BG1 Z=384 set=1 rows=46 cols=68 kb=22 edges=316 K=8448 N=26112 Ntx=25344 rate=0.3333, 20 iterations, alpha 0.75, app storage fp16, msg fp32, 8 codewords/point
+  Eb/N0  0.50 dB: channel BER 0.1937 | GPU BER 4.668e-01 cw errors 8/8 | host BER 2.017e-01 cw errors 8/8 | pack mismatches 0 | non-finite 0
+  Eb/N0  1.50 dB: channel BER 0.1668 | GPU BER 4.679e-01 cw errors 8/8 | host BER 0.000e+00 cw errors 0/8 | pack mismatches 0 | non-finite 0
+  Eb/N0  3.00 dB: channel BER 0.1239 | GPU BER 4.707e-01 cw errors 8/8 | host BER 0.000e+00 cw errors 0/8 | pack mismatches 0 | non-finite 0
+  FAIL: errors at the high-SNR point
+  GPU/host hard-decision agreement 0.518228 over 626688 bits (need >= 0.999)
+selftest slot: stamps seq 1/1 (expected 1), gpu time 27824.1 us
+  equaliser EVM -15.8 dB (limit -6.0 dB), demod BER vs transmitted 0.1226, LLR mismatches 0, de-match mismatches 0, pack mismatches 0, singular LU 0, non-finite 0
+selftest: FAIL
+
+selftest: FAIL

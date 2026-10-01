@@ -1,0 +1,12 @@
+tune: subcarriers 3276 ldpc_iters 10 -> median 1329.6 us
+tune: subcarriers 2604 ldpc_iters 10 -> median 1064.4 us
+tune: subcarriers 1944 ldpc_iters 10 -> median 857.2 us
+tune: subcarriers 1272 ldpc_iters 10 -> median 624.5 us
+tune: subcarriers 612 ldpc_iters 10 -> median 388.5 us
+tune: subcarriers 612 ldpc_iters 9 -> median 359.2 us
+tune: subcarriers 612 ldpc_iters 8 -> median 329.8 us
+tune: subcarriers 612 ldpc_iters 7 -> median 300.5 us
+tune: subcarriers 612 ldpc_iters 6 -> median 271.3 us
+tune: subcarriers 612 ldpc_iters 5 -> median 242.1 us
+--subcarriers 612 --ldpc-cb 0 --ldpc-iters 5
+{"tune_us":250,"gpu":"NVIDIA GeForce RTX 3060","uuid":"GPU-ecbd7065-92ef-c0f1-0967-8126c0011f8b","ok":true,"subcarriers":612,"ldpc_iters":5,"median_us":242.13399999999999,"flags":"--subcarriers 612 --ldpc-cb 0 --ldpc-iters 5","runs":300,"candidates":[{"subcarriers":3276,"ldpc_iters":10,"median_us":1329.5640000000001},{"subcarriers":2604,"ldpc_iters":10,"median_us":1064.376},{"subcarriers":1944,"ldpc_iters":10,"median_us":857.20799999999997},{"subcarriers":1272,"ldpc_iters":10,"median_us":624.53099999999995},{"subcarriers":612,"ldpc_iters":10,"median_us":388.54899999999998},{"subcarriers":612,"ldpc_iters":9,"median_us":359.24400000000003},{"subcarriers":612,"ldpc_iters":8,"median_us":329.77800000000002},{"subcarriers":612,"ldpc_iters":7,"median_us":300.52300000000002},{"subcarriers":612,"ldpc_iters":6,"median_us":271.31900000000002},{"subcarriers":612,"ldpc_iters":5,"median_us":242.13399999999999}]}
