@@ -271,6 +271,15 @@ SELFTEST_RC=0
 ./bin/slot_driver --selftest 2>&1 | tee "$LOGS/selftest.txt" || SELFTEST_RC=$?
 log "selftest exit code $SELFTEST_RC ($([ "$SELFTEST_RC" = 0 ] && echo PASS || echo FAIL))"
 
+# ---- 5b. debug configs: race detector over the selftest (small slot) ------------------------------
+if [[ "$SB_CONFIG" == debug* ]]; then
+    SAN="$(command -v compute-sanitizer || echo /usr/local/cuda/bin/compute-sanitizer)"
+    log "racecheck: $SAN --tool racecheck slot_driver --selftest --ldpc-cb 1"
+    timeout 1800 "$SAN" --tool racecheck --racecheck-report hazard --print-limit 50 \
+        ./bin/slot_driver --selftest --ldpc-cb 1 >"$LOGS/racecheck.txt" 2>&1 || true
+    grep -E "RACECHECK SUMMARY|hazard|Error|at 0x|in .*k_ldpc" "$LOGS/racecheck.txt" | head -40 || true
+fi
+
 # ---- 6. tune the workload size to the idle target -------------------------------------------------
 log "slot_driver --tune-us $SB_TUNE_US"
 TUNE_RC=0
