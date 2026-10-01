@@ -336,7 +336,10 @@ if grep -qE '"real-(llm|vision)"' "$CFG"; then
     log "real AI workloads: creating torch venv (log: $LOGS/ai_env.log)"
     AI_VENV="$WORK/aienv"
     if { python3 -m venv "$AI_VENV" && "$AI_VENV/bin/pip" install -q --upgrade pip \
-         && "$AI_VENV/bin/pip" install -q torch transformers accelerate ultralytics; } >>"$LOGS/ai_env.log" 2>&1; then
+         && "$AI_VENV/bin/pip" install -q torch torchvision --index-url "${SB_TORCH_INDEX:-https://download.pytorch.org/whl/cu124}" \
+         && "$AI_VENV/bin/pip" install -q transformers accelerate ultralytics \
+         && "$AI_VENV/bin/python" -c 'import torch; assert torch.cuda.is_available(), "no CUDA"; print("torch", torch.__version__, torch.version.cuda, torch.cuda.get_device_name(0))'; \
+       } >>"$LOGS/ai_env.log" 2>&1; then
         export SB_AI_PYTHON="$AI_VENV/bin/python"
         for w in real-llm real-vision; do
             if grep -q "\"$w\"" "$CFG"; then
@@ -345,11 +348,13 @@ if grep -qE '"real-(llm|vision)"' "$CFG"; then
                     log "prefetch $w: ok"
                 else
                     log "prefetch $w: FAILED (see ai_env.log)"
+                    tail -n 15 "$LOGS/ai_env.log" | sed 's/^/  ai_env: /' || true
                 fi
             fi
         done
     else
         log "torch venv install FAILED (see ai_env.log); real-* cells will fail"
+        tail -n 25 "$LOGS/ai_env.log" | sed 's/^/  ai_env: /' || true
     fi
 fi
 
