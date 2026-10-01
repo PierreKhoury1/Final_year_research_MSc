@@ -386,7 +386,7 @@ std::string SlotPipeline::describe_json() const {
     j.add("ldpc_n_tx_bits", c.n_tx_bits()).add("ldpc_edges", c.n_edges()).add("ldpc_alpha", (double)kAlpha);
     j.add("ldpc_llr_wrap", (double)cfg_.ldpc_cb * c.n_tx_bits() / (double)m.n_llr);
     j.add("decoder_smem_bytes", (unsigned long long)m.dec_smem).add("decoder_smem_optin_max", m.smem_optin);
-    j.add("decoder_app_storage", m.app_fp16 ? "fp16" : "fp32").add("decoder_msg_storage", "fp32");
+    j.add("decoder_app_storage", m.app_fp16 ? "fp16" : "fp32").add("decoder_msg_storage", "compressed check-node state, 8 B (2x fp16 min + signs + index)");
     j.add("cublas_workspace_bytes", (unsigned long long)kBlasWorkspace);
     j.add("graph_nodes", (unsigned long long)graph_nodes_);
     j.add_raw("stages", stages).add("total_flops", tf).add("total_bytes", tb);
@@ -408,7 +408,7 @@ bool SlotPipeline::selftest(std::string &report) {
     const double rate = (double)c.k_bits() / c.n_tx_bits();
     const double shift_db = std::max(0.0, 8.0 * (rate - 1.0 / 3.0));  // higher rate needs more SNR
     const double ebn0[3] = {0.5 + shift_db, 1.5 + shift_db, 3.0 + shift_db};
-    snprintf(line, sizeof line, "selftest decoder: %s, %d iterations, alpha %.2f, app storage %s, msg fp32, %d codewords/point",
+    snprintf(line, sizeof line, "selftest decoder: %s, %d iterations, alpha %.2f, app storage %s, check-node state 8 B (fp16 mins), %d codewords/point",
              c.describe().c_str(), iters, kAlpha, m.app_fp16 ? "fp16" : "fp32", n_cw);
     say(line);
     const size_t nb = c.n_bits();

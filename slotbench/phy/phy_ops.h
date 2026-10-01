@@ -165,6 +165,42 @@ HD void qam_llr(Cf y, int qam, float inv_n0, float *llr) {
     qam_llr_axis(y.y, m, s, inv_n0, llr + 1, 2);
 }
 
+// Same LLRs as qam_llr with the bits per axis M fixed at compile time (GPU demod kernel).
+template <int M>
+HD float qam_scale_m() { return M == 1 ? 0.70710678118654752f : M == 2 ? 0.31622776601683793f
+                             : M == 3 ? 0.15430334996209191f : 0.076696498884737041f; }
+template <int M>
+HD void qam_llr_axis_m(float y, float inv_n0, float *out) {
+    float d0[M], d1[M];
+#if defined(__CUDA_ARCH__)
+#pragma unroll
+#endif
+    for (int i = 0; i < M; i++) { d0[i] = 3.0e38f; d1[i] = 3.0e38f; }
+#if defined(__CUDA_ARCH__)
+#pragma unroll
+#endif
+    for (unsigned c = 0; c < (1u << M); c++) {
+        float e = y - qam_scale_m<M>() * (float)qam_axis_level(c, M);
+        float d = e * e;
+#if defined(__CUDA_ARCH__)
+#pragma unroll
+#endif
+        for (int i = 0; i < M; i++) {
+            if ((c >> i) & 1u) d1[i] = fminf(d1[i], d);
+            else d0[i] = fminf(d0[i], d);
+        }
+    }
+#if defined(__CUDA_ARCH__)
+#pragma unroll
+#endif
+    for (int i = 0; i < M; i++) out[2 * i] = llr_clamp((d1[i] - d0[i]) * inv_n0);
+}
+template <int M>
+HD void qam_llr_m(Cf y, float inv_n0, float *llr) {
+    qam_llr_axis_m<M>(y.x, inv_n0, llr);
+    qam_llr_axis_m<M>(y.y, inv_n0, llr + 1);
+}
+
 // ---------------- normalized min-sum ----------------
 // Largest check-node degree of either base graph (BG1 row 0 has 19 edges; BG2 at most 10).
 constexpr int kMaxRowDegree = 19;
@@ -198,25 +234,55 @@ HD float ms_out(const MsAcc &a, float t, int j, float alpha) {
     return s ? -v : v;
 }
 
-// One layered update of check node (row, z). Acc supplies the storage:
+// Compressed check-to-variable state of one check node (as hardware and cuPHY-style decoders keep it):
+// the two smallest |t| as fp16 plus the sign of every t and the position of the smallest. Every
+// outgoing message of the node follows from it, so the decoder moves 8 bytes per check node per layer
+// instead of 4 bytes per edge. lo = fp16(min1) | fp16(min2) << 16, hi = sign bits (bit j = t_j < 0) |
+// idx1 << 24. A fresh node (first iteration) has no state: its old messages are 0.
+struct CnWord {
+    uint32_t lo, hi;
+};
+HD int popcount32(uint32_t x) {
+#if defined(__CUDA_ARCH__)
+    return __popc(x);
+#else
+    return __builtin_popcount(x);
+#endif
+}
+HD CnWord cn_pack(const MsAcc &a, uint32_t signs) {
+    CnWord w;
+    w.lo = (uint32_t)f32_to_f16_bits(a.min1) | ((uint32_t)f32_to_f16_bits(a.min2) << 16);
+    w.hi = (signs & 0x7ffffu) | ((uint32_t)(a.idx1 & 31) << 24);
+    return w;
+}
+// Old check-to-variable message of edge j from the stored state.
+HD float cn_msg(CnWord w, int j, float alpha) {
+    int idx1 = (int)((w.hi >> 24) & 31u);
+    float m = f16_bits_to_f32((uint16_t)(j == idx1 ? (w.lo >> 16) : (w.lo & 0xffffu)));
+    float v = fmul_rn(alpha, m);
+    unsigned s = ((unsigned)popcount32(w.hi & 0x7ffffu) ^ (w.hi >> j)) & 1u;
+    return s ? -v : v;
+}
+
+// One layered update of check node (row r, z). Acc supplies the storage:
 //   int col(e), int shift(e)       edge e's base column and V mod Z
 //   float app(v), void set_app(v, x)   a posteriori LLR of lifted variable v (set_app clamps and
 //                                      rounds to the storage precision)
-//   float msg(e), void set_msg(e, x)   check-to-variable message of edge e for this z (fp32)
-// first: first iteration, old messages are taken as 0 without reading them.
-// Two passes recompute t = app - old instead of keeping per-edge arrays; within a row every edge
-// touches a different variable, so pass 2 sees the same app values as pass 1.
+//   CnWord cn(r), void set_cn(r, w)    compressed state of check node (r, z)
+// first: first iteration, old messages are 0 and the state is not read.
+// One pass over the edges keeps the variable index and t = app - old in registers (fixed-size
+// arrays with a runtime guard); within a row every edge touches a different variable.
 #if defined(__CUDACC__)
 #pragma nv_exec_check_disable
 #endif
 template <class Acc>
-HD void ms_row_update(Acc &s, int e0, int deg, int z, int Z, float alpha, bool first) {
-    // One pass over the edges: the variable index and t = app - old stay in registers (fixed-size
-    // arrays with a runtime guard), so app and the old message are each read once per edge.
+HD void ms_row_update(Acc &s, int r, int e0, int deg, int z, int Z, float alpha, bool first) {
     int v[kMaxRowDegree];
     float t[kMaxRowDegree];
+    const CnWord old = first ? CnWord{0u, 0u} : s.cn(r);
     MsAcc a;
     ms_init(a);
+    uint32_t signs = 0;
 #if defined(__CUDA_ARCH__)
 #pragma unroll
 #endif
@@ -225,21 +291,21 @@ HD void ms_row_update(Acc &s, int e0, int deg, int z, int Z, float alpha, bool f
             int e = e0 + j;
             int sh = z + s.shift(e);
             v[j] = s.col(e) * Z + (sh >= Z ? sh - Z : sh);
-            float old = first ? 0.0f : s.msg(e);
-            t[j] = fsub_rn(s.app(v[j]), old);
+            float om = first ? 0.0f : cn_msg(old, j, alpha);
+            t[j] = fsub_rn(s.app(v[j]), om);
             ms_add(a, t[j], j);
+            signs |= (t[j] < 0.0f ? 1u : 0u) << j;
         }
     }
 #if defined(__CUDA_ARCH__)
 #pragma unroll
 #endif
     for (int j = 0; j < kMaxRowDegree; j++) {
-        if (j < deg) {
-            float n = ms_out(a, t[j], j, alpha);
-            s.set_msg(e0 + j, n);
-            s.set_app(v[j], fadd_rn(t[j], n));
-        }
+        if (j < deg) s.set_app(v[j], fadd_rn(t[j], ms_out(a, t[j], j, alpha)));
     }
+    // Stored mins are rounded to fp16; the messages applied just above used the exact values. The next
+    // iteration subtracts the rounded ones, on the host and the GPU alike.
+    s.set_cn(r, cn_pack(a, signs));
 }
 
 // ---------------- slot geometry ----------------

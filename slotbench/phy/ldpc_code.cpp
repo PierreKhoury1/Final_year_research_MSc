@@ -77,11 +77,11 @@ std::shared_ptr<const Gf2Mat> core_inverse(const LdpcCode &code) {
     return sp;
 }
 
-// Host storage for ms_row_update: fp32 messages, fp32 or fp16-rounded a posteriori LLRs.
+// Host storage for ms_row_update: compressed check-node state, fp32 or fp16-rounded a posteriori LLRs.
 struct HostAcc {
     const LdpcCode *code;
     float *appv;
-    float *msgv;  // [edge][z]
+    CnWord *cnv;  // [row][z]
     int Z, z;
     bool fp16;
     int col(int e) const { return code->edge_col[e]; }
@@ -91,8 +91,8 @@ struct HostAcc {
         x = llr_clamp(x);
         appv[v] = fp16 ? f16_round(x) : x;
     }
-    float msg(int e) const { return msgv[(size_t)e * Z + z]; }
-    void set_msg(int e, float x) { msgv[(size_t)e * Z + z] = x; }
+    CnWord cn(int r) const { return cnv[(size_t)r * Z + z]; }
+    void set_cn(int r, CnWord w) { cnv[(size_t)r * Z + z] = w; }
 };
 
 }  // namespace
@@ -209,7 +209,8 @@ std::vector<uint8_t> ldpc_encode(const LdpcCode &code, const std::vector<uint8_t
 void ldpc_decode_host_ex(const LdpcCode &code, const float *llr_in, int iters, float alpha, uint8_t *bits_out,
                          bool app_fp16) {
     const int Z = code.Z, n = code.n_bits();
-    std::vector<float> app(n), msg((size_t)code.n_edges() * Z, 0.0f);
+    std::vector<float> app(n);
+    std::vector<CnWord> cn((size_t)code.rows * Z, CnWord{0u, 0u});
     for (int v = 0; v < n; v++) {
         float x = llr_clamp(llr_in[v]);
         app[v] = app_fp16 ? f16_round(x) : x;
@@ -217,7 +218,7 @@ void ldpc_decode_host_ex(const LdpcCode &code, const float *llr_in, int iters, f
     HostAcc acc{};
     acc.code = &code;
     acc.appv = app.data();
-    acc.msgv = msg.data();
+    acc.cnv = cn.data();
     acc.Z = Z;
     acc.fp16 = app_fp16;
     for (int it = 0; it < iters; it++)
@@ -225,7 +226,7 @@ void ldpc_decode_host_ex(const LdpcCode &code, const float *llr_in, int iters, f
             int e0 = code.row_start[r], deg = code.row_start[r + 1] - e0;
             for (int z = 0; z < Z; z++) {
                 acc.z = z;
-                ms_row_update(acc, e0, deg, z, Z, alpha, it == 0);
+                ms_row_update(acc, r, e0, deg, z, Z, alpha, it == 0);
             }
         }
     for (int v = 0; v < n; v++) bits_out[v] = app[v] < 0.0f ? 1 : 0;

@@ -67,14 +67,17 @@ __global__ void k_add_sigma2(Cf *G, int batch, float sigma2) {
 }
 
 // ---- S8 ----
-__global__ void k_demod(const Cf *__restrict__ X, float *__restrict__ llr, int S, int n_data, int qam, float inv_n0) {
+// Bits per axis is a template parameter so qam_llr's small per-bit arrays stay in registers (with a
+// runtime qam they lived in local memory and S8 took ~150 us at 100 MHz on an RTX 3060).
+template <int M>
+__global__ void k_demod(const Cf *__restrict__ X, float *__restrict__ llr, int S, int n_data, float inv_n0) {
     long long q = (long long)blockIdx.x * blockDim.x + threadIdx.x;
     if (q >= (long long)S * n_data * kAnt) return;
     int l = (int)(q % kAnt);
     long long kt = q / kAnt;
     int t = (int)(kt % n_data), k = (int)(kt / n_data);
     Cf y = X[(size_t)k * kAnt * n_data + l + 4 * t];
-    qam_llr(y, qam, inv_n0, llr + q * qam_bits(qam));
+    qam_llr_m<M>(y, inv_n0, llr + q * (2 * M));
 }
 
 // ---- S9 ----
@@ -100,15 +103,18 @@ template <> __device__ __forceinline__ __half from_f<__half>(float x) { return _
 template <typename T>
 struct DevAcc {
     T *appv;                 // shared memory, cols * Z
-    float *msgv;             // this codeword's [edge][z] messages
+    CnWord *cnv;             // this codeword's [row][z] check-node state
     const int *ecol, *eshift;
     int Z, z;
     __device__ int col(int e) const { return __ldg(ecol + e); }
     __device__ int shift(int e) const { return __ldg(eshift + e); }
     __device__ float app(int v) const { return to_f(appv[v]); }
     __device__ void set_app(int v, float x) { appv[v] = from_f<T>(llr_clamp(x)); }
-    __device__ float msg(int e) const { return msgv[(size_t)e * Z + z]; }
-    __device__ void set_msg(int e, float x) { msgv[(size_t)e * Z + z] = x; }
+    __device__ CnWord cn(int r) const {
+        uint2 w = reinterpret_cast<const uint2 *>(cnv)[(size_t)r * Z + z];
+        return CnWord{w.x, w.y};
+    }
+    __device__ void set_cn(int r, CnWord w) { reinterpret_cast<uint2 *>(cnv)[(size_t)r * Z + z] = make_uint2(w.lo, w.hi); }
 };
 
 // One block per codeword, thread z owns check node (row, z) of every layer. In a layer the
@@ -125,15 +131,15 @@ __global__ void __launch_bounds__(384) k_ldpc_decode(LdpcDevCode code, const flo
     const float *in = cw_llr + c * n;
     for (int v = z; v < n; v += Z) app[v] = from_f<T>(llr_clamp(in[v]));
     __syncthreads();
-    DevAcc<T> acc{app, msg + c * code.n_edges * Z, code.edge_col, code.edge_shift, Z, z};
+    DevAcc<T> acc{app, reinterpret_cast<CnWord *>(msg) + c * code.rows * Z, code.edge_col, code.edge_shift, Z, z};
     for (int it = 0; it < iters; it++) {
         for (int r = 0; r < code.rows; r++) {
             int e0 = __ldg(code.row_start + r), deg = __ldg(code.row_start + r + 1) - e0;
             if (!serial) {
-                ms_row_update(acc, e0, deg, z, Z, alpha, it == 0);
+                ms_row_update(acc, r, e0, deg, z, Z, alpha, it == 0);
             } else {  // debug: one check node at a time, in z order, like the host reference
                 for (int zz = 0; zz < Z; zz++) {
-                    if (z == zz) ms_row_update(acc, e0, deg, z, Z, alpha, it == 0);
+                    if (z == zz) ms_row_update(acc, r, e0, deg, z, Z, alpha, it == 0);
                     __syncthreads();
                 }
             }
@@ -185,7 +191,12 @@ void launch_add_sigma2(Cf *G, int batch, float sigma2, cudaStream_t s) {
 
 void launch_demod(const Cf *X, float *llr, int subcarriers, int n_data, int qam, float inv_n0, cudaStream_t s) {
     long long n = (long long)subcarriers * n_data * kAnt;
-    k_demod<<<blocks_for(n), kThreads, 0, s>>>(X, llr, subcarriers, n_data, qam, inv_n0);
+    switch (qam_bits(qam) / 2) {
+        case 1: k_demod<1><<<blocks_for(n), kThreads, 0, s>>>(X, llr, subcarriers, n_data, inv_n0); break;
+        case 2: k_demod<2><<<blocks_for(n), kThreads, 0, s>>>(X, llr, subcarriers, n_data, inv_n0); break;
+        case 3: k_demod<3><<<blocks_for(n), kThreads, 0, s>>>(X, llr, subcarriers, n_data, inv_n0); break;
+        default: k_demod<4><<<blocks_for(n), kThreads, 0, s>>>(X, llr, subcarriers, n_data, inv_n0); break;
+    }
     CK(cudaGetLastError());
 }
 

@@ -47,8 +47,9 @@ struct LdpcDevCode {
 // Returns false if even fp16 does not fit. *smem_bytes gets the dynamic shared memory per block.
 bool ldpc_decoder_setup(int device, int cols, int Z, bool *app_fp16, size_t *smem_bytes, int *optin_max);
 
-// S10: one block per codeword, blockDim = Z. Check-to-variable messages are fp32 in msg laid out
-// [codeword][edge][z]; they are (re)initialised by the kernel itself (iteration 0 treats them as 0).
+// S10: one block per codeword, blockDim = Z. msg holds the compressed check-node state (CnWord,
+// 8 bytes) laid out [codeword][row][z], so it needs n_cw * rows * Z * 2 floats; the kernel
+// (re)initialises it itself (iteration 0 treats every old message as 0).
 // app_out[c][v] gets the final a posteriori LLR of every variable (fp32).
 void launch_ldpc_decode(const LdpcDevCode &code, const float *cw_llr, float *msg, float *app_out, int n_cw,
                         int iters, float alpha, bool app_fp16, size_t smem_bytes, cudaStream_t s);

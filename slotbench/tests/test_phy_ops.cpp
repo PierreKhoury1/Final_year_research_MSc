@@ -136,36 +136,41 @@ static void test_minsum() {
     }
     CHECK(bad == 0, "min-sum helper mismatches %d / %d", bad, cases);
 
-    // ms_row_update on a toy row against a direct computation (Z = 5, 3 edges)
+    // ms_row_update on a toy row against a direct computation (Z = 5, 3 edges), two iterations so the
+    // second one subtracts the old messages rebuilt from the compressed state
     struct S {
-        float *ap, *ms;
+        float *ap;
+        CnWord *cnv;
         const int *cols, *shifts;
         int Z, z;
         int col(int e) const { return cols[e]; }
         int shift(int e) const { return shifts[e]; }
         float app(int v) const { return ap[v]; }
         void set_app(int v, float x) { ap[v] = llr_clamp(x); }
-        float msg(int e) const { return ms[e * Z + z]; }
-        void set_msg(int e, float x) { ms[e * Z + z] = x; }
+        CnWord cn(int r) const { return cnv[r * Z + z]; }
+        void set_cn(int r, CnWord w) { cnv[r * Z + z] = w; }
     };
     const int Z = 5, cols[3] = {0, 2, 3}, shifts[3] = {1, 4, 0};
-    std::vector<float> app(4 * Z), msg(3 * Z);
+    std::vector<float> app(4 * Z);
+    std::vector<CnWord> cn(Z, CnWord{0u, 0u});
     for (auto &v : app) v = ud(rng);
-    for (auto &v : msg) v = ud(rng) * 0.3f;
-    std::vector<float> app0 = app, msg0 = msg;
     int rbad = 0;
-    for (int z = 0; z < Z; z++) {
-        S s{app.data(), msg.data(), cols, shifts, Z, z};
-        ms_row_update(s, 0, 3, z, Z, 0.75f, false);
-        std::vector<float> t(3);
-        int v[3];
-        for (int j = 0; j < 3; j++) {
-            v[j] = cols[j] * Z + (z + shifts[j]) % Z;
-            t[j] = app0[v[j]] - msg0[j * Z + z];
-        }
-        for (int j = 0; j < 3; j++) {
-            float n = ms_ref(t, j, 0.75f);
-            if (msg[j * Z + z] != n || app[v[j]] != t[j] + n) rbad++;
+    for (int it = 0; it < 2; it++) {
+        std::vector<float> app0 = app;
+        std::vector<CnWord> cn0 = cn;
+        for (int z = 0; z < Z; z++) {
+            S s{app.data(), cn.data(), cols, shifts, Z, z};
+            ms_row_update(s, 0, 0, 3, z, Z, 0.75f, it == 0);
+            std::vector<float> t(3);
+            int v[3];
+            for (int j = 0; j < 3; j++) {
+                v[j] = cols[j] * Z + (z + shifts[j]) % Z;
+                t[j] = app0[v[j]] - (it == 0 ? 0.0f : cn_msg(cn0[z], j, 0.75f));
+            }
+            for (int j = 0; j < 3; j++) {
+                float n = ms_ref(t, j, 0.75f);
+                if (app[v[j]] != llr_clamp(t[j] + n)) rbad++;
+            }
         }
     }
     CHECK(rbad == 0, "ms_row_update mismatches %d", rbad);
@@ -234,8 +239,57 @@ static void test_geometry() {
     CHECK(subcarrier_bin(1638, 3276, 4096) == 0 && subcarrier_bin(0, 3276, 4096) == 4096 - 1638, "bin centring");
 }
 
+// The compile-time-M demod used by the GPU kernel must equal the runtime-qam reference bit for bit.
+void test_qam_m() {
+    const int orders[4] = {4, 16, 64, 256};
+    long bad = 0, n = 0;
+    for (int oi = 0; oi < 4; oi++) {
+        int qam = orders[oi], q = qam_bits(qam);
+        for (int i = 0; i < 2000; i++) {
+            Cf y{(float)((i * 7919) % 2001 - 1000) / 700.0f, (float)((i * 104729) % 2001 - 1000) / 700.0f};
+            float a[8], b[8];
+            qam_llr(y, qam, 37.0f, a);
+            switch (q / 2) {
+                case 1: qam_llr_m<1>(y, 37.0f, b); break;
+                case 2: qam_llr_m<2>(y, 37.0f, b); break;
+                case 3: qam_llr_m<3>(y, 37.0f, b); break;
+                default: qam_llr_m<4>(y, 37.0f, b); break;
+            }
+            for (int k = 0; k < q; k++, n++) bad += a[k] != b[k];
+        }
+    }
+    CHECK(bad == 0 && n > 0, "qam_llr_m differs from qam_llr");
+}
+
+// Compressed check-node state reproduces every outgoing message (up to the fp16 rounding of the mins).
+void test_cn_pack() {
+    long bad = 0;
+    for (int trial = 0; trial < 500; trial++) {
+        int deg = 2 + trial % 18;
+        float t[19];
+        MsAcc a;
+        ms_init(a);
+        uint32_t signs = 0;
+        for (int j = 0; j < deg; j++) {
+            t[j] = (float)(((trial * 31 + j * 17) % 401) - 200) / 8.0f;
+            ms_add(a, t[j], j);
+            signs |= (t[j] < 0.0f ? 1u : 0u) << j;
+        }
+        CnWord w = cn_pack(a, signs);
+        for (int j = 0; j < deg; j++) {
+            float want = ms_out(a, t[j], j, 0.75f);
+            float got = cn_msg(w, j, 0.75f);
+            float tol = 1e-3f * std::max(1.0f, std::fabs(want));
+            bad += std::fabs(got - want) > tol || ((got < 0) != (want < 0) && want != 0.0f);
+        }
+    }
+    CHECK(bad == 0, "cn_msg does not reproduce ms_out");
+}
+
 int main() {
     test_qam();
+    test_qam_m();
+    test_cn_pack();
     test_minsum();
     test_fp16();
     test_geometry();
