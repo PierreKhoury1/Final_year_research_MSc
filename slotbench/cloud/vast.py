@@ -664,6 +664,12 @@ def run(api, args, out=print, now=time.time, sleep=time.sleep):
                     out(f"  collect attempt {attempt}: DONE marker not in fetched logs yet ({len(text)} bytes); retrying")
                     sleep(20)
                     continue
+                try:  # keep the raw instance log: the only record of why a run failed once it is destroyed
+                    os.makedirs(out_dir, exist_ok=True)
+                    with open(os.path.join(out_dir, "instance.log"), "w") as fh:
+                        fh.write(text)
+                except OSError as e:
+                    out(f"  could not save instance.log: {e}")
                 rep = collect_text(text, out_dir, out=out)
                 rc = 0 if rep["done"] and rep["done_status"] == "ok" and not rep["blocks_bad"] else 1
                 break

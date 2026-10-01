@@ -42,7 +42,23 @@ finish() {  # emit logs + results, DONE marker, keep the container alive for the
 }
 on_err() { echo "=====SLOTBENCH-ERROR $1 $2====="; tail -n 30 "$LOGS/current.log" 2>/dev/null | sed 's/^/  | /'; finish error; }
 trap 'on_err $LINENO "$BASH_COMMAND"' ERR
-step() { local name="$1"; shift; log "$name"; : > "$LOGS/current.log"; "$@" >>"$LOGS/current.log" 2>&1; cat "$LOGS/current.log" >> "$LOGS/$name.log"; }
+# step NAME CMD...: run CMD with output in $LOGS/current.log (appended to $LOGS/NAME.log); every 5 min print
+# a heartbeat with the step's last output line so a slow or stuck step is visible in the instance log.
+step() {
+    local name="$1" pid rc=0 t=0
+    shift
+    log "$name"
+    : > "$LOGS/current.log"
+    "$@" >>"$LOGS/current.log" 2>&1 &
+    pid=$!
+    while kill -0 "$pid" 2>/dev/null; do
+        sleep 10; t=$((t + 10))
+        if (( t % 300 == 0 )); then log "$name: still running ($((t / 60)) min): $(tail -n 1 "$LOGS/current.log" | cut -c1-150)"; fi
+    done
+    wait "$pid" || rc=$?
+    cat "$LOGS/current.log" >> "$LOGS/$name.log"
+    return "$rc"
+}
 
 { date -u; nvidia-smi; nproc; free -g; df -h /; } > "$LOGS/header.txt" 2>&1 || true
 head -20 "$LOGS/header.txt"
