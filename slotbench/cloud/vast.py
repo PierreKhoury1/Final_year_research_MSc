@@ -387,6 +387,8 @@ def launch(api, args, out=print):
     env = {
         "SB_REPO": args.repo, "SB_BRANCH": args.branch, "SB_CONFIG": config,
         "SB_TUNE_US": str(args.tune_us),
+        # on-instance watchdog: stops the container (and GPU billing) even if this controller dies
+        "SB_MAX_HOURS": str(round((getattr(args, "max_hours", None) or 6.0) + 0.5, 2)),
     }
     offer = None
     if args.offer:

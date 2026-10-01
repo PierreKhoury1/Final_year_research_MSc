@@ -12,6 +12,11 @@ SB_CONFIG="${1:-${SB_CONFIG:-cloud.toml}}"
 SB_BRANCH="${2:-${SB_BRANCH:-claude/optimistic-ptolemy-r42xrh}}"
 SB_REPO="${3:-${SB_REPO:-https://github.com/PierreKhoury1/Final_year_research_MSc}}"
 SB_TUNE_US="${SB_TUNE_US:-200}"
+
+# Watchdog: if the controller that should destroy this instance dies, stop the container ourselves after
+# SB_MAX_HOURS (cloud/vast.py passes --max-hours + 0.5; default 6.5) so the GPU stops billing.
+WATCHDOG_S=$(awk -v h="${SB_MAX_HOURS:-6.5}" 'BEGIN { printf "%d", h * 3600 }')
+( sleep "$WATCHDOG_S"; echo "=====SLOTBENCH-ERROR 0 watchdog-${SB_MAX_HOURS:-6.5}h====="; kill -TERM 1; sleep 60; kill -KILL 1 ) &
 SB_SM="${SB_SM:-}"
 WORK="${SB_WORK:-/root/sb}"   # overridable for local tests
 REPO_DIR="$WORK/repo"

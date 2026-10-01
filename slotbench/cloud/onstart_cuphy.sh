@@ -14,6 +14,11 @@ SB_REPO="${3:-${SB_REPO:-https://github.com/PierreKhoury1/Final_year_research_MS
 ACAR_COMMIT="${ACAR_COMMIT:-main}"
 W=/workspace; LOGS=$W/logs; OUT=$W/out
 mkdir -p "$W" "$LOGS" "$OUT"
+
+# Watchdog: if the controller that should destroy this instance dies, stop the container ourselves after
+# SB_MAX_HOURS (cloud/vast.py passes --max-hours + 0.5; default 6.5) so the GPU stops billing.
+WATCHDOG_S=$(awk -v h="${SB_MAX_HOURS:-6.5}" 'BEGIN { printf "%d", h * 3600 }')
+( sleep "$WATCHDOG_S"; echo "=====SLOTBENCH-ERROR 0 watchdog-${SB_MAX_HOURS:-6.5}h====="; kill -TERM 1; sleep 60; kill -KILL 1 ) &
 cd "$W"
 
 log() { echo "[cuphy $(date -u +%H:%M:%S)] $*"; }
@@ -129,7 +134,10 @@ tv() {
     "$W/venv/bin/python" -c "import aerial_mcore as M, matlab; e = M.initialize(); print(e.testCompGenTV_pusch(matlab.double([7304]), 'genTV', nargout=4))"
     find "$W/tv" -name '*.h5' -exec ls -la {} \;
 }
-step tv tv
+TV_TIMEOUT_S="${TV_TIMEOUT_S:-3600}"
+export W S
+export -f tv
+step tv timeout "$TV_TIMEOUT_S" bash -c tv
 cd "$W"
 TV=$(find "$W/tv" -name '*7304*PUSCH*CUPHY*.h5' | head -1)
 [ -f "$TV" ]
