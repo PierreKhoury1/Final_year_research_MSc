@@ -302,13 +302,14 @@ def check_safe(name, value):
     return value
 
 
-def onstart_command(repo, branch, config, runtype="ssh_proxy"):
-    """Short onstart: fetch cloud/onstart.sh at the branch, run it with CONFIG BRANCH REPO, and send its output
+def onstart_command(repo, branch, config, runtype="ssh_proxy", script="onstart.sh"):
+    """Short onstart: fetch cloud/<script> (default onstart.sh) at the branch, run it with CONFIG BRANCH REPO, and send its output
     to PID 1's stdout (the container log that the logs API returns) plus /root/slotbench.log."""
     check_safe("branch", branch)
     check_safe("config", config)
+    check_safe("script", script)
     url = (f"https://raw.githubusercontent.com/{repo_slug(repo)}/refs/heads/{branch}/"
-           f"{SUBDIR}/cloud/onstart.sh")
+           f"{SUBDIR}/cloud/{script}")
     q = shlex.quote
     body = ("O=/proc/1/fd/1; [ -w $O ] || O=/dev/stdout; "
             "(command -v curl >/dev/null || (apt-get update -qq && apt-get install -y -qq curl ca-certificates)) "
@@ -401,7 +402,7 @@ def launch(api, args, out=print):
         if isinstance(cc, int) and cc > 0:
             env["SB_SM"] = str(cc // 10)  # 860 -> 86; fallback if nvidia-smi cannot report compute_cap
     label = args.label or make_label(args.gpu or f"offer{offer_id}")
-    payload = build_create_payload(args.image, args.disk, env, onstart_command(args.repo, args.branch, config, args.runtype),
+    payload = build_create_payload(args.image, args.disk, env, onstart_command(args.repo, args.branch, config, args.runtype, getattr(args, 'script', 'onstart.sh')),
                                    label, args.runtype)
     state = {"offer_id": offer_id, "label": label, "payload": payload, "branch": args.branch,
              "config": config, "gpu": (offer or {}).get("gpu_name", args.gpu),
@@ -782,6 +783,8 @@ def add_launch_args(p):
     p.add_argument("--branch", default=DEFAULT_BRANCH)
     p.add_argument("--repo", default=DEFAULT_REPO)
     p.add_argument("--image", default=DEFAULT_IMAGE)
+    p.add_argument("--script", default="onstart.sh",
+                   help="script under slotbench/cloud/ the instance runs, e.g. onstart_cuphy.sh (NVIDIA cuPHY)")
     p.add_argument("--disk", type=float, default=40.0, help="GB")
     p.add_argument("--label", default=None)
     p.add_argument("--tune-us", type=float, default=200.0, help="slot_driver --tune-us target on the instance")
