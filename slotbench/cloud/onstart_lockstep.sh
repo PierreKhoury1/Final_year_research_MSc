@@ -1,7 +1,7 @@
 #!/bin/bash
 # vast.ai onstart: build slotbench and run scripts/lockstep_matrix.sh (CPU-launched vs GPU-self-launched slot
 # under AI load). Results stream back as =====SLOTBENCH-BEGIN lockstep/results <sha>===== blocks.
-# Usage: onstart_lockstep.sh [CONFIG [BRANCH [REPO]]]   (CONFIG unused; env SB_SLOTS, SB_SIZES optional)
+# Usage: onstart_lockstep.sh [CONFIG [BRANCH [REPO]]]   (CONFIG unused; env SB_SLOTS, SB_SIZES, SB_MATRIX_ARGS optional)
 set -Eeuo pipefail
 export DEBIAN_FRONTEND=noninteractive
 SB_BRANCH="${2:-${SB_BRANCH:-claude/optimistic-ptolemy-r42xrh}}"
@@ -33,6 +33,7 @@ finish() {
     sleep infinity
 }
 trap 'echo "=====SLOTBENCH-ERROR $LINENO $BASH_COMMAND====="; tail -n 30 "$LOGS/current.log" 2>/dev/null | sed "s/^/  | /"; finish error' ERR
+trap 'echo "=====SLOTBENCH-ERROR 0 SIGTERM====="; finish term' TERM
 step() { local name="$1"; shift; log "$name"; : > "$LOGS/current.log"; "$@" >>"$LOGS/current.log" 2>&1; cat "$LOGS/current.log" >> "$LOGS/$name.log"; }
 
 { date -u; nvidia-smi; nproc; free -g; } > "$LOGS/header.txt" 2>&1 || true
@@ -44,6 +45,7 @@ step clone bash -c "rm -rf $W/repo && git clone -q --depth 1 -b $SB_BRANCH $SB_R
 cd "$W/repo/slotbench"
 step build make SM="$GPU_CC" CUDA_HOME=/usr/local/cuda bin/lockstep_driver bin/adversary
 log "running matrix (slots ${SB_SLOTS:-30000})"
-bash scripts/lockstep_matrix.sh --out "$OUT" --slots "${SB_SLOTS:-30000}" --gpu 0 2>&1 | tee "$LOGS/matrix.log" || true
+# shellcheck disable=SC2086
+bash scripts/lockstep_matrix.sh --out "$OUT" --slots "${SB_SLOTS:-30000}" --gpu 0 ${SB_MATRIX_ARGS:-} 2>&1 | tee "$LOGS/matrix.log" || true
 cp "$LOGS/header.txt" "$OUT/" || true
 finish ok

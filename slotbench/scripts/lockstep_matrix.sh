@@ -1,10 +1,13 @@
 #!/usr/bin/env bash
 # Lockstep matrix: CPU-launched vs GPU-self-launched slot under no load, in-process AI load, a separate
 # AI process without isolation, and a separate AI process under MPS (adversary capped at 50%).
-# Usage: lockstep_matrix.sh --out DIR [--slots N] [--sizes "..."] [--gpu N] [--bin DIR]
+# Usage: lockstep_matrix.sh --out DIR [--slots N] [--sizes "..."] [--gpu N] [--bin DIR] [--core N] [--fifo P]
+#                           [--period-us N] [--deadline-us N] [--workloads "sgemm llm"]
+# Every case leaves DIR/<case>.json; a case whose driver failed or timed out gets a stub {"ok": false, "error": ...}.
 set -euo pipefail
 here=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 out=""; slots=30000; sizes="${SB_SIZES:---subcarriers 612 --ldpc-cb 0 --ldpc-iters 3}"; gpu=0; bin="$here/../bin"
+core=""; fifo=80; period_us=500; deadline_us=500; workloads="sgemm llm"
 while [[ $# -gt 0 ]]; do
   case $1 in
     --out) out=$2; shift 2 ;;
@@ -12,32 +15,67 @@ while [[ $# -gt 0 ]]; do
     --sizes) sizes=$2; shift 2 ;;
     --gpu) gpu=$2; shift 2 ;;
     --bin) bin=$2; shift 2 ;;
+    --core) core=$2; shift 2 ;;
+    --fifo) fifo=$2; shift 2 ;;
+    --period-us) period_us=$2; shift 2 ;;
+    --deadline-us) deadline_us=$2; shift 2 ;;
+    --workloads) workloads=$2; shift 2 ;;
     *) echo "unknown arg $1" >&2; exit 2 ;;
   esac
 done
 [[ -n $out ]] || { echo "--out required" >&2; exit 2; }
 mkdir -p "$out"
 read -ra xsz <<< "$sizes"
+read -ra xwl <<< "$workloads"
 log() { echo "[lockstep $(date -u +%H:%M:%S)] $*"; }
+
+# Timing thread on a core of its own when the host has one to spare (the load thread takes core+1).
+if [[ -z $core ]]; then
+  ncpu=$(nproc)
+  if (( ncpu >= 4 )); then core=1; else core=-1; fi
+fi
+# Wall-clock cap per case: 3x the nominal run plus start-up/calibration slack.
+case_timeout=$(( slots * period_us * 3 / 1000000 + 180 ))
 
 adv_pid=""
 mps_on=0
-export CUDA_MPS_PIPE_DIRECTORY=/tmp/sb-mps CUDA_MPS_LOG_DIRECTORY=/tmp/sb-mps-log
+mps_pipe=/tmp/sb-mps; mps_log=/tmp/sb-mps-log
 cleanup() {
   if [[ -n $adv_pid ]]; then kill -TERM "$adv_pid" 2>/dev/null || true; wait "$adv_pid" 2>/dev/null || true; adv_pid=""; fi
-  if [[ $mps_on -eq 1 ]]; then echo quit | nvidia-cuda-mps-control 2>/dev/null || true; mps_on=0; fi
+  if [[ $mps_on -eq 1 ]]; then echo quit | CUDA_MPS_PIPE_DIRECTORY=$mps_pipe nvidia-cuda-mps-control 2>/dev/null || true; mps_on=0; fi
 }
 trap cleanup EXIT
 
-start_adv() {  # start_adv WORKLOAD MPS(0|1) NAME
+# A stale MPS daemon from an earlier run would silently turn phases 1-3 into MPS cases.
+stale_mps() { pgrep -x nvidia-cuda-mps-control >/dev/null 2>&1 || pgrep -x nvidia-cuda-mps-server >/dev/null 2>&1; }
+if stale_mps; then
+  log "stale MPS daemon found: asking it to quit"
+  echo quit | CUDA_MPS_PIPE_DIRECTORY=$mps_pipe nvidia-cuda-mps-control 2>/dev/null || true
+  echo quit | nvidia-cuda-mps-control 2>/dev/null || true
+  sleep 3
+  if stale_mps; then log "MPS daemon still running; refusing to run non-MPS phases under it"; exit 3; fi
+fi
+
+start_adv() {  # start_adv WORKLOAD MPS(0|1) NAME   -- returns 1 if the adversary never produced work
   local w=$1 mps=$2 name=$3
-  local env=()
-  [[ $mps -eq 1 ]] && env+=(CUDA_MPS_ACTIVE_THREAD_PERCENTAGE=50)
+  local env=() tl="$out/$name.adversary.csv"
+  rm -f "$tl"
+  if [[ $mps -eq 1 ]]; then
+    env+=(CUDA_MPS_PIPE_DIRECTORY=$mps_pipe CUDA_MPS_LOG_DIRECTORY=$mps_log CUDA_MPS_ACTIVE_THREAD_PERCENTAGE=50)
+  fi
   env "${env[@]}" "$bin/adversary" --workload "$w" --duty 100 --prio default --gpu "$gpu" \
-      --out "$out/$name.adversary.json" > "$out/$name.adversary.log" 2>&1 &
+      --timeline "$tl" --out "$out/$name.adversary.json" > "$out/$name.adversary.log" 2>&1 &
   adv_pid=$!
-  sleep 12
-  kill -0 "$adv_pid" 2>/dev/null || { log "adversary died: $(tail -n 3 "$out/$name.adversary.log")"; adv_pid=""; return 1; }
+  # ready = at least 3 timeline rows with work done (the models/buffers are allocated and kernels are flowing)
+  local i rows=0
+  for ((i = 0; i < 90; i++)); do
+    sleep 1
+    kill -0 "$adv_pid" 2>/dev/null || { log "adversary died: $(tail -n 3 "$out/$name.adversary.log" | tr '\n' ' ')"; adv_pid=""; return 1; }
+    rows=$(awk -F, 'NR > 1 && $2 + 0 > 0 { n++ } END { print n + 0 }' "$tl" 2>/dev/null || echo 0)
+    (( rows >= 3 )) && break
+  done
+  if (( rows < 3 )); then log "adversary $w produced no work in 90 s"; kill -TERM "$adv_pid" 2>/dev/null || true; wait "$adv_pid" 2>/dev/null || true; adv_pid=""; return 1; fi
+  sleep 3   # let it settle at steady state
 }
 stop_adv() {
   [[ -n $adv_pid ]] || return 0
@@ -46,14 +84,30 @@ stop_adv() {
   adv_pid=""
 }
 
-run_case() {  # run_case NAME MODE LOAD(none|stream)
-  local name=$1 mode=$2 load=$3
-  log "case $name (mode $mode, in-process load $load)"
-  "$bin/lockstep_driver" --mode "$mode" --load "$load" --slots "$slots" --gpu "$gpu" --label "$name" \
-      --out "$out/$name.json" --raw "$out/$name.bin" "${xsz[@]}" 2>&1 | tee "$out/$name.log" || true
+stub() {  # stub NAME MODE REASON
+  printf '{"ok": false, "label": "%s", "mode": "%s", "error": "%s"}\n' "$1" "$2" "$3" > "$out/$1.json"
 }
+run_case() {  # run_case NAME MODE LOAD(none|stream)
+  local name=$1 mode=$2 load=$3 rc=0
+  log "case $name (mode $mode, in-process load $load, timeout ${case_timeout}s)"
+  rm -f "$out/$name.json"
+  timeout -k 20 "$case_timeout" "$bin/lockstep_driver" --mode "$mode" --load "$load" --slots "$slots" --gpu "$gpu" \
+      --period-us "$period_us" --deadline-us "$deadline_us" --core "$core" --fifo "$fifo" --label "$name" \
+      --out "$out/$name.json" --raw "$out/$name.bin" "${xsz[@]}" > "$out/$name.log" 2>&1 || rc=$?
+  tail -n 2 "$out/$name.log"
+  if [[ $rc -eq 124 || $rc -eq 137 ]]; then
+    log "case $name TIMED OUT (rc $rc)"; stub "$name" "$mode" "timeout after ${case_timeout}s"
+  elif [[ ! -s "$out/$name.json" ]]; then
+    log "case $name FAILED (rc $rc, no JSON)"; stub "$name" "$mode" "driver exit $rc without JSON: $(tail -n 1 "$out/$name.log" | tr -d '"\\')"
+  elif [[ $rc -ne 0 ]]; then
+    log "case $name reported failure (rc $rc)"
+  fi
+  # a crashed executive may leave the device wedged for the next case; give the driver time to go away
+  sleep 2
+}
+skip_case() { log "case $1 SKIPPED: $3"; stub "$1" "$2" "skipped: $3"; }
 
-{ nvidia-smi --query-gpu=name,driver_version,clocks.sm,clocks.mem --format=csv; uname -r; nproc; } > "$out/header.txt" 2>&1 || true
+{ nvidia-smi --query-gpu=name,driver_version,clocks.sm,clocks.mem,compute_mode --format=csv; uname -r; nproc; echo "core=$core fifo=$fifo period_us=$period_us deadline_us=$deadline_us slots=$slots sizes=$sizes"; } > "$out/header.txt" 2>&1 || true
 
 # 1. alone
 run_case cpu_alone   cpu none
@@ -62,23 +116,32 @@ run_case gpu_alone   gpu none
 run_case cpu_inproc  cpu stream
 run_case gpu_inproc  gpu stream
 # 3. AI in a separate process, no isolation (time-slicing)
-for w in sgemm llm; do
-  if start_adv "$w" 0 "cpu_proc_$w"; then run_case "cpu_proc_$w" cpu none; fi; stop_adv
-  if start_adv "$w" 0 "gpu_proc_$w"; then run_case "gpu_proc_$w" gpu none; fi; stop_adv
+for w in "${xwl[@]}"; do
+  for m in cpu gpu; do
+    if start_adv "$w" 0 "${m}_proc_$w"; then run_case "${m}_proc_$w" "$m" none; else skip_case "${m}_proc_$w" "$m" "adversary $w not ready"; fi
+    stop_adv
+  done
 done
-# 4. AI in a separate process under MPS (both clients; adversary capped at 50% of SMs)
-mkdir -p "$CUDA_MPS_PIPE_DIRECTORY" "$CUDA_MPS_LOG_DIRECTORY"
-if nvidia-cuda-mps-control -d > "$out/mps.log" 2>&1; then
+# 4. AI in a separate process under MPS (both clients; adversary capped at 50% of SMs). The MPS environment is
+#    exported to the driver only here.
+mkdir -p "$mps_pipe" "$mps_log"
+if CUDA_MPS_PIPE_DIRECTORY=$mps_pipe CUDA_MPS_LOG_DIRECTORY=$mps_log nvidia-cuda-mps-control -d > "$out/mps.log" 2>&1; then
   mps_on=1
   sleep 2
-  for w in sgemm llm; do
-    if start_adv "$w" 1 "cpu_mps_$w"; then run_case "cpu_mps_$w" cpu none; fi; stop_adv
-    if start_adv "$w" 1 "gpu_mps_$w"; then run_case "gpu_mps_$w" gpu none; fi; stop_adv
+  export CUDA_MPS_PIPE_DIRECTORY=$mps_pipe CUDA_MPS_LOG_DIRECTORY=$mps_log
+  for w in "${xwl[@]}"; do
+    for m in cpu gpu; do
+      if start_adv "$w" 1 "${m}_mps_$w"; then run_case "${m}_mps_$w" "$m" none; else skip_case "${m}_mps_$w" "$m" "adversary $w not ready under MPS"; fi
+      stop_adv
+    done
   done
-  echo quit | nvidia-cuda-mps-control || true
+  unset CUDA_MPS_PIPE_DIRECTORY CUDA_MPS_LOG_DIRECTORY
+  echo quit | CUDA_MPS_PIPE_DIRECTORY=$mps_pipe nvidia-cuda-mps-control || true
   mps_on=0
+  cp "$mps_log"/*.log "$out/" 2>/dev/null || true
 else
   log "MPS daemon did not start: NOT SUPPORTED here"
+  for w in "${xwl[@]}"; do for m in cpu gpu; do skip_case "${m}_mps_$w" "$m" "MPS daemon did not start"; done; done
 fi
 
 log "summary"
@@ -88,13 +151,15 @@ out = sys.argv[1]
 rows = []
 for f in sorted(glob.glob(os.path.join(out, "*.json"))):
     if f.endswith(".adversary.json"): continue
-    d = json.load(open(f))
-    se = d.get("start_error_us", {}) or {}
-    ex = d.get("exec_us", {}) or {}
-    rows.append((os.path.basename(f)[:-5], d.get("ok"), se.get("p50"), se.get("p99"), se.get("p99_9"), se.get("max"),
-                 ex.get("p50"), d.get("misses"), d.get("total_slots"), d.get("skipped"), d.get("error", "")))
-print(f"{'case':16s} {'ok':>3s} {'start p50':>10s} {'p99':>9s} {'p99.9':>9s} {'max':>10s} {'exec p50':>9s} {'miss':>8s} {'of':>7s} {'skip':>6s}")
+    try: d = json.load(open(f))
+    except Exception as e: d = {"ok": False, "error": f"unreadable JSON: {e}"}
+    se = d.get("start_error_us") or {}
+    lp = d.get("launch_precision_us") or {}
+    ex = d.get("exec_us") or {}
+    rows.append((os.path.basename(f)[:-5], d.get("ok"), se.get("p50"), se.get("p99"), se.get("max"),
+                 lp.get("p50"), lp.get("p99"), ex.get("p50"), d.get("misses"), d.get("total_slots"), d.get("skipped"), d.get("error", "")))
+print(f"{'case':16s} {'ok':>5s} {'start p50':>10s} {'p99':>9s} {'max':>10s} {'prec p50':>9s} {'p99':>9s} {'exec p50':>9s} {'miss':>8s} {'of':>7s} {'skip':>6s}")
+def f(x): return "   -" if x is None else f"{x:.1f}"
 for r in rows:
-    def f(x): return "   -" if x is None else f"{x:.1f}"
-    print(f"{r[0]:16s} {str(r[1]):>3s} {f(r[2]):>10s} {f(r[3]):>9s} {f(r[4]):>9s} {f(r[5]):>10s} {f(r[6]):>9s} {str(r[7]):>8s} {str(r[8]):>7s} {str(r[9]):>6s} {r[10]}")
+    print(f"{r[0]:16s} {str(r[1]):>5s} {f(r[2]):>10s} {f(r[3]):>9s} {f(r[4]):>10s} {f(r[5]):>9s} {f(r[6]):>9s} {f(r[7]):>9s} {str(r[8]):>8s} {str(r[9]):>7s} {str(r[10]):>6s} {r[11]}")
 PY

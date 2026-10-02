@@ -40,10 +40,14 @@ build/slot_driver.o: driver/slot_driver.cu $(COMMON_H) $(PHY_H) | build
 bin/slot_driver: build/slot_driver.o build/slot_pipeline.o build/phy_kernels.o build/ldpc_code.o | bin
 	$(NVCC) $(NVFLAGS) -o $@ $^ $(CUDA_LIBS)
 
-# device graph launch (the GPU launching the slot graph itself) needs relocatable device code + cudadevrt
-build/lockstep_driver.o: driver/lockstep_driver.cu $(COMMON_H) $(PHY_H) | build
+# Device graph launch (the GPU launching the slot graph itself) needs relocatable device code + cudadevrt.
+# Only the executive's translation unit is built that way, so a runtime that refuses the device-runtime
+# module (MPS) only affects gpu mode.
+build/lockstep_driver.o: driver/lockstep_driver.cu driver/lockstep_common.h $(COMMON_H) $(PHY_H) | build
+	$(NVCC) $(NVFLAGS) -c -o $@ $<
+build/lockstep_exec.o: driver/lockstep_exec.cu driver/lockstep_common.h | build
 	$(NVCC) $(NVFLAGS) -rdc=true -c -o $@ $<
-bin/lockstep_driver: build/lockstep_driver.o build/slot_pipeline.o build/phy_kernels.o build/ldpc_code.o | bin
+bin/lockstep_driver: build/lockstep_driver.o build/lockstep_exec.o build/slot_pipeline.o build/phy_kernels.o build/ldpc_code.o | bin
 	$(NVCC) $(NVFLAGS) -rdc=true -o $@ $^ $(CUDA_LIBS) -lcudadevrt
 
 bin/adversary: adversary/adversary.cu $(COMMON_H) | bin
