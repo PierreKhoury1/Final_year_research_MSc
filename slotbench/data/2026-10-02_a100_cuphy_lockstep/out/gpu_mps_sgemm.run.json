@@ -1,0 +1,25 @@
+{
+  "name": "gpu_mps_sgemm",
+  "mode": "gpu",
+  "isolation": "mps",
+  "workload": "sgemm",
+  "start_utc": "2026-10-02T18:23:04Z",
+  "end_utc": "2026-10-02T18:23:10Z",
+  "exit_code": 0,
+  "test_vector_sha256": "85796206a068087c3e2e03bafb7a22118fa7f27ce87f94f00afcf1ec4ac106ca",
+  "aerial_commit": "4f65f97c1d5f701ce911f7dda8f1b1f3f0c7693c",
+  "slots": 1000,
+  "warmup": 100,
+  "period_us": 500.0,
+  "deadline_us": 500.0,
+  "command": [
+    "/workspace/cuphy-lockstep/build/cuPHY/examples/pusch_rx_multi_pipe/cuphy_ex_pusch_rx_multi_pipe",
+    "-i",
+    "/workspace/cuphy-lockstep/tv/GPU_test_input/TVnr_7304_PUSCH_gNB_CUPHY_s0p0.h5",
+    "-m",
+    "1",
+    "-r",
+    "1"
+  ],
+  "adversary_mps_percentage": 50
+}

@@ -1,6 +1,6 @@
 # cuPHY lockstep integration notes
 
-Updated 2026-10-02. The experimental adapter is implemented. Its CUDA helpers compile with CUDA 12.6 for SM80, and patch application against the pinned revision passes. A full upstream build and actual cuPHY GPU validation are still pending. Synthetic results and the earlier A100 cuPHY run do not validate this adapter.
+Updated 2026-10-02. The experimental adapter is implemented and tested with actual cuPHY on an A100. The full CUDA 13.3 build and all six CPU/GPU idle/contention cases passed execution and endpoint correctness checks. Deadline misses under contention remain substantial. See the [fresh results and raw evidence](../data/2026-10-02_a100_cuphy_lockstep/README.md).
 
 Upstream is NVIDIA `aerial-cuda-accelerated-ran`, pinned to [`4f65f97c1d5f701ce911f7dda8f1b1f3f0c7693c`](https://github.com/NVIDIA/aerial-cuda-accelerated-ran/commit/4f65f97c1d5f701ce911f7dda8f1b1f3f0c7693c), committed 2026-09-15. See [usage and output details](../cuphy/README.md).
 
@@ -36,6 +36,6 @@ The helper checks payload and all TB/CB CRCs after the ordinary baseline and aft
 
 Setup, descriptor updates, calibration, and output copies are outside replay timing. Markers bracket the full-slot DAG and include marker scheduling overhead; they do not timestamp the first and last signal-processing instruction. Pre/post calibration estimates host/GPU clock mapping. GPU-target precision is reported separately. The mapped-memory calibration handshake retains slotbench's platform assumptions and is not a general portable CPU/GPU atomic protocol.
 
-The cloud recipe targets A100 SM80, CUDA 13.3, and Ubuntu 24.04. Isolated CPU/GPU cases must pass before process and MPS contention tests. Full build, decoded-data/CRC, freshness, accounting, and contention results remain necessary before performance claims. The [previous A100 run](../data/2026-10-01_a100_cuphy/README.md) exercised an earlier experiment.
+The cloud recipe targets A100 SM80, CUDA 13.3, and Ubuntu 24.04. Isolated CPU/GPU cases must pass before process and MPS contention tests. The new run passed full build, endpoint decoded-data/CRC, freshness, and raw accounting checks in all six cases. Its short fixed-order samples and unlocked GPU clocks limit performance conclusions. The [previous A100 run](../data/2026-10-01_a100_cuphy/README.md) exercised an earlier experiment.
 
 This experiment concerns repeated ready input. Production integration must separately preserve changing slot descriptors, symbol arrival, per-slot setup, HARQ progression, and output delivery, and validate individual slot outputs and deadlines.

@@ -1,0 +1,838 @@
+{
+  "dataset": "out-debug-20261002T182148Z-13635",
+  "source_commit": "4f65f97c1d5f701ce911f7dda8f1b1f3f0c7693c",
+  "source_vector_sha256": "85796206a068087c3e2e03bafb7a22118fa7f27ce87f94f00afcf1ec4ac106ca",
+  "raw_format": "<Qq6Q (64 bytes)",
+  "percentile": "ceil(p*(n-1)/100), executed records only",
+  "cases": {
+    "cpu_alone": {
+      "valid": true,
+      "counts": {
+        "recorded": 1000,
+        "skipped": 0,
+        "launch_errors": 0,
+        "timeouts": 0,
+        "missing": 0,
+        "misses": 0
+      },
+      "N": 1000,
+      "stats": {
+        "start_error_us": {
+          "n": 1000,
+          "min": 10.946,
+          "max": 22.594,
+          "p50": 11.835,
+          "p90": 12.386,
+          "p99": 14.006,
+          "p99_9": 22.594
+        },
+        "launch_precision_us": {
+          "n": 1000,
+          "min": 11.079,
+          "max": 22.709,
+          "p50": 11.958,
+          "p90": 12.507,
+          "p99": 14.13,
+          "p99_9": 22.709
+        },
+        "target_pred_error_us": {
+          "n": 1000,
+          "min": -0.135,
+          "max": -0.11,
+          "p50": -0.123,
+          "p90": -0.113,
+          "p99": -0.111,
+          "p99_9": -0.11
+        },
+        "launch_error_us": {
+          "n": 1000,
+          "min": 0.02,
+          "max": 0.06,
+          "p50": 0.041,
+          "p90": 0.054,
+          "p99": 0.059,
+          "p99_9": 0.06
+        },
+        "launch_call_us": {
+          "n": 1000,
+          "min": 5.661,
+          "max": 16.561,
+          "p50": 6.072,
+          "p90": 6.362,
+          "p99": 7.745,
+          "p99_9": 16.561
+        },
+        "launch_to_start_us": {
+          "n": 1000,
+          "min": 11.041,
+          "max": 22.66,
+          "p50": 11.916,
+          "p90": 12.478,
+          "p99": 14.094,
+          "p99_9": 22.66
+        },
+        "exec_us": {
+          "n": 1000,
+          "min": 176.128,
+          "max": 186.368,
+          "p50": 179.2,
+          "p90": 182.272,
+          "p99": 185.344,
+          "p99_9": 186.368
+        },
+        "latency_from_target_us": {
+          "n": 1000,
+          "min": 188.07,
+          "max": 200.77,
+          "p50": 190.689,
+          "p90": 193.828,
+          "p99": 197.557,
+          "p99_9": 200.77
+        }
+      },
+      "max_stat_difference_us": 0.0,
+      "raw_sha256": "8186ad03f384d874318422879b9e0b1cffddd221c9e0ad708af060fff287d016",
+      "correctness": {
+        "before_after_zero_errors": true,
+        "checks": 2,
+        "CBs_each": 152,
+        "TBs_each": 1
+      },
+      "period_us": 500,
+      "deadline_us": 500,
+      "stream_priority": -2,
+      "fit": {
+        "pre_eps_us": 1.7785,
+        "post_eps_us": 2.2295,
+        "pre_resid_max_us": 0.9173884081840515,
+        "post_resid_max_us": 0.8918879847526551,
+        "timer_tick_us": 1.024,
+        "two_point_rate_ppm": -8.678614055179779,
+        "baseline_s": 2.81980508,
+        "min_deadline_margin_us": 299.23,
+        "within_fit_eps": 0,
+        "within_eps_plus_tick": 0
+      },
+      "scheduling": {
+        "realtime_priority_denied": true,
+        "affinity_cpu0": true,
+        "nvlog_config_missing": true
+      },
+      "errors": []
+    },
+    "gpu_alone": {
+      "valid": true,
+      "counts": {
+        "recorded": 1000,
+        "skipped": 0,
+        "launch_errors": 0,
+        "timeouts": 0,
+        "missing": 0,
+        "misses": 0
+      },
+      "N": 1000,
+      "stats": {
+        "start_error_us": {
+          "n": 1000,
+          "min": 3.04,
+          "max": 5.086,
+          "p50": 4.051,
+          "p90": 4.9,
+          "p99": 5.069,
+          "p99_9": 5.086
+        },
+        "launch_precision_us": {
+          "n": 1000,
+          "min": 3.073,
+          "max": 5.117,
+          "p50": 4.082,
+          "p90": 4.932,
+          "p99": 5.099,
+          "p99_9": 5.117
+        },
+        "target_pred_error_us": {
+          "n": 1000,
+          "min": -0.034,
+          "max": -0.027,
+          "p50": -0.031,
+          "p90": -0.028,
+          "p99": -0.028,
+          "p99_9": -0.027
+        },
+        "launch_error_us": {
+          "n": 1000,
+          "min": 0.0,
+          "max": 1.021,
+          "p50": 0.509,
+          "p90": 0.921,
+          "p99": 1.012,
+          "p99_9": 1.021
+        },
+        "launch_call_us": {
+          "n": 1000,
+          "min": 2.048,
+          "max": 2.048,
+          "p50": 2.048,
+          "p90": 2.048,
+          "p99": 2.048,
+          "p99_9": 2.048
+        },
+        "launch_to_start_us": {
+          "n": 1000,
+          "min": 3.072,
+          "max": 4.096,
+          "p50": 3.072,
+          "p90": 4.096,
+          "p99": 4.096,
+          "p99_9": 4.096
+        },
+        "exec_us": {
+          "n": 1000,
+          "min": 137.216,
+          "max": 145.408,
+          "p50": 139.264,
+          "p90": 141.312,
+          "p99": 144.384,
+          "p99_9": 145.408
+        },
+        "latency_from_target_us": {
+          "n": 1000,
+          "min": 141.142,
+          "max": 149.433,
+          "p50": 142.938,
+          "p90": 145.365,
+          "p99": 148.208,
+          "p99_9": 149.433
+        }
+      },
+      "max_stat_difference_us": 0.0,
+      "raw_sha256": "9126c9acfe7dfc60e0ef8f8ef344cb99f10088633ea76703b77f6d320a24b7db",
+      "correctness": {
+        "before_after_zero_errors": true,
+        "checks": 2,
+        "CBs_each": 152,
+        "TBs_each": 1
+      },
+      "period_us": 500,
+      "deadline_us": 500,
+      "stream_priority": -2,
+      "fit": {
+        "pre_eps_us": 1.8385,
+        "post_eps_us": 1.8985,
+        "pre_resid_max_us": 0.7341023607850075,
+        "post_resid_max_us": 0.7629348927061074,
+        "timer_tick_us": 1.024,
+        "two_point_rate_ppm": -8.739887636277643,
+        "baseline_s": 2.979100085,
+        "min_deadline_margin_us": 350.567,
+        "within_fit_eps": 0,
+        "within_eps_plus_tick": 0
+      },
+      "scheduling": {
+        "realtime_priority_denied": true,
+        "affinity_cpu0": true,
+        "nvlog_config_missing": true
+      },
+      "errors": []
+    },
+    "cpu_proc_sgemm": {
+      "valid": true,
+      "counts": {
+        "recorded": 209,
+        "skipped": 791,
+        "launch_errors": 0,
+        "timeouts": 0,
+        "missing": 0,
+        "misses": 1000
+      },
+      "N": 1000,
+      "stats": {
+        "start_error_us": {
+          "n": 209,
+          "min": 1011.763,
+          "max": 2478.923,
+          "p50": 2144.481,
+          "p90": 2421.895,
+          "p99": 2474.305,
+          "p99_9": 2478.923
+        },
+        "launch_precision_us": {
+          "n": 209,
+          "min": 1011.647,
+          "max": 2478.811,
+          "p50": 2144.365,
+          "p90": 2421.789,
+          "p99": 2474.206,
+          "p99_9": 2478.811
+        },
+        "target_pred_error_us": {
+          "n": 209,
+          "min": 0.097,
+          "max": 0.118,
+          "p50": 0.108,
+          "p90": 0.116,
+          "p99": 0.118,
+          "p99_9": 0.118
+        },
+        "launch_error_us": {
+          "n": 209,
+          "min": 0.022,
+          "max": 8.098,
+          "p50": 0.042,
+          "p90": 0.057,
+          "p99": 5.712,
+          "p99_9": 8.098
+        },
+        "launch_call_us": {
+          "n": 209,
+          "min": 5.891,
+          "max": 8.965,
+          "p50": 6.443,
+          "p90": 6.821,
+          "p99": 8.075,
+          "p99_9": 8.965
+        },
+        "launch_to_start_us": {
+          "n": 209,
+          "min": 1011.611,
+          "max": 2473.189,
+          "p50": 2144.325,
+          "p90": 2421.758,
+          "p99": 2473.005,
+          "p99_9": 2473.189
+        },
+        "exec_us": {
+          "n": 209,
+          "min": 157.696,
+          "max": 163.84,
+          "p50": 159.744,
+          "p90": 161.792,
+          "p99": 163.84,
+          "p99_9": 163.84
+        },
+        "latency_from_target_us": {
+          "n": 209,
+          "min": 1171.507,
+          "max": 2637.643,
+          "p50": 2305.573,
+          "p90": 2580.615,
+          "p99": 2636.097,
+          "p99_9": 2637.643
+        }
+      },
+      "max_stat_difference_us": 0.0,
+      "raw_sha256": "29948c977b62ce0a77bf6a5e4784d12c719d7ae775ae94405fa10f678468724d",
+      "correctness": {
+        "before_after_zero_errors": true,
+        "checks": 2,
+        "CBs_each": 152,
+        "TBs_each": 1
+      },
+      "period_us": 500,
+      "deadline_us": 500,
+      "stream_priority": -2,
+      "fit": {
+        "pre_eps_us": 2.0035,
+        "post_eps_us": 2.024,
+        "pre_resid_max_us": 0.8669160454273224,
+        "post_resid_max_us": 0.7019962649345398,
+        "timer_tick_us": 1.024,
+        "two_point_rate_ppm": -9.458910129378495,
+        "baseline_s": 2.865869284,
+        "min_deadline_margin_us": 671.507,
+        "within_fit_eps": 0,
+        "within_eps_plus_tick": 0
+      },
+      "scheduling": {
+        "realtime_priority_denied": true,
+        "affinity_cpu0": true,
+        "nvlog_config_missing": true
+      },
+      "errors": [],
+      "adversary": {
+        "units": 1133,
+        "units_per_s": 122.6941182277426,
+        "active_fraction": 0.9999229931429602,
+        "prio": 0,
+        "mps_client_percentage": null,
+        "MPS_server_membership_confirmed": null,
+        "approx_measured_start_utc": "2026-10-02T18:22:27.039654+00:00",
+        "measured_window_spans_run": true,
+        "overlapping_positive_timeline_bins": [
+          {
+            "t_s": 7.005,
+            "units": 118,
+            "overlap_s": 0.547516314
+          },
+          {
+            "t_s": 8.004,
+            "units": 122,
+            "overlap_s": 0.202592335
+          }
+        ],
+        "timeline_endpoints_within_run": 1
+      }
+    },
+    "gpu_proc_sgemm": {
+      "valid": true,
+      "counts": {
+        "recorded": 521,
+        "skipped": 479,
+        "launch_errors": 0,
+        "timeouts": 0,
+        "missing": 0,
+        "misses": 595
+      },
+      "N": 1000,
+      "stats": {
+        "start_error_us": {
+          "n": 521,
+          "min": 3.135,
+          "max": 2487.954,
+          "p50": 3.809,
+          "p90": 2215.386,
+          "p99": 2473.534,
+          "p99_9": 2487.954
+        },
+        "launch_precision_us": {
+          "n": 521,
+          "min": 3.073,
+          "max": 2487.885,
+          "p50": 3.746,
+          "p90": 2215.326,
+          "p99": 2473.474,
+          "p99_9": 2487.885
+        },
+        "target_pred_error_us": {
+          "n": 521,
+          "min": 0.058,
+          "max": 0.071,
+          "p50": 0.065,
+          "p90": 0.07,
+          "p99": 0.071,
+          "p99_9": 0.071
+        },
+        "launch_error_us": {
+          "n": 521,
+          "min": 0.001,
+          "max": 2481.741,
+          "p50": 0.622,
+          "p90": 2208.883,
+          "p99": 2467.33,
+          "p99_9": 2481.741
+        },
+        "launch_call_us": {
+          "n": 521,
+          "min": 2.048,
+          "max": 5.12,
+          "p50": 2.048,
+          "p90": 4.096,
+          "p99": 5.12,
+          "p99_9": 5.12
+        },
+        "launch_to_start_us": {
+          "n": 521,
+          "min": 3.072,
+          "max": 7.168,
+          "p50": 3.072,
+          "p90": 6.144,
+          "p99": 7.168,
+          "p99_9": 7.168
+        },
+        "exec_us": {
+          "n": 521,
+          "min": 137.216,
+          "max": 2759.68,
+          "p50": 140.288,
+          "p90": 161.792,
+          "p99": 2696.192,
+          "p99_9": 2759.68
+        },
+        "latency_from_target_us": {
+          "n": 521,
+          "min": 141.317,
+          "max": 2763.064,
+          "p50": 144.405,
+          "p90": 2502.054,
+          "p99": 2699.64,
+          "p99_9": 2763.064
+        }
+      },
+      "max_stat_difference_us": 0.0,
+      "raw_sha256": "97d83bcb500469f61d74ce6a9ca7852e19c8f51137821ff618f699c6ee1794ae",
+      "correctness": {
+        "before_after_zero_errors": true,
+        "checks": 2,
+        "CBs_each": 152,
+        "TBs_each": 1
+      },
+      "period_us": 500,
+      "deadline_us": 500,
+      "stream_priority": -2,
+      "fit": {
+        "pre_eps_us": 1.9385,
+        "post_eps_us": 1.9635,
+        "pre_resid_max_us": 0.9150998306274414,
+        "post_resid_max_us": 0.8602460803997237,
+        "timer_tick_us": 1.024,
+        "two_point_rate_ppm": -10.551943907533001,
+        "baseline_s": 2.862979586,
+        "min_deadline_margin_us": 333.525,
+        "within_fit_eps": 0,
+        "within_eps_plus_tick": 0
+      },
+      "scheduling": {
+        "realtime_priority_denied": true,
+        "affinity_cpu0": true,
+        "nvlog_config_missing": true
+      },
+      "errors": [],
+      "adversary": {
+        "units": 1147,
+        "units_per_s": 118.68036406034611,
+        "active_fraction": 0.9999195406109717,
+        "prio": 0,
+        "mps_client_percentage": null,
+        "MPS_server_membership_confirmed": null,
+        "approx_measured_start_utc": "2026-10-02T18:22:37.601385+00:00",
+        "measured_window_spans_run": true,
+        "overlapping_positive_timeline_bins": [
+          {
+            "t_s": 7.006,
+            "units": 115,
+            "overlap_s": 0.121501943
+          },
+          {
+            "t_s": 8.004,
+            "units": 83,
+            "overlap_s": 0.629498711
+          }
+        ],
+        "timeline_endpoints_within_run": 1
+      }
+    },
+    "cpu_mps_sgemm": {
+      "valid": true,
+      "counts": {
+        "recorded": 737,
+        "skipped": 263,
+        "launch_errors": 0,
+        "timeouts": 0,
+        "missing": 0,
+        "misses": 479
+      },
+      "N": 1000,
+      "stats": {
+        "start_error_us": {
+          "n": 737,
+          "min": 10.941,
+          "max": 23.073,
+          "p50": 12.045,
+          "p90": 12.649,
+          "p99": 16.034,
+          "p99_9": 23.073
+        },
+        "launch_precision_us": {
+          "n": 737,
+          "min": 10.853,
+          "max": 22.979,
+          "p50": 11.956,
+          "p90": 12.559,
+          "p99": 15.949,
+          "p99_9": 22.979
+        },
+        "target_pred_error_us": {
+          "n": 737,
+          "min": 0.081,
+          "max": 0.1,
+          "p50": 0.091,
+          "p90": 0.098,
+          "p99": 0.099,
+          "p99_9": 0.1
+        },
+        "launch_error_us": {
+          "n": 737,
+          "min": 0.02,
+          "max": 6.575,
+          "p50": 0.041,
+          "p90": 0.055,
+          "p99": 0.059,
+          "p99_9": 6.575
+        },
+        "launch_call_us": {
+          "n": 737,
+          "min": 5.671,
+          "max": 16.921,
+          "p50": 6.152,
+          "p90": 6.412,
+          "p99": 8.125,
+          "p99_9": 16.921
+        },
+        "launch_to_start_us": {
+          "n": 737,
+          "min": 10.805,
+          "max": 22.933,
+          "p50": 11.909,
+          "p90": 12.498,
+          "p99": 15.454,
+          "p99_9": 22.933
+        },
+        "exec_us": {
+          "n": 737,
+          "min": 143.36,
+          "max": 1746.944,
+          "p50": 221.184,
+          "p90": 870.4,
+          "p99": 1539.072,
+          "p99_9": 1746.944
+        },
+        "latency_from_target_us": {
+          "n": 737,
+          "min": 155.26,
+          "max": 1759.232,
+          "p50": 233.074,
+          "p90": 881.779,
+          "p99": 1551.317,
+          "p99_9": 1759.232
+        }
+      },
+      "max_stat_difference_us": 0.0,
+      "raw_sha256": "4ac4bbd239b5799f0901c3732cc7cfc0f415c0560c6075222e3768f1967a6947",
+      "correctness": {
+        "before_after_zero_errors": true,
+        "checks": 2,
+        "CBs_each": 152,
+        "TBs_each": 1
+      },
+      "period_us": 500,
+      "deadline_us": 500,
+      "stream_priority": -2,
+      "fit": {
+        "pre_eps_us": 1.8035,
+        "post_eps_us": 1.8135,
+        "pre_resid_max_us": 0.8293341370224953,
+        "post_resid_max_us": 0.7132084305286408,
+        "timer_tick_us": 1.024,
+        "two_point_rate_ppm": -10.947896594837303,
+        "baseline_s": 2.819080335,
+        "min_deadline_margin_us": 0.471,
+        "within_fit_eps": 2,
+        "within_eps_plus_tick": 3
+      },
+      "scheduling": {
+        "realtime_priority_denied": true,
+        "affinity_cpu0": true,
+        "nvlog_config_missing": true
+      },
+      "errors": [],
+      "adversary": {
+        "units": 588,
+        "units_per_s": 65.70026235626534,
+        "active_fraction": 0.9999339816277006,
+        "prio": 0,
+        "mps_client_percentage": "50",
+        "MPS_server_membership_confirmed": true,
+        "approx_measured_start_utc": "2026-10-02T18:22:50.829264+00:00",
+        "measured_window_spans_run": true,
+        "overlapping_positive_timeline_bins": [
+          {
+            "t_s": 7.011,
+            "units": 66,
+            "overlap_s": 0.749729329
+          }
+        ],
+        "timeline_endpoints_within_run": 0
+      }
+    },
+    "gpu_mps_sgemm": {
+      "valid": true,
+      "counts": {
+        "recorded": 724,
+        "skipped": 276,
+        "launch_errors": 0,
+        "timeouts": 0,
+        "missing": 0,
+        "misses": 500
+      },
+      "N": 1000,
+      "stats": {
+        "start_error_us": {
+          "n": 724,
+          "min": 4.414,
+          "max": 24.763,
+          "p50": 6.47,
+          "p90": 7.049,
+          "p99": 14.225,
+          "p99_9": 24.763
+        },
+        "launch_precision_us": {
+          "n": 724,
+          "min": 4.415,
+          "max": 24.763,
+          "p50": 6.47,
+          "p90": 7.049,
+          "p99": 14.225,
+          "p99_9": 24.763
+        },
+        "target_pred_error_us": {
+          "n": 724,
+          "min": -0.001,
+          "max": 0.0,
+          "p50": -0.001,
+          "p90": 0.0,
+          "p99": 0.0,
+          "p99_9": 0.0
+        },
+        "launch_error_us": {
+          "n": 724,
+          "min": 0.0,
+          "max": 18.619,
+          "p50": 0.509,
+          "p90": 0.925,
+          "p99": 9.105,
+          "p99_9": 18.619
+        },
+        "launch_call_us": {
+          "n": 724,
+          "min": 2.048,
+          "max": 4.096,
+          "p50": 4.096,
+          "p90": 4.096,
+          "p99": 4.096,
+          "p99_9": 4.096
+        },
+        "launch_to_start_us": {
+          "n": 724,
+          "min": 4.096,
+          "max": 6.144,
+          "p50": 6.144,
+          "p90": 6.144,
+          "p99": 6.144,
+          "p99_9": 6.144
+        },
+        "exec_us": {
+          "n": 724,
+          "min": 153.6,
+          "max": 1703.936,
+          "p50": 222.208,
+          "p90": 893.952,
+          "p99": 1356.8,
+          "p99_9": 1703.936
+        },
+        "latency_from_target_us": {
+          "n": 724,
+          "min": 159.609,
+          "max": 1710.138,
+          "p50": 228.277,
+          "p90": 900.275,
+          "p99": 1363.27,
+          "p99_9": 1710.138
+        }
+      },
+      "max_stat_difference_us": 0.0,
+      "raw_sha256": "7baac091ea4cc22680d881c458688d56bb41ddb653bbfd3bd72774f465ab4b11",
+      "correctness": {
+        "before_after_zero_errors": true,
+        "checks": 2,
+        "CBs_each": 152,
+        "TBs_each": 1
+      },
+      "period_us": 500,
+      "deadline_us": 500,
+      "stream_priority": -2,
+      "fit": {
+        "pre_eps_us": 1.8585,
+        "post_eps_us": 1.9385,
+        "pre_resid_max_us": 0.7518513908386231,
+        "post_resid_max_us": 0.8256986062526703,
+        "timer_tick_us": 1.024,
+        "two_point_rate_ppm": -11.304233203390801,
+        "baseline_s": 2.820801679,
+        "min_deadline_margin_us": 1.493,
+        "within_fit_eps": 1,
+        "within_eps_plus_tick": 1
+      },
+      "scheduling": {
+        "realtime_priority_denied": true,
+        "affinity_cpu0": true,
+        "nvlog_config_missing": true
+      },
+      "errors": [],
+      "adversary": {
+        "units": 605,
+        "units_per_s": 66.10363773514968,
+        "active_fraction": 0.9999358511724846,
+        "prio": 0,
+        "mps_client_percentage": "50",
+        "MPS_server_membership_confirmed": true,
+        "approx_measured_start_utc": "2026-10-02T18:23:01.050705+00:00",
+        "measured_window_spans_run": true,
+        "overlapping_positive_timeline_bins": [
+          {
+            "t_s": 7.002,
+            "units": 66,
+            "overlap_s": 0.585263406
+          },
+          {
+            "t_s": 8.002,
+            "units": 66,
+            "overlap_s": 0.16434822
+          }
+        ],
+        "timeline_endpoints_within_run": 1
+      }
+    }
+  },
+  "pair_checks": [
+    {
+      "phase": "alone",
+      "matching": true,
+      "differences": []
+    },
+    {
+      "phase": "proc_sgemm",
+      "matching": true,
+      "differences": []
+    },
+    {
+      "phase": "mps_sgemm",
+      "matching": true,
+      "differences": []
+    }
+  ],
+  "source_hash_checks": {
+    "cuphy-lockstep.patch": {
+      "matches_local_file_or_LF_normalized": true,
+      "recorded_sha256": "049aebfaad02e451cd52a12003a7d19556ce890035439c4a77142e3a29c57d9f"
+    },
+    "cuphy_lockstep.cu": {
+      "matches_local_file_or_LF_normalized": true,
+      "recorded_sha256": "d9b4a5eeef71de557646489fe31164f76d32a8c1fdb8096850c390fb38979216"
+    },
+    "cuphy_lockstep_stamps.cu": {
+      "matches_local_file_or_LF_normalized": true,
+      "recorded_sha256": "efefe320fad6ff848e96be96e2ca3414c072e761b196bdaf46004d1d0e661d04"
+    },
+    "cuphy_lockstep.h": {
+      "matches_local_file_or_LF_normalized": true,
+      "recorded_sha256": "faee4a766741dd69846a2ac388a1a7c923a5def7249b331ea88e932b8da8373f"
+    },
+    "cuphy_lockstep_stamps.h": {
+      "matches_local_file_or_LF_normalized": true,
+      "recorded_sha256": "96a29f4de04606f86d8f4e223000ddd922999ab94702390eaa080a7ab3d87159"
+    }
+  },
+  "limitations": [
+    "One sequential 1000-slot trial per cell (0.5 s nominal measured schedule), with 100 warmup slots; no randomized repeats or confidence intervals.",
+    "Timing percentiles use only recorded slots; skips remain deadline misses in the full 1000-slot denominator.",
+    "Correctness is checked before and after replay (152 code blocks and one transport block each), not independently for every timed slot.",
+    "Fixed ready-input TC7304 full-slot graph replay excludes live symbol arrival, per-slot descriptor/setup/output handling, UCI, early HARQ, work cancellation, and retransmission scenarios.",
+    "All six processes failed to obtain requested FIFO priority 99; logs report successful CPU-0 affinity. Results are not a real-time tuned host baseline.",
+    "All six logs report a missing nvlog YAML path and proceed with logger fallback/default behavior; this must be fixed for future controlled runs.",
+    "GPU timer tick is 1.024 us and empirical fit eps is reported per cell; small sub-microsecond differences must not be overinterpreted.",
+    "Adversary timelines are approximately 1 s bins. Their origin is reconstructed from end_time minus seconds_total, not start_time (which precedes initialization); they verify sustained overlap but not exact per-slot work counts.",
+    "MPS is confirmed by client membership plus the adversary's recorded 50% active-thread environment cap; this is not a 50% GPU-time or bandwidth guarantee."
+  ],
+  "errors": [],
+  "valid": true
+}

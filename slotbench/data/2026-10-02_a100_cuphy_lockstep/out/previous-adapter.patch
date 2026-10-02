@@ -1,0 +1,279 @@
+diff --git a/cuPHY/examples/pusch_rx_multi_pipe/CMakeLists.txt b/cuPHY/examples/pusch_rx_multi_pipe/CMakeLists.txt
+index b5f6948..a4f8b32 100644
+--- a/cuPHY/examples/pusch_rx_multi_pipe/CMakeLists.txt
++++ b/cuPHY/examples/pusch_rx_multi_pipe/CMakeLists.txt
+@@ -14,8 +14,9 @@
+ # limitations under the License.
+ 
+ include_directories(../common)
+-set(SOURCES ../common/util.cu cuphy_ex_pusch_rx_multi_pipe.cpp pusch_rx_test.cpp ../common/datasets.cpp)
++set(SOURCES ../common/util.cu cuphy_ex_pusch_rx_multi_pipe.cpp pusch_rx_test.cpp cuphy_lockstep.cu ../common/datasets.cpp)
+ add_executable(cuphy_ex_pusch_rx_multi_pipe ${SOURCES})
++set_target_properties(cuphy_ex_pusch_rx_multi_pipe PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
+ target_link_libraries(cuphy_ex_pusch_rx_multi_pipe cuphy_channels cuphy_hdf5 cuphy yaml Threads::Threads)
+ 
+ install(FILES CMakeLists.release.txt DESTINATION examples/pusch_rx_multi_pipe RENAME CMakeLists.txt)
+diff --git a/cuPHY/examples/pusch_rx_multi_pipe/pusch_rx_test.cpp b/cuPHY/examples/pusch_rx_multi_pipe/pusch_rx_test.cpp
+index c05ad0c..441e4f9 100644
+--- a/cuPHY/examples/pusch_rx_multi_pipe/pusch_rx_test.cpp
++++ b/cuPHY/examples/pusch_rx_multi_pipe/pusch_rx_test.cpp
+@@ -16,6 +16,7 @@
+  */
+ 
+ #include <iostream>
++#include <cstdlib>
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <fstream>
+@@ -41,11 +42,54 @@
+ 
+ #include "datasets.hpp"
+ #include "pusch_rx_test.hpp"
++#include "cuphy_lockstep.h"
+ #include "hdf5hpp.hpp"
+ 
+ 
+ #define OUTPUT_TB_FNAME ("outputBits")
+ 
++namespace {
++
++struct LockstepValidation final
++{
++    cuphy::pusch_rx& pipeline;
++    EvalDataset& reference;
++    DynApiDataset& dataset;
++};
++
++int validateLockstepOutput(void* opaque)
++{
++    auto& validation = *static_cast<LockstepValidation*>(opaque);
++    try
++    {
++        // The executive has finished its stream before invoking this callback. Copies and
++        // reference checks are outside timing, and use the ordinary cuPHY output path.
++        validation.pipeline.run(PUSCH_RUN_FULL_SLOT_COPY);
++        CUDA_CHECK_EXCEPTION(cudaStreamSynchronize(validation.dataset.puschDynPrm.phase1Stream));
++        CUDA_CHECK_EXCEPTION(cudaStreamSynchronize(validation.dataset.puschDynPrm.phase2Stream));
++        const auto& output = validation.dataset.DataOut;
++        if(validation.reference.nTbs == 0 || validation.reference.nCbs == 0 ||
++           output.totNumTbs != validation.reference.nTbs || output.totNumCbs != validation.reference.nCbs ||
++           !output.pTbCrcs || !output.pCbCrcs || !output.pTbPayloads)
++            return 1;
++        uint32_t crcErrors = 0;
++        for(uint32_t i = 0; i < validation.reference.nTbs; ++i)
++            crcErrors += output.pTbCrcs[i] != 0;
++        for(uint32_t i = 0; i < validation.reference.nCbs; ++i)
++            crcErrors += output.pCbCrcs[i] != 0;
++        const uint32_t payloadErrors = validation.reference.computeNumCbErrors(validation.dataset);
++        printf("Lockstep validation: payload/CB errors %u, CRC errors %u\n", payloadErrors, crcErrors);
++        return (payloadErrors == 0 && crcErrors == 0) ? 0 : 1;
++    }
++    catch(const std::exception& error)
++    {
++        fprintf(stderr, "Lockstep validation failed: %s\n", error.what());
++        return 1;
++    }
++}
++
++} // namespace
++
+ 
+ template <typename T>
+ using ms = std::chrono::milliseconds;
+@@ -415,6 +459,20 @@ void PuschRxTest::PipelineWrkrEntry(uint32_t instIdx, const std::string& trtYaml
+ {
+     try
+     {
++        const char* lockstepMode = std::getenv("SB_CUPHY_LOCKSTEP_MODE");
++        if(lockstepMode)
++        {
++            if(std::string(lockstepMode) != "cpu" && std::string(lockstepMode) != "gpu")
++                throw std::invalid_argument("SB_CUPHY_LOCKSTEP_MODE must be cpu or gpu");
++            if(m_nPuschRxInst != 1 || m_inputFileNameVec.size() != 1 ||
++               m_inputFileNameVec.front().size() != 1 || m_harqAttempts != 1 ||
++               m_useCuCtxs || m_useGreenCtxs || !trtYamlInput.empty() ||
++               m_procModeBmsk != PUSCH_PROC_MODE_FULL_SLOT_GRAPHS ||
++               m_openRanFunctionalSplitMode != PUSCH_7_2_A ||
++               m_kernelSelMode != PUSCH_ALL || m_uciKernelSelMode != PUSCH_UCI_ALL ||
++               m_delayUs != 0 || m_subSlotDelayUs != 0)
++                throw std::invalid_argument("Lockstep requires one full-slot graph pipeline/vector, one transmission, complete 7.2a PHY, and no green context, subcontext, neural receiver or delay nodes");
++        }
+         int gpuId = m_gpuIds[instIdx];
+ 
+         //------------------------------------------------------------------
+@@ -531,6 +589,13 @@ void PuschRxTest::PipelineWrkrEntry(uint32_t instIdx, const std::string& trtYaml
+         staticApiDataset.puschStatPrms.nMaxTbPerNode = m_nMaxTbPerNode;
+         staticApiDataset.puschStatPrms.useCbLdpcDecoder = m_useCbLdpc;
+         staticApiDataset.puschStatPrms.earlySchCbDecodeMode = m_earlySchCbDecodeMode;
++        if(lockstepMode)
++        {
++            staticApiDataset.puschStatPrms.enableDeviceGraphLaunch = 1;
++            staticApiDataset.puschStatPrms.workCancelMode = PUSCH_NO_WORK_CANCEL;
++            staticApiDataset.puschStatPrms.enableEarlyHarq = 0;
++            staticApiDataset.puschStatPrms.earlySchCbDecodeMode = PUSCH_EARLY_SCH_CB_DECODE_DISABLED;
++        }
+         CUDA_CHECK(cudaStreamSynchronize(cuStrm));
+         
+         if (not trtYamlInput.empty()) {
+@@ -582,6 +647,17 @@ void PuschRxTest::PipelineWrkrEntry(uint32_t instIdx, const std::string& trtYaml
+                 // Setup datasets
+                 DynApiDataset dynApiDataset(m_inputFileNameVec[slotIdx], cuStrm, m_procModeBmsk, true, m_fp16Mode, 0, m_drmDebug, m_openRanFunctionalSplitMode);
+                 EvalDataset   evalDataset(m_inputFileNameVec[slotIdx], cuStrm, 0, m_drmDebug);
++
++                if(lockstepMode)
++                {
++                    if(dynApiDataset.uePrmsVec.empty())
++                        throw std::invalid_argument("Lockstep requires at least one data UE");
++                    for(const auto& ue : dynApiDataset.uePrmsVec)
++                    {
++                        if(ue.ndi != 1 || ue.rv != 0 || !(ue.pduBitmap & 1) || (ue.pduBitmap & 2))
++                            throw std::invalid_argument("Lockstep supports fresh RV0 SCH transmissions without UCI only");
++                    }
++                }
+                 //-------------------------------------------------------------------
+                 // Pre-allocate HARQ buffers based on the calculated requirements from setupPhase 1
+                 // Note: to avoid HARQ buffer allocation in critical path (requires memory allocation on host and device side) invoke a dummy
+@@ -644,6 +720,21 @@ void PuschRxTest::PipelineWrkrEntry(uint32_t instIdx, const std::string& trtYaml
+                 cuphyStrm.synchronize();
+ 
+                 //------------------------------------------------------------------
++                if(lockstepMode)
++                {
++                    // Preserve normal setup and decoding for the baseline, then freeze the
++                    // prepared descriptors for replay. Do not enter the delay/event test loop.
++                    runTest(instIdx, transmissions, 0, puschRxPipe, staticApiDataset, dynApiDataset);
++                    cudaGraphExec_t replayGraph = nullptr;
++                    const auto graphStatus = cuphyGetPuschRxReplayGraph(puschRxPipe.handle(), &replayGraph);
++                    if(graphStatus != CUPHY_STATUS_SUCCESS)
++                        throw cuphy::cuphy_exception(graphStatus);
++                    LockstepValidation validation{puschRxPipe, evalDataset, dynApiDataset};
++                    if(sb_cuphy_lockstep_run(replayGraph, cuStrm, validateLockstepOutput, &validation) != 0)
++                        throw std::runtime_error("cuPHY lockstep replay or correctness validation failed");
++                    if(m_enableNvProf) cudaProfilerStop();
++                    return;
++                }
+                 for(uint32_t i = 0; i < m_nIterations; ++i)
+                 {
+                     //------------------------------------------------------------------
+diff --git a/cuPHY/src/cuphy/cuphy_api.h b/cuPHY/src/cuphy/cuphy_api.h
+index 2bcbee2..f36df51 100644
+--- a/cuPHY/src/cuphy/cuphy_api.h
++++ b/cuPHY/src/cuphy/cuphy_api.h
+@@ -883,6 +883,14 @@ cuphyStatus_t CUPHYWINAPI cuphySetupPuschRx(cuphyPuschRxHndl_t puschRxHndl, cuph
+  */
+ cuphyStatus_t CUPHYWINAPI cuphyRunPuschRx(cuphyPuschRxHndl_t puschRxHndl, cuphyPuschRunPhase_t runPhase);
+ 
++/** Experimental benchmark API: borrow the configured, device-launchable full-slot graph.
++ * Requires completed setup phases and an inactive pipeline. Only the complete 7.2a pipeline
++ * without early HARQ, front-loaded DMRS, work cancellation or green contexts is supported.
++ * The caller must complete every launch before setup or destruction; it must not destroy or
++ * mutate the returned graph. Input descriptors and buffers must remain alive and unchanged.
++ */
++cuphyStatus_t CUPHYWINAPI cuphyGetPuschRxReplayGraph(cuphyPuschRxHndl_t puschRxHndl, cudaGraphExec_t* graph);
++
+ /******************************************************************/ /**
+  * \brief Run cuPHY save Pusch debug buffer
+  * \param puschRxHndl - Handle of PuschRx instance which saves the debug buffer
+diff --git a/cuPHY/src/cuphy_channels/CMakeLists.txt b/cuPHY/src/cuphy_channels/CMakeLists.txt
+index 894c2d2..269e1b0 100644
+--- a/cuPHY/src/cuphy_channels/CMakeLists.txt
++++ b/cuPHY/src/cuphy_channels/CMakeLists.txt
+@@ -15,7 +15,7 @@
+ 
+ include_directories(common)
+ find_package(gsl-lite REQUIRED)
+-add_library(cuphy_channels STATIC pusch_rx.cpp pdsch_tx.cpp pdcch_tx.cpp pucch_rx.cpp csirs_tx.cpp csirs_rx.cpp prach_rx.cpp ssb_tx.cpp bfw_tx.cpp srs_rx.cpp srs_tx.cpp)
++add_library(cuphy_channels STATIC pusch_rx.cpp cuphy_lockstep_stamps.cu pdsch_tx.cpp pdcch_tx.cpp pucch_rx.cpp csirs_tx.cpp csirs_rx.cpp prach_rx.cpp ssb_tx.cpp bfw_tx.cpp srs_rx.cpp srs_tx.cpp)
+ set_source_files_properties(pucch_rx.cpp PROPERTIES LANGUAGE CUDA)
+ set_property(TARGET cuphy_channels PROPERTY POSITION_INDEPENDENT_CODE ON)
+ 
+diff --git a/cuPHY/src/cuphy_channels/pusch_rx.cpp b/cuPHY/src/cuphy_channels/pusch_rx.cpp
+index a78ce3f..1ef8229 100644
+--- a/cuPHY/src/cuphy_channels/pusch_rx.cpp
++++ b/cuPHY/src/cuphy_channels/pusch_rx.cpp
+@@ -17,8 +17,10 @@
+ 
+ #include <cstddef>
+ #include <cstdint>
++#include <cstdlib>
+ #include <string>
+ #include "pusch_rx.hpp"
++#include "cuphy_lockstep_stamps.h"
+ #include "pusch_utils.hpp"
+ #include "channel_eq/channel_eq.hpp"
+ #include "channel_eq/dft_s_ofdm_bluestein_workspace.hpp"
+@@ -1337,10 +1339,20 @@ PuschRx::PuschRx(cuphyPuschStatPrms_t const* pStatPrms, cudaStream_t cuStream) :
+         }  
+     }
+     createFullSlotGraph(PUSCH_FRONT_LOADED_DMRS_FULL_SLOT_PROC, m_frontLoadedDmrsFullSlotGraph, m_emptyFrontLoadedDmrsFullSlotRootNode, m_frontLoadedDmrsFullSlotGraphCondInfo);
++
++    const bool lockstepGraph = std::getenv("SB_CUPHY_LOCKSTEP_MODE") != nullptr;
++    if(lockstepGraph)
++    {
++        int lockstepPriority = 0;
++        CU_CHECK_EXCEPTION(cuStreamGetPriority(reinterpret_cast<CUstream>(cuStream), &lockstepPriority));
++        CUDA_CHECK_EXCEPTION(sb_cuphy_lockstep_attach_stamps(m_fullSlotGraph, lockstepPriority));
++    }
+     
+     if(m_deviceGraphLaunchEnabled)
+     {
+-        CU_CHECK_EXCEPTION(cuGraphInstantiate(&m_fullSlotGraphExec, m_fullSlotGraph, CUDA_GRAPH_INSTANTIATE_FLAG_DEVICE_LAUNCH));
++        unsigned long long fullSlotFlags = CUDA_GRAPH_INSTANTIATE_FLAG_DEVICE_LAUNCH;
++        if(lockstepGraph) fullSlotFlags |= CUDA_GRAPH_INSTANTIATE_FLAG_USE_NODE_PRIORITY;
++        CU_CHECK_EXCEPTION(cuGraphInstantiate(&m_fullSlotGraphExec, m_fullSlotGraph, fullSlotFlags));
+         CU_CHECK_EXCEPTION(cuGraphInstantiate(&m_frontLoadedDmrsFullSlotGraphExec, m_frontLoadedDmrsFullSlotGraph, CUDA_GRAPH_INSTANTIATE_FLAG_DEVICE_LAUNCH));
+     }
+     else
+@@ -9721,6 +9733,21 @@ void PuschRx::fullSlotKernelLaunch()
+ 
+ //------------------------------------------------------------------------------------------------------------
+ 
++cuphyStatus_t PuschRx::getReplayGraph(cudaGraphExec_t* graph) const
++{
++    if(!graph) return CUPHY_STATUS_INVALID_ARGUMENT;
++    *graph = nullptr;
++    if(!m_cudaGraphModeEnabled || !m_deviceGraphLaunchEnabled || m_useGreenContext ||
++       m_earlyHarqModeEnabled || m_subSlotProcessingFrontLoadedDmrsEnabled ||
++       m_workCancelMode != PUSCH_NO_WORK_CANCEL || m_openRanFunctionalSplitOption != PUSCH_7_2_A ||
++       m_kernelSelOption != PUSCH_ALL || m_uciKernelSelOption != PUSCH_UCI_ALL)
++    {
++        return CUPHY_STATUS_UNSUPPORTED_CONFIG;
++    }
++    *graph = m_fullSlotGraphExec;
++    return *graph ? CUPHY_STATUS_SUCCESS : CUPHY_STATUS_INVALID_ARGUMENT;
++}
++
+ cuphyStatus_t PuschRx::run(cuphyPuschRunPhase_t runPhase)
+ {
+ 
+@@ -11398,6 +11425,15 @@ cuphyStatus_t CUPHYWINAPI cuphySetupPuschRx(cuphyPuschRxHndl_t puschRxHndl, cuph
+ //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+ // cuphyRunPuschRx()
+ 
++cuphyStatus_t CUPHYWINAPI cuphyGetPuschRxReplayGraph(cuphyPuschRxHndl_t puschRxHndl, cudaGraphExec_t* graph)
++{
++    if(!puschRxHndl || !graph) return CUPHY_STATUS_INVALID_ARGUMENT;
++    return cuphy::tryCallableAndCatch([&]
++    {
++        return static_cast<PuschRx*>(puschRxHndl)->getReplayGraph(graph);
++    });
++}
++
+ cuphyStatus_t CUPHYWINAPI cuphyRunPuschRx(cuphyPuschRxHndl_t puschRxHndl, cuphyPuschRunPhase_t runPhase)
+ {
+     if(!puschRxHndl)
+diff --git a/cuPHY/src/cuphy_channels/pusch_rx.hpp b/cuPHY/src/cuphy_channels/pusch_rx.hpp
+index 7bd1351..83ad6c1 100644
+--- a/cuPHY/src/cuphy_channels/pusch_rx.hpp
++++ b/cuPHY/src/cuphy_channels/pusch_rx.hpp
+@@ -482,6 +482,10 @@ public:
+     cuphyStatus_t setup(cuphyPuschDynPrms_t* pDynPrm);
+     cuphyStatus_t run(cuphyPuschRunPhase_t runPhase);
+ 
++    // Experimental fixed-input benchmark access. The caller owns synchronization; the pipeline
++    // retains ownership and must not be updated or destroyed until every replay has completed.
++    [[nodiscard]] cuphyStatus_t getReplayGraph(cudaGraphExec_t* graph) const;
++
+     // These two are callable without instantiating PuschRx.
+     static uint32_t expandFrontEndParameters(cuphyPuschDynPrms_t* pDynPrm,
+                                              cuphyPuschStatPrms_t* pStatPrm,

@@ -1,0 +1,5 @@
+MECHANISM_SMOKE synthetic DAG: two roots, two leaves, four kernels; no NVIDIA cuPHY
+MECHANISM_SMOKE validation=1 graphs=1 kernels_each=1 payload=pass
+MECHANISM_SMOKE validation=2 graphs=73 kernels_each=73 payload=pass
+CUPHY_LOCKSTEP mode=cpu correctness=pass recorded=64 skipped=0 p99_start_us=10.102 misses=0/64
+MECHANISM_SMOKE mode=cpu PASS (synthetic DAG, not a cuPHY validation)

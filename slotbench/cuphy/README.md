@@ -1,6 +1,6 @@
 # Experimental cuPHY lockstep adapter
 
-Periodically replays the actual NVIDIA cuPHY PUSCH full-slot graph with CPU or GPU scheduling. The adapter targets upstream commit `4f65f97c1d5f701ce911f7dda8f1b1f3f0c7693c`. CUDA helpers compile locally; full upstream build and GPU validation are pending as of 2026-10-02. See [integration notes and source evidence](../docs/cuphy-lockstep-plan.md).
+Periodically replays the actual NVIDIA cuPHY PUSCH full-slot graph with CPU or GPU scheduling. The adapter targets upstream commit `4f65f97c1d5f701ce911f7dda8f1b1f3f0c7693c`. The full upstream build and six A100/CUDA 13.3 cases passed execution and endpoint correctness checks on 2026-10-02; contention still caused deadline misses. See [results and raw evidence](../data/2026-10-02_a100_cuphy_lockstep/README.md) and [integration notes](../docs/cuphy-lockstep-plan.md).
 
 ## Build and run
 
