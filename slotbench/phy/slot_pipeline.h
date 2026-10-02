@@ -22,6 +22,7 @@ struct PhyConfig {
     int ldpc_bg = 1;         // base graph
     float sigma2 = 0.01f;    // noise variance used in the MMSE Gram matrix and LLR scaling
     unsigned seed = 1;       // synthetic input data
+    bool skip_blas = false;  // leave out S3-S7 (cuBLAS); timing-only variant for device graph launch
     std::string json() const;
 };
 

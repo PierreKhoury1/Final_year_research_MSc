@@ -65,7 +65,7 @@ std::string PhyConfig::json() const {
     char s2[32];
     snprintf(s2, sizeof s2, "%.9g", (double)sigma2);  // float precision, so 0.01 prints as 0.01
     j.add("ldpc_rows", ldpc_rows).add("ldpc_z", ldpc_z).add("ldpc_bg", ldpc_bg).add_raw("sigma2", s2);
-    j.add("seed", seed);
+    j.add("seed", seed).add("skip_blas", skip_blas);
     return j.str();
 }
 
@@ -300,6 +300,7 @@ void SlotPipeline::enqueue(cudaStream_t s) {
     // S2
     launch_pilot_gather(m.d_freq, m.d_Yp, m.d_Yd, cfg_.fft, S, nd, s);
     mark();
+    if (!cfg_.skip_blas) {
     // S3: H = Yp Xp^H / 4   (antennas x layers)
     CUBLAS_CK(cublasCgemmStridedBatched(m.blas, CUBLAS_OP_N, CUBLAS_OP_C, 4, 4, 4, &m.c_quarter, cx(m.d_Yp), 4, 16,
                                         cx(m.d_Xp), 4, 0, &m.c_zero, cx(m.d_H), 4, 16, S));
@@ -318,6 +319,7 @@ void SlotPipeline::enqueue(cudaStream_t s) {
     mark();
     CUBLAS_CK(cublasCgetrsBatched(m.blas, CUBLAS_OP_N, 4, nd, (const cuComplex *const *)m.d_Gptr, 4, m.d_piv,
                                   m.d_Rptr, 4, &m.getrs_info, S));
+    }
     mark();
     // S8: LLR scale 1/sigma2 (post-equalisation noise is not tracked; the data is synthetic)
     launch_demod(m.d_R, m.d_llr, S, nd, cfg_.qam, 1.0f / cfg_.sigma2, s);

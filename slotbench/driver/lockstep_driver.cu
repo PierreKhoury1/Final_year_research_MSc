@@ -65,59 +65,87 @@ __global__ void k_done(unsigned long long *d, const SlotStamps *stamps_dev) {
 // The slot executive: one resident thread. For each boundary k it waits until the previous slot has
 // finished (skipping boundaries that pass meanwhile), waits for g_target[k] on %globaltimer, then
 // launches the slot graph from the device (fire-and-forget) and records when it did so.
+// A graph execution may issue at most 120 fire-and-forget launches (CUDA Programming Guide, Device Graph
+// Launch), so the executive processes `chunk` launches, saves its state and tail-launches itself; the
+// tail launch starts once the chunk and its child slot have completed.
+struct ExecState {
+    int k;               // next boundary
+    int launched;        // slot in flight (-1 none)
+    int chunks;          // executions so far
+    int finished;        // 1 when all boundaries are handled
+    unsigned long long prev_done;
+    unsigned long long n_launched, n_skipped, n_err, n_tail_err;
+};
+
 __global__ void k_executive(cudaGraphExec_t e0, cudaGraphExec_t e1, const unsigned long long *g_target, int n,
-                            volatile unsigned long long *done, LsRec *rec, unsigned long long *stats) {
+                            volatile unsigned long long *done, LsRec *rec, ExecState *state, int chunk,
+                            volatile int *finished_host) {
     if (threadIdx.x != 0 || blockIdx.x != 0) return;
-    unsigned long long prev_done = done[0];
-    int launched = -1;  // index of the slot in flight
-    int k = 0;
-    unsigned long long n_skipped = 0, n_err = 0, n_launched = 0;
-    while (k < n) {
+    ExecState st = *state;
+    if (st.chunks == 0) st.prev_done = done[0];
+    st.chunks++;
+    int fired = 0;
+    while (st.k < n) {
         // 1. previous slot must be complete before anything else is launched
-        if (launched >= 0) {
-            while (done[0] == prev_done) {
-                if (k < n && gtimer() >= g_target[k]) {   // boundary k passed while busy: skip it
-                    rec[k].g_target = g_target[k];
-                    rec[k].flags = 1u;
-                    n_skipped++;
-                    k++;
-                    if (k >= n) break;
+        if (st.launched >= 0) {
+            while (done[0] == st.prev_done) {
+                if (st.k < n && gtimer() >= g_target[st.k]) {   // boundary passed while busy: skip it
+                    rec[st.k].g_target = g_target[st.k];
+                    rec[st.k].flags = 1ull;
+                    st.n_skipped++;
+                    st.k++;
+                    if (st.k >= n) break;
                 }
             }
-            if (done[0] != prev_done) {
-                prev_done = done[0];
-                rec[launched].g0 = done[1];
-                rec[launched].g1 = prev_done;
-                launched = -1;
+            if (done[0] != st.prev_done) {
+                st.prev_done = done[0];
+                rec[st.launched].g0 = done[1];
+                rec[st.launched].g1 = st.prev_done;
+                st.launched = -1;
             }
-            if (k >= n) break;
+            if (st.k >= n) break;
         }
+        if (fired >= chunk) break;   // hand over to the next execution of this graph
         // 2. wait for the boundary
-        unsigned long long T = g_target[k];
+        unsigned long long T = g_target[st.k];
         while (gtimer() < T) {}
         // 3. launch from the device
         unsigned long long tl = gtimer();
-        cudaError_t e = cudaGraphLaunch((n_launched & 1ull) ? e1 : e0, cudaStreamGraphFireAndForget);
-        rec[k].g_target = T;
-        rec[k].g_launch = tl;
+        cudaError_t e = cudaGraphLaunch((st.n_launched & 1ull) ? e1 : e0, cudaStreamGraphFireAndForget);
+        rec[st.k].g_target = T;
+        rec[st.k].g_launch = tl;
         if (e != cudaSuccess) {
-            rec[k].flags = 2u;
-            n_err++;
-            k++;
+            rec[st.k].flags = 2ull;
+            st.n_err++;
+            st.k++;
             continue;
         }
-        launched = k;
-        n_launched++;
-        k++;
+        st.launched = st.k;
+        st.n_launched++;
+        fired++;
+        st.k++;
     }
-    if (launched >= 0) {  // drain the last slot
-        while (done[0] == prev_done) {}
-        rec[launched].g0 = done[1];
-        rec[launched].g1 = done[0];
+    if (st.k >= n && st.launched >= 0) {  // drain the last slot
+        while (done[0] == st.prev_done) {}
+        st.prev_done = done[0];
+        rec[st.launched].g0 = done[1];
+        rec[st.launched].g1 = st.prev_done;
+        st.launched = -1;
     }
-    stats[0] = n_launched;
-    stats[1] = n_skipped;
-    stats[2] = n_err;
+    if (st.k >= n) st.finished = 1;
+    *state = st;
+    __threadfence_system();
+    if (st.finished) {
+        *finished_host = 1;
+    } else {
+        cudaError_t e = cudaGraphLaunch(cudaGetCurrentGraphExec(), cudaStreamGraphTailLaunch);
+        if (e != cudaSuccess) {
+            state->n_tail_err++;
+            state->finished = 2;
+            __threadfence_system();
+            *finished_host = 2;
+        }
+    }
 }
 
 // calibration ping-pong (resident kernel answers host sequence writes over mapped memory)
@@ -284,45 +312,64 @@ int main(int argc, char **argv) {
 
     // the slot
     SlotPipeline pipe(o.phy);
-    const volatile SlotStamps *st = pipe.stamps();
     SlotStamps *st_dev;
-    CK(cudaHostGetDevicePointer((void **)&st_dev, (void *)st, 0));
+    CK(cudaHostGetDevicePointer((void **)&st_dev, (void *)pipe.stamps(), 0));
     unsigned long long *done_d;
     CK(cudaMalloc(&done_d, 2 * sizeof(unsigned long long)));
     CK(cudaMemset(done_d, 0, 2 * sizeof(unsigned long long)));
 
-    cudaGraph_t graph;
-    CK(cudaStreamBeginCapture(s, cudaStreamCaptureModeGlobal));
-    pipe.enqueue(s);
-    k_done<<<1, 1, 0, s>>>(done_d, st_dev);
-    CK(cudaStreamEndCapture(s, &graph));
-    size_t n_nodes = 0;
-    CK(cudaGraphGetNodes(graph, nullptr, &n_nodes));
-
+    // capture one slot (+ completion kernel); device-launchable graphs may hold only kernel/memcpy/memset/
+    // child nodes, so if the cuBLAS stages make instantiation fail, fall back to the slot without them
+    // (FFT, gather, demod, de-match, LDPC, pack) and say so in the output.
+    cudaGraph_t graph = nullptr;
     cudaGraphExec_t host_exec = nullptr, dev_exec[2] = {nullptr, nullptr}, exec_graph_exec = nullptr;
-    CK(cudaGraphInstantiate(&host_exec, graph, 0));
-    std::string dev_instantiate_error;
-    if (o.mode == "gpu") {
+    size_t n_nodes = 0;
+    std::string slot_variant = "full", dev_instantiate_error;
+    SlotPipeline *pipe_p = &pipe;
+    SlotPipeline *pipe_fallback = nullptr;
+    for (int attempt = 0; attempt < 2; attempt++) {
+        if (attempt == 1) {
+            PhyConfig c2 = o.phy;
+            c2.skip_blas = true;
+            pipe_fallback = new SlotPipeline(c2);
+            pipe_p = pipe_fallback;
+            slot_variant = "no_cublas";
+            CK(cudaHostGetDevicePointer((void **)&st_dev, (void *)pipe_p->stamps(), 0));
+            if (host_exec) { CK(cudaGraphExecDestroy(host_exec)); host_exec = nullptr; }
+            if (graph) { CK(cudaGraphDestroy(graph)); graph = nullptr; }
+        }
+        CK(cudaStreamBeginCapture(s, cudaStreamCaptureModeGlobal));
+        pipe_p->enqueue(s);
+        k_done<<<1, 1, 0, s>>>(done_d, st_dev);
+        CK(cudaStreamEndCapture(s, &graph));
+        CK(cudaGraphGetNodes(graph, nullptr, &n_nodes));
+        CK(cudaGraphInstantiate(&host_exec, graph, 0));
+        if (o.mode != "gpu") break;
+        dev_instantiate_error.clear();
         for (int i = 0; i < 2; i++) {
             cudaError_t e = cudaGraphInstantiateWithFlags(&dev_exec[i], graph, cudaGraphInstantiateFlagDeviceLaunch);
             if (e != cudaSuccess) {
                 dev_instantiate_error = cudaGetErrorString(e);
                 (void)cudaGetLastError();
-                fprintf(stderr, "lockstep_driver: device-launchable instantiate failed: %s\n", dev_instantiate_error.c_str());
+                fprintf(stderr, "lockstep_driver: device-launchable instantiate (%s slot) failed: %s\n", slot_variant.c_str(),
+                        dev_instantiate_error.c_str());
+                for (int j2 = 0; j2 < i; j2++) { cudaGraphExecDestroy(dev_exec[j2]); dev_exec[j2] = nullptr; }
                 break;
             }
             CK(cudaGraphUpload(dev_exec[i], s));
         }
         CK(cudaStreamSynchronize(s));
-        if (!dev_instantiate_error.empty()) {
-            Json j;
-            j.add("ok", false).add("mode", o.mode).add("error", "device graph launch not available for this slot graph: " + dev_instantiate_error)
-                .add("graph_nodes", (long long)n_nodes).add("gpu", prop.name);
-            FILE *f = fopen(o.out.c_str(), "w");
-            if (f) { fputs(j.str().c_str(), f); fclose(f); }
-            return 1;
-        }
+        if (dev_instantiate_error.empty()) break;
     }
+    if (o.mode == "gpu" && !dev_instantiate_error.empty()) {
+        Json j;
+        j.add("ok", false).add("mode", o.mode).add("error", "device graph launch not available for this slot graph: " + dev_instantiate_error)
+            .add("graph_nodes", (long long)n_nodes).add("gpu", prop.name);
+        FILE *f = fopen(o.out.c_str(), "w");
+        if (f) { fputs(j.str().c_str(), f); fclose(f); }
+        return 1;
+    }
+    const volatile SlotStamps *st = pipe_p->stamps();
 
     // prime: one host launch so the stamp sequence base is known
     CK(cudaGraphLaunch(host_exec, s));
@@ -367,6 +414,8 @@ int main(int argc, char **argv) {
     for (long k = 0; k < total; k++) { rec[k].slot = (unsigned long long)k; rec[k].t_target = T[k]; }
     unsigned long long stats[3] = {0, 0, 0};
     std::string exec_error;
+    int exec_chunks = 0;
+    constexpr int kChunk = 100;  // < 120 fire-and-forget launches per graph execution
 
     if (o.mode == "cpu") {
         unsigned long long seq = seq_base;
@@ -398,38 +447,55 @@ int main(int argc, char **argv) {
             if (st->end_seq == seq) { rec[launched].g0 = st->start_t; rec[launched].g1 = st->end_t; }
         }
     } else {
-        unsigned long long *G_d, *stats_d;
+        unsigned long long *G_d;
         LsRec *rec_d;
+        ExecState *state_d;
+        volatile int *finished_h; int *finished_d;
         CK(cudaMalloc(&G_d, total * sizeof(unsigned long long)));
         CK(cudaMemcpy(G_d, G.data(), total * sizeof(unsigned long long), cudaMemcpyHostToDevice));
         CK(cudaMalloc(&rec_d, total * sizeof(LsRec)));
         CK(cudaMemcpy(rec_d, rec.data(), total * sizeof(LsRec), cudaMemcpyHostToDevice));
-        CK(cudaMalloc(&stats_d, 3 * sizeof(unsigned long long)));
-        CK(cudaMemset(stats_d, 0, 3 * sizeof(unsigned long long)));
+        CK(cudaMalloc(&state_d, sizeof(ExecState)));
+        ExecState st0{};
+        st0.launched = -1;
+        CK(cudaMemcpy(state_d, &st0, sizeof st0, cudaMemcpyHostToDevice));
+        CK(cudaHostAlloc((void **)&finished_h, 64, cudaHostAllocMapped));
+        *finished_h = 0;
+        CK(cudaHostGetDevicePointer((void **)&finished_d, (void *)finished_h, 0));
         // the executive itself runs as a device-launchable graph (device graph launch is only allowed
-        // from kernels that are part of one)
+        // from kernels that are part of one) and tail-launches itself every `chunk` slots
         cudaGraph_t eg;
         CK(cudaStreamBeginCapture(s, cudaStreamCaptureModeGlobal));
-        k_executive<<<1, 32, 0, s>>>(dev_exec[0], dev_exec[1], G_d, (int)total, (volatile unsigned long long *)done_d, rec_d, stats_d);
+        k_executive<<<1, 32, 0, s>>>(dev_exec[0], dev_exec[1], G_d, (int)total, (volatile unsigned long long *)done_d, rec_d,
+                                     state_d, kChunk, (volatile int *)finished_d);
         CK(cudaStreamEndCapture(s, &eg));
         cudaError_t e = cudaGraphInstantiateWithFlags(&exec_graph_exec, eg, cudaGraphInstantiateFlagDeviceLaunch);
         if (e != cudaSuccess) { exec_error = std::string("executive instantiate: ") + cudaGetErrorString(e); (void)cudaGetLastError(); }
         else {
             CK(cudaGraphUpload(exec_graph_exec, s));
             CK(cudaGraphLaunch(exec_graph_exec, s));
-            // wait with a wall guard
+            // the finished flag covers the whole tail-launched chain; the stream query is a second check
             int64_t lim = now_ns() + (int64_t)((double)total * period_ns * 3) + 10000000000LL;
-            cudaError_t q;
-            while ((q = cudaStreamQuery(s)) == cudaErrorNotReady) {
+            while (*finished_h == 0) {
                 if (now_ns() > lim) { exec_error = "executive did not finish (wall guard)"; break; }
+                cudaError_t q = cudaStreamQuery(s);
+                if (q != cudaSuccess && q != cudaErrorNotReady) { exec_error = std::string("executive: ") + cudaGetErrorString(q); break; }
                 spin_until(now_ns() + 100000);
             }
-            if (q != cudaSuccess && q != cudaErrorNotReady) exec_error = std::string("executive: ") + cudaGetErrorString(q);
+            if (exec_error.empty() && *finished_h == 2) exec_error = "executive tail relaunch failed";
+            if (exec_error.empty()) {
+                int64_t lim2 = now_ns() + 5000000000LL;
+                cudaError_t q;
+                while ((q = cudaStreamQuery(s)) == cudaErrorNotReady && now_ns() < lim2) spin_until(now_ns() + 100000);
+                if (q != cudaSuccess) exec_error = std::string("executive stream: ") + cudaGetErrorString(q);
+            }
         }
-        if (exec_error.empty()) {
-            CK(cudaMemcpy(rec.data(), rec_d, total * sizeof(LsRec), cudaMemcpyDeviceToHost));
-            CK(cudaMemcpy(stats, stats_d, 3 * sizeof(unsigned long long), cudaMemcpyDeviceToHost));
-        }
+        ExecState stf{};
+        CK(cudaMemcpy(&stf, state_d, sizeof stf, cudaMemcpyDeviceToHost));
+        CK(cudaMemcpy(rec.data(), rec_d, total * sizeof(LsRec), cudaMemcpyDeviceToHost));
+        stats[0] = stf.n_launched; stats[1] = stf.n_skipped; stats[2] = stf.n_err;
+        exec_chunks = stf.chunks;
+        if (exec_error.empty() && stf.n_tail_err) exec_error = "executive tail relaunch error";
     }
 
     std::vector<Bracket> br2 = calibrate(s_cal, ctl_h, ctl_d, gt_h, gt_d, std::max(2000, o.calib / 4), cal_seq);
@@ -468,7 +534,7 @@ int main(int argc, char **argv) {
         .add("gpu", prop.name).add("sm", prop.multiProcessorCount).add("driver", drv).add("runtime", rt)
         .add("slots", (long long)N).add("warmup", (long long)W).add("period_us", o.period_us).add("deadline_us", o.deadline_us)
         .add("stream_priority", prio).add("graph_nodes", (long long)n_nodes)
-        .add_raw("phy", pipe.config().json())
+        .add_raw("phy", pipe_p->config().json())
         .add("recorded", (long long)recorded).add("skipped", (long long)skipped).add("launch_errors", (long long)errors)
         .add("total_slots", (long long)total_slots).add("misses", (long long)misses)
         .add("miss_rate", total_slots ? (double)misses / (double)total_slots : NAN)
@@ -479,7 +545,7 @@ int main(int argc, char **argv) {
         .add_raw("latency_from_target_us", stats_json(lat_from_target))
         .add_raw("clock_fit_pre", fit.json()).add_raw("clock_fit_post", fit2.json())
         .add("executive_launched", (long long)stats[0]).add("executive_skipped", (long long)stats[1])
-        .add("executive_errors", (long long)stats[2]);
+        .add("executive_errors", (long long)stats[2]).add("executive_chunks", exec_chunks).add("slot_variant", slot_variant);
     FILE *f = fopen(o.out.c_str(), "w");
     if (!f) { perror("out"); return 2; }
     fputs(j.str().c_str(), f);
