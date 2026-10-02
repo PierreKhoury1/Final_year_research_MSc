@@ -61,9 +61,17 @@ cudaError_t sb_cuphy_lockstep_attach_stamps(cudaGraph_t graph, int priority) {
     if (e != cudaSuccess) return e;
     for (auto node : nodes) {
         size_t dependencies = 0, dependents = 0;
+#if CUDART_VERSION >= 13000
+        e = cudaGraphNodeGetDependencies(node, nullptr, nullptr, &dependencies);
+#else
         e = cudaGraphNodeGetDependencies(node, nullptr, &dependencies);
+#endif
         if (e != cudaSuccess) return e;
+#if CUDART_VERSION >= 13000
+        e = cudaGraphNodeGetDependentNodes(node, nullptr, nullptr, &dependents);
+#else
         e = cudaGraphNodeGetDependentNodes(node, nullptr, &dependents);
+#endif
         if (e != cudaSuccess) return e;
         if (!dependencies) roots.push_back(node);
         if (!dependents) leaves.push_back(node);
@@ -84,7 +92,11 @@ cudaError_t sb_cuphy_lockstep_attach_stamps(cudaGraph_t graph, int priority) {
     e = cudaGraphAddKernelNode(&first, graph, nullptr, 0, &params);
     if (e != cudaSuccess) return e;
     std::vector<cudaGraphNode_t> starts(roots.size(), first);
+#if CUDART_VERSION >= 13000
+    e = cudaGraphAddDependencies(graph, starts.data(), roots.data(), nullptr, roots.size());
+#else
     e = cudaGraphAddDependencies(graph, starts.data(), roots.data(), roots.size());
+#endif
     if (e != cudaSuccess) return e;
     params.func = reinterpret_cast<void*>(stamp_end);
     e = cudaGraphAddKernelNode(&last, graph, leaves.data(), leaves.size(), &params);
