@@ -1,5 +1,5 @@
 diff --git a/cuPHY/examples/pusch_rx_multi_pipe/CMakeLists.txt b/cuPHY/examples/pusch_rx_multi_pipe/CMakeLists.txt
-index b5f6948..3a8d0df 100644
+index b5f6948..a4f8b32 100644
 --- a/cuPHY/examples/pusch_rx_multi_pipe/CMakeLists.txt
 +++ b/cuPHY/examples/pusch_rx_multi_pipe/CMakeLists.txt
 @@ -14,8 +14,9 @@
@@ -9,9 +9,8 @@ index b5f6948..3a8d0df 100644
 -set(SOURCES ../common/util.cu cuphy_ex_pusch_rx_multi_pipe.cpp pusch_rx_test.cpp ../common/datasets.cpp)
 +set(SOURCES ../common/util.cu cuphy_ex_pusch_rx_multi_pipe.cpp pusch_rx_test.cpp cuphy_lockstep.cu ../common/datasets.cpp)
  add_executable(cuphy_ex_pusch_rx_multi_pipe ${SOURCES})
--target_link_libraries(cuphy_ex_pusch_rx_multi_pipe cuphy_channels cuphy_hdf5 cuphy yaml Threads::Threads)
 +set_target_properties(cuphy_ex_pusch_rx_multi_pipe PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
-+target_link_libraries(cuphy_ex_pusch_rx_multi_pipe cuphy_channels cuphy_hdf5 cuphy yaml Threads::Threads CUDA::cudadevrt)
+ target_link_libraries(cuphy_ex_pusch_rx_multi_pipe cuphy_channels cuphy_hdf5 cuphy yaml Threads::Threads)
  
  install(FILES CMakeLists.release.txt DESTINATION examples/pusch_rx_multi_pipe RENAME CMakeLists.txt)
 diff --git a/cuPHY/examples/pusch_rx_multi_pipe/pusch_rx_test.cpp b/cuPHY/examples/pusch_rx_multi_pipe/pusch_rx_test.cpp

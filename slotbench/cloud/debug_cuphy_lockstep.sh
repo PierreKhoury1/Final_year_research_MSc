@@ -52,11 +52,18 @@ debug_main() {
     COLLECTION_ARCHIVE="$W/collection-debug-$run_id.tar.gz"
     export SB_CUPHY_FINISH_EXIT=1
     CURRENT_LOG="$LOGS/header.txt"; ADV_PID=""; STEP_PID=""; MPS_ON=0
-    trap 'echo "=====SLOTBENCH-ERROR $LINENO $BASH_COMMAND====="; finish error' ERR
+    trap 'echo "=====SLOTBENCH-ERROR $LINENO $BASH_COMMAND====="; tail -n 25 "$CURRENT_LOG" 2>/dev/null || true; finish error' ERR
     trap 'echo "=====SLOTBENCH-ERROR 0 interrupted====="; finish interrupted; exit 130' TERM INT
     { date -u; nvidia-smi; git -C "$S" rev-parse HEAD; } > "$LOGS/header.txt" 2>&1
     export -f refresh_adapter tv
     step refresh_adapter 60 bash -e -o pipefail -c refresh_adapter
+    # Failed initial configuration can leave CMakeCache.txt without build.ninja.
+    # Regenerate after applying the repaired adapter, reusing installed dependencies.
+    local trt_so=/usr/lib/x86_64-linux-gnu/libnvinfer.so.10
+    [[ -f $W/wrapper/CMakeLists.txt && -e $trt_so ]]
+    step configure 180 cmake -S "$W/wrapper" -B "$W/build" -GNinja -DACAR_SRC="$S" \
+        -DCMAKE_TOOLCHAIN_FILE="$S/cuPHY/cmake/toolchains/x86-64" -DCMAKE_BUILD_TYPE=Release \
+        -DCMAKE_CUDA_ARCHITECTURES=80-real -DBUILD_DOCS=OFF -DENABLE_TESTS=OFF -DNVINFER:FILEPATH="$trt_so"
     step incremental_build 1200 cmake --build "$W/build" --target cuphy_ex_pusch_rx_multi_pipe -- -j"$jobs"
     PUSCH="$W/build/cuPHY/examples/pusch_rx_multi_pipe/cuphy_ex_pusch_rx_multi_pipe"
     ADV="$W/sb/slotbench/bin/adversary"
