@@ -827,7 +827,7 @@
     "Timing percentiles use only recorded slots; skips remain deadline misses in the full 1000-slot denominator.",
     "Correctness is checked before and after replay (152 code blocks and one transport block each), not independently for every timed slot.",
     "Fixed ready-input TC7304 full-slot graph replay excludes live symbol arrival, per-slot descriptor/setup/output handling, UCI, early HARQ, work cancellation, and retransmission scenarios.",
-    "All six processes failed to obtain requested FIFO priority 99; logs report successful CPU-0 affinity. Results are not a real-time tuned host baseline.",
+    "All six processes failed to obtain requested SCHED_RR priority 99; logs report successful CPU-0 affinity. Results are not a real-time tuned host baseline.",
     "All six logs report a missing nvlog YAML path and proceed with logger fallback/default behavior; this must be fixed for future controlled runs.",
     "GPU timer tick is 1.024 us and empirical fit eps is reported per cell; small sub-microsecond differences must not be overinterpreted.",
     "Adversary timelines are approximately 1 s bins. Their origin is reconstructed from end_time minus seconds_total, not start_time (which precedes initialization); they verify sustained overlap but not exact per-slot work counts.",

@@ -158,3 +158,44 @@ def test_case_manifest_requires_actual_matching_scheduler(environment, observed,
     assert (result.returncode == 0) == expected
     assert (out / "continued").exists() == expected
     assert json.loads((out / (name + ".run.json")).read_text())["name"] == name
+
+
+def test_background_affinity_is_applied_after_full_mask_validation(environment):
+    cpus = sorted(os.sched_getaffinity(0))
+    if len(cpus) < 2:
+        pytest.skip("requires two allowed host CPUs")
+    phy, background = cpus[0], cpus[-1]
+    env = dict(environment, SB_CUPHY_CPU=str(phy), SB_TELEMETRY_CPU=str(background),
+               SB_BACKGROUND_CPUS=str(background))
+    result = shell("repeat_cpu_setup\nrepeat_plan", env)
+    assert result.returncode == 0, result.stderr
+    control = read_plan(env)["cpu_control"]
+    assert control["initial_allowed_affinity"] == cpus
+    assert control["phy_cpu_requested"] == phy
+    assert control["runner_affinity_after"] == [background]
+    assert phy not in control["runner_affinity_after"]
+
+
+@pytest.mark.parametrize("cpulist", ["1;false", "1-", "2-1", "1,,2", "0-999999999"])
+def test_background_affinity_rejects_malformed_lists_before_mutation(environment, cpulist):
+    env = dict(environment, SB_CUPHY_CPU=str(min(os.sched_getaffinity(0))), SB_BACKGROUND_CPUS=cpulist)
+    result = shell("repeat_cpu_setup\ntouch \"$OUT/continued\"", env)
+    assert result.returncode != 0
+    assert "SB_BACKGROUND_CPUS" in result.stderr
+    assert not (Path(env["OUT"]) / "continued").exists()
+    assert not (Path(env["OUT"]) / "runner_affinity.log").exists()
+
+
+def test_command_substitution_failure_archives_only_in_parent(environment):
+    result = shell('''
+REPEAT_MAIN_PID=$BASHPID
+CURRENT_LOG="$LOGS/missing.log"
+repeat_finish() { echo "$1" >> "$OUT/finish-calls"; }
+trap 'repeat_failure "$?" "$LINENO" "$BASH_COMMAND"' ERR
+value=$(false)
+touch "$OUT/continued"
+''', environment)
+    assert result.returncode != 0
+    out = Path(environment["OUT"])
+    assert (out / "finish-calls").read_text().splitlines() == ["error"]
+    assert not (out / "continued").exists()

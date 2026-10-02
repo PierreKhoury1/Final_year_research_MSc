@@ -36,6 +36,8 @@ for pair in range(1, int(repeats) + 1):
 clock_file = out / "clock_control.json"
 clock = json.loads(clock_file.read_text()) if clock_file.exists() else {
     "clocks_locked": None, "command": None, "result": "not changed by repeat runner"}
+cpu_file = out / "cpu_selection.json"
+cpu_control = json.loads(cpu_file.read_text()) if cpu_file.exists() else None
 if clock.get("clocks_locked") is not None and type(clock["clocks_locked"]) is not bool:
     raise SystemExit("clock_control.clocks_locked must be a boolean or null")
 manifest = dict(schema_version=1, seed=int(seed), repeats=int(repeats),
@@ -48,6 +50,7 @@ manifest = dict(schema_version=1, seed=int(seed), repeats=int(repeats),
     telemetry_interval_ms=100, observer_cpu=int(observer_cpu),
     phy_cpu_requested=int(os.environ.get("SB_CUPHY_CPU", "0")),
     adversary_cpu_requested=int(os.environ["SB_ADVERSARY_CPU"]) if os.environ.get("SB_ADVERSARY_CPU") else None,
+    cpu_control=cpu_control,
     scheduler_note="Read-only /proc observation after the PHY reports worker affinity; observation time is recorded.",
     adversary_mps_percentage=50)
 with (out / "experiment.json").open("x") as f:
@@ -180,7 +183,7 @@ run = json.loads(p.read_text())
 row = next((r for r in experiment["schedule"] if r["name"] == name), None)
 run.update(row or {"condition":"alone", "gate":True})
 run.update(seed=experiment["seed"], cuBB_SDK=str(pathlib.Path(out.parent, "acar")),
-           clocks_locked=experiment["clocks_locked"])
+           clocks_locked=experiment["clocks_locked"], cpu_control=experiment.get("cpu_control"))
 p.write_text(json.dumps(run, indent=2))
 scheduler = json.loads((out / (name + ".scheduler.json")).read_text())
 if scheduler.get("observed") is not True:
@@ -225,11 +228,65 @@ PY
 
 repeat_failure() {
     local rc=$1 line=$2 command=$3
+    # ERR is inherited by command substitutions. Let the parent archive once.
+    if [[ $BASHPID != "${REPEAT_MAIN_PID:-$BASHPID}" ]]; then exit "$rc"; fi
     trap - ERR TERM INT
     echo "=====SLOTBENCH-ERROR $line $command====="
     tail -n 25 "$CURRENT_LOG" 2>/dev/null || true
     repeat_finish error "$rc" || true
     exit "$rc"
+}
+
+repeat_cpu_setup() {
+    # Validate against the initial full affinity, then narrow only this runner.
+    # The PHY worker and explicitly pinned observers can expand their affinity
+    # later within the cgroup's actual cpuset.
+    python3 - "$OUT" "${SB_TELEMETRY_CPU:-}" "${SB_CUPHY_CPU:-0}" "${SB_ADVERSARY_CPU:-}" "${SB_BACKGROUND_CPUS:-}" <<'PY'
+import json, os, pathlib, re, sys
+out, observer_arg, phy_arg, adv_arg, background_arg = sys.argv[1:]
+out = pathlib.Path(out)
+allowed = sorted(os.sched_getaffinity(0))
+phy = int(phy_arg)
+adv = int(adv_arg) if adv_arg else None
+if phy not in allowed or (adv is not None and adv not in allowed):
+    raise SystemExit("Requested PHY/adversary CPU is outside the initial allowed affinity")
+observer = int(observer_arg) if observer_arg else next((c for c in reversed(allowed) if c not in (phy, adv)), allowed[0])
+if observer not in allowed:
+    raise SystemExit("SB_TELEMETRY_CPU is outside the initial allowed affinity")
+background = []
+if background_arg:
+    if not re.fullmatch(r"[0-9]+(?:-[0-9]+)?(?:,[0-9]+(?:-[0-9]+)?)*", background_arg):
+        raise SystemExit("Invalid SB_BACKGROUND_CPUS: expected a CPU list such as 2,4-7")
+    cpus = set()
+    for part in background_arg.split(","):
+        ends = [int(v) for v in part.split("-")]
+        first, last = ends[0], ends[-1]
+        if first > last or last-first+1 > len(allowed):
+            raise SystemExit("Invalid SB_BACKGROUND_CPUS range")
+        cpus.update(range(first, last+1))
+    if not cpus.issubset(allowed):
+        raise SystemExit("SB_BACKGROUND_CPUS is outside the initial allowed affinity")
+    background = sorted(cpus)
+with (out / "cpu_selection.json").open("x") as f:
+    json.dump(dict(initial_allowed_affinity=allowed, phy_cpu_requested=phy,
+        adversary_cpu_requested=adv, telemetry_cpu_requested=observer,
+        background_cpulist=background_arg or None, background_cpus_requested=background), f, indent=2)
+with (out / "observer_cpu.txt").open("x") as f:
+    f.write(str(observer) + "\n")
+PY
+    read -r OBSERVER_CPU < "$OUT/observer_cpu.txt"
+    if [[ -n ${SB_BACKGROUND_CPUS:-} ]]; then
+        taskset -pc "$SB_BACKGROUND_CPUS" "$$" > "$OUT/runner_affinity.log"
+    fi
+    python3 - "$OUT/cpu_selection.json" "$$" <<'PY'
+import json, os, pathlib, sys
+p = pathlib.Path(sys.argv[1])
+data = json.loads(p.read_text())
+data["runner_affinity_after"] = sorted(os.sched_getaffinity(int(sys.argv[2])))
+if data["background_cpus_requested"] and data["runner_affinity_after"] != data["background_cpus_requested"]:
+    raise SystemExit("Runner affinity did not match requested background CPUs")
+p.write_text(json.dumps(data, indent=2))
+PY
 }
 
 repeat_schedule() {
@@ -274,6 +331,7 @@ repeat_main() {
     export LOGS="$W/logs-repeat-$RUN_ID" OUT="$W/out-repeat-$RUN_ID"
     mkdir "$LOGS" "$OUT"
     cd "$W"
+    REPEAT_MAIN_PID=$BASHPID
     CURRENT_LOG="$LOGS/header.txt"; ADV_PID=""; STEP_PID=""; OBSERVER_PID=""; TELEMETRY_PID=""; WATCHDOG_PID=""; MPS_ON=0
     trap 'repeat_failure "$?" "$LINENO" "$BASH_COMMAND"' ERR
     trap 'repeat_failure 130 "$LINENO" interrupted' TERM INT
@@ -281,19 +339,7 @@ repeat_main() {
     python3 -c 'import os,signal,sys,time; time.sleep(int(sys.argv[1])); os.kill(int(sys.argv[2]),signal.SIGTERM)' "$overall_timeout" "$$" &
     WATCHDOG_PID=$!
     { date -u; nvidia-smi; uname -a; lscpu; cat /proc/self/status; } > "$CURRENT_LOG" 2>&1
-    OBSERVER_CPU=$(python3 - "${SB_TELEMETRY_CPU:-}" "${SB_CUPHY_CPU:-0}" "${SB_ADVERSARY_CPU:-}" <<'PY'
-import os, sys
-cpus = sorted(os.sched_getaffinity(0))
-phy = int(sys.argv[2])
-adv = int(sys.argv[3]) if sys.argv[3] else None
-if phy not in cpus or (adv is not None and adv not in cpus):
-    raise SystemExit("Requested PHY/adversary CPU is outside the allowed cpuset")
-cpu = int(sys.argv[1]) if sys.argv[1] else next((c for c in reversed(cpus) if c not in (phy, adv)), cpus[0])
-if cpu not in cpus:
-    raise SystemExit("SB_TELEMETRY_CPU is outside the allowed cpuset")
-print(cpu)
-PY
-)
+    repeat_cpu_setup
     repeat_no_mps
     unset CUDA_MPS_PIPE_DIRECTORY CUDA_MPS_LOG_DIRECTORY CUDA_MPS_ACTIVE_THREAD_PERCENTAGE CUDA_MPS_CLIENT_PRIORITY \
         CUDA_MPS_PINNED_DEVICE_MEM_LIMIT CUDA_MPS_ENABLE_PER_CTX_DEVICE_MULTIPROCESSOR_PARTITIONING
