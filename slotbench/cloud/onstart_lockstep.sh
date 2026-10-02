@@ -27,8 +27,11 @@ emit_block() {
 finish() {
     local status="$1"
     trap - ERR
+    # The controller only sees the last 20000 log lines (~1.5 MB of base64), so the raw per-slot .bin files
+    # (1.9 MB each) stay on the instance; the JSON summaries carry every metric. Results go last so that they
+    # survive if anything is cut.
     emit_block "_logs/lockstep" "$W" logs || true
-    [ -n "$(ls -A "$OUT" 2>/dev/null)" ] && emit_block "lockstep/results" "$W" out || true
+    [ -n "$(ls -A "$OUT" 2>/dev/null)" ] && emit_block "lockstep/results" "$W" --exclude='*.bin' out || true
     if [ "$status" = ok ]; then echo "=====SLOTBENCH-DONE====="; else echo "=====SLOTBENCH-DONE status=$status====="; fi
     sleep infinity
 }
