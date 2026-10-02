@@ -390,6 +390,8 @@ def launch(api, args, out=print):
         # on-instance watchdog: stops the container (and GPU billing) even if this controller dies
         "SB_MAX_HOURS": str(round((getattr(args, "max_hours", None) or 6.0) + 0.5, 2)),
     }
+    # any SB_* variable set on the controller (SB_SLOTS, SB_MATRIX_ARGS, ...) reaches the onstart script too
+    env.update({k: v for k, v in os.environ.items() if k.startswith("SB_") and k not in env})
     offer = None
     if args.offer:
         offer_id = int(args.offer)
