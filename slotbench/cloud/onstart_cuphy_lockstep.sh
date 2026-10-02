@@ -1,0 +1,298 @@
+#!/bin/bash
+# CUDA 13.3 / Ubuntu 24.04 / A100: actual cuPHY TC7304 periodic replay.
+# Usage: onstart_cuphy_lockstep.sh [CONFIG [BRANCH [REPO]]]
+# CONFIG is reserved for vast.py. The adapter and upstream revision are pinned.
+set -Eeuo pipefail
+
+ACAR_COMMIT=4f65f97c1d5f701ce911f7dda8f1b1f3f0c7693c
+log() { echo "[cuphy-lockstep $(date -u +%H:%M:%S)] $*"; }
+
+stop_adversary() {
+    [[ -n ${ADV_PID:-} ]] || return 0
+    kill -TERM "$ADV_PID" 2>/dev/null || true
+    local i
+    for ((i=0; i<20; i++)); do kill -0 "$ADV_PID" 2>/dev/null || break; sleep 1; done
+    kill -KILL "$ADV_PID" 2>/dev/null || true
+    wait "$ADV_PID" 2>/dev/null || true
+    ADV_PID=""
+}
+
+cleanup() {
+    stop_adversary
+    if [[ ${MPS_ON:-0} -eq 1 ]]; then
+        echo quit | timeout 10 env CUDA_MPS_PIPE_DIRECTORY="$MPS_PIPE" nvidia-cuda-mps-control >> "$LOGS/mps.log" 2>&1 || true
+        MPS_ON=0
+    fi
+    if [[ -d ${MPS_LOG:-/nonexistent} ]]; then cp -a "$MPS_LOG" "$OUT/mps_logs" 2>/dev/null || true; fi
+}
+
+finish() {
+    local status=$1 archive="$W/collection.tar.gz" bytes lines sha
+    trap - ERR TERM INT
+    [[ -n ${STEP_PID:-} ]] && kill -TERM "$STEP_PID" 2>/dev/null || true
+    cleanup
+    # Preserve complete originals. Gzip all logs/results once, excluding the 64 MB
+    # input vector (its upstream revision, generation log and SHA256 are recorded).
+    tar -cf - -C "$W" logs out | gzip -9 > "$archive"
+    bytes=$(stat -c %s "$archive")
+    lines=$(( (4 * ((bytes + 2) / 3) + 75) / 76 + 2 ))
+    if (( lines > 18000 )); then
+        echo "=====SLOTBENCH-ERROR 0 collection-too-large-${lines}-lines====="
+        log "Full archive preserved at $archive; refusing a silently truncated collection"
+        status=error-collection-size
+    else
+        sha=$(sha256sum "$archive" | cut -d' ' -f1)
+        echo "=====SLOTBENCH-BEGIN cuphy-lockstep/results $sha====="
+        base64 -w 76 "$archive"
+        echo "=====SLOTBENCH-END cuphy-lockstep/results====="
+    fi
+    echo "=====SLOTBENCH-DONE status=$status====="
+    sleep infinity
+}
+
+step() { # step NAME TIMEOUT_SECONDS COMMAND...
+    local name=$1 limit=$2 elapsed=0 rc=0
+    shift 2
+    log "$name (limit ${limit}s)"
+    CURRENT_LOG="$LOGS/$name.log"
+    timeout --signal=TERM --kill-after=20 "$limit" "$@" > "$CURRENT_LOG" 2>&1 &
+    STEP_PID=$!
+    while kill -0 "$STEP_PID" 2>/dev/null; do
+        sleep 5; elapsed=$((elapsed + 5))
+        if (( elapsed % 300 == 0 )); then log "$name: ${elapsed}s: $(tail -n 1 "$CURRENT_LOG" | cut -c1-160)"; fi
+    done
+    wait "$STEP_PID" || rc=$?
+    STEP_PID=""
+    log "$name finished rc=$rc after about ${elapsed}s"
+    return "$rc"
+}
+
+clone_sources() {
+    git clone -q --depth 1 --branch "$SB_BRANCH" "$SB_REPO" "$W/sb"
+    git init -q "$S"
+    git -C "$S" remote add origin https://github.com/NVIDIA/aerial-cuda-accelerated-ran.git
+    GIT_LFS_SKIP_SMUDGE=1 git -C "$S" fetch -q --depth 1 origin "$ACAR_COMMIT"
+    GIT_LFS_SKIP_SMUDGE=1 git -C "$S" checkout -q FETCH_HEAD
+    [[ $(git -C "$S" rev-parse HEAD) == "$ACAR_COMMIT" ]]
+    git -C "$W/sb" rev-parse HEAD > "$OUT/slotbench_commit.txt"
+    printf '%s\n' "$ACAR_COMMIT" > "$OUT/aerial_commit.txt"
+}
+
+apply_adapter() {
+    local adapter="$W/sb/slotbench/cuphy" example="$S/cuPHY/examples/pusch_rx_multi_pipe" channels="$S/cuPHY/src/cuphy_channels"
+    local patch="$adapter/patches/cuphy-lockstep.patch"
+    [[ -s $patch ]]
+    git -C "$S" apply --check "$patch"
+    git -C "$S" apply "$patch"
+    cp "$patch" "$OUT/applied-adapter.patch"
+    cp "$adapter/cuphy_lockstep.cu" "$adapter/cuphy_lockstep.h" "$example/"
+    cp "$W/sb/slotbench/common/clock_fit.h" "$W/sb/slotbench/common/host_time.h" "$W/sb/slotbench/common/json_writer.h" "$example/"
+    cp "$adapter/cuphy_lockstep_stamps.cu" "$adapter/cuphy_lockstep_stamps.h" "$channels/"
+    sha256sum "$patch" "$adapter"/cuphy_lockstep*.cu "$adapter"/cuphy_lockstep*.h > "$OUT/adapter_sha256.txt"
+    git -C "$S" diff --stat > "$OUT/upstream_patch_stat.txt"
+}
+
+start_adversary() {
+    local name=$1 isolation=$2 rows=0 i
+    local extra=()
+    [[ $isolation == mps ]] && extra+=(CUDA_MPS_PIPE_DIRECTORY="$MPS_PIPE" CUDA_MPS_LOG_DIRECTORY="$MPS_LOG" CUDA_MPS_ACTIVE_THREAD_PERCENTAGE=50)
+    env "${extra[@]}" "$ADV" --workload sgemm --duty 100 --prio default --gpu 0 \
+        --seconds 600 --timeline "$OUT/$name.adversary.csv" --out "$OUT/$name.adversary.json" > "$OUT/$name.adversary.log" 2>&1 &
+    ADV_PID=$!
+    for ((i=0; i<90; i++)); do
+        sleep 1
+        kill -0 "$ADV_PID" 2>/dev/null || { log "adversary exited before readiness"; return 1; }
+        rows=$(awk -F, 'NR>1 && $2+0>0 {n++} END {print n+0}' "$OUT/$name.adversary.csv" 2>/dev/null || echo 0)
+        (( rows >= 3 )) && return 0
+    done
+    log "adversary did not report completed work within 90s"
+    return 1
+}
+
+run_case() {
+    local name=$1 mode=$2 isolation=$3 workload=$4 rc=0 start end
+    local extra=()
+    [[ $isolation == mps ]] && extra+=(CUDA_MPS_PIPE_DIRECTORY="$MPS_PIPE" CUDA_MPS_LOG_DIRECTORY="$MPS_LOG")
+    [[ $workload == sgemm ]] && start_adversary "$name" "$isolation"
+    log "case $name: launcher=$mode isolation=$isolation workload=$workload"
+    start=$(date -u +%FT%TZ)
+    CURRENT_LOG="$OUT/$name.pusch.log"
+    env "${extra[@]}" SB_CUPHY_LOCKSTEP_MODE="$mode" SB_CUPHY_LOCKSTEP_LABEL="$name" SB_CUPHY_LOCKSTEP_SLOTS="$SLOTS" \
+        SB_CUPHY_LOCKSTEP_WARMUP="$WARMUP" SB_CUPHY_LOCKSTEP_PERIOD_US="$PERIOD" \
+        SB_CUPHY_LOCKSTEP_DEADLINE_US="$DEADLINE" SB_CUPHY_LOCKSTEP_OUT="$OUT/$name.json" \
+        SB_CUPHY_LOCKSTEP_RAW="$OUT/$name.bin" timeout --signal=TERM --kill-after=20 "$CASE_TIMEOUT" \
+        "$PUSCH" -i "$TV" -m 1 -r 1 > "$CURRENT_LOG" 2>&1 &
+    STEP_PID=$!
+    wait "$STEP_PID" || rc=$?
+    STEP_PID=""
+    end=$(date -u +%FT%TZ)
+    if [[ $workload == sgemm ]]; then
+        kill -0 "$ADV_PID" 2>/dev/null || { log "adversary died during $name"; rc=1; }
+        stop_adversary
+        python3 - "$OUT/$name.adversary.json" > "$OUT/$name.adversary.check.log" 2>&1 <<'PY' || rc=1
+import json, sys
+with open(sys.argv[1]) as f:
+    data = json.load(f)
+if data.get("ok") is not True or data.get("units", 0) <= 0:
+    raise SystemExit("adversary did not finish successfully with completed work")
+print("adversary summary valid")
+PY
+    fi
+    python3 - "$OUT/$name.run.json" "$name" "$mode" "$isolation" "$workload" "$start" "$end" "$rc" "$TV_SHA" "$ACAR_COMMIT" "$SLOTS" "$WARMUP" "$PERIOD" "$DEADLINE" "$TV" "$PUSCH" <<'PY'
+import json, sys
+p, name, mode, isolation, workload, start, end, rc, tv_sha, commit, slots, warmup, period, deadline, tv, pusch = sys.argv[1:]
+with open(p, "w") as f:
+    json.dump(dict(name=name, mode=mode, isolation=isolation, workload=workload, start_utc=start,
+                   end_utc=end, exit_code=int(rc), test_vector_sha256=tv_sha, aerial_commit=commit,
+                   slots=int(slots), warmup=int(warmup), period_us=float(period), deadline_us=float(deadline),
+                   command=[pusch, "-i", tv, "-m", "1", "-r", "1"],
+                   adversary_mps_percentage=50 if isolation=="mps" and workload!="none" else None), f, indent=2)
+PY
+    (( rc == 0 )) || { log "$name process failed rc=$rc"; return "$rc"; }
+    python3 "$W/sb/slotbench/cloud/cuphy_lockstep_check.py" "$OUT/$name.json" "$OUT/$name.bin" \
+        --mode "$mode" --slots "$SLOTS" --warmup "$WARMUP" --period-us "$PERIOD" --deadline-us "$DEADLINE" > "$OUT/$name.check.log" 2>&1
+    log "$name: $(cat "$OUT/$name.check.log")"
+}
+
+main() {
+    export DEBIAN_FRONTEND=noninteractive
+    export SB_BRANCH="${2:-${SB_BRANCH:-codex/continue-lockstep}}"
+    export SB_REPO="${3:-${SB_REPO:-https://github.com/PierreKhoury1/Final_year_research_MSc}}"
+    export W="${SB_CUPHY_WORKDIR:-/workspace/cuphy-lockstep}"
+    export S="$W/acar" LOGS="$W/logs" OUT="$W/out" ACAR_COMMIT
+    mkdir -p "$W" "$LOGS" "$OUT"
+    cd "$W"
+    CURRENT_LOG="$LOGS/header.txt"; ADV_PID=""; STEP_PID=""; MPS_ON=0
+    trap 'echo "=====SLOTBENCH-ERROR $LINENO $BASH_COMMAND====="; tail -n 25 "$CURRENT_LOG" 2>/dev/null || true; finish error' ERR
+    trap 'echo "=====SLOTBENCH-ERROR 0 interrupted====="; finish interrupted' TERM INT
+    SLOTS=${SB_CUPHY_LOCKSTEP_SLOTS:-1000}; WARMUP=${SB_CUPHY_LOCKSTEP_WARMUP:-100}
+    PERIOD=${SB_CUPHY_LOCKSTEP_PERIOD_US:-500}; DEADLINE=${SB_CUPHY_LOCKSTEP_DEADLINE_US:-500}
+    CASE_TIMEOUT=${SB_CUPHY_CASE_TIMEOUT_S:-180}
+    [[ $SLOTS =~ ^[0-9]+$ && $WARMUP =~ ^[0-9]+$ && $CASE_TIMEOUT =~ ^[0-9]+$ ]]
+    (( SLOTS >= 1 && SLOTS <= 5000 && WARMUP <= 1000 && CASE_TIMEOUT >= 10 && CASE_TIMEOUT <= 600 ))
+    [[ $PERIOD =~ ^[0-9]+([.][0-9]+)?$ && $DEADLINE =~ ^[0-9]+([.][0-9]+)?$ ]]
+    awk -v p="$PERIOD" -v d="$DEADLINE" 'BEGIN {exit !(p >= 1 && p <= 1000000 && d > 0)}'
+    local main_pid=$$ watchdog_s
+    watchdog_s=$(awk -v h="${SB_MAX_HOURS:-1.5}" 'BEGIN {printf "%d",h*3600}')
+    (( watchdog_s >= 60 ))
+    (sleep "$watchdog_s"; kill -TERM "$main_pid"; sleep 60; kill -TERM 1; sleep 10; kill -KILL 1) &
+    { date -u; nvidia-smi; nproc; free -g; df -h /; } > "$LOGS/header.txt" 2>&1
+    head -14 "$LOGS/header.txt"
+    local gpu_cc jobs trt=10.14.1.48-1+cuda13.0
+    gpu_cc=$(nvidia-smi --query-gpu=compute_cap --format=csv,noheader | head -1 | tr -d '.')
+    [[ $gpu_cc == 80 ]] || { log "This bootstrap is validated for A100 SM80 only"; return 3; }
+    jobs=${SB_CUPHY_JOBS:-${JOBS:-$(( $(nproc) > 32 ? 16 : ($(nproc) > 8 ? $(nproc) / 2 : 4) ))}}
+    [[ $jobs =~ ^[0-9]+$ ]]
+    (( jobs >= 1 && jobs <= 64 ))
+    step apt 1200 bash -c 'apt-get -o Acquire::Retries=3 update -y && apt-get -o Acquire::Retries=3 install -y --no-install-recommends \
+        git git-lfs cmake ninja-build build-essential pkg-config libhdf5-dev hdf5-tools libyaml-dev python3-pip python3-venv \
+        numactl wget unzip ca-certificates curl aria2 procps "libnvinfer10=$1" "libnvinfer-headers-dev=$1"' _ "$trt"
+    export -f clone_sources apply_adapter gcmake deps tv
+    step clone 300 bash -c clone_sources
+    step adapter 60 bash -c apply_adapter
+    step deps 600 bash -c deps
+    mkdir -p "$W/wrapper"
+    cat > "$W/wrapper/CMakeLists.txt" <<'CMAKE'
+cmake_minimum_required(VERSION 3.25)
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CUDA_STANDARD 17)
+project(cuphy_only LANGUAGES C CXX ASM CUDA)
+find_package(CUDAToolkit REQUIRED)
+include_directories(${CUDAToolkit_INCLUDE_DIRS} ${CUDAToolkit_INCLUDE_DIRS}/cccl)
+set(ENV{cuBB_SDK} ${ACAR_SRC})
+set(ENABLE_CUMAC OFF CACHE BOOL "" FORCE)
+set(NVIPC_FMTLOG_ENABLE ON)
+add_definitions(-DNVIPC_FMTLOG_ENABLE)
+add_subdirectory(${ACAR_SRC}/cuPHY cuPHY)
+CMAKE
+    # Only TensorRT's shared runtime and headers are required; avoid its 2.9GB static development archive.
+    local trt_so=/usr/lib/x86_64-linux-gnu/libnvinfer.so.10
+    [[ -e $trt_so ]]
+    step configure 180 cmake -S "$W/wrapper" -B "$W/build" -GNinja -DACAR_SRC="$S" \
+        -DCMAKE_TOOLCHAIN_FILE="$S/cuPHY/cmake/toolchains/x86-64" -DCMAKE_BUILD_TYPE=Release \
+        -DCMAKE_CUDA_ARCHITECTURES=80-real -DBUILD_DOCS=OFF -DENABLE_TESTS=OFF -DNVINFER:FILEPATH="$trt_so"
+    step cuphy_build 1200 cmake --build "$W/build" --target cuphy_ex_pusch_rx_multi_pipe -- -j"$jobs"
+    PUSCH="$W/build/cuPHY/examples/pusch_rx_multi_pipe/cuphy_ex_pusch_rx_multi_pipe"
+    [[ -x $PUSCH ]]
+    step adversary_build 180 make -C "$W/sb/slotbench" SM=80 CUDA_HOME=/usr/local/cuda bin/adversary
+    ADV="$W/sb/slotbench/bin/adversary"
+    step tv "${TV_TIMEOUT_S:-2400}" bash -c tv
+    TV="$W/tv/GPU_test_input/TVnr_7304_PUSCH_gNB_CUPHY_s0p0.h5"
+    [[ -s $TV ]]
+    TV_SHA=$(sha256sum "$TV" | cut -d' ' -f1)
+    printf '%s  %s\n' "$TV_SHA" "$TV" > "$OUT/test_vector_sha256.txt"
+    h5dump -H "$TV" > "$OUT/test_vector_schema.txt"
+    local mps_scan_rc=0
+    pgrep -f '^([^[:space:]]*/)?nvidia-cuda-mps-(control|server)([[:space:]]|$)' >/dev/null || mps_scan_rc=$?
+    if [[ $mps_scan_rc -eq 0 ]]; then
+        log "Existing MPS process makes non-MPS phases invalid"; return 3
+    elif [[ $mps_scan_rc -ne 1 ]]; then
+        log "Cannot inspect MPS processes; refusing non-MPS phases"; return 3
+    fi
+    unset CUDA_MPS_PIPE_DIRECTORY CUDA_MPS_LOG_DIRECTORY CUDA_MPS_ACTIVE_THREAD_PERCENTAGE CUDA_MPS_CLIENT_PRIORITY \
+        CUDA_MPS_PINNED_DEVICE_MEM_LIMIT CUDA_MPS_ENABLE_PER_CTX_DEVICE_MULTIPROCESSOR_PARTITIONING
+    run_case cpu_alone cpu none none
+    run_case gpu_alone gpu none none
+    # Any failed correctness/raw gate above stops execution before contention tests.
+    run_case cpu_proc_sgemm cpu none sgemm
+    run_case gpu_proc_sgemm gpu none sgemm
+    MPS_PIPE="$W/mps-pipe"; MPS_LOG="$W/mps-log"
+    mkdir -p "$MPS_PIPE" "$MPS_LOG"
+    timeout 20 env CUDA_MPS_PIPE_DIRECTORY="$MPS_PIPE" CUDA_MPS_LOG_DIRECTORY="$MPS_LOG" nvidia-cuda-mps-control -d > "$LOGS/mps.log" 2>&1
+    MPS_ON=1
+    sleep 2
+    [[ -e $MPS_PIPE/control ]]
+    run_case cpu_mps_sgemm cpu mps sgemm
+    run_case gpu_mps_sgemm gpu mps sgemm
+    finish ok
+}
+
+# The pinned dependency/vector-generation functions below reuse onstart_cuphy.sh's
+# previously exercised recipe. Tests can source this file without starting a GPU run.
+
+gcmake() { local n=$1 u=$2 c=$3; shift 3
+    rm -rf "$W/deps/$n"; git init -q "$W/deps/$n"; git -C "$W/deps/$n" fetch -q --depth 1 "$u" "$c"
+    git -C "$W/deps/$n" checkout -q FETCH_HEAD
+    if [ "$n" = fmtlog ]; then (cd "$W/deps/$n" && git apply "$S/cuPHY-CP/container/patches/fmtlog.patch" \
+        && cp fmtlog.h fmtlog-inl.h /usr/local/include/); fi
+    cmake -S "$W/deps/$n" -B "$W/deps/$n/b" -GNinja -DCMAKE_BUILD_TYPE=Release "$@"
+    cmake --build "$W/deps/$n/b"; cmake --install "$W/deps/$n/b"; }
+deps() {
+    gcmake fmt       https://github.com/fmtlib/fmt.git          e69e5f977d458f2650bb346dadf2ad30c5320281 -DBUILD_SHARED_LIBS=ON -DCMAKE_POSITION_INDEPENDENT_CODE=ON -DFMT_TEST=OFF -DFMT_DOC=OFF
+    gcmake fmtlog    https://github.com/MengRao/fmtlog.git      acd521b1a64480354136a745c511358da1ec7dc5 -DCMAKE_POSITION_INDEPENDENT_CODE=ON
+    gcmake gsl-lite  https://github.com/gsl-lite/gsl-lite.git   56dab5ce071c4ca17d3e0dbbda9a94bd5a1cbca1
+    gcmake wise_enum https://github.com/quicknir/wise_enum.git  34ac79f7ea2658a148359ce82508cc9301e31dd3
+    gcmake CLI11     https://github.com/CLIUtils/CLI11.git      4160d259d961cd393fd8d67590a8c7d210207348 -DCLI11_BUILD_TESTS=OFF -DCLI11_BUILD_EXAMPLES=OFF
+    gcmake yaml-cpp  https://github.com/jbeder/yaml-cpp.git     f7320141120f720aecc4c32be25586e7da9eb978 -DYAML_CPP_BUILD_TESTS=OFF -DCMAKE_POSITION_INDEPENDENT_CODE=ON
+    ldconfig
+    wget -q https://developer.download.nvidia.com/compute/cuFFTDx/redist/cuFFTDx/cuda13/nvidia-mathdx-26.03.0-cuda13.tar.gz
+    tar xzf nvidia-mathdx-26.03.0-cuda13.tar.gz -C /usr/local --strip-components=1
+    rm nvidia-mathdx-26.03.0-cuda13.tar.gz
+}
+
+tv() {
+    apt-get install -y --no-install-recommends default-jre libxfont2 x11-xkb-utils xkb-data libxcomposite1 libnss3 \
+        libxrandr-dev libatk1.0-0 libatk-bridge2.0-0 libx11-xcb-dev libxcb-dri3-0 libxcursor-dev libxdamage-dev \
+        libxi-dev libdrm-dev libgbm-dev libasound-dev libcups2-dev libxtst-dev
+    local runtime_url=https://ssd.mathworks.com/supportfiles/downloads/R2026a/Release/4/deployment_files/installer/complete/glnxa64/MATLAB_Runtime_R2026a_Update_4_glnxa64.zip
+    aria2c --allow-overwrite=true --auto-file-renaming=false --continue=true --max-connection-per-server=8 --split=8 \
+        --min-split-size=16M --max-tries=3 --retry-wait=5 --summary-interval=120 --console-log-level=warn \
+        --dir="$W" --out=mcr.zip "$runtime_url" || wget -q -c "$runtime_url" -O "$W/mcr.zip"
+    rm -rf mcr && mkdir mcr && (cd mcr && unzip -q ../mcr.zip && ./install -mode silent -agreeToLicense yes)
+    rm -rf mcr mcr.zip
+    local whl=aerial_mcore-0.20261.508652.508652-py3-none-any.whl
+    mkdir -p "$S/5GModel/aerial_mcore/aerial_pkg/dist"
+    (cd "$S" && git lfs install --local && git lfs pull --include="5GModel/aerial_mcore/aerial_pkg/dist/*.whl") \
+        || wget -q -O "$S/5GModel/aerial_mcore/aerial_pkg/dist/$whl" \
+            "https://media.githubusercontent.com/media/NVIDIA/aerial-cuda-accelerated-ran/$ACAR_COMMIT/5GModel/aerial_mcore/aerial_pkg/dist/$whl"
+    python3 -m venv "$W/venv"
+    "$W/venv/bin/pip" install -q numpy pyyaml h5py "$S"/5GModel/aerial_mcore/aerial_pkg/dist/aerial_mcore-*.whl
+    mkdir -p "$W/tv" && cd "$W/tv"
+    # shellcheck disable=SC1091
+    source "$S/5GModel/aerial_mcore/scripts/setup.sh"
+    "$W/venv/bin/python" -c "import aerial_mcore as M, matlab; e = M.initialize(); print(e.testCompGenTV_pusch(matlab.double([7304]), 'genTV', nargout=4))"
+    find "$W/tv" -name '*.h5' -exec ls -la {} \;
+}
+
+if [[ ${BASH_SOURCE[0]} == "$0" ]]; then main "$@"; fi
