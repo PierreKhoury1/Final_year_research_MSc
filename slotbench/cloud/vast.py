@@ -627,7 +627,8 @@ def run(api, args, out=print, now=time.time, sleep=time.sleep):
                 out(f"  status error (will retry): {e}")
             if info:
                 dph = info.get("dph_total") or dph
-                st = info.get("actual_status")
+                # Some responses expose only cur_state while actual_status is null.
+                st = info.get("actual_status") or info.get("cur_state")
                 if st == "running":
                     running_seen = True
                 if st in ("exited", "offline") or (info.get("intended_status") == "stopped"):
@@ -642,7 +643,7 @@ def run(api, args, out=print, now=time.time, sleep=time.sleep):
                     out(f"  logs error (will retry): {e}")
             done, dstat, errors = scan_markers(text)
             last = next((ln for ln in reversed(text.splitlines()) if ln.strip() and "=====" not in ln), "")
-            st_txt = (info or {}).get("actual_status", "?")
+            st_txt = (info or {}).get("actual_status") or (info or {}).get("cur_state") or "?"
             out(f"[{elapsed / 60:6.1f} min  ${cost_so_far(dph, elapsed):.3f}] {st_txt}: {last[:110]}")
             if done:
                 reason = f"DONE ({dstat})"
