@@ -33,13 +33,13 @@ def validate_case(json_path, raw_path, mode, slots, warmup, period_us=None, dead
     pre, post = data["clock_fit_pre"], data["clock_fit_post"]
     if pre.get("ok") is not True or post.get("ok") is not True:
         raise ValueError("pre/post fit is invalid")
-    ha = rounded(Fraction(pre["t_ref"]) + Fraction(str(pre["b_ns"])))
-    hb = rounded(Fraction(post["t_ref"]) + Fraction(str(post["b_ns"])))
+    ha = int(pre["t_ref"]) + rounded(Fraction(str(pre["b_ns"])))
+    hb = int(post["t_ref"]) + rounded(Fraction(str(post["b_ns"])))
     ga, gb = pre["g_ref"], post["g_ref"]
     if hb - ha <= 1_000_000 or gb <= ga:
         raise ValueError("invalid clock anchor baseline")
     rate = float(gb - ga) / float(hb - ha)
-    deadline = float(data["deadline_us"]) * 1000
+    deadline = float(data["deadline_us"])
     if not math.isfinite(rate) or not math.isfinite(deadline) or deadline <= 0:
         raise ValueError("invalid rate/deadline")
     counts = dict(recorded=0, skipped=0, misses=0)
@@ -57,7 +57,7 @@ def validate_case(json_path, raw_path, mode, slots, warmup, period_us=None, dead
             raise ValueError(f"raw slot {slot}: missing/reversed stamps")
         counts["recorded"] += 1
         true_target = ga + rounded(float(target - ha) * rate)
-        if ((end - true_target) / 1000.0) * 1000.0 > deadline:
+        if (end - true_target) / 1000.0 > deadline:
             counts["misses"] += 1
     if counts["recorded"] == 0:
         raise ValueError("no recorded slots")

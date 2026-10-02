@@ -13,7 +13,7 @@ refresh_adapter() {
     [[ -f $previous ]] || previous="$W/out/applied-adapter.patch"
     [[ -s $previous && -s $patch ]]
     cp "$previous" "$OUT/previous-adapter.patch"
-    # Refuse unknown tracked changes: the prior patch must still reverse cleanly.
+    # Require the expected prior patch before modifying tracked sources.
     git -C "$S" apply --reverse --check "$previous"
     if ! cmp -s "$previous" "$patch"; then
         git -C "$S" apply --reverse "$previous"
@@ -60,6 +60,9 @@ debug_main() {
     step incremental_build 1200 cmake --build "$W/build" --target cuphy_ex_pusch_rx_multi_pipe -- -j"$jobs"
     PUSCH="$W/build/cuPHY/examples/pusch_rx_multi_pipe/cuphy_ex_pusch_rx_multi_pipe"
     ADV="$W/sb/slotbench/bin/adversary"
+    if [[ ! -x $ADV ]]; then
+        step adversary_build 180 make -C "$W/sb/slotbench" SM=80 CUDA_HOME=/usr/local/cuda bin/adversary
+    fi
     [[ -x $PUSCH && -x $ADV ]]
     TV="$W/tv/GPU_test_input/TVnr_7304_PUSCH_gNB_CUPHY_s0p0.h5"
     if [[ ! -s $TV ]]; then
