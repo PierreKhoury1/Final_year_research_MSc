@@ -1,5 +1,7 @@
 # Actual NVIDIA cuPHY PUSCH lockstep replay — A100, 2026-10-02
 
+Follow-up: [54 repeated and GPU-activity-control trials](../2026-10-02_a100_cuphy_repeated/README.md) add randomized comparisons and show how GPU clock state affects PHY execution time.
+
 **Both CPU and GPU launch modes executed NVIDIA Aerial's actual cuPHY PUSCH receiver.** All six cases passed decoded-payload, TB CRC, and CB CRC checks before and after replay, with zero launch errors, stale/missing completion records, or timeouts. Deadline misses under contention remain substantial.
 
 This validates a fixed-vector PHY replay experiment. It does not establish operation of a complete live Aerial base station: radio/fronthaul ingress, changing descriptors, per-slot setup, MAC, HARQ progression, and output delivery are outside the measured interval. Intermediate decoded outputs are not individually checked.

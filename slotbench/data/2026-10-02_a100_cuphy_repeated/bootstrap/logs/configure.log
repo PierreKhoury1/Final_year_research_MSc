@@ -1,0 +1,40 @@
+-- The C compiler identification is GNU 13.3.0
+-- The CXX compiler identification is GNU 13.3.0
+-- The ASM compiler identification is GNU
+-- Found assembler: /usr/bin/x86_64-linux-gnu-gcc
+-- The CUDA compiler identification is NVIDIA 13.3.33
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/x86_64-linux-gnu-gcc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/x86_64-linux-gnu-g++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Detecting CUDA compiler ABI info
+-- Detecting CUDA compiler ABI info - done
+-- Check for working CUDA compiler: /usr/local/cuda/bin/nvcc - skipped
+-- Detecting CUDA compile features
+-- Detecting CUDA compile features - done
+-- Found CUDAToolkit: /usr/local/cuda/targets/x86_64-linux/include (found version "13.3.33") 
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success
+-- Found Threads: TRUE  
+-- cuPHY is using toolchain /workspace/cuphy-lockstep/acar/cuPHY/cmake/toolchains/x86-64
+-- The content of file: /workspace/cuphy-lockstep/acar/cuPHY/../aerial-sdk-version is: 26-2-cubb, assigned to AERIAL_SDK_VERSION
+-- cuPHY using CMAKE_CUDA_ARCHITECTURES=80-real
+-- Found HDF5: /usr/lib/x86_64-linux-gnu/hdf5/serial/libhdf5.so;/usr/lib/x86_64-linux-gnu/libcrypto.so;/usr/lib/x86_64-linux-gnu/libcurl.so;/usr/lib/x86_64-linux-gnu/libpthread.a;/usr/lib/x86_64-linux-gnu/libsz.so;/usr/lib/x86_64-linux-gnu/libz.so;/usr/lib/x86_64-linux-gnu/libdl.a;/usr/lib/x86_64-linux-gnu/libm.so (found suitable version "1.10.10", minimum required is "1.10") found components: C 
+-- including nvlog
+-- mathdx: Found CUTLASS (NvidiaCutlass) dependency: /usr/local/nvidia/mathdx/26.03/external/cutlass/include
+-- cufftdx: Found commondx dependency
+-- Found cufftdx: (Version: 1.7.0, Include dirs: /usr/local/nvidia/mathdx/26.03/include)
+-- mathDx: cuFFTDx found: /usr/local/nvidia/mathdx/26.03/include
+-- mathdx: Found CUTLASS (NvidiaCutlass) dependency: /usr/local/nvidia/mathdx/26.03/external/cutlass/include
+-- cufftdx: Found commondx dependency
+-- Found cufftdx: (Version: 1.7.0, Include dirs: /usr/local/nvidia/mathdx/26.03/include)
+-- mathDx: cuFFTDx found: /usr/local/nvidia/mathdx/26.03/include
+-- Configuring done (1.7s)
+-- Generating done (0.2s)
+-- Build files have been written to: /workspace/cuphy-lockstep/build

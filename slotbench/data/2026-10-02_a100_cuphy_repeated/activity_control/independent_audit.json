@@ -1,0 +1,936 @@
+{
+  "schema_version": 1,
+  "audit_kind": "independent activity-control raw and evidence review",
+  "created_utc": "2026-10-02T20:24:11.672038+00:00",
+  "ok": true,
+  "errors": [],
+  "completion": {
+    "status": "ok",
+    "exit_code": 0,
+    "ended_utc": "2026-10-02T20:18:12.393908+00:00"
+  },
+  "scope": "Separate exploratory activity/residency control; not pooled into the primary campaign.",
+  "counts": {
+    "measured_trials": 18,
+    "gates": 3,
+    "measured_raw_boundaries": 90000,
+    "gate_raw_boundaries": 192,
+    "by_variant": {
+      "gpu": {
+        "trials": 6,
+        "records": 30000,
+        "skips": 0,
+        "misses": 0
+      },
+      "cpu": {
+        "trials": 6,
+        "records": 29982,
+        "skips": 18,
+        "misses": 23
+      },
+      "cpu_keepalive": {
+        "trials": 6,
+        "records": 29982,
+        "skips": 18,
+        "misses": 22
+      }
+    }
+  },
+  "raw_validation": {
+    "format": "little-endian <Qq6Q,64 bytes",
+    "checks": "Contiguous slot IDs; allowed flags; nonzero ordered execution stamps; recorded/skipped/missed counts recomputed from two-point clock mapping at500us deadline; endpoint payload/CB and CRC log checks.",
+    "ordered_case_name_and_raw_sha256": "547ffef26a8094205f60a5735d8e1c49d9adb507ed9e392a291c24fb188e2b92"
+  },
+  "design": {
+    "seed": 20261003,
+    "all_six_triplet_permutations_present_once": true,
+    "triplet_orders": [
+      [
+        "gpu",
+        "cpu",
+        "cpu_keepalive"
+      ],
+      [
+        "gpu",
+        "cpu_keepalive",
+        "cpu"
+      ],
+      [
+        "cpu",
+        "cpu_keepalive",
+        "gpu"
+      ],
+      [
+        "cpu_keepalive",
+        "gpu",
+        "cpu"
+      ],
+      [
+        "cpu_keepalive",
+        "cpu",
+        "gpu"
+      ],
+      [
+        "cpu",
+        "gpu",
+        "cpu_keepalive"
+      ]
+    ],
+    "keeper_cases_with_verified_coverage_including_gate": 7,
+    "expected_keeper_cases_including_gate": 7,
+    "ordinary_modes_keeper_requested_and_active_false": true,
+    "keeper_configuration": "Same CUDA context,1 block/1 thread, separate nonblocking stream at queried priority?2,100us mapped-stop polls, independent finite device watchdog.",
+    "keeper_coverage_checks": "GPU start<=first target<=first PHY start<=last PHY end<=keeper end<watchdog; host_stop; covers_replay=true; measured raw completion stamps within covered interval.",
+    "correctness_scope": "Payload/CB and CRC checked before and after replay, not on each intermediate decoded output."
+  },
+  "clocks": {
+    "locked": false,
+    "nominal_sample_period_ms": 100,
+    "maximum_observed_file_sample_gap_ms": 109.0,
+    "all_21_files_span_recorded_run_wall_interval": true,
+    "interior_window_rule": "Keep telemetry timestamps >=run_wall_start_ns/1e9+0.9 and <=run_wall_end_ns/1e9-0.2. Conservative approximate measured interior; no exact per-slot wall alignment.",
+    "groups": {
+      "gpu": {
+        "trials": 6,
+        "samples": 126,
+        "sm_mhz": {
+          "1410": 126
+        },
+        "memory_mhz": {
+          "1215": 126
+        },
+        "active_event_masks": {
+          "0x0000000000000000": 126
+        }
+      },
+      "cpu": {
+        "trials": 6,
+        "samples": 126,
+        "sm_mhz": {
+          "1095": 126
+        },
+        "memory_mhz": {
+          "1215": 126
+        },
+        "active_event_masks": {
+          "0x0000000000000000": 126
+        }
+      },
+      "cpu_keepalive": {
+        "trials": 6,
+        "samples": 126,
+        "sm_mhz": {
+          "1410": 126
+        },
+        "memory_mhz": {
+          "1215": 126
+        },
+        "active_event_masks": {
+          "0x0000000000000000": 126
+        }
+      }
+    },
+    "interpretation": "All six ordinary CPU trials sample1095MHz and179.2us median PHY execution. All six CPU+keeper and six GPU trials sample1410MHz and138.24us median execution. Activity control reproduces the execution-duration improvement while CPU+keeper start p99 remains above GPU start p99."
+  },
+  "scheduler": {
+    "observed_cases": 21,
+    "actual_policy": 0,
+    "actual_policy_name": "SCHED_OTHER",
+    "actual_rt_priority": 0,
+    "actual_affinity": [
+      1
+    ],
+    "worker_tgid_matches_logged_phy_process_count": 21
+  },
+  "logger": {
+    "fallback_cases": 21,
+    "total_cases": 21,
+    "interpretation": "Same missing-YAML fallback as primary campaign; saved config hash is not evidence of loading it."
+  },
+  "unusual_host_submission_tails": {
+    "cases": [
+      {
+        "name": "t02_p3_cpu_alone",
+        "recorded": 4995,
+        "skipped": 5,
+        "misses": 6,
+        "late_executions": [
+          {
+            "slot": 4837,
+            "launch_error_us": 2406.096,
+            "launch_call_us": 11.361,
+            "launch_to_start_us": 17.373,
+            "phy_execution_us": 179.2,
+            "latency_from_target_us": 2602.669
+          }
+        ]
+      },
+      {
+        "name": "t04_p3_cpu_alone",
+        "recorded": 4995,
+        "skipped": 5,
+        "misses": 6,
+        "late_executions": [
+          {
+            "slot": 1576,
+            "launch_error_us": 2386.19,
+            "launch_call_us": 12.453,
+            "launch_to_start_us": 17.201,
+            "phy_execution_us": 178.176,
+            "latency_from_target_us": 2581.567
+          }
+        ]
+      },
+      {
+        "name": "t05_p1_cpu_keepalive_alone",
+        "recorded": 4989,
+        "skipped": 11,
+        "misses": 14,
+        "late_executions": [
+          {
+            "slot": 1140,
+            "launch_error_us": 2493.73,
+            "launch_call_us": 11.752,
+            "launch_to_start_us": 23.604,
+            "phy_execution_us": 137.216,
+            "latency_from_target_us": 2654.55
+          },
+          {
+            "slot": 1197,
+            "launch_error_us": 1978.482,
+            "launch_call_us": 18.504,
+            "launch_to_start_us": 22.982,
+            "phy_execution_us": 137.216,
+            "latency_from_target_us": 2138.68
+          },
+          {
+            "slot": 1213,
+            "launch_error_us": 962.716,
+            "launch_call_us": 6.973,
+            "launch_to_start_us": 11.237,
+            "phy_execution_us": 138.24,
+            "latency_from_target_us": 1112.193
+          }
+        ]
+      },
+      {
+        "name": "t06_p1_cpu_alone",
+        "recorded": 4992,
+        "skipped": 8,
+        "misses": 11,
+        "late_executions": [
+          {
+            "slot": 4769,
+            "launch_error_us": 1906.985,
+            "launch_call_us": 10.76,
+            "launch_to_start_us": 16.037,
+            "phy_execution_us": 182.272,
+            "latency_from_target_us": 2105.294
+          },
+          {
+            "slot": 4788,
+            "launch_error_us": 615.588,
+            "launch_call_us": 10.65,
+            "launch_to_start_us": 15.905,
+            "phy_execution_us": 180.224,
+            "latency_from_target_us": 811.717
+          },
+          {
+            "slot": 4801,
+            "launch_error_us": 1719.614,
+            "launch_call_us": 10.35,
+            "launch_to_start_us": 16.162,
+            "phy_execution_us": 182.272,
+            "latency_from_target_us": 1918.048
+          }
+        ]
+      },
+      {
+        "name": "t06_p3_cpu_keepalive_alone",
+        "recorded": 4993,
+        "skipped": 7,
+        "misses": 8,
+        "late_executions": [
+          {
+            "slot": 2748,
+            "launch_error_us": 3419.129,
+            "launch_call_us": 11.962,
+            "launch_to_start_us": 15.963,
+            "phy_execution_us": 137.216,
+            "latency_from_target_us": 3572.308
+          }
+        ]
+      }
+    ],
+    "late_executed_boundaries": 9,
+    "launch_error_us_range": [
+      615.588,
+      3419.129
+    ],
+    "launch_to_start_us_range": [
+      11.237,
+      23.604
+    ],
+    "phy_execution_us_range": [
+      137.216,
+      182.272
+    ],
+    "interpretation": "All late executions show a large delay before host submission while PHY execution remains close to ordinary duration. Specific cause is untraced; these are retained observations, not excluded outliers. The keeper does not eliminate host-side timing stalls."
+  },
+  "provenance": {
+    "slotbench_commit": "f60304b97bbda5e38e47ec99d7d821c6e47daa13",
+    "aerial_commit": "4f65f97c1d5f701ce911f7dda8f1b1f3f0c7693c",
+    "test_vector_sha256": "85796206a068087c3e2e03bafb7a22118fa7f27ce87f94f00afcf1ec4ac106ca",
+    "adapter_and_source_hashes": {
+      "applied-adapter.patch": {
+        "expected": "049aebfaad02e451cd52a12003a7d19556ce890035439c4a77142e3a29c57d9f",
+        "actual": "049aebfaad02e451cd52a12003a7d19556ce890035439c4a77142e3a29c57d9f",
+        "match": true
+      },
+      "cuphy_lockstep.cu": {
+        "expected": "61305f1345a48314eb15108ce05f4be1fb4b8425dd0180314ec095e4995cc223",
+        "actual": "61305f1345a48314eb15108ce05f4be1fb4b8425dd0180314ec095e4995cc223",
+        "match": true
+      },
+      "cuphy_lockstep_stamps.cu": {
+        "expected": "efefe320fad6ff848e96be96e2ca3414c072e761b196bdaf46004d1d0e661d04",
+        "actual": "efefe320fad6ff848e96be96e2ca3414c072e761b196bdaf46004d1d0e661d04",
+        "match": true
+      },
+      "cuphy_lockstep.h": {
+        "expected": "faee4a766741dd69846a2ac388a1a7c923a5def7249b331ea88e932b8da8373f",
+        "actual": "faee4a766741dd69846a2ac388a1a7c923a5def7249b331ea88e932b8da8373f",
+        "match": true
+      },
+      "cuphy_lockstep_stamps.h": {
+        "expected": "96a29f4de04606f86d8f4e223000ddd922999ab94702390eaa080a7ab3d87159",
+        "actual": "96a29f4de04606f86d8f4e223000ddd922999ab94702390eaa080a7ab3d87159",
+        "match": true
+      }
+    },
+    "binary_sha256_manifest": [
+      "dea78992b76edf85194a653d1ba962f0f369307b511cc8a47303d4f06fb189d9  /workspace/cuphy-lockstep/build/cuPHY/examples/pusch_rx_multi_pipe/cuphy_ex_pusch_rx_multi_pipe",
+      "2796ba0507cc05bb6537a5dd4e6774c5a8e9298c7948474fd1b0dcde0a221ef5  /workspace/cuphy-lockstep/sb/slotbench/bin/adversary"
+    ],
+    "binary_verification": "Both current executable hashes independently recomputed over read-only SSH after collection and match manifest; executables are not included.",
+    "source_hash_verification": "Archived patch hashed directly; helper/header bytes hashed from exact recorded Git commit."
+  },
+  "limitations": [
+    "This control changes activity, context residency, resource occupancy and sparse mapped-memory traffic together; it is not a pure clock intervention.",
+    "Unlocked clocks and100ms samples cannot establish equal clocks on every slot or capture faster transients.",
+    "One fixed vector, one A100 rental, six matched triplets; trial triplets are the replication unit.",
+    "Actual SCHED_OTHER worker policy was observed before replay; no scheduling/interrupt trace identifies the late-host-submission cause.",
+    "Mapped volatile start/stop communication is hardware-tested experimental signaling; bounded watchdog and coverage gates reject observed failure."
+  ],
+  "cases": [
+    {
+      "name": "gate_cpu_alone",
+      "variant": "cpu",
+      "gate": true,
+      "recorded": 64,
+      "skipped": 0,
+      "misses": 0,
+      "worker_tid": 12749,
+      "process_pid": 12743,
+      "raw_sha256": "e86d1cfd8a96292fc09fc561ae9a9218589d9479f2c3edf6279ab6ae9c9576f3",
+      "keeper": {
+        "requested": false,
+        "blocks": 0,
+        "threads_per_block": 0,
+        "stream_priority": 0,
+        "stream_nonblocking": false,
+        "start_gpu_ns": 0,
+        "end_gpu_ns": 0,
+        "watchdog_deadline_gpu_ns": 0,
+        "stop_poll_interval_ns": 100000,
+        "first_target_gpu_ns": 0,
+        "first_phy_start_gpu_ns": 0,
+        "last_phy_end_gpu_ns": 0,
+        "covers_replay": false,
+        "stop_reason": "inactive"
+      },
+      "execution_p50_us": 179.2,
+      "start_error_p99_us": 14.318
+    },
+    {
+      "name": "gate_gpu_alone",
+      "variant": "gpu",
+      "gate": true,
+      "recorded": 64,
+      "skipped": 0,
+      "misses": 0,
+      "worker_tid": 12789,
+      "process_pid": 12783,
+      "raw_sha256": "d4043dee383023ed7b43495bcc75ee9fd49382b9b78afc4f249e5ff99754e22d",
+      "keeper": {
+        "requested": false,
+        "blocks": 0,
+        "threads_per_block": 0,
+        "stream_priority": 0,
+        "stream_nonblocking": false,
+        "start_gpu_ns": 0,
+        "end_gpu_ns": 0,
+        "watchdog_deadline_gpu_ns": 0,
+        "stop_poll_interval_ns": 100000,
+        "first_target_gpu_ns": 0,
+        "first_phy_start_gpu_ns": 0,
+        "last_phy_end_gpu_ns": 0,
+        "covers_replay": false,
+        "stop_reason": "inactive"
+      },
+      "execution_p50_us": 139.264,
+      "start_error_p99_us": 4.924
+    },
+    {
+      "name": "gate_cpu_keepalive_alone",
+      "variant": "cpu_keepalive",
+      "gate": true,
+      "recorded": 64,
+      "skipped": 0,
+      "misses": 0,
+      "worker_tid": 12829,
+      "process_pid": 12823,
+      "raw_sha256": "f945c87b6eef95b8d8d4e940e8fcb29e9021d7e6e0341ae5fe97baef68ccaea5",
+      "keeper": {
+        "requested": true,
+        "blocks": 1,
+        "threads_per_block": 1,
+        "stream_priority": -2,
+        "stream_nonblocking": true,
+        "start_gpu_ns": 1790972166821414912,
+        "end_gpu_ns": 1790972167553083392,
+        "watchdog_deadline_gpu_ns": 1790972172552836259,
+        "stop_poll_interval_ns": 100000,
+        "first_target_gpu_ns": 1790972167021340853,
+        "first_phy_start_gpu_ns": 1790972167021530112,
+        "last_phy_end_gpu_ns": 1790972167552985088,
+        "covers_replay": true,
+        "stop_reason": "host_stop"
+      },
+      "execution_p50_us": 138.24,
+      "start_error_p99_us": 12.744
+    },
+    {
+      "name": "t01_p1_gpu_alone",
+      "variant": "gpu",
+      "gate": false,
+      "recorded": 5000,
+      "skipped": 0,
+      "misses": 0,
+      "worker_tid": 12877,
+      "process_pid": 12871,
+      "raw_sha256": "8476e9f80f6bf17acc365570d6c27ef4baa166a5b8c49537dc0379a228a9dfc7",
+      "keeper": {
+        "requested": false,
+        "blocks": 0,
+        "threads_per_block": 0,
+        "stream_priority": 0,
+        "stream_nonblocking": false,
+        "start_gpu_ns": 0,
+        "end_gpu_ns": 0,
+        "watchdog_deadline_gpu_ns": 0,
+        "stop_poll_interval_ns": 100000,
+        "first_target_gpu_ns": 0,
+        "first_phy_start_gpu_ns": 0,
+        "last_phy_end_gpu_ns": 0,
+        "covers_replay": false,
+        "stop_reason": "inactive"
+      },
+      "execution_p50_us": 138.24,
+      "start_error_p99_us": 5.104
+    },
+    {
+      "name": "t01_p2_cpu_alone",
+      "variant": "cpu",
+      "gate": false,
+      "recorded": 5000,
+      "skipped": 0,
+      "misses": 0,
+      "worker_tid": 12923,
+      "process_pid": 12917,
+      "raw_sha256": "c07e75a4ca01d92c07c1edaab8c4d9b5b9c7d327fd9cb72b2662ba19e8960f1e",
+      "keeper": {
+        "requested": false,
+        "blocks": 0,
+        "threads_per_block": 0,
+        "stream_priority": 0,
+        "stream_nonblocking": false,
+        "start_gpu_ns": 0,
+        "end_gpu_ns": 0,
+        "watchdog_deadline_gpu_ns": 0,
+        "stop_poll_interval_ns": 100000,
+        "first_target_gpu_ns": 0,
+        "first_phy_start_gpu_ns": 0,
+        "last_phy_end_gpu_ns": 0,
+        "covers_replay": false,
+        "stop_reason": "inactive"
+      },
+      "execution_p50_us": 179.2,
+      "start_error_p99_us": 12.89
+    },
+    {
+      "name": "t01_p3_cpu_keepalive_alone",
+      "variant": "cpu_keepalive",
+      "gate": false,
+      "recorded": 5000,
+      "skipped": 0,
+      "misses": 0,
+      "worker_tid": 12969,
+      "process_pid": 12963,
+      "raw_sha256": "54c30c00c03f315bc6db96a2b874d659d2fdda84e90cb244c8eb038e59e723cf",
+      "keeper": {
+        "requested": true,
+        "blocks": 1,
+        "threads_per_block": 1,
+        "stream_priority": -2,
+        "stream_nonblocking": true,
+        "start_gpu_ns": 1790972189723118592,
+        "end_gpu_ns": 1790972192922744832,
+        "watchdog_deadline_gpu_ns": 1790972197922504171,
+        "stop_poll_interval_ns": 100000,
+        "first_target_gpu_ns": 1790972189923030236,
+        "first_phy_start_gpu_ns": 1790972189923224576,
+        "last_phy_end_gpu_ns": 1790972192922651648,
+        "covers_replay": true,
+        "stop_reason": "host_stop"
+      },
+      "execution_p50_us": 138.24,
+      "start_error_p99_us": 12.264
+    },
+    {
+      "name": "t02_p1_gpu_alone",
+      "variant": "gpu",
+      "gate": false,
+      "recorded": 5000,
+      "skipped": 0,
+      "misses": 0,
+      "worker_tid": 13028,
+      "process_pid": 13022,
+      "raw_sha256": "c4c3068284b917bc27ac78e2b2c23ca72c254ead08f356c0bcd4dfa4526270e0",
+      "keeper": {
+        "requested": false,
+        "blocks": 0,
+        "threads_per_block": 0,
+        "stream_priority": 0,
+        "stream_nonblocking": false,
+        "start_gpu_ns": 0,
+        "end_gpu_ns": 0,
+        "watchdog_deadline_gpu_ns": 0,
+        "stop_poll_interval_ns": 100000,
+        "first_target_gpu_ns": 0,
+        "first_phy_start_gpu_ns": 0,
+        "last_phy_end_gpu_ns": 0,
+        "covers_replay": false,
+        "stop_reason": "inactive"
+      },
+      "execution_p50_us": 138.24,
+      "start_error_p99_us": 5.01
+    },
+    {
+      "name": "t02_p2_cpu_keepalive_alone",
+      "variant": "cpu_keepalive",
+      "gate": false,
+      "recorded": 5000,
+      "skipped": 0,
+      "misses": 0,
+      "worker_tid": 13074,
+      "process_pid": 13068,
+      "raw_sha256": "218b3896e14b78095fff12b769573012e8cf1c4a736346f41adde961be56b7dd",
+      "keeper": {
+        "requested": true,
+        "blocks": 1,
+        "threads_per_block": 1,
+        "stream_priority": -2,
+        "stream_nonblocking": true,
+        "start_gpu_ns": 1790972206653961216,
+        "end_gpu_ns": 1790972209853587456,
+        "watchdog_deadline_gpu_ns": 1790972214853343873,
+        "stop_poll_interval_ns": 100000,
+        "first_target_gpu_ns": 1790972206853870510,
+        "first_phy_start_gpu_ns": 1790972206854004736,
+        "last_phy_end_gpu_ns": 1790972209853494272,
+        "covers_replay": true,
+        "stop_reason": "host_stop"
+      },
+      "execution_p50_us": 138.24,
+      "start_error_p99_us": 12.08
+    },
+    {
+      "name": "t02_p3_cpu_alone",
+      "variant": "cpu",
+      "gate": false,
+      "recorded": 4995,
+      "skipped": 5,
+      "misses": 6,
+      "worker_tid": 13120,
+      "process_pid": 13114,
+      "raw_sha256": "6220d293de7cef385c49bb3b5de7c1693698e903d914b2e5faccf69cd07b5acf",
+      "keeper": {
+        "requested": false,
+        "blocks": 0,
+        "threads_per_block": 0,
+        "stream_priority": 0,
+        "stream_nonblocking": false,
+        "start_gpu_ns": 0,
+        "end_gpu_ns": 0,
+        "watchdog_deadline_gpu_ns": 0,
+        "stop_poll_interval_ns": 100000,
+        "first_target_gpu_ns": 0,
+        "first_phy_start_gpu_ns": 0,
+        "last_phy_end_gpu_ns": 0,
+        "covers_replay": false,
+        "stop_reason": "inactive"
+      },
+      "execution_p50_us": 179.2,
+      "start_error_p99_us": 13.499
+    },
+    {
+      "name": "t03_p1_cpu_alone",
+      "variant": "cpu",
+      "gate": false,
+      "recorded": 5000,
+      "skipped": 0,
+      "misses": 0,
+      "worker_tid": 13166,
+      "process_pid": 13160,
+      "raw_sha256": "c72f4eea18bf06c8ed91c8b967ce4a0e695b0baecbdbf8c0fe96839a2490bfe5",
+      "keeper": {
+        "requested": false,
+        "blocks": 0,
+        "threads_per_block": 0,
+        "stream_priority": 0,
+        "stream_nonblocking": false,
+        "start_gpu_ns": 0,
+        "end_gpu_ns": 0,
+        "watchdog_deadline_gpu_ns": 0,
+        "stop_poll_interval_ns": 100000,
+        "first_target_gpu_ns": 0,
+        "first_phy_start_gpu_ns": 0,
+        "last_phy_end_gpu_ns": 0,
+        "covers_replay": false,
+        "stop_reason": "inactive"
+      },
+      "execution_p50_us": 179.2,
+      "start_error_p99_us": 13.43
+    },
+    {
+      "name": "t03_p2_cpu_keepalive_alone",
+      "variant": "cpu_keepalive",
+      "gate": false,
+      "recorded": 5000,
+      "skipped": 0,
+      "misses": 0,
+      "worker_tid": 13212,
+      "process_pid": 13206,
+      "raw_sha256": "b539315a2e92b6ee005ce423d2da31eefac4d4ba33cc651c7c31e2595975212e",
+      "keeper": {
+        "requested": true,
+        "blocks": 1,
+        "threads_per_block": 1,
+        "stream_priority": -2,
+        "stream_nonblocking": true,
+        "start_gpu_ns": 1790972232039355392,
+        "end_gpu_ns": 1790972235238981632,
+        "watchdog_deadline_gpu_ns": 1790972240238739956,
+        "stop_poll_interval_ns": 100000,
+        "first_target_gpu_ns": 1790972232239266739,
+        "first_phy_start_gpu_ns": 1790972232239308800,
+        "last_phy_end_gpu_ns": 1790972235238887424,
+        "covers_replay": true,
+        "stop_reason": "host_stop"
+      },
+      "execution_p50_us": 138.24,
+      "start_error_p99_us": 12.171
+    },
+    {
+      "name": "t03_p3_gpu_alone",
+      "variant": "gpu",
+      "gate": false,
+      "recorded": 5000,
+      "skipped": 0,
+      "misses": 0,
+      "worker_tid": 13258,
+      "process_pid": 13252,
+      "raw_sha256": "4e432015167832c69cd6e09e81702bdb85aca881ef3929a2d4fb6499abf43b49",
+      "keeper": {
+        "requested": false,
+        "blocks": 0,
+        "threads_per_block": 0,
+        "stream_priority": 0,
+        "stream_nonblocking": false,
+        "start_gpu_ns": 0,
+        "end_gpu_ns": 0,
+        "watchdog_deadline_gpu_ns": 0,
+        "stop_poll_interval_ns": 100000,
+        "first_target_gpu_ns": 0,
+        "first_phy_start_gpu_ns": 0,
+        "last_phy_end_gpu_ns": 0,
+        "covers_replay": false,
+        "stop_reason": "inactive"
+      },
+      "execution_p50_us": 138.24,
+      "start_error_p99_us": 5.089
+    },
+    {
+      "name": "t04_p1_cpu_keepalive_alone",
+      "variant": "cpu_keepalive",
+      "gate": false,
+      "recorded": 5000,
+      "skipped": 0,
+      "misses": 0,
+      "worker_tid": 13304,
+      "process_pid": 13298,
+      "raw_sha256": "cab43e3a83b2f9b11ae31573c5247f1f1216f1bff6467e20f21f0ffda0131377",
+      "keeper": {
+        "requested": true,
+        "blocks": 1,
+        "threads_per_block": 1,
+        "stream_priority": -2,
+        "stream_nonblocking": true,
+        "start_gpu_ns": 1790972248967523328,
+        "end_gpu_ns": 1790972252167148544,
+        "watchdog_deadline_gpu_ns": 1790972257166901377,
+        "stop_poll_interval_ns": 100000,
+        "first_target_gpu_ns": 1790972249167428410,
+        "first_phy_start_gpu_ns": 1790972249167584256,
+        "last_phy_end_gpu_ns": 1790972252167049216,
+        "covers_replay": true,
+        "stop_reason": "host_stop"
+      },
+      "execution_p50_us": 138.24,
+      "start_error_p99_us": 12.282
+    },
+    {
+      "name": "t04_p2_gpu_alone",
+      "variant": "gpu",
+      "gate": false,
+      "recorded": 5000,
+      "skipped": 0,
+      "misses": 0,
+      "worker_tid": 13350,
+      "process_pid": 13344,
+      "raw_sha256": "6e3f5213f0a868adf5b1aa14fccef52254c0a3c44f892e610261c5f2312a1a41",
+      "keeper": {
+        "requested": false,
+        "blocks": 0,
+        "threads_per_block": 0,
+        "stream_priority": 0,
+        "stream_nonblocking": false,
+        "start_gpu_ns": 0,
+        "end_gpu_ns": 0,
+        "watchdog_deadline_gpu_ns": 0,
+        "stop_poll_interval_ns": 100000,
+        "first_target_gpu_ns": 0,
+        "first_phy_start_gpu_ns": 0,
+        "last_phy_end_gpu_ns": 0,
+        "covers_replay": false,
+        "stop_reason": "inactive"
+      },
+      "execution_p50_us": 138.24,
+      "start_error_p99_us": 5.043
+    },
+    {
+      "name": "t04_p3_cpu_alone",
+      "variant": "cpu",
+      "gate": false,
+      "recorded": 4995,
+      "skipped": 5,
+      "misses": 6,
+      "worker_tid": 13396,
+      "process_pid": 13390,
+      "raw_sha256": "f5b93cac6d3483cfd183dfd7fb804e4386c807e0ae7d722a2168b4c0e67ad265",
+      "keeper": {
+        "requested": false,
+        "blocks": 0,
+        "threads_per_block": 0,
+        "stream_priority": 0,
+        "stream_nonblocking": false,
+        "start_gpu_ns": 0,
+        "end_gpu_ns": 0,
+        "watchdog_deadline_gpu_ns": 0,
+        "stop_poll_interval_ns": 100000,
+        "first_target_gpu_ns": 0,
+        "first_phy_start_gpu_ns": 0,
+        "last_phy_end_gpu_ns": 0,
+        "covers_replay": false,
+        "stop_reason": "inactive"
+      },
+      "execution_p50_us": 179.2,
+      "start_error_p99_us": 13.976
+    },
+    {
+      "name": "t05_p1_cpu_keepalive_alone",
+      "variant": "cpu_keepalive",
+      "gate": false,
+      "recorded": 4989,
+      "skipped": 11,
+      "misses": 14,
+      "worker_tid": 13454,
+      "process_pid": 13448,
+      "raw_sha256": "dbeb5f47e29d2ddc056914b0cd0867c15e7df2bc01c1e500421738f48bfe694b",
+      "keeper": {
+        "requested": true,
+        "blocks": 1,
+        "threads_per_block": 1,
+        "stream_priority": -2,
+        "stream_nonblocking": true,
+        "start_gpu_ns": 1790972274305262592,
+        "end_gpu_ns": 1790972277504888832,
+        "watchdog_deadline_gpu_ns": 1790972282504646263,
+        "stop_poll_interval_ns": 100000,
+        "first_target_gpu_ns": 1790972274505173228,
+        "first_phy_start_gpu_ns": 1790972274505310208,
+        "last_phy_end_gpu_ns": 1790972277504794624,
+        "covers_replay": true,
+        "stop_reason": "host_stop"
+      },
+      "execution_p50_us": 138.24,
+      "start_error_p99_us": 14.846
+    },
+    {
+      "name": "t05_p2_cpu_alone",
+      "variant": "cpu",
+      "gate": false,
+      "recorded": 5000,
+      "skipped": 0,
+      "misses": 0,
+      "worker_tid": 13500,
+      "process_pid": 13494,
+      "raw_sha256": "3d70301d9d13cd6db102fb96e14af435abb15ff9aa3a1f1e03a81edbc3b5e4c5",
+      "keeper": {
+        "requested": false,
+        "blocks": 0,
+        "threads_per_block": 0,
+        "stream_priority": 0,
+        "stream_nonblocking": false,
+        "start_gpu_ns": 0,
+        "end_gpu_ns": 0,
+        "watchdog_deadline_gpu_ns": 0,
+        "stop_poll_interval_ns": 100000,
+        "first_target_gpu_ns": 0,
+        "first_phy_start_gpu_ns": 0,
+        "last_phy_end_gpu_ns": 0,
+        "covers_replay": false,
+        "stop_reason": "inactive"
+      },
+      "execution_p50_us": 179.2,
+      "start_error_p99_us": 12.682
+    },
+    {
+      "name": "t05_p3_gpu_alone",
+      "variant": "gpu",
+      "gate": false,
+      "recorded": 5000,
+      "skipped": 0,
+      "misses": 0,
+      "worker_tid": 13546,
+      "process_pid": 13540,
+      "raw_sha256": "3ede3694f413c2bae2457af2c92da29f8081557225677597734642568d6d0207",
+      "keeper": {
+        "requested": false,
+        "blocks": 0,
+        "threads_per_block": 0,
+        "stream_priority": 0,
+        "stream_nonblocking": false,
+        "start_gpu_ns": 0,
+        "end_gpu_ns": 0,
+        "watchdog_deadline_gpu_ns": 0,
+        "stop_poll_interval_ns": 100000,
+        "first_target_gpu_ns": 0,
+        "first_phy_start_gpu_ns": 0,
+        "last_phy_end_gpu_ns": 0,
+        "covers_replay": false,
+        "stop_reason": "inactive"
+      },
+      "execution_p50_us": 138.24,
+      "start_error_p99_us": 4.996
+    },
+    {
+      "name": "t06_p1_cpu_alone",
+      "variant": "cpu",
+      "gate": false,
+      "recorded": 4992,
+      "skipped": 8,
+      "misses": 11,
+      "worker_tid": 13592,
+      "process_pid": 13586,
+      "raw_sha256": "d22020a905d0189b51cb38b6dd281e1552d01315ce2f81fe200279719b2f3e45",
+      "keeper": {
+        "requested": false,
+        "blocks": 0,
+        "threads_per_block": 0,
+        "stream_priority": 0,
+        "stream_nonblocking": false,
+        "start_gpu_ns": 0,
+        "end_gpu_ns": 0,
+        "watchdog_deadline_gpu_ns": 0,
+        "stop_poll_interval_ns": 100000,
+        "first_target_gpu_ns": 0,
+        "first_phy_start_gpu_ns": 0,
+        "last_phy_end_gpu_ns": 0,
+        "covers_replay": false,
+        "stop_reason": "inactive"
+      },
+      "execution_p50_us": 179.2,
+      "start_error_p99_us": 13.958
+    },
+    {
+      "name": "t06_p2_gpu_alone",
+      "variant": "gpu",
+      "gate": false,
+      "recorded": 5000,
+      "skipped": 0,
+      "misses": 0,
+      "worker_tid": 13638,
+      "process_pid": 13632,
+      "raw_sha256": "d67517590b4f2516d17ace98b52db7960187928f880f8916140ade4a0209940c",
+      "keeper": {
+        "requested": false,
+        "blocks": 0,
+        "threads_per_block": 0,
+        "stream_priority": 0,
+        "stream_nonblocking": false,
+        "start_gpu_ns": 0,
+        "end_gpu_ns": 0,
+        "watchdog_deadline_gpu_ns": 0,
+        "stop_poll_interval_ns": 100000,
+        "first_target_gpu_ns": 0,
+        "first_phy_start_gpu_ns": 0,
+        "last_phy_end_gpu_ns": 0,
+        "covers_replay": false,
+        "stop_reason": "inactive"
+      },
+      "execution_p50_us": 138.24,
+      "start_error_p99_us": 5.192
+    },
+    {
+      "name": "t06_p3_cpu_keepalive_alone",
+      "variant": "cpu_keepalive",
+      "gate": false,
+      "recorded": 4993,
+      "skipped": 7,
+      "misses": 8,
+      "worker_tid": 13695,
+      "process_pid": 13680,
+      "raw_sha256": "48fcc29153a42921b536ce6148e1eac91acb440afdde79e3b113da9e15bb05a1",
+      "keeper": {
+        "requested": true,
+        "blocks": 1,
+        "threads_per_block": 1,
+        "stream_priority": -2,
+        "stream_nonblocking": true,
+        "start_gpu_ns": 1790972316599554048,
+        "end_gpu_ns": 1790972319799179264,
+        "watchdog_deadline_gpu_ns": 1790972324798936946,
+        "stop_poll_interval_ns": 100000,
+        "first_target_gpu_ns": 1790972316799464203,
+        "first_phy_start_gpu_ns": 1790972316799625216,
+        "last_phy_end_gpu_ns": 1790972319799090176,
+        "covers_replay": true,
+        "stop_reason": "host_stop"
+      },
+      "execution_p50_us": 138.24,
+      "start_error_p99_us": 12.233
+    }
+  ]
+}

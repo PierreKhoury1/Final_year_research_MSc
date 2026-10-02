@@ -1,0 +1,26 @@
+File extension: h5
+PuschRx Pipeline[0]: Failed to set scheduling algo pid 11482, prio 99, return code -1: err Operation not permitted
+PuschRx Pipeline[0]: pid 11482 set affinity to CPU 1
+PuschRx Pipeline[0]: Wait for start-sync point
+Run config: GPU Id 0, # of pipelines 1
+PuschRx Pipeline[0]: start-syncpoint hit
+PuschRx Pipeline[0]: For transmission 1 using filename /workspace/cuphy-lockstep/tv/GPU_test_input/TVnr_7304_PUSCH_gNB_CUPHY_s0p0.h5
+Lockstep validation: payload/CB errors 0, CRC errors 0
+Lockstep validation: payload/CB errors 0, CRC errors 0
+CUPHY_LOCKSTEP mode=gpu correctness=pass recorded=2610 skipped=2390 p99_start_us=2473.282 misses=2967/5000
+PuschRx Pipeline[0]: Joining worker thread
+nvlog_fmtlog_close: fmtlog thread already stopped
+20:04:59.731185 nvlog.cpp:267    CON[11477 ] [NVLOG.CPP] Using /workspace/cuphy-lockstep/cuPHY/nvlog/config/nvlog_config.yaml for nvlog configuration
+20:04:59.731958 exit_handler.cpp:44 CON[11479 ] [NVLOG.EXIT_HANDLER] [exit_watchdog] thread started on core 13
+20:04:59.740187 nvlog.cpp:338    ERR[11477 ] [AERIAL_YAML_PARSER_EVENT] [NVLOG.CPP] Failed to load yaml file: /workspace/cuphy-lockstep/cuPHY/nvlog/config/nvlog_config.yaml (bad file: /workspace/cuphy-lockstep/cuPHY/nvlog/config/nvlog_config.yaml)
+20:04:59.934619 datasets.cpp:1026 CON[11482 ] [CUPHY.PUSCH_RX] PUSCH 7.2a O-RAN functional split.
+20:04:59.941885 datasets.cpp:1041 CON[11482 ] [CUPHY.PUSCH_RX] run PUSCH pipeline.
+20:04:59.941885 datasets.cpp:1066 CON[11482 ] [CUPHY.PUSCH_RX] run PUSCH pipeline with UCI-on-PUSCH.
+20:04:59.958439 datasets.cpp:1189 CON[11482 ] [CUPHY.PUSCH_RX] LDPC throughput mode enabled
+20:05:00.224793 cuphy.hpp:105    CON[11482 ] [CUPHY.MEMFOOT] cuphyMemoryFootprint - GPU allocation: 697.727 MiB for cuPHY PUSCH channel object (0x7ef7f4056720).
+20:05:00.224794 pusch_rx.cpp:1461 CON[11482 ] [CUPHY.PUSCH_RX] PuschRx: Running with eqCoeffAlgo 3
+20:05:00.680547 datasets.cpp:2673 CON[11482 ] [CUPHY.PUSCH_RX] Cell # 0 : TbIdx: 0 Metric - Block Error Rate      : 0.0000 (Error CBs 0, Mismatched CBs 0, MismatchedCRC CBs 0, Total CBs 152)
+20:05:00.680549 datasets.cpp:2710 CON[11482 ] [CUPHY.PUSCH_RX] Cell # 0 :          Metric - TB CRC Error      :(MismatchedCRC TBs 0, Total TBs 1)
+20:05:07.905194 datasets.cpp:2673 CON[11482 ] [CUPHY.PUSCH_RX] Cell # 0 : TbIdx: 0 Metric - Block Error Rate      : 0.0000 (Error CBs 0, Mismatched CBs 0, MismatchedCRC CBs 0, Total CBs 152)
+20:05:07.905195 datasets.cpp:2710 CON[11482 ] [CUPHY.PUSCH_RX] Cell # 0 :          Metric - TB CRC Error      :(MismatchedCRC TBs 0, Total TBs 1)
+20:05:07.911450 nvlog.cpp:189    CON[11477 ] [NVLOG.CPP] nvlog_fmtlog_close: closing FMT log from [cuphy_ex_pusch_] thread on core 11, last file path is /tmp
