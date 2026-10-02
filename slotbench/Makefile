@@ -18,7 +18,7 @@ CUDA_LIBS := -lcublas -lcufft -lpthread -ldl
 COMMON_H  := $(wildcard common/*.h)
 PHY_H     := $(wildcard phy/*.h phy/*.cuh)
 
-BINS  := bin/slot_driver bin/adversary bin/clockcal bin/phc_offset
+BINS  := bin/slot_driver bin/lockstep_driver bin/adversary bin/clockcal bin/phc_offset
 TESTS := bin/test_ldpc bin/test_phy_ops bin/test_ring bin/test_clock_fit
 
 .PHONY: all gpu host test pytest tables clean
@@ -39,6 +39,12 @@ build/slot_driver.o: driver/slot_driver.cu $(COMMON_H) $(PHY_H) | build
 
 bin/slot_driver: build/slot_driver.o build/slot_pipeline.o build/phy_kernels.o build/ldpc_code.o | bin
 	$(NVCC) $(NVFLAGS) -o $@ $^ $(CUDA_LIBS)
+
+# device graph launch (the GPU launching the slot graph itself) needs relocatable device code + cudadevrt
+build/lockstep_driver.o: driver/lockstep_driver.cu $(COMMON_H) $(PHY_H) | build
+	$(NVCC) $(NVFLAGS) -rdc=true -c -o $@ $<
+bin/lockstep_driver: build/lockstep_driver.o build/slot_pipeline.o build/phy_kernels.o build/ldpc_code.o | bin
+	$(NVCC) $(NVFLAGS) -rdc=true -o $@ $^ $(CUDA_LIBS) -lcudadevrt
 
 bin/adversary: adversary/adversary.cu $(COMMON_H) | bin
 	$(NVCC) $(NVFLAGS) -o $@ $< $(CUDA_LIBS)
