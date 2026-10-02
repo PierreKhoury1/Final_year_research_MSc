@@ -27,13 +27,14 @@ cleanup() {
 }
 
 finish() {
-    local status=$1 archive="$W/collection.tar.gz" bytes lines sha
+    local status=$1 archive="${COLLECTION_ARCHIVE:-$W/collection.tar.gz}" bytes lines sha
     trap - ERR TERM INT
     [[ -n ${STEP_PID:-} ]] && kill -TERM "$STEP_PID" 2>/dev/null || true
     cleanup
     # Preserve complete originals. Gzip all logs/results once, excluding the 64 MB
     # input vector (its upstream revision, generation log and SHA256 are recorded).
-    tar -cf - -C "$W" logs out | gzip -9 > "$archive"
+    [[ $LOGS == "$W/"* && $OUT == "$W/"* ]]
+    tar -cf - -C "$W" "${LOGS#"$W/"}" "${OUT#"$W/"}" | gzip -9 > "$archive"
     bytes=$(stat -c %s "$archive")
     lines=$(( (4 * ((bytes + 2) / 3) + 75) / 76 + 2 ))
     if (( lines > 18000 )); then
@@ -47,6 +48,7 @@ finish() {
         echo "=====SLOTBENCH-END cuphy-lockstep/results====="
     fi
     echo "=====SLOTBENCH-DONE status=$status====="
+    if [[ ${SB_CUPHY_FINISH_EXIT:-0} == 1 ]]; then return; fi
     sleep infinity
 }
 
@@ -85,6 +87,7 @@ apply_adapter() {
     git -C "$S" apply --check "$patch"
     git -C "$S" apply "$patch"
     cp "$patch" "$OUT/applied-adapter.patch"
+    cp "$patch" "$W/applied-adapter.patch"
     cp "$adapter/cuphy_lockstep.cu" "$adapter/cuphy_lockstep.h" "$example/"
     cp "$W/sb/slotbench/common/clock_fit.h" "$W/sb/slotbench/common/host_time.h" "$W/sb/slotbench/common/json_writer.h" "$example/"
     cp "$adapter/cuphy_lockstep_stamps.cu" "$adapter/cuphy_lockstep_stamps.h" "$channels/"
@@ -188,9 +191,9 @@ main() {
         git git-lfs cmake ninja-build build-essential pkg-config libhdf5-dev hdf5-tools libyaml-dev python3-pip python3-venv \
         numactl wget unzip ca-certificates curl aria2 procps "libnvinfer10=$1" "libnvinfer-headers-dev=$1"' _ "$trt"
     export -f clone_sources apply_adapter gcmake deps tv
-    step clone 300 bash -c clone_sources
-    step adapter 60 bash -c apply_adapter
-    step deps 600 bash -c deps
+    step clone 300 bash -e -o pipefail -c clone_sources
+    step adapter 60 bash -e -o pipefail -c apply_adapter
+    step deps 600 bash -e -o pipefail -c deps
     mkdir -p "$W/wrapper"
     cat > "$W/wrapper/CMakeLists.txt" <<'CMAKE'
 cmake_minimum_required(VERSION 3.25)
@@ -217,7 +220,7 @@ CMAKE
     [[ -x $PUSCH ]]
     step adversary_build 180 make -C "$W/sb/slotbench" SM=80 CUDA_HOME=/usr/local/cuda bin/adversary
     ADV="$W/sb/slotbench/bin/adversary"
-    step tv "${TV_TIMEOUT_S:-2400}" bash -c tv
+    step tv "${TV_TIMEOUT_S:-2400}" bash -e -o pipefail -c tv
     TV="$W/tv/GPU_test_input/TVnr_7304_PUSCH_gNB_CUPHY_s0p0.h5"
     [[ -s $TV ]]
     TV_SHA=$(sha256sum "$TV" | cut -d' ' -f1)
@@ -272,6 +275,8 @@ deps() {
 }
 
 tv() {
+    cd "$W"
+    if [[ ! -f $W/matlab-runtime-installed || ! -d /usr/local/MATLAB/MATLAB_Runtime/R2026a/runtime/glnxa64 ]]; then
     apt-get install -y --no-install-recommends default-jre libxfont2 x11-xkb-utils xkb-data libxcomposite1 libnss3 \
         libxrandr-dev libatk1.0-0 libatk-bridge2.0-0 libx11-xcb-dev libxcb-dri3-0 libxcursor-dev libxdamage-dev \
         libxi-dev libdrm-dev libgbm-dev libasound-dev libcups2-dev libxtst-dev
@@ -281,6 +286,8 @@ tv() {
         --dir="$W" --out=mcr.zip "$runtime_url" || wget -q -c "$runtime_url" -O "$W/mcr.zip"
     rm -rf mcr && mkdir mcr && (cd mcr && unzip -q ../mcr.zip && ./install -mode silent -agreeToLicense yes)
     rm -rf mcr mcr.zip
+    touch "$W/matlab-runtime-installed"
+    fi
     local whl=aerial_mcore-0.20261.508652.508652-py3-none-any.whl
     mkdir -p "$S/5GModel/aerial_mcore/aerial_pkg/dist"
     (cd "$S" && git lfs install --local && git lfs pull --include="5GModel/aerial_mcore/aerial_pkg/dist/*.whl") \
@@ -289,6 +296,7 @@ tv() {
     python3 -m venv "$W/venv"
     "$W/venv/bin/pip" install -q numpy pyyaml h5py "$S"/5GModel/aerial_mcore/aerial_pkg/dist/aerial_mcore-*.whl
     mkdir -p "$W/tv" && cd "$W/tv"
+    export PS1="${PS1:-}" LD_LIBRARY_PATH="${LD_LIBRARY_PATH:-}"
     # shellcheck disable=SC1091
     source "$S/5GModel/aerial_mcore/scripts/setup.sh"
     "$W/venv/bin/python" -c "import aerial_mcore as M, matlab; e = M.initialize(); print(e.testCompGenTV_pusch(matlab.double([7304]), 'genTV', nargout=4))"
