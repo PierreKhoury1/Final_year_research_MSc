@@ -23,7 +23,7 @@ TESTS := bin/test_ldpc bin/test_phy_ops bin/test_ring bin/test_clock_fit
 
 .PHONY: all gpu host test pytest tables clean
 all: $(BINS) $(TESTS)
-gpu: bin/slot_driver bin/adversary bin/clockcal
+gpu: bin/slot_driver bin/lockstep_driver bin/adversary bin/clockcal
 host: bin/phc_offset $(TESTS)
 
 build bin:
@@ -41,8 +41,8 @@ bin/slot_driver: build/slot_driver.o build/slot_pipeline.o build/phy_kernels.o b
 	$(NVCC) $(NVFLAGS) -o $@ $^ $(CUDA_LIBS)
 
 # Device graph launch (the GPU launching the slot graph itself) needs relocatable device code + cudadevrt.
-# Only the executive's translation unit is built that way, so a runtime that refuses the device-runtime
-# module (MPS) only affects gpu mode.
+# Only the executive's translation unit is built that way. Whether an MPS device-runtime module
+# refusal also affects CPU mode depends on runtime module loading and must be checked on the GPU.
 build/lockstep_driver.o: driver/lockstep_driver.cu driver/lockstep_common.h $(COMMON_H) $(PHY_H) | build
 	$(NVCC) $(NVFLAGS) -c -o $@ $<
 build/lockstep_exec.o: driver/lockstep_exec.cu driver/lockstep_common.h | build

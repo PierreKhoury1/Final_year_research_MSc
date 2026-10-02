@@ -23,6 +23,7 @@
 #include <algorithm>
 #include <atomic>
 #include <cmath>
+#include <climits>
 #include <cstdint>
 #include <cstdio>
 #include <cstdlib>
@@ -36,6 +37,7 @@
 #include <unistd.h>
 
 #include <cuda_runtime.h>
+#include <cuda/atomic>
 
 #include "clock_fit.h"
 #include "cuda_check.h"
@@ -56,12 +58,18 @@ __device__ __forceinline__ unsigned long long gtimer() {
 
 // Appended to the slot graph: publishes the slot's stamps in device memory so the executive never spins on
 // PCIe-mapped host memory. d[1] = start stamp, d[2] = end stamp (both read once from the mapped stamps,
-// after k_stamp_end ran), then fence, then d[0] = completion flag (monotone timer value).
-__global__ void k_done(unsigned long long *d, const SlotStamps *stamps_dev) {
+// after k_stamp_end ran), then release-publish d[0] = completion sequence.
+__global__ void k_done(unsigned long long *d, const SlotStamps *stamps_dev,
+                       volatile unsigned long long *finished_host) {
     d[1] = stamps_dev->start_t;
     d[2] = stamps_dev->end_t;
-    __threadfence();
-    d[0] = gtimer();
+    const auto seq = stamps_dev->end_seq;
+    // Both launchers gate readiness on this final kernel. CPU polling must not use the earlier
+    // k_stamp_end marker while the GPU waits for an additional kernel to become schedulable.
+    __threadfence_system();
+    *finished_host = seq;
+    cuda::atomic_ref<unsigned long long, cuda::thread_scope_device> completion(d[0]);
+    completion.store(seq, cuda::memory_order_release);
 }
 
 // calibration ping-pong (resident kernel answers host sequence writes over mapped memory)
@@ -99,7 +107,7 @@ __global__ void k_tick(unsigned long long *out, int n) {
 }
 
 struct Opts {
-    std::string mode = "cpu", load = "none", out = "lockstep.json", raw, label;
+    std::string mode = "cpu", load = "none", out = "lockstep.json", raw, label, slot_variant = "full";
     long slots = 20000, warmup = 500;
     double period_us = 500, deadline_us = 500, spin_us = 200, calib_spread_s = 2.0;
     int gpu = 0, core = -1, fifo = 0, calib = 20000;
@@ -113,52 +121,83 @@ struct Opts {
             "usage: lockstep_driver --mode cpu|gpu [--load none|stream] [--slots N] [--warmup N] [--period-us F]\n"
             "       [--deadline-us F] [--spin-us F] [--prio high|default|low] [--core N] [--fifo P] [--gpu N]\n"
             "       [--calib N] [--calib-spread-s F] [--out FILE.json] [--raw FILE.bin] [--label S]\n"
+            "       [--slot-variant full|no_cublas]\n"
             "       [sizes: --fft --symbols --subcarriers --qam --ldpc-cb --ldpc-iters --ldpc-rows --ldpc-z]\n");
     exit(2);
 }
 
 Opts parse(int argc, char **argv) {
     Opts o;
-    auto num = [&](const char *v) { char *e; double d = strtod(v, &e); if (*e) usage("bad number"); return d; };
+    auto num = [&](const char *v) {
+        char *e; errno = 0; double d = strtod(v, &e);
+        if (e == v || *e || errno == ERANGE || !std::isfinite(d)) usage("bad number");
+        return d;
+    };
+    auto integer = [&](const char *v) {
+        double d = num(v);
+        if (d < INT_MIN || d > INT_MAX || std::floor(d) != d) usage("integer out of range");
+        return (int)d;
+    };
     for (int i = 1; i < argc; i++) {
         std::string f = argv[i];
         if (i + 1 >= argc) usage(("missing value for " + f).c_str());
         const char *v = argv[++i];
         if (f == "--mode") o.mode = v;
         else if (f == "--load") o.load = v;
-        else if (f == "--slots") o.slots = (long)num(v);
-        else if (f == "--warmup") o.warmup = (long)num(v);
+        else if (f == "--slots") o.slots = integer(v);
+        else if (f == "--warmup") o.warmup = integer(v);
         else if (f == "--period-us") o.period_us = num(v);
         else if (f == "--deadline-us") o.deadline_us = num(v);
         else if (f == "--spin-us") o.spin_us = num(v);
         else if (f == "--prio") o.prio = v;
-        else if (f == "--core") o.core = (int)num(v);
-        else if (f == "--fifo") o.fifo = (int)num(v);
-        else if (f == "--gpu") o.gpu = (int)num(v);
-        else if (f == "--calib") o.calib = (int)num(v);
+        else if (f == "--core") o.core = integer(v);
+        else if (f == "--fifo") o.fifo = integer(v);
+        else if (f == "--gpu") o.gpu = integer(v);
+        else if (f == "--calib") o.calib = integer(v);
         else if (f == "--calib-spread-s") o.calib_spread_s = num(v);
         else if (f == "--out") o.out = v;
         else if (f == "--raw") o.raw = v;
         else if (f == "--label") o.label = v;
-        else if (f == "--fft") o.phy.fft = (int)num(v);
-        else if (f == "--symbols") o.phy.symbols = (int)num(v);
-        else if (f == "--subcarriers") o.phy.subcarriers = (int)num(v);
-        else if (f == "--qam") o.phy.qam = (int)num(v);
-        else if (f == "--ldpc-cb") o.phy.ldpc_cb = (int)num(v);
-        else if (f == "--ldpc-iters") o.phy.ldpc_iters = (int)num(v);
-        else if (f == "--ldpc-rows") o.phy.ldpc_rows = (int)num(v);
-        else if (f == "--ldpc-z") o.phy.ldpc_z = (int)num(v);
+        else if (f == "--slot-variant") o.slot_variant = v;
+        else if (f == "--fft") o.phy.fft = integer(v);
+        else if (f == "--symbols") o.phy.symbols = integer(v);
+        else if (f == "--subcarriers") o.phy.subcarriers = integer(v);
+        else if (f == "--qam") o.phy.qam = integer(v);
+        else if (f == "--ldpc-cb") o.phy.ldpc_cb = integer(v);
+        else if (f == "--ldpc-iters") o.phy.ldpc_iters = integer(v);
+        else if (f == "--ldpc-rows") o.phy.ldpc_rows = integer(v);
+        else if (f == "--ldpc-z") o.phy.ldpc_z = integer(v);
         else usage(("unknown flag " + f).c_str());
     }
     if (o.mode != "cpu" && o.mode != "gpu") usage("--mode must be cpu or gpu");
     if (o.load != "none" && o.load != "stream") usage("--load must be none or stream");
-    if (o.slots < 1 || o.period_us <= 0) usage("bad slots/period");
+    if (o.slot_variant != "full" && o.slot_variant != "no_cublas") usage("bad slot variant");
+    o.phy.skip_blas = o.slot_variant == "no_cublas";
+    if (o.slots < 1 || o.warmup < 0 || o.slots + o.warmup > INT_MAX) usage("bad slots/warmup");
+    if (o.period_us < 0.001 || o.period_us > 1e9 || o.deadline_us <= 0 || o.spin_us < 0 || o.spin_us > 1e9)
+        usage("bad period/deadline/spin");
+    if ((o.slots + o.warmup) * o.period_us > 1e12) usage("run duration exceeds 1,000,000 seconds");
+    if (o.calib < 2 || o.calib > INT_MAX - 400 || o.calib_spread_s <= 0 || o.calib_spread_s > 3600)
+        usage("bad calibration size/spread");
+    if (o.prio != "high" && o.prio != "default" && o.prio != "low") usage("bad priority");
+    if (o.gpu < 0 || o.core < -1 || o.core >= CPU_SETSIZE || o.fifo < 0 || o.fifo > 99)
+        usage("bad gpu/core/fifo");
     return o;
+}
+
+// Never follow an expired stream guard with a blocking synchronization/copy.
+cudaError_t wait_stream(cudaStream_t s, int64_t deadline) {
+    cudaError_t e;
+    while ((e = cudaStreamQuery(s)) == cudaErrorNotReady) {
+        if (now_ns() >= deadline) return e;
+        sleep_until_raw(now_ns() + 100000);
+    }
+    return e;
 }
 
 // ---- clock calibration: `samples` brackets spread over about `spread_s` seconds ----
 std::vector<Bracket> calibrate(cudaStream_t s, volatile unsigned *ctl_h, unsigned *ctl_d, unsigned long long *gt_h,
-                               unsigned long long *gt_d, int samples, double spread_s, unsigned &seq) {
+                               unsigned long long *gt_d, int samples, double spread_s, unsigned &seq, std::string &error) {
     std::vector<Bracket> out;
     const int batch = 400;
     const int batches = std::max(1, (samples + batch - 1) / batch);
@@ -187,7 +226,11 @@ std::vector<Bracket> calibrate(cudaStream_t s, volatile unsigned *ctl_h, unsigne
         }
         ctl_h[0] = kStop;
         __sync_synchronize();
-        CK(cudaStreamSynchronize(s));
+        cudaError_t e = wait_stream(s, now_ns() + 5000000000LL);
+        if (e != cudaSuccess) {
+            error = std::string("calibration did not complete: ") + cudaGetErrorString(e);
+            return {};
+        }
         for (size_t i = 0; i < tt.size(); i++) out.push_back({tt[i].first, tt[i].second, gt_h[i]});
         seq = base + batch + 1;
         if (tt.size() < (size_t)batch / 2) { fprintf(stderr, "lockstep_driver: calibration batch aborted\n"); break; }
@@ -216,7 +259,7 @@ TwoPoint two_point(const ClockFit &a, const ClockFit &b) {
     tp.h_b = (int64_t)std::llround(b.host_of(b.g_ref));
     if (tp.h_b <= tp.h_a + 1000000) return tp;  // need a baseline
     tp.rate = (double)(long long)(tp.g_b - tp.g_a) / (double)(tp.h_b - tp.h_a);
-    tp.ok = true;
+    tp.ok = std::isfinite(tp.rate) && tp.rate > 0;
     return tp;
 }
 
@@ -273,6 +316,13 @@ int main(int argc, char **argv) {
     CK(cudaSetDeviceFlags(cudaDeviceScheduleSpin | cudaDeviceMapHost));
     cudaDeviceProp prop;
     CK(cudaGetDeviceProperties(&prop, o.gpu));
+    auto fail_run = [&](const std::string &reason) {
+        Json j;
+        j.add("ok", false).add("mode", o.mode).add("load", o.load).add("label", o.label)
+            .add("gpu", prop.name).add("slot_variant", o.slot_variant).add("error", reason);
+        // A kernel may still be running; avoid local CUDA destructors and thread joins.
+        write_json_and_exit(o.out, j, 1);
+    };
     int rt = 0, drv = 0;
     CK(cudaRuntimeGetVersion(&rt));
     CK(cudaDriverGetVersion(&drv));
@@ -312,54 +362,51 @@ int main(int argc, char **argv) {
         cudaFree(tk);
     }
 
-    // ---- the slot: capture SlotPipeline::enqueue + k_done; device-launchable graphs may hold only kernel/
-    // memcpy/memset/child nodes, so if instantiation fails, retry without the cuBLAS stages and say so ----
+    // Capture the explicitly selected workload. A device-instantiation failure must not silently
+    // remove stages from the GPU case while the CPU case retains the full workload.
     SlotPipeline pipe(o.phy);
-    SlotPipeline *pipe_p = &pipe;
-    SlotPipeline *pipe_fallback = nullptr;
     SlotStamps *st_dev = nullptr;
+    volatile unsigned long long *slot_finished_h = nullptr;
+    unsigned long long *slot_finished_d = nullptr;
+    CK(cudaHostAlloc((void **)&slot_finished_h, sizeof(unsigned long long), cudaHostAllocMapped));
+    *slot_finished_h = 0;
+    CK(cudaHostGetDevicePointer((void **)&slot_finished_d, (void *)slot_finished_h, 0));
     unsigned long long *done_d;
     CK(cudaMalloc(&done_d, 3 * sizeof(unsigned long long)));
     CK(cudaMemsetAsync(done_d, 0, 3 * sizeof(unsigned long long), s));
     cudaGraph_t graph = nullptr;
-    cudaGraphExec_t host_exec = nullptr, dev_exec[2] = {nullptr, nullptr}, exec_graph_exec = nullptr;
+    constexpr int kChunk = 100;  // below the per-execution fire-and-forget limit
+    cudaGraphExec_t host_exec = nullptr, exec_graph_exec = nullptr;
+    std::vector<cudaGraphExec_t> dev_exec(kChunk, nullptr);
+    cudaGraphExec_t *exec_pool_d = nullptr;
     size_t n_nodes = 0;
-    std::string slot_variant = "full", dev_instantiate_error, node_types;
+    const std::string slot_variant = o.slot_variant;
+    std::string dev_instantiate_error, node_types;
     const unsigned inst_flags = cudaGraphInstantiateFlagUseNodePriority;  // same priority semantics in both modes
-    for (int attempt = 0; attempt < 2; attempt++) {
-        if (attempt == 1) {
-            PhyConfig c2 = o.phy;
-            c2.skip_blas = true;
-            pipe_fallback = new SlotPipeline(c2);
-            pipe_p = pipe_fallback;
-            slot_variant = "no_cublas";
-            if (host_exec) { CK(cudaGraphExecDestroy(host_exec)); host_exec = nullptr; }
-            if (graph) { CK(cudaGraphDestroy(graph)); graph = nullptr; }
-        }
-        CK(cudaHostGetDevicePointer((void **)&st_dev, (void *)pipe_p->stamps(), 0));
-        CK(cudaStreamBeginCapture(s, cudaStreamCaptureModeGlobal));
-        pipe_p->enqueue(s);
-        k_done<<<1, 1, 0, s>>>(done_d, st_dev);
-        CK(cudaStreamEndCapture(s, &graph));
-        CK(cudaGraphGetNodes(graph, nullptr, &n_nodes));
-        node_types = node_types_json(graph);
-        CK(cudaGraphInstantiateWithFlags(&host_exec, graph, inst_flags));
-        if (o.mode != "gpu") break;
-        dev_instantiate_error.clear();
-        for (int i = 0; i < 2; i++) {
+    CK(cudaHostGetDevicePointer((void **)&st_dev, (void *)pipe.stamps(), 0));
+    CK(cudaStreamBeginCapture(s, cudaStreamCaptureModeGlobal));
+    pipe.enqueue(s);
+    k_done<<<1, 1, 0, s>>>(done_d, st_dev, slot_finished_d);
+    CK(cudaGetLastError());
+    CK(cudaStreamEndCapture(s, &graph));
+    CK(cudaGraphGetNodes(graph, nullptr, &n_nodes));
+    node_types = node_types_json(graph);
+    CK(cudaGraphInstantiateWithFlags(&host_exec, graph, inst_flags));
+    if (o.mode == "gpu") {
+        // Each handle is launched once per generation. Tail launch waits for all child graphs,
+        // making reuse safe even when the completion kernel retires before its graph does.
+        for (int i = 0; i < kChunk; i++) {
             cudaError_t e = cudaGraphInstantiateWithFlags(&dev_exec[i], graph, cudaGraphInstantiateFlagDeviceLaunch | inst_flags);
             if (e != cudaSuccess) {
                 dev_instantiate_error = cudaGetErrorString(e);
                 (void)cudaGetLastError();
                 fprintf(stderr, "lockstep_driver: device-launchable instantiate (%s slot, nodes %s) failed: %s\n",
                         slot_variant.c_str(), node_types.c_str(), dev_instantiate_error.c_str());
-                for (int j2 = 0; j2 < i; j2++) { cudaGraphExecDestroy(dev_exec[j2]); dev_exec[j2] = nullptr; }
                 break;
             }
             CK(cudaGraphUpload(dev_exec[i], s));
         }
         CK(cudaStreamSynchronize(s));
-        if (dev_instantiate_error.empty()) break;
     }
     if (o.mode == "gpu" && !dev_instantiate_error.empty()) {
         Json j;
@@ -368,12 +415,12 @@ int main(int argc, char **argv) {
             .add("graph_nodes", (long long)n_nodes).add_raw("graph_node_types", node_types).add("slot_variant", slot_variant);
         write_json_and_exit(o.out, j, 1);
     }
-    const volatile SlotStamps *st = pipe_p->stamps();
+    const volatile SlotStamps *st = pipe.stamps();
 
     // prime: one host launch so the stamp sequence base is known and the done flag is non-zero
     CK(cudaGraphLaunch(host_exec, s));
     CK(cudaStreamSynchronize(s));
-    unsigned long long seq_base = st->end_seq;
+    unsigned long long seq_base = *slot_finished_h;
 
     const long N = o.slots, W = o.warmup, total = N + W;
     const int64_t period_ns = (int64_t)llround(o.period_us * 1000.0);
@@ -386,19 +433,19 @@ int main(int argc, char **argv) {
     volatile int *finished_h = nullptr;
     int *finished_d = nullptr;
     std::string exec_error;
-    constexpr int kChunk = 100;  // < 120 fire-and-forget launches per graph execution
     if (o.mode == "gpu") {
+        CK(cudaMalloc(&exec_pool_d, kChunk * sizeof(cudaGraphExec_t)));
+        CK(cudaMemcpyAsync(exec_pool_d, dev_exec.data(), kChunk * sizeof(cudaGraphExec_t), cudaMemcpyHostToDevice, s));
         CK(cudaMalloc(&G_d, total * sizeof(unsigned long long)));
         CK(cudaMalloc(&rec_d, total * sizeof(LsRec)));
         CK(cudaMalloc(&state_d, sizeof(ExecState)));
         CK(cudaHostAlloc((void **)&finished_h, 64, cudaHostAllocMapped));
         *finished_h = 0;
         CK(cudaHostGetDevicePointer((void **)&finished_d, (void *)finished_h, 0));
-        // the executive runs as a device-launchable graph (device graph launch is only allowed from kernels
-        // that are part of one) and tail-launches itself every kChunk slots; deadline_g is patched later
+        // Capture and upload before targets exist. The absolute deadline is supplied in state_d.
         cudaGraph_t eg;
         CK(cudaStreamBeginCapture(s, cudaStreamCaptureModeRelaxed));
-        launch_executive(s, dev_exec[0], dev_exec[1], G_d, (int)total, done_d, rec_d, state_d, kChunk, finished_d, ~0ull);
+        launch_executive(s, exec_pool_d, G_d, (int)total, done_d, rec_d, state_d, kChunk, finished_d);
         cudaError_t le = cudaGetLastError();
         cudaGraph_t eg_tmp = nullptr;
         cudaError_t ce = cudaStreamEndCapture(s, &eg_tmp);
@@ -406,7 +453,7 @@ int main(int argc, char **argv) {
         if (le != cudaSuccess || ce != cudaSuccess) {
             exec_error = std::string("executive launch/capture: ") + cudaGetErrorString(le != cudaSuccess ? le : ce);
         } else {
-            cudaError_t e = cudaGraphInstantiateWithFlags(&exec_graph_exec, eg, cudaGraphInstantiateFlagDeviceLaunch);
+            cudaError_t e = cudaGraphInstantiateWithFlags(&exec_graph_exec, eg, cudaGraphInstantiateFlagDeviceLaunch | inst_flags);
             if (e != cudaSuccess) exec_error = std::string("executive instantiate: ") + cudaGetErrorString(e);
         }
         if (!exec_error.empty()) {
@@ -416,16 +463,15 @@ int main(int argc, char **argv) {
                 .add("mps_control_present", mps_control_present).add("slot_variant", slot_variant);
             write_json_and_exit(o.out, j, 1);
         }
+        CK(cudaGraphDestroy(eg));
+        CK(cudaGraphUpload(exec_graph_exec, s));
+        CK(cudaStreamSynchronize(s));
     }
-
-    // ---- real-time setup for the host thread ----
-    bool mlock_ok = lock_memory();
-    bool pin_ok = pin_thread(o.core);
-    bool fifo_ok = set_fifo(o.fifo);
-    prctl(PR_SET_TIMERSLACK, 1UL, 0, 0, 0);
 
     // in-process load, on another core when the driver is pinned
     std::atomic<bool> stop{false};
+    std::atomic<int> load_error{0};
+    std::atomic<unsigned long long> load_completed{0};
     std::thread load_th;
     float *big = nullptr;
     size_t bigN = (size_t)prop.multiProcessorCount * 2048 * 8;
@@ -434,34 +480,55 @@ int main(int argc, char **argv) {
         CK(cudaMemset(big, 0, bigN * sizeof(float)));
         int load_core = o.core >= 0 ? (o.core + 1) % (int)std::max(1u, std::thread::hardware_concurrency()) : -1;
         load_th = std::thread([&, load_core] {
+            cudaError_t e = cudaSetDevice(o.gpu);
+            if (e != cudaSuccess) { load_error = (int)e; return; }
             pin_thread(load_core);
             while (!stop) {
                 k_ai<<<(unsigned)(bigN / 256), 256, 0, s_load>>>(big, 20000);
-                cudaStreamSynchronize(s_load);
+                e = cudaGetLastError();
+                if (e == cudaSuccess) e = wait_stream(s_load, now_ns() + 5000000000LL);
+                if (e != cudaSuccess) { load_error = (int)e; return; }
+                load_completed++;
             }
         });
-        spin_until(now_ns() + 300000000LL);
+        const int64_t ready_limit = now_ns() + 10000000000LL;
+        while (load_completed < 3 && load_error == 0 && now_ns() < ready_limit)
+            sleep_until_raw(now_ns() + 1000000);
+        if (load_error != 0 || load_completed < 3) fail_run("in-process load failed to produce work");
     }
 
-    std::vector<Bracket> br = calibrate(s_cal, ctl_h, ctl_d, gt_h, gt_d, o.calib, o.calib_spread_s, cal_seq);
+    // Allocate host records before mlockall and before targets. Start the worker before setting
+    // FIFO/affinity so it does not inherit the timing thread's real-time scheduling policy.
+    std::vector<int64_t> T(total);
+    std::vector<unsigned long long> G(total);
+    std::vector<LsRec> rec(total);
+    bool mlock_ok = lock_memory();
+    bool pin_ok = pin_thread(o.core);
+    bool fifo_ok = set_fifo(o.fifo);
+    prctl(PR_SET_TIMERSLACK, 1UL, 0, 0, 0);
+
+    std::vector<Bracket> br = calibrate(s_cal, ctl_h, ctl_d, gt_h, gt_d, o.calib, o.calib_spread_s, cal_seq, exec_error);
+    if (!exec_error.empty()) fail_run(exec_error);
     ClockFit fit = fit_clock(br);
-    if (!fit.ok) { fprintf(stderr, "lockstep_driver: clock calibration failed\n"); return 3; }
+    if (!fit.ok || !std::isfinite(fit.a) || fit.a <= 0) fail_run("clock calibration failed");
 
     // targets
     const int64_t t_start = now_ns() + 100000000LL;  // 100 ms from now
-    std::vector<int64_t> T(total);
-    std::vector<unsigned long long> G(total);
     for (long k = 0; k < total; k++) {
         T[k] = t_start + k * period_ns;
         G[k] = fit.gpu_of(T[k]);
     }
-    std::vector<LsRec> rec(total);
     memset(rec.data(), 0, rec.size() * sizeof(LsRec));
-    for (long k = 0; k < total; k++) { rec[k].slot = (unsigned long long)k; rec[k].t_target = T[k]; }
+    for (long k = 0; k < total; k++) {
+        rec[k].slot = (unsigned long long)k; rec[k].t_target = T[k]; rec[k].g_target = G[k];
+    }
     ExecState stf{};
     stf.launched = -1;
+    stf.deadline_g = G.back() + 5000000000ull;
+    const auto load_before_run = load_completed.load();
     const std::string run_start_utc = iso_utc_now();
     const int64_t run_wall_start = realtime_ns();
+    if (now_ns() >= t_start) fail_run("host preparation overran first target; reduce slots or load");
 
     if (o.mode == "cpu") {
         unsigned long long seq = seq_base;
@@ -469,10 +536,10 @@ int main(int argc, char **argv) {
         long k = 0;
         while (k < total) {
             if (launched >= 0) {
-                while (st->end_seq != seq) {
+                while (*slot_finished_h != seq) {
                     if (k < total && now_ns() >= T[k]) { rec[k].g_target = G[k]; rec[k].flags = 1ull; stf.n_skipped++; k++; if (k >= total) break; }
                 }
-                if (st->end_seq == seq) {
+                if (*slot_finished_h == seq) {
                     std::atomic_thread_fence(std::memory_order_acquire);
                     rec[launched].g0 = st->start_t;
                     rec[launched].g1 = st->end_t;
@@ -496,41 +563,35 @@ int main(int argc, char **argv) {
         }
         if (launched >= 0) {
             int64_t lim = now_ns() + 5000000000LL;
-            while (st->end_seq != seq && now_ns() < lim) {}
-            if (st->end_seq == seq) {
+            while (*slot_finished_h != seq && now_ns() < lim) {}
+            if (*slot_finished_h == seq) {
                 std::atomic_thread_fence(std::memory_order_acquire);
                 rec[launched].g0 = st->start_t;
                 rec[launched].g1 = st->end_t;
+            } else {
+                rec[launched].flags |= 8ull;
+                fail_run("CPU-launched slot did not complete before wall guard");
             }
         }
+        cudaError_t q = wait_stream(s, now_ns() + 5000000000LL);
+        if (q != cudaSuccess) fail_run(std::string("CPU slot stream did not finish: ") + cudaGetErrorString(q));
         stf.finished = 1;
     } else {
         CK(cudaMemcpyAsync(G_d, G.data(), total * sizeof(unsigned long long), cudaMemcpyHostToDevice, s));
         CK(cudaMemcpyAsync(rec_d, rec.data(), total * sizeof(LsRec), cudaMemcpyHostToDevice, s));
         CK(cudaMemcpyAsync(state_d, &stf, sizeof stf, cudaMemcpyHostToDevice, s));
-        // in-kernel deadline: 5 s after the last boundary
-        const unsigned long long deadline_g = G[total - 1] + 5000000000ull;
-        {
-            // re-capture with the real deadline (simpler than patching kernel node params)
-            cudaGraph_t eg2;
-            CK(cudaGraphExecDestroy(exec_graph_exec));
-            CK(cudaStreamBeginCapture(s, cudaStreamCaptureModeRelaxed));
-            launch_executive(s, dev_exec[0], dev_exec[1], G_d, (int)total, done_d, rec_d, state_d, kChunk, finished_d, deadline_g);
-            CK(cudaGetLastError());
-            CK(cudaStreamEndCapture(s, &eg2));
-            CK(cudaGraphInstantiateWithFlags(&exec_graph_exec, eg2, cudaGraphInstantiateFlagDeviceLaunch));
-            CK(cudaGraphDestroy(eg2));
-        }
-        CK(cudaGraphUpload(exec_graph_exec, s));
-        CK(cudaStreamSynchronize(s));
+        cudaError_t uploaded = wait_stream(s, now_ns() + 5000000000LL);
+        if (uploaded != cudaSuccess) fail_run("executive input upload did not finish");
+        if (now_ns() >= t_start) fail_run("executive setup overran first target; reduce slots or load");
         CK(cudaGraphLaunch(exec_graph_exec, s));
         // the finished flag covers the whole tail-launched chain; the stream query is a second check
         int64_t lim = now_ns() + (int64_t)((double)total * period_ns * 3) + 15000000000LL;
         while (*finished_h == 0) {
             if (now_ns() > lim) { exec_error = "executive did not finish (wall guard)"; break; }
             cudaError_t q = cudaStreamQuery(s);
-            if (q != cudaSuccess && q != cudaErrorNotReady) { exec_error = std::string("executive: ") + cudaGetErrorString(q); break; }
-            spin_until(now_ns() + 100000);
+            if (q != cudaSuccess && q != cudaErrorNotReady) fail_run(std::string("executive: ") + cudaGetErrorString(q));
+            if (q == cudaSuccess && *finished_h == 0) fail_run("executive stream ended without completion flag");
+            sleep_until_raw(now_ns() + 100000);
         }
         if (exec_error.empty() && *finished_h == 2) exec_error = "executive tail relaunch failed";
         if (exec_error.empty() && *finished_h == 3) exec_error = "executive in-kernel timeout (a slot never completed)";
@@ -540,33 +601,39 @@ int main(int argc, char **argv) {
                 .add("slot_variant", slot_variant);
             write_json_and_exit(o.out, j, 1);
         }
-        int64_t lim2 = now_ns() + 10000000000LL;
-        cudaError_t q;
-        while ((q = cudaStreamQuery(s)) == cudaErrorNotReady && now_ns() < lim2) spin_until(now_ns() + 100000);
-        if (q != cudaSuccess && exec_error.empty()) exec_error = std::string("executive stream: ") + cudaGetErrorString(q);
+        cudaError_t q = wait_stream(s, now_ns() + 10000000000LL);
+        if (q != cudaSuccess) fail_run(std::string("executive stream did not finish: ") + cudaGetErrorString(q));
         CK(cudaMemcpy(&stf, state_d, sizeof stf, cudaMemcpyDeviceToHost));
         CK(cudaMemcpy(rec.data(), rec_d, total * sizeof(LsRec), cudaMemcpyDeviceToHost));
         if (exec_error.empty() && stf.n_tail_err) exec_error = "executive tail relaunch error";
     }
     const std::string run_end_utc = iso_utc_now();
     const int64_t run_wall_end = realtime_ns();
+    const auto load_during_run = load_completed.load() - load_before_run;
 
-    std::vector<Bracket> br2 = calibrate(s_cal, ctl_h, ctl_d, gt_h, gt_d, std::max(2000, o.calib / 4), o.calib_spread_s, cal_seq);
+    std::string calibration_error;
+    std::vector<Bracket> br2 = calibrate(s_cal, ctl_h, ctl_d, gt_h, gt_d, std::max(2000, o.calib / 4), o.calib_spread_s, cal_seq, calibration_error);
+    if (!calibration_error.empty()) fail_run(calibration_error);
     ClockFit fit2 = fit_clock(br2);
     TwoPoint tp = two_point(fit, fit2);
     stop = true;
     if (load_th.joinable()) load_th.join();
+    if (load_error != 0) fail_run(std::string("in-process load did not finish: ")
+                                + cudaGetErrorString((cudaError_t)load_error.load()));
+    if (!tp.ok && exec_error.empty()) exec_error = "post-run clock mapping failed";
+    if (o.load == "stream" && load_during_run == 0)
+        exec_error = "in-process load failed or completed no work during measurement";
 
     // ---- summarise recorded slots (after warm-up) ----
     std::vector<double> start_err, launch_prec, target_pred, launch_err, launch_call, launch_to_start, exec_us, lat_target, first_gen;
     long recorded = 0, misses = 0, skipped = 0, errors = 0, timeouts = 0;
     const double deadline_ns = o.deadline_us * 1000.0;
     for (long k = W; k < total; k++) {
-        const LsRec &r = rec[k];
+        LsRec &r = rec[k];
         if (r.flags & 1ull) { skipped++; misses++; continue; }
         if (r.flags & 2ull) { errors++; misses++; continue; }
         if (r.flags & 8ull) { timeouts++; misses++; continue; }
-        if (!r.g0 || !r.g1) continue;
+        if (!r.g0 || !r.g1) { r.flags |= 8ull; timeouts++; misses++; continue; }
         recorded++;
         const unsigned long long g_true = tp.ok ? tp.gpu_of(r.t_target) : r.g_target;
         double se = dus(r.g0, g_true);
@@ -583,11 +650,15 @@ int main(int argc, char **argv) {
         if (lt * 1000.0 > deadline_ns) misses++;
     }
     long total_slots = recorded + skipped + errors + timeouts;
-    bool ok = exec_error.empty() && errors == 0 && recorded > 0 && timeouts == 0;
+    bool ok = exec_error.empty() && errors == 0 && stf.n_err == 0 && recorded > 0 && timeouts == 0
+        && tp.ok && total_slots == N && stf.finished == 1;
 
     if (!o.raw.empty()) {
         FILE *f = fopen(o.raw.c_str(), "wb");
-        if (f) { fwrite(rec.data() + W, sizeof(LsRec), (size_t)N, f); fclose(f); }
+        if (!f) { perror("raw"); return 2; }
+        bool written = fwrite(rec.data() + W, sizeof(LsRec), (size_t)N, f) == (size_t)N;
+        if (fclose(f) != 0) written = false;
+        if (!written) { fprintf(stderr, "lockstep_driver: raw write failed\n"); return 2; }
     }
     Json j;
     j.add("ok", ok).add("error", exec_error).add("mode", o.mode).add("load", o.load).add("label", o.label)
@@ -596,7 +667,9 @@ int main(int argc, char **argv) {
         .add("slots", (long long)N).add("warmup", (long long)W).add("period_us", o.period_us).add("deadline_us", o.deadline_us)
         .add("spin_us", o.spin_us).add("stream_priority", prio).add("instantiate_use_node_priority", true)
         .add("graph_nodes", (long long)n_nodes).add_raw("graph_node_types", node_types).add("slot_variant", slot_variant)
-        .add_raw("phy", pipe_p->config().json())
+        .add_raw("phy", pipe.config().json())
+        .add("inproc_completed_during_run", load_during_run).add("inproc_error", load_error.load())
+        .add("executive_pool_size", o.mode == "gpu" ? kChunk : 0)
         .add("core", o.core).add("pin_ok", pin_ok).add("fifo", o.fifo).add("fifo_ok", fifo_ok).add("mlock_ok", mlock_ok)
         .add("mps_pipe_env", mps_pipe ? mps_pipe : "").add("mps_control_present", mps_control_present)
         .add("run_start_utc", run_start_utc).add("run_end_utc", run_end_utc)
