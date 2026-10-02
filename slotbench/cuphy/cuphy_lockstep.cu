@@ -36,6 +36,14 @@ struct Options {
     std::string mode, out, raw, label;
     int slots = 1000, warmup = 100;
     double period_us = 500, deadline_us = 500;
+    bool cpu_keepalive = false;
+};
+
+constexpr unsigned executive_threads = 1;
+constexpr U64 keepalive_stop_poll_ns = 100000ull;
+struct alignas(64) KeepAliveState {
+    U64 start = 0, end = 0;
+    unsigned stop = 0, reason = 0; // 1: host stop, 2: finite watchdog expired.
 };
 
 std::string env_string(const char* name, const char* fallback = "") {
@@ -79,6 +87,87 @@ __device__ __forceinline__ U64 timer_ns() {
     asm volatile("mov.u64 %0, %%globaltimer;" : "=l"(t) :: "memory");
     return t;
 }
+
+// Activity/residency control only: it performs no PHY launches or stamp writes.
+// Poll mapped host memory sparsely; the GPU timer deadline is an independent bound.
+__global__ void cpu_keepalive(volatile KeepAliveState* state, U64 deadline) {
+    const U64 start = timer_ns();
+    state->start = start;
+    __threadfence_system();
+    U64 next_poll = start;
+    unsigned reason = 2;
+    for (;;) {
+        const U64 now = timer_ns();
+        if (now >= deadline) break;
+        if (now >= next_poll) {
+            if (state->stop) { reason = 1; break; }
+            next_poll = now + keepalive_stop_poll_ns;
+        }
+    }
+    state->end = timer_ns();
+    state->reason = reason;
+    __threadfence_system();
+}
+
+struct KeepAlive {
+    volatile KeepAliveState* host = nullptr;
+    KeepAliveState* device = nullptr;
+    cudaStream_t stream = nullptr;
+    int priority = 0;
+    U64 deadline = 0, first_target = 0, first_phy_start = 0, last_phy_end = 0;
+    bool requested = false, covers_replay = false;
+
+    void prepare(int requested_priority) {
+        requested = true;
+        SB_CUDA(cudaHostAlloc((void**)&host, sizeof(KeepAliveState), cudaHostAllocMapped));
+        std::memset((void*)host, 0, sizeof(KeepAliveState));
+        SB_CUDA(cudaHostGetDevicePointer((void**)&device, (void*)host, 0));
+        SB_CUDA(cudaStreamCreateWithPriority(&stream, cudaStreamNonBlocking, requested_priority));
+        SB_CUDA(cudaStreamGetPriority(stream, &priority));
+        if (priority != requested_priority) throw std::runtime_error("keepalive stream priority mismatch");
+    }
+
+    void start(U64 first, U64 limit, int64_t host_first_target) {
+        first_target = first;
+        deadline = limit;
+        __sync_synchronize();
+        cpu_keepalive<<<1, executive_threads, 0, stream>>>(device, deadline);
+        SB_CUDA(cudaGetLastError());
+        while (!host->start && now_ns() < host_first_target) cpu_relax();
+        if (!host->start || host->start > first_target)
+            throw std::runtime_error("keepalive did not start before the first target");
+    }
+
+    void stop(const std::vector<Record>& records) {
+        host->stop = 1;
+        __sync_synchronize();
+        SB_CUDA(wait_stream(stream, now_ns() + 5000000000LL));
+        for (const auto& record : records) {
+            if (!record.g0 || !record.g1) continue;
+            if (!first_phy_start || record.g0 < first_phy_start) first_phy_start = record.g0;
+            if (record.g1 > last_phy_end) last_phy_end = record.g1;
+        }
+        covers_replay = host->start && host->start <= first_target && last_phy_end
+            && host->end >= last_phy_end;
+        if (host->reason != 1 || !covers_replay)
+            throw std::runtime_error("keepalive watchdog expired or replay coverage incomplete");
+    }
+
+    std::string json() const {
+        const U64 start = host ? host->start : 0, end = host ? host->end : 0;
+        const unsigned reason = host ? host->reason : 0;
+        Json j;
+        j.add("requested", requested).add("blocks", requested ? 1 : 0)
+            .add("threads_per_block", requested ? static_cast<int>(executive_threads) : 0)
+            .add("stream_priority", priority).add("stream_nonblocking", requested)
+            .add("start_gpu_ns", start).add("end_gpu_ns", end)
+            .add("watchdog_deadline_gpu_ns", deadline).add("stop_poll_interval_ns", keepalive_stop_poll_ns)
+            .add("first_target_gpu_ns", first_target).add("first_phy_start_gpu_ns", first_phy_start)
+            .add("last_phy_end_gpu_ns", last_phy_end).add("covers_replay", covers_replay)
+            .add("stop_reason", reason == 1 ? "host_stop" : reason == 2 ? "watchdog" : "inactive");
+        return j.str();
+    }
+};
 
 constexpr unsigned stop_sequence = 0xFFFFFFFEu;
 __global__ void pingpong(volatile unsigned* control, U64* times, int count, unsigned base) {
@@ -236,8 +325,12 @@ int sb_cuphy_lockstep_run(cudaGraphExec_t graph, cudaStream_t stream,
     o.raw = env_string("SB_CUPHY_LOCKSTEP_RAW", "cuphy_lockstep.bin");
     o.label = env_string("SB_CUPHY_LOCKSTEP_LABEL");
     bool before_ok = false, after_ok = false;
+    KeepAlive keepalive;
     try {
         if (o.mode != "cpu" && o.mode != "gpu") throw std::runtime_error("mode must be cpu or gpu");
+        o.cpu_keepalive = env_number("SB_CUPHY_LOCKSTEP_CPU_KEEPALIVE", 0, 0, 1, true) == 1;
+        keepalive.requested = o.cpu_keepalive;
+        if (o.cpu_keepalive && o.mode != "cpu") throw std::runtime_error("CPU keepalive requires cpu mode");
         o.slots = static_cast<int>(env_number("SB_CUPHY_LOCKSTEP_SLOTS", 1000, 1, 1000000, true));
         o.warmup = static_cast<int>(env_number("SB_CUPHY_LOCKSTEP_WARMUP", 100, 0, 100000, true));
         o.period_us = env_number("SB_CUPHY_LOCKSTEP_PERIOD_US", 500, 1, 1000000);
@@ -256,6 +349,7 @@ int sb_cuphy_lockstep_run(cudaGraphExec_t graph, cudaStream_t stream,
         SB_CUDA(cudaGetDevice(&device));
         SB_CUDA(cudaGetDeviceProperties(&properties, device));
         SB_CUDA(cudaStreamGetPriority(stream, &priority));
+        if (o.cpu_keepalive) keepalive.prepare(priority);
         SB_CUDA(cudaDriverGetVersion(&driver));
         SB_CUDA(cudaRuntimeGetVersion(&runtime));
         U64 *tick_d = nullptr, tick = 0;
@@ -283,7 +377,7 @@ int sb_cuphy_lockstep_run(cudaGraphExec_t graph, cudaStream_t stream,
             *finished_h = 0;
             SB_CUDA(cudaHostGetDevicePointer((void**)&finished_d, (void*)finished_h, 0));
             SB_CUDA(cudaStreamBeginCapture(stream, cudaStreamCaptureModeRelaxed));
-            executive<<<1, 1, 0, stream>>>(graph, targets_d, count, records_d, state_d, stamps_d, finished_d);
+            executive<<<1, executive_threads, 0, stream>>>(graph, targets_d, count, records_d, state_d, stamps_d, finished_d);
             SB_CUDA(cudaGetLastError());
             SB_CUDA(cudaStreamEndCapture(stream, &executive_graph));
             SB_CUDA(cudaGraphInstantiateWithFlags(&executive_exec, executive_graph,
@@ -303,6 +397,7 @@ int sb_cuphy_lockstep_run(cudaGraphExec_t graph, cudaStream_t stream,
         ExecutiveState state;
         state.sequence = stamps_h->sequence;
         state.deadline = targets.back() + 5000000000ull;
+        if (o.cpu_keepalive) keepalive.start(targets.front(), state.deadline, first_target);
         const std::string start_utc = iso_utc_now();
         const int64_t start_wall = realtime_ns();
         if (now_ns() >= first_target) throw std::runtime_error("preparation overran first target");
@@ -345,6 +440,7 @@ int sb_cuphy_lockstep_run(cudaGraphExec_t graph, cudaStream_t stream,
         }
         const std::string end_utc = iso_utc_now();
         const int64_t end_wall = realtime_ns();
+        if (o.cpu_keepalive) keepalive.stop(records);
         ClockFit post = calibration.fit(stream, 13);
         after_ok = validate(validation_context) == 0;
         SB_CUDA(wait_stream(stream, now_ns() + 5000000000LL));
@@ -381,6 +477,8 @@ int sb_cuphy_lockstep_run(cudaGraphExec_t graph, cudaStream_t stream,
         if (!raw_ok) throw std::runtime_error("raw output write failed");
         Json result;
         result.add("ok", ok).add("mode", o.mode).add("label", o.label).add("load", "external")
+            .add("keepalive_active", o.cpu_keepalive && keepalive.host && keepalive.host->start != 0)
+            .add_raw("keepalive", keepalive.json())
             .add("error", ok ? "" : "correctness, launch, or record validation failed")
             .add("correctness_before", before_ok).add("correctness_after", after_ok)
             .add("implementation", "NVIDIA Aerial cuPHY PUSCH fixed-vector full-slot replay")
@@ -407,6 +505,8 @@ int sb_cuphy_lockstep_run(cudaGraphExec_t graph, cudaStream_t stream,
     } catch (const std::exception& error) {
         Json failure;
         failure.add("ok", false).add("mode", o.mode).add("label", o.label).add("error", error.what())
+            .add("keepalive_active", o.cpu_keepalive && keepalive.host && keepalive.host->start != 0)
+            .add_raw("keepalive", keepalive.json())
             .add("correctness_before", before_ok).add("correctness_after", after_ok)
             .add("slot_variant", "nvidia_cuphy_full_slot");
         write_json(o.out, failure);

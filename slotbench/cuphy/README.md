@@ -39,6 +39,7 @@ done
 | `SB_CUPHY_LOCKSTEP_OUT` | `cuphy_lockstep.json` | Summary path. |
 | `SB_CUPHY_LOCKSTEP_RAW` | `cuphy_lockstep.bin` | Binary record path. |
 | `SB_CUPHY_LOCKSTEP_LABEL` | Empty | Optional label. |
+| `SB_CUPHY_LOCKSTEP_CPU_KEEPALIVE` | `0` | CPU-only activity/residency control; `1` keeps one GPU block active during replay. |
 
 The bootstrap also runs SGEMM contention in separate processes and under MPS, records source/vector hashes, and applies timeouts. Its `*.run.json` metadata identifies workload and isolation; the helper's `load: external` field alone does not.
 
@@ -51,6 +52,8 @@ An ordinary setup/decode prepares the graph and baseline. Replay freezes input, 
 Payload comparisons and TB/CB CRC checks occur before and after the series. **Intermediate outputs are not checked.** Timing excludes setup, output copies, and calibration. The experiment does not model real symbol ingress, changing descriptors, HARQ progression, or production output delivery.
 
 `ok: true` means correctness and execution/accounting checks passed; it does not mean every deadline was met. Skipped boundaries and recorded completions after the deadline both count as misses. Inspect `miss_rate`, `recorded`, `skipped`, and timing distributions together.
+
+The optional CPU keep-alive control leaves host graph submission unchanged. A separate nonblocking stream runs one block with one thread at the executive's stream priority, from before the first warmup target until after the final PHY completion. It polls a mapped host stop flag every 100 microseconds and has an independent finite GPU-timer watchdog. The kernel must stop normally and cover the replay; otherwise the case fails. It retires before post-calibration. JSON records `keepalive_active`, actual priority, GPU start/end timestamps, coverage stamps, and stop reason. This is an imperfect activity/residency control: it reserves GPU resources and creates some mapped-memory traffic, and cannot guarantee a particular clock. Its volatile mapped-memory communication is an experimental platform protocol, as in calibration, rather than portable C++ atomic synchronization. Ordinary CPU/GPU modes leave it disabled.
 
 ## Raw records
 
