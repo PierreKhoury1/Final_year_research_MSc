@@ -1,0 +1,433 @@
+{
+  "schema_version": 1,
+  "timestamp_utc": "2026-10-02T19:53:43.795226+00:00",
+  "hostname": "9437023627e4",
+  "kernel": "6.17.0-22-generic",
+  "uid": 0,
+  "gpu_index_requested": 0,
+  "gpu_identity": {
+    "index": "0",
+    "uuid": "GPU-268644bb-5aaf-7d44-3eb2-ea796a695aa1",
+    "name": "NVIDIA A100-SXM4-40GB",
+    "pci.bus_id": "00000000:01:00.0",
+    "driver_version": "595.58.03"
+  },
+  "gpu_identity_verified": true,
+  "cuda_visible_devices": null,
+  "gpu_numa_node": 0,
+  "gpu_locality_source": "/sys/bus/pci/devices/0000:01:00.0/local_cpulist",
+  "gpu_local_cpus": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15
+  ],
+  "allowed_cpus": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15
+  ],
+  "gpu_local_allowed_cpus": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15
+  ],
+  "cpu_topology": [
+    {
+      "cpu": 0,
+      "package": 0,
+      "die": 0,
+      "core": 0,
+      "thread_siblings": [
+        0,
+        8
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "powersave",
+      "current_khz": 3021308
+    },
+    {
+      "cpu": 1,
+      "package": 0,
+      "die": 0,
+      "core": 1,
+      "thread_siblings": [
+        1,
+        9
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "powersave",
+      "current_khz": 4294454
+    },
+    {
+      "cpu": 2,
+      "package": 0,
+      "die": 0,
+      "core": 2,
+      "thread_siblings": [
+        2,
+        10
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "powersave",
+      "current_khz": 3021308
+    },
+    {
+      "cpu": 3,
+      "package": 0,
+      "die": 0,
+      "core": 3,
+      "thread_siblings": [
+        3,
+        11
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "powersave",
+      "current_khz": 4338775
+    },
+    {
+      "cpu": 4,
+      "package": 0,
+      "die": 0,
+      "core": 4,
+      "thread_siblings": [
+        4,
+        12
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "powersave",
+      "current_khz": 3511840
+    },
+    {
+      "cpu": 5,
+      "package": 0,
+      "die": 0,
+      "core": 5,
+      "thread_siblings": [
+        5,
+        13
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "powersave",
+      "current_khz": 3021308
+    },
+    {
+      "cpu": 6,
+      "package": 0,
+      "die": 0,
+      "core": 6,
+      "thread_siblings": [
+        6,
+        14
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "powersave",
+      "current_khz": 4296715
+    },
+    {
+      "cpu": 7,
+      "package": 0,
+      "die": 0,
+      "core": 7,
+      "thread_siblings": [
+        7,
+        15
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "powersave",
+      "current_khz": 4346306
+    },
+    {
+      "cpu": 8,
+      "package": 0,
+      "die": 0,
+      "core": 0,
+      "thread_siblings": [
+        0,
+        8
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "powersave",
+      "current_khz": 4341191
+    },
+    {
+      "cpu": 9,
+      "package": 0,
+      "die": 0,
+      "core": 1,
+      "thread_siblings": [
+        1,
+        9
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "powersave",
+      "current_khz": 3021308
+    },
+    {
+      "cpu": 10,
+      "package": 0,
+      "die": 0,
+      "core": 2,
+      "thread_siblings": [
+        2,
+        10
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "powersave",
+      "current_khz": 4332811
+    },
+    {
+      "cpu": 11,
+      "package": 0,
+      "die": 0,
+      "core": 3,
+      "thread_siblings": [
+        3,
+        11
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "powersave",
+      "current_khz": 4265026
+    },
+    {
+      "cpu": 12,
+      "package": 0,
+      "die": 0,
+      "core": 4,
+      "thread_siblings": [
+        4,
+        12
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "powersave",
+      "current_khz": 3021308
+    },
+    {
+      "cpu": 13,
+      "package": 0,
+      "die": 0,
+      "core": 5,
+      "thread_siblings": [
+        5,
+        13
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "powersave",
+      "current_khz": 3021308
+    },
+    {
+      "cpu": 14,
+      "package": 0,
+      "die": 0,
+      "core": 6,
+      "thread_siblings": [
+        6,
+        14
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "powersave",
+      "current_khz": 3662140
+    },
+    {
+      "cpu": 15,
+      "package": 0,
+      "die": 0,
+      "core": 7,
+      "thread_siblings": [
+        7,
+        15
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "powersave",
+      "current_khz": 3021308
+    }
+  ],
+  "recommended": {
+    "SB_CUPHY_CPU": 1,
+    "SB_ADVERSARY_CPU": 2,
+    "SB_TELEMETRY_CPU": 3,
+    "SB_BACKGROUND_CPUS": "0,2,3,4,5,6,7,8,10,11,12,13,14,15"
+  },
+  "distinct_physical_cores": true,
+  "probe_thread": {
+    "tid": 9894,
+    "policy": "SCHED_OTHER",
+    "policy_number": 0,
+    "priority": 0,
+    "affinity": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15
+    ],
+    "comm": "python3"
+  },
+  "capability_effective_hex": "a80405fb",
+  "capabilities": {
+    "CAP_SYS_ADMIN": false,
+    "CAP_SYS_NICE": false,
+    "CAP_IPC_LOCK": false
+  },
+  "resource_limits": {
+    "RLIMIT_RTPRIO": [
+      0,
+      0
+    ],
+    "RLIMIT_RTTIME": [
+      -1,
+      -1
+    ],
+    "RLIMIT_MEMLOCK": [
+      8388608,
+      8388608
+    ]
+  },
+  "realtime_permission_tested": false,
+  "gpu_clock_changes_tested": false,
+  "kernel_scheduler": {
+    "sched_rt_period_us": "1000000",
+    "sched_rt_runtime_us": "950000",
+    "sched_rr_timeslice_ms": "100"
+  },
+  "cgroup_membership": "14:rdma:/docker/9437023627e464b7398a1687bb829a27adb59f700707382eac18aa2e56c45cfe\n13:cpuset:/docker/9437023627e464b7398a1687bb829a27adb59f700707382eac18aa2e56c45cfe\n12:net_cls,net_prio:/docker/9437023627e464b7398a1687bb829a27adb59f700707382eac18aa2e56c45cfe\n11:blkio:/docker/9437023627e464b7398a1687bb829a27adb59f700707382eac18aa2e56c45cfe\n10:misc:/docker/9437023627e464b7398a1687bb829a27adb59f700707382eac18aa2e56c45cfe\n9:hugetlb:/docker/9437023627e464b7398a1687bb829a27adb59f700707382eac18aa2e56c45cfe\n8:perf_event:/docker/9437023627e464b7398a1687bb829a27adb59f700707382eac18aa2e56c45cfe\n7:dmem:/\n6:pids:/docker/9437023627e464b7398a1687bb829a27adb59f700707382eac18aa2e56c45cfe\n5:memory:/docker/9437023627e464b7398a1687bb829a27adb59f700707382eac18aa2e56c45cfe\n4:cpu,cpuacct:/docker/9437023627e464b7398a1687bb829a27adb59f700707382eac18aa2e56c45cfe\n3:freezer:/docker/9437023627e464b7398a1687bb829a27adb59f700707382eac18aa2e56c45cfe\n2:devices:/docker/9437023627e464b7398a1687bb829a27adb59f700707382eac18aa2e56c45cfe\n1:name=systemd:/docker/9437023627e464b7398a1687bb829a27adb59f700707382eac18aa2e56c45cfe\n0::/docker/9437023627e464b7398a1687bb829a27adb59f700707382eac18aa2e56c45cfe",
+  "cgroup_cpu": {
+    "cpu.max": null,
+    "cpu.stat": null,
+    "cpuset.cpus.effective": null,
+    "cpuset.mems.effective": null
+  },
+  "target_pid": null,
+  "target_threads": [],
+  "commands": {
+    "gpu_identity.csv": {
+      "argv": [
+        "nvidia-smi",
+        "-i",
+        "0",
+        "--query-gpu=index,uuid,name,pci.bus_id,driver_version",
+        "--format=csv"
+      ],
+      "returncode": 0
+    },
+    "gpu_supported_clocks.csv": {
+      "argv": [
+        "nvidia-smi",
+        "-i",
+        "0",
+        "--query-supported-clocks=memory,graphics",
+        "--format=csv"
+      ],
+      "returncode": 0
+    },
+    "gpu_clock_power_state.txt": {
+      "argv": [
+        "nvidia-smi",
+        "-i",
+        "0",
+        "-q",
+        "-d",
+        "CLOCK,POWER,PERFORMANCE,TEMPERATURE"
+      ],
+      "returncode": 0
+    },
+    "gpu_topology.txt": {
+      "argv": [
+        "nvidia-smi",
+        "topo",
+        "-m"
+      ],
+      "returncode": 0
+    },
+    "gpu_nearest_numa.txt": {
+      "argv": [
+        "nvidia-smi",
+        "topo",
+        "-C",
+        "-i",
+        "0"
+      ],
+      "returncode": 0
+    },
+    "gpu_query_fields.txt": {
+      "argv": [
+        "nvidia-smi",
+        "--help-query-gpu"
+      ],
+      "returncode": 0
+    },
+    "lscpu.json": {
+      "argv": [
+        "lscpu",
+        "--json"
+      ],
+      "returncode": 0
+    }
+  },
+  "warnings": []
+}

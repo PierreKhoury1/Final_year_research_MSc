@@ -1,0 +1,154 @@
+
+==============NVSMI LOG==============
+
+Timestamp                                              : Fri Oct  2 19:50:30 2026
+Driver Version                                         : 595.58.03
+CUDA Version                                           : 13.3
+
+Attached GPUs                                          : 1
+GPU 00000000:01:00.0
+    GPU Power Readings
+        Average Power Draw                             : N/A
+        Instantaneous Power Draw                       : 52.02 W
+        Current Power Limit                            : 300.00 W
+        Requested Power Limit                          : 300.00 W
+        Default Power Limit                            : 400.00 W
+        Min Power Limit                                : 100.00 W
+        Max Power Limit                                : 400.00 W
+    Power Samples
+        Duration                                       : 2.37 sec
+        Number of Samples                              : 119
+        Max                                            : 52.86 W
+        Min                                            : 52.02 W
+        Avg                                            : 52.08 W
+    GPU Memory Power Readings 
+        Average Power Draw                             : N/A
+        Instantaneous Power Draw                       : N/A
+    Module Power Readings
+        Average Power Draw                             : N/A
+        Instantaneous Power Draw                       : N/A
+        Current Power Limit                            : N/A
+        Requested Power Limit                          : N/A
+        Default Power Limit                            : N/A
+        Min Power Limit                                : N/A
+        Max Power Limit                                : N/A
+    EDPp Multiplier                                    : N/A
+    Clocks
+        Graphics                                       : 210 MHz
+        SM                                             : 210 MHz
+        Memory                                         : 1215 MHz
+        Video                                          : 585 MHz
+    Applications Clocks
+        Graphics                                       : Requested functionality has been deprecated
+        Memory                                         : Requested functionality has been deprecated
+    Default Applications Clocks
+        Graphics                                       : Requested functionality has been deprecated
+        Memory                                         : Requested functionality has been deprecated
+    Deferred Clocks
+        Memory                                         : N/A
+    Max Clocks
+        Graphics                                       : 1410 MHz
+        SM                                             : 1410 MHz
+        Memory                                         : 1215 MHz
+        Video                                          : 1290 MHz
+    Max Customer Boost Clocks
+        Graphics                                       : 1410 MHz
+    SM Clock Samples
+        Duration                                       : Not Found
+        Number of Samples                              : Not Found
+        Max                                            : Not Found
+        Min                                            : Not Found
+        Avg                                            : Not Found
+    Memory Clock Samples
+        Duration                                       : Not Found
+        Number of Samples                              : Not Found
+        Max                                            : Not Found
+        Min                                            : Not Found
+        Avg                                            : Not Found
+    Clock Policy
+        Auto Boost                                     : N/A
+        Auto Boost Default                             : N/A
+    Supported Clocks
+        Memory                                         : 1215 MHz
+            Graphics                                   : 1410 MHz
+            Graphics                                   : 1395 MHz
+            Graphics                                   : 1380 MHz
+            Graphics                                   : 1365 MHz
+            Graphics                                   : 1350 MHz
+            Graphics                                   : 1335 MHz
+            Graphics                                   : 1320 MHz
+            Graphics                                   : 1305 MHz
+            Graphics                                   : 1290 MHz
+            Graphics                                   : 1275 MHz
+            Graphics                                   : 1260 MHz
+            Graphics                                   : 1245 MHz
+            Graphics                                   : 1230 MHz
+            Graphics                                   : 1215 MHz
+            Graphics                                   : 1200 MHz
+            Graphics                                   : 1185 MHz
+            Graphics                                   : 1170 MHz
+            Graphics                                   : 1155 MHz
+            Graphics                                   : 1140 MHz
+            Graphics                                   : 1125 MHz
+            Graphics                                   : 1110 MHz
+            Graphics                                   : 1095 MHz
+            Graphics                                   : 1080 MHz
+            Graphics                                   : 1065 MHz
+            Graphics                                   : 1050 MHz
+            Graphics                                   : 1035 MHz
+            Graphics                                   : 1020 MHz
+            Graphics                                   : 1005 MHz
+            Graphics                                   : 990 MHz
+            Graphics                                   : 975 MHz
+            Graphics                                   : 960 MHz
+            Graphics                                   : 945 MHz
+            Graphics                                   : 930 MHz
+            Graphics                                   : 915 MHz
+            Graphics                                   : 900 MHz
+            Graphics                                   : 885 MHz
+            Graphics                                   : 870 MHz
+            Graphics                                   : 855 MHz
+            Graphics                                   : 840 MHz
+            Graphics                                   : 825 MHz
+            Graphics                                   : 810 MHz
+            Graphics                                   : 795 MHz
+            Graphics                                   : 780 MHz
+            Graphics                                   : 765 MHz
+            Graphics                                   : 750 MHz
+            Graphics                                   : 735 MHz
+            Graphics                                   : 720 MHz
+            Graphics                                   : 705 MHz
+            Graphics                                   : 690 MHz
+            Graphics                                   : 675 MHz
+            Graphics                                   : 660 MHz
+            Graphics                                   : 645 MHz
+            Graphics                                   : 630 MHz
+            Graphics                                   : 615 MHz
+            Graphics                                   : 600 MHz
+            Graphics                                   : 585 MHz
+            Graphics                                   : 570 MHz
+            Graphics                                   : 555 MHz
+            Graphics                                   : 540 MHz
+            Graphics                                   : 525 MHz
+            Graphics                                   : 510 MHz
+            Graphics                                   : 495 MHz
+            Graphics                                   : 480 MHz
+            Graphics                                   : 465 MHz
+            Graphics                                   : 450 MHz
+            Graphics                                   : 435 MHz
+            Graphics                                   : 420 MHz
+            Graphics                                   : 405 MHz
+            Graphics                                   : 390 MHz
+            Graphics                                   : 375 MHz
+            Graphics                                   : 360 MHz
+            Graphics                                   : 345 MHz
+            Graphics                                   : 330 MHz
+            Graphics                                   : 315 MHz
+            Graphics                                   : 300 MHz
+            Graphics                                   : 285 MHz
+            Graphics                                   : 270 MHz
+            Graphics                                   : 255 MHz
+            Graphics                                   : 240 MHz
+            Graphics                                   : 225 MHz
+            Graphics                                   : 210 MHz
+

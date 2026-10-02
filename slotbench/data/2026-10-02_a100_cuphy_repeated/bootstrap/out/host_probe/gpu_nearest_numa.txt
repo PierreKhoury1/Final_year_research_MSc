@@ -1,0 +1,1 @@
+NUMA IDs of closest CPU: 0

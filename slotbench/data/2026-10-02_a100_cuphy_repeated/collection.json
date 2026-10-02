@@ -1,0 +1,22 @@
+{
+  "instance_id": 53909360,
+  "offer_id": 35931772,
+  "gpu": "A100 SXM4",
+  "dph_total": 0.5703703703703703,
+  "created_unix": 1790970437.197951,
+  "created_utc": "2026-10-02T19:47:17.197951+00:00",
+  "destroy_requested_utc": "2026-10-02T20:21:35Z",
+  "destroy_confirmed": true,
+  "verified_absent": true,
+  "credential_controllers_closed": true,
+  "estimated_usd_upper_bound": 0.3519535946831291,
+  "cost_note": "Hourly estimate through cleanup-record creation, excluding separate transfer charges; exact billing is external.",
+  "archives": {
+    "primary": "1187b356e2fb389af5b412f3b8e9a867ca0ced8d67fb4a6dbf3b14fe1ec76a4f",
+    "bootstrap": "090becfd3425886273a1bc715c0a965476e551709b99f0c227ab8d0c95a82bc5",
+    "activity_control": "f34b7ad1cae38a849c5338ca8b6cbc48d2984c720652f8ae4db405d9c97917bf",
+    "activity_setup": "f17b6b86bb8df4a3a3ba2b29c80a0b5ffd09be267540759b0922cfe33e83828e"
+  },
+  "estimated_usd_to_destroy_request": 0.32603036577564204,
+  "cleanup_recorded_utc": "2026-10-02T20:24:18.619341+00:00"
+}

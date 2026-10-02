@@ -3,9 +3,12 @@
 //
 // For each boundary k: wait until the previous slot has finished (boundaries that pass meanwhile are
 // skipped and counted), wait for g_target[k], launch the slot graph fire-and-forget and record the
-// times. CUDA allows 120 fire-and-forget launches per execution of a graph, so after `chunk` launches
+// times. CUDA allows 120 fire-and-forget launches per execution of a graph, so after `chunk` attempts
 // the executive saves its state and tail-launches itself; the tail launch starts once this execution
-// and its child slot are complete, i.e. in the idle part of the period.
+// and all its children are complete. Each attempt uses a distinct slot graph handle in that generation;
+// the final kernel's completion marker alone does not prove CUDA has finished with its graph handle.
+#include <cuda/atomic>
+
 #include "lockstep_common.h"
 
 namespace sb {
@@ -17,19 +20,21 @@ __device__ __forceinline__ unsigned long long gtimer() {
     return t;
 }
 
-__global__ void k_executive(cudaGraphExec_t e0, cudaGraphExec_t e1, const unsigned long long *g_target, int n,
-                            volatile unsigned long long *done, LsRec *rec, ExecState *state, int chunk,
-                            volatile int *finished_host, unsigned long long deadline_g) {
+__global__ void k_executive(const cudaGraphExec_t *exec_pool, const unsigned long long *g_target, int n,
+                            unsigned long long *done, LsRec *rec, ExecState *state, int chunk,
+                            volatile int *finished_host) {
     if (threadIdx.x != 0 || blockIdx.x != 0) return;
     ExecState st = *state;
-    if (st.chunks == 0) st.prev_done = done[0];
+    cuda::atomic_ref<unsigned long long, cuda::thread_scope_device> completion(done[0]);
+    if (st.chunks == 0) st.prev_done = completion.load(cuda::memory_order_acquire);
     st.chunks++;
     int fired = 0;
     bool timeout = false;
     while (st.k < n && !timeout) {
         // 1. the previous slot must be complete before anything else is launched
         if (st.launched >= 0) {
-            while (done[0] == st.prev_done) {
+            unsigned long long completed;
+            while ((completed = completion.load(cuda::memory_order_acquire)) == st.prev_done) {
                 unsigned long long now = gtimer();
                 if (st.k < n && now >= g_target[st.k]) {   // boundary passed while busy: skip it
                     rec[st.k].g_target = g_target[st.k];
@@ -38,11 +43,10 @@ __global__ void k_executive(cudaGraphExec_t e0, cudaGraphExec_t e1, const unsign
                     st.k++;
                     if (st.k >= n) break;
                 }
-                if (now > deadline_g) { timeout = true; break; }
+                if (now > st.deadline_g) { timeout = true; break; }
             }
-            if (done[0] != st.prev_done) {
-                __threadfence();   // acquire: k_done wrote the stamps before the flag
-                st.prev_done = done[0];
+            if (completed != st.prev_done) {
+                st.prev_done = completed;
                 rec[st.launched].g0 = done[1];
                 rec[st.launched].g1 = done[2];
                 st.launched = -1;
@@ -58,12 +62,13 @@ __global__ void k_executive(cudaGraphExec_t e0, cudaGraphExec_t e1, const unsign
         while (gtimer() < T) {}
         // 3. launch from the device
         unsigned long long tl = gtimer();
-        cudaError_t e = cudaGraphLaunch((st.n_launched & 1ull) ? e1 : e0, cudaStreamGraphFireAndForget);
+        cudaError_t e = cudaGraphLaunch(exec_pool[fired], cudaStreamGraphFireAndForget);
         unsigned long long tl2 = gtimer();
         rec[st.k].g_target = T;
         rec[st.k].g_launch = tl;
         rec[st.k].g_launch_done = tl2;
         if (fired == 0) rec[st.k].flags |= 4ull;
+        fired++;  // never reuse a handle within this generation, including after an error
         if (e != cudaSuccess) {
             rec[st.k].flags |= 2ull;
             if (!st.first_err) st.first_err = (int)e;
@@ -73,22 +78,31 @@ __global__ void k_executive(cudaGraphExec_t e0, cudaGraphExec_t e1, const unsign
         }
         st.launched = st.k;
         st.n_launched++;
-        fired++;
         st.k++;
     }
     if (st.k >= n && st.launched >= 0 && !timeout) {  // drain the last slot
-        while (done[0] == st.prev_done) {
-            if (gtimer() > deadline_g) { timeout = true; break; }
+        unsigned long long completed;
+        while ((completed = completion.load(cuda::memory_order_acquire)) == st.prev_done) {
+            if (gtimer() > st.deadline_g) { timeout = true; break; }
         }
         if (!timeout) {
-            __threadfence();
-            st.prev_done = done[0];
+            st.prev_done = completed;
             rec[st.launched].g0 = done[1];
             rec[st.launched].g1 = done[2];
             st.launched = -1;
         }
     }
-    if (timeout) st.finished = 3;
+    if (timeout) {
+        if (st.launched >= 0) rec[st.launched].flags |= 8ull;
+        // Every requested boundary must remain in the result denominator, including work abandoned
+        // when the deadline expires before all boundaries have been processed.
+        while (st.k < n) {
+            rec[st.k].g_target = g_target[st.k];
+            rec[st.k].flags |= 8ull;
+            st.k++;
+        }
+        st.finished = 3;
+    }
     else if (st.k >= n) st.finished = 1;
     *state = st;
     __threadfence_system();
@@ -108,11 +122,10 @@ __global__ void k_executive(cudaGraphExec_t e0, cudaGraphExec_t e1, const unsign
 
 }  // namespace
 
-void launch_executive(cudaStream_t s, cudaGraphExec_t e0, cudaGraphExec_t e1, const unsigned long long *g_target, int n,
-                      unsigned long long *done, LsRec *rec, ExecState *state, int chunk, int *finished_host,
-                      unsigned long long deadline_g) {
-    k_executive<<<1, 32, 0, s>>>(e0, e1, g_target, n, (volatile unsigned long long *)done, rec, state, chunk,
-                                 (volatile int *)finished_host, deadline_g);
+void launch_executive(cudaStream_t s, const cudaGraphExec_t *exec_pool, const unsigned long long *g_target, int n,
+                      unsigned long long *done, LsRec *rec, ExecState *state, int chunk, int *finished_host) {
+    k_executive<<<1, 32, 0, s>>>(exec_pool, g_target, n, done, rec, state, chunk,
+                                 (volatile int *)finished_host);
 }
 
 }  // namespace sb

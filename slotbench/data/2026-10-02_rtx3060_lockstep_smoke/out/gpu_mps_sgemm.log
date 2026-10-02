@@ -1,0 +1,1 @@
+gpu  load=none   gpu_mps_sgemm    start_err p50     3.83 p99     5.16 p99.9     5.20 max      5.21 us | launch_prec p50    3.73 | exec p50  223.2 | miss 0/2000 skipped 0 err 0

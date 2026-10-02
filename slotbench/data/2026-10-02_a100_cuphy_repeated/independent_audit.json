@@ -1,0 +1,605 @@
+{
+  "schema_version": 1,
+  "audit_kind": "independent raw and saved-evidence review",
+  "created_utc": "2026-10-02T20:14:46.019532+00:00",
+  "ok": true,
+  "errors": [],
+  "completion": {
+    "status": "ok",
+    "exit_code": 0,
+    "ended_utc": "2026-10-02T20:08:15.438980+00:00"
+  },
+  "counts": {
+    "measured_trials": 36,
+    "gates": 2,
+    "measured_raw_boundaries": 180000,
+    "gate_raw_boundaries": 128,
+    "by_condition_mode": {
+      "proc_sgemm/gpu": {
+        "trials": 6,
+        "records": 15680,
+        "skips": 14320,
+        "misses": 17782
+      },
+      "proc_sgemm/cpu": {
+        "trials": 6,
+        "records": 6258,
+        "skips": 23742,
+        "misses": 29997
+      },
+      "alone/cpu": {
+        "trials": 6,
+        "records": 30000,
+        "skips": 0,
+        "misses": 0
+      },
+      "alone/gpu": {
+        "trials": 6,
+        "records": 30000,
+        "skips": 0,
+        "misses": 0
+      },
+      "mps_sgemm/gpu": {
+        "trials": 6,
+        "records": 21384,
+        "skips": 8616,
+        "misses": 15395
+      },
+      "mps_sgemm/cpu": {
+        "trials": 6,
+        "records": 21171,
+        "skips": 8829,
+        "misses": 15660
+      }
+    }
+  },
+  "raw_validation": {
+    "format": "little-endian <Qq6Q, 64 bytes",
+    "recomputed": "slot IDs; skip/launch flags; nonzero ordered execution stamps; recorded/skipped/missed counts using pre/post two-point mapping and deadline500us",
+    "all_recomputed_totals_match": true,
+    "ordered_case_name_and_raw_sha256": "f7246ce0cd6f9ee826e5fae054cc538bea22aae02b3eed0eb38c2c542bbc33c9",
+    "correctness_scope": "Existing NVIDIA decoded payload/CB and CRC checks before and after the replay; no per-intermediate-slot output validation."
+  },
+  "clocks": {
+    "locked": false,
+    "nominal_sample_period_ms": 100,
+    "maximum_observed_file_sample_gap_ms": 170.0,
+    "all_38_files_span_recorded_run_wall_interval": true,
+    "interior_window_rule": "Keep telemetry timestamps >=run_wall_start_ns/1e9+0.9 and <=run_wall_end_ns/1e9-0.2. Conservative approximate measured interior excludes startup/warmup/teardown; not an exact per-slot wall-clock alignment.",
+    "groups": {
+      "proc_sgemm/gpu": {
+        "sm_mhz": {
+          "1410": 126
+        },
+        "memory_mhz": {
+          "1215": 126
+        },
+        "active_event_masks": {
+          "0x0000000000000000": 126
+        },
+        "trials": 6,
+        "samples": 126
+      },
+      "proc_sgemm/cpu": {
+        "sm_mhz": {
+          "1410": 126
+        },
+        "memory_mhz": {
+          "1215": 126
+        },
+        "active_event_masks": {
+          "0x0000000000000000": 126
+        },
+        "trials": 6,
+        "samples": 126
+      },
+      "alone/cpu": {
+        "sm_mhz": {
+          "1095": 125
+        },
+        "memory_mhz": {
+          "1215": 125
+        },
+        "active_event_masks": {
+          "0x0000000000000000": 125
+        },
+        "trials": 6,
+        "samples": 125
+      },
+      "alone/gpu": {
+        "sm_mhz": {
+          "1410": 126
+        },
+        "memory_mhz": {
+          "1215": 126
+        },
+        "active_event_masks": {
+          "0x0000000000000000": 126
+        },
+        "trials": 6,
+        "samples": 126
+      },
+      "mps_sgemm/gpu": {
+        "sm_mhz": {
+          "1410": 126
+        },
+        "memory_mhz": {
+          "1215": 126
+        },
+        "active_event_masks": {
+          "0x0000000000000000": 126
+        },
+        "trials": 6,
+        "samples": 126
+      },
+      "mps_sgemm/cpu": {
+        "sm_mhz": {
+          "1410": 126
+        },
+        "memory_mhz": {
+          "1215": 126
+        },
+        "active_event_masks": {
+          "0x0000000000000000": 126
+        },
+        "trials": 6,
+        "samples": 126
+      }
+    },
+    "interpretation": "All six isolated CPU trials sample1095MHz, isolated GPU1410MHz; median execution179.2/139.264us scales approximately inversely with these clocks. All contention groups sample1410MHz. Isolated execution improvement cannot be assigned to timer dispatch alone."
+  },
+  "scheduler": {
+    "observations": 38,
+    "all_observed": true,
+    "actual_policy": 0,
+    "actual_policy_name": "SCHED_OTHER",
+    "actual_rt_priority": 0,
+    "actual_affinity": [
+      1
+    ],
+    "worker_tgid_matches_logged_phy_process_count": 38,
+    "requested_upstream_policy": "SCHED_RR priority99; request failed on rental",
+    "source": "pinned cuPHY/examples/pusch_rx_multi_pipe/cuphy_ex_pusch_rx_multi_pipe.cpp:620,624"
+  },
+  "logger": {
+    "fallback_cases": 38,
+    "total_cases": 38,
+    "missing_path": "/workspace/cuphy-lockstep/cuPHY/nvlog/config/nvlog_config.yaml",
+    "interpretation": "Common fallback in all cases. Saved config hash does not prove config was loaded. No rerun required solely for this shared setup condition."
+  },
+  "mps": {
+    "verified_phy_and_adversary_ACTIVE_case_count": 12,
+    "expected_case_count": 12,
+    "adversary_active_thread_percentage": 50,
+    "evidence": "Per-block server.log ACTIVE records independently cross-linked to PHY process PID from worker Tgid/log and adversary JSON pid."
+  },
+  "provenance": {
+    "slotbench_commit": "1c57f9526b091fd1dfb7d4be6261ce18fa996ed6",
+    "aerial_commit": "4f65f97c1d5f701ce911f7dda8f1b1f3f0c7693c",
+    "test_vector_sha256": "85796206a068087c3e2e03bafb7a22118fa7f27ce87f94f00afcf1ec4ac106ca",
+    "all_run_manifests_match_vector_and_aerial": true,
+    "adapter_and_source_hashes": {
+      "applied-adapter.patch": {
+        "expected": "049aebfaad02e451cd52a12003a7d19556ce890035439c4a77142e3a29c57d9f",
+        "actual": "049aebfaad02e451cd52a12003a7d19556ce890035439c4a77142e3a29c57d9f",
+        "match": true
+      },
+      "cuphy_lockstep.cu": {
+        "expected": "d9b4a5eeef71de557646489fe31164f76d32a8c1fdb8096850c390fb38979216",
+        "actual": "d9b4a5eeef71de557646489fe31164f76d32a8c1fdb8096850c390fb38979216",
+        "match": true
+      },
+      "cuphy_lockstep_stamps.cu": {
+        "expected": "efefe320fad6ff848e96be96e2ca3414c072e761b196bdaf46004d1d0e661d04",
+        "actual": "efefe320fad6ff848e96be96e2ca3414c072e761b196bdaf46004d1d0e661d04",
+        "match": true
+      },
+      "cuphy_lockstep.h": {
+        "expected": "faee4a766741dd69846a2ac388a1a7c923a5def7249b331ea88e932b8da8373f",
+        "actual": "faee4a766741dd69846a2ac388a1a7c923a5def7249b331ea88e932b8da8373f",
+        "match": true
+      },
+      "cuphy_lockstep_stamps.h": {
+        "expected": "96a29f4de04606f86d8f4e223000ddd922999ab94702390eaa080a7ab3d87159",
+        "actual": "96a29f4de04606f86d8f4e223000ddd922999ab94702390eaa080a7ab3d87159",
+        "match": true
+      }
+    },
+    "binary_sha256_manifest": [
+      "755d789af8c5fff67a2492d04fb106e7436558d833b79cbe38208f666db3513e  /workspace/cuphy-lockstep/build/cuPHY/examples/pusch_rx_multi_pipe/cuphy_ex_pusch_rx_multi_pipe",
+      "2796ba0507cc05bb6537a5dd4e6774c5a8e9298c7948474fd1b0dcde0a221ef5  /workspace/cuphy-lockstep/sb/slotbench/bin/adversary"
+    ],
+    "binary_validation": "Both listed binary hashes independently recomputed by read-only SSH before primary collection; match saved manifest. Binaries are not included in this artifact.",
+    "test_vector_validation": "Known vector SHA recorded identically in all run manifests; runner verifies actual vector bytes before campaign."
+  },
+  "limitations": [
+    "Unlocked clocks; sampled clock observations do not establish an enforced lock or capture sub100ms transients.",
+    "One fixed vector, one A100 rental, one run per mode per balanced pair; trial pairs are the replication unit.",
+    "Fresh SGEMM process per case with readiness gating; adversary phase is not preserved across paired cases.",
+    "GPU executive also changes context activity/residency; separate-process contention is not a pure timer comparison.",
+    "Mapped CPU/GPU calibration signaling is an experimental volatile/fence protocol.",
+    "Read-only telemetry and observer add common measurement overhead; worker policy was observed once before replay."
+  ],
+  "cases": [
+    {
+      "name": "gate_cpu_alone",
+      "gate": true,
+      "records": 64,
+      "skips": 0,
+      "misses": 0,
+      "worker_tid": 10133,
+      "process_pid": 10127,
+      "raw_sha256": "16d36030f065928b597adb159d14a18bcf725fcff6539336c97e50e435908901"
+    },
+    {
+      "name": "gate_gpu_alone",
+      "gate": true,
+      "records": 64,
+      "skips": 0,
+      "misses": 0,
+      "worker_tid": 10173,
+      "process_pid": 10167,
+      "raw_sha256": "8e69b36a8883e272ad2b0a20ba00504fdf78620fc8b571cca4d698305ced2cf3"
+    },
+    {
+      "name": "r01_b01_gpu_proc_sgemm",
+      "gate": false,
+      "records": 2619,
+      "skips": 2381,
+      "misses": 2958,
+      "worker_tid": 10236,
+      "process_pid": 10231,
+      "raw_sha256": "b2b4d27afbe7accfbc4531a89a1099959604d977b9ac1c09c425e5ee29eec86a"
+    },
+    {
+      "name": "r01_b01_cpu_proc_sgemm",
+      "gate": false,
+      "records": 1043,
+      "skips": 3957,
+      "misses": 4999,
+      "worker_tid": 10307,
+      "process_pid": 10302,
+      "raw_sha256": "52d184cd6b9d02aa46d75b59fb495b558e732d82099a9e82685eea049c9afc51"
+    },
+    {
+      "name": "r01_b02_cpu_alone",
+      "gate": false,
+      "records": 5000,
+      "skips": 0,
+      "misses": 0,
+      "worker_tid": 10354,
+      "process_pid": 10348,
+      "raw_sha256": "8911f9ce4d946698a848eff531e47be0aced44b86d475bf0e0069bbf794ca362"
+    },
+    {
+      "name": "r01_b02_gpu_alone",
+      "gate": false,
+      "records": 5000,
+      "skips": 0,
+      "misses": 0,
+      "worker_tid": 10410,
+      "process_pid": 10404,
+      "raw_sha256": "63ea7536a6c0cd4d2d25afe0eb7ea42c8153819e2bbc526dd4399e69909a4a8d"
+    },
+    {
+      "name": "r01_b03_gpu_mps_sgemm",
+      "gate": false,
+      "records": 3598,
+      "skips": 1402,
+      "misses": 2544,
+      "worker_tid": 10488,
+      "process_pid": 10481,
+      "raw_sha256": "a98a3eb2c202b5e7dac20fd2adddc7ac33661cf3991590192e4dfa1f876fc5a4"
+    },
+    {
+      "name": "r01_b03_cpu_mps_sgemm",
+      "gate": false,
+      "records": 3509,
+      "skips": 1491,
+      "misses": 2629,
+      "worker_tid": 10552,
+      "process_pid": 10545,
+      "raw_sha256": "cd92c7a8b8f9a3773e71ac3d90fb26988f86f002dba4a163f70d202c2f4d9b8e"
+    },
+    {
+      "name": "r02_b04_gpu_alone",
+      "gate": false,
+      "records": 5000,
+      "skips": 0,
+      "misses": 0,
+      "worker_tid": 10619,
+      "process_pid": 10613,
+      "raw_sha256": "a1e0e385488e61a111f193e454b9e975e04ba33d21ebf8c9b6bfff613b45dc6c"
+    },
+    {
+      "name": "r02_b04_cpu_alone",
+      "gate": false,
+      "records": 5000,
+      "skips": 0,
+      "misses": 0,
+      "worker_tid": 10661,
+      "process_pid": 10655,
+      "raw_sha256": "52615931fcea469312b7c3f2e929722c067e49cda68d1b7fd85ba8e350a17be0"
+    },
+    {
+      "name": "r02_b05_gpu_mps_sgemm",
+      "gate": false,
+      "records": 3550,
+      "skips": 1450,
+      "misses": 2569,
+      "worker_tid": 10751,
+      "process_pid": 10744,
+      "raw_sha256": "a9ea7870900c48a0c496a06764bb9dffdc2ffa449b1470bfca62c34251ebd0b2"
+    },
+    {
+      "name": "r02_b05_cpu_mps_sgemm",
+      "gate": false,
+      "records": 3537,
+      "skips": 1463,
+      "misses": 2592,
+      "worker_tid": 10827,
+      "process_pid": 10820,
+      "raw_sha256": "d99a7e2e42ed15508193b5d46d3a62edb7fd574aa8fc8ce44c602cf7bd4b6c69"
+    },
+    {
+      "name": "r02_b06_cpu_proc_sgemm",
+      "gate": false,
+      "records": 1044,
+      "skips": 3956,
+      "misses": 4998,
+      "worker_tid": 10898,
+      "process_pid": 10893,
+      "raw_sha256": "a7ec28174483f8dfb35e23fceebbf5cb08882e7107708b1cfbf2d1f4751b73bf"
+    },
+    {
+      "name": "r02_b06_gpu_proc_sgemm",
+      "gate": false,
+      "records": 2609,
+      "skips": 2391,
+      "misses": 2968,
+      "worker_tid": 10958,
+      "process_pid": 10953,
+      "raw_sha256": "7c8ecac0de20933bd665b844291e5a71a86eef179de86ddc7793c4c63f4eaf3c"
+    },
+    {
+      "name": "r03_b07_gpu_proc_sgemm",
+      "gate": false,
+      "records": 2620,
+      "skips": 2380,
+      "misses": 2957,
+      "worker_tid": 11021,
+      "process_pid": 11016,
+      "raw_sha256": "884b7b99a6d0590083c72543fd500f6e5afca3bc83d48e8ae187e26895c08c38"
+    },
+    {
+      "name": "r03_b07_cpu_proc_sgemm",
+      "gate": false,
+      "records": 1043,
+      "skips": 3957,
+      "misses": 5000,
+      "worker_tid": 11094,
+      "process_pid": 11089,
+      "raw_sha256": "90e58417a3382182b63b15044211eece48545386ff782e46520aeefd4c4506ce"
+    },
+    {
+      "name": "r03_b08_cpu_alone",
+      "gate": false,
+      "records": 5000,
+      "skips": 0,
+      "misses": 0,
+      "worker_tid": 11153,
+      "process_pid": 11147,
+      "raw_sha256": "1c12b710a9b84ae78e1914887e892f2fd7044fc6219b32634b64fa405907d08c"
+    },
+    {
+      "name": "r03_b08_gpu_alone",
+      "gate": false,
+      "records": 5000,
+      "skips": 0,
+      "misses": 0,
+      "worker_tid": 11195,
+      "process_pid": 11189,
+      "raw_sha256": "773dcade1488bd9109bdb2b1674ec46efc8dbcfdb6e308442f583cdefd6f272f"
+    },
+    {
+      "name": "r03_b09_cpu_mps_sgemm",
+      "gate": false,
+      "records": 3496,
+      "skips": 1504,
+      "misses": 2675,
+      "worker_tid": 11275,
+      "process_pid": 11268,
+      "raw_sha256": "459df8eac9dfa3d65349091dc557a80b4e06a164f87bda1e17d8b37d07adc5d6"
+    },
+    {
+      "name": "r03_b09_gpu_mps_sgemm",
+      "gate": false,
+      "records": 3553,
+      "skips": 1447,
+      "misses": 2590,
+      "worker_tid": 11351,
+      "process_pid": 11344,
+      "raw_sha256": "bed6f0f0e30c32cb9bce3b64af8cb4142b90863bf30a1957edf575ad01a5475b"
+    },
+    {
+      "name": "r04_b10_cpu_proc_sgemm",
+      "gate": false,
+      "records": 1043,
+      "skips": 3957,
+      "misses": 5000,
+      "worker_tid": 11422,
+      "process_pid": 11417,
+      "raw_sha256": "3363d9e210c3fcba2c42bc589f0477072d4f27ced3827db1b2fdff257b405538"
+    },
+    {
+      "name": "r04_b10_gpu_proc_sgemm",
+      "gate": false,
+      "records": 2610,
+      "skips": 2390,
+      "misses": 2967,
+      "worker_tid": 11482,
+      "process_pid": 11477,
+      "raw_sha256": "b3b768e24e843b5baee7bb26557fd91e5123656f72299017778e08ef4e5471ed"
+    },
+    {
+      "name": "r04_b11_cpu_alone",
+      "gate": false,
+      "records": 5000,
+      "skips": 0,
+      "misses": 0,
+      "worker_tid": 11540,
+      "process_pid": 11534,
+      "raw_sha256": "cf4301e09d35a62cfece9b21ab659860609a24c966875a8def92839d2e654d43"
+    },
+    {
+      "name": "r04_b11_gpu_alone",
+      "gate": false,
+      "records": 5000,
+      "skips": 0,
+      "misses": 0,
+      "worker_tid": 11583,
+      "process_pid": 11577,
+      "raw_sha256": "5b65f68003829ecd8887502dc2ac547b6ab1e6d82a209b3d7ca17520f602e400"
+    },
+    {
+      "name": "r04_b12_cpu_mps_sgemm",
+      "gate": false,
+      "records": 3501,
+      "skips": 1499,
+      "misses": 2636,
+      "worker_tid": 11661,
+      "process_pid": 11654,
+      "raw_sha256": "4a9322f9e3f5f4fd2dcf8fcaae2ffaacbf8ad9604141bced9f0a67939cb6af47"
+    },
+    {
+      "name": "r04_b12_gpu_mps_sgemm",
+      "gate": false,
+      "records": 3538,
+      "skips": 1462,
+      "misses": 2607,
+      "worker_tid": 11725,
+      "process_pid": 11718,
+      "raw_sha256": "c91b26a15fcf3d4898ce0dcb96c1577b007724105d2978ac304e8d18630017ef"
+    },
+    {
+      "name": "r05_b13_gpu_proc_sgemm",
+      "gate": false,
+      "records": 2612,
+      "skips": 2388,
+      "misses": 2965,
+      "worker_tid": 11796,
+      "process_pid": 11791,
+      "raw_sha256": "cf375bcfa4074bd7aaf26b23854f1610e876b7fe434ea652790fb0c839a17893"
+    },
+    {
+      "name": "r05_b13_cpu_proc_sgemm",
+      "gate": false,
+      "records": 1043,
+      "skips": 3957,
+      "misses": 5000,
+      "worker_tid": 11868,
+      "process_pid": 11863,
+      "raw_sha256": "e230e23ddc4e224f4882f995b1c2a94bdc2b4630461a71c166dd86f0a7a1889d"
+    },
+    {
+      "name": "r05_b14_gpu_mps_sgemm",
+      "gate": false,
+      "records": 3588,
+      "skips": 1412,
+      "misses": 2530,
+      "worker_tid": 11948,
+      "process_pid": 11941,
+      "raw_sha256": "b9f08d50236127275b99d1957395f2084ab06592f033e3d7c22e7e756081030d"
+    },
+    {
+      "name": "r05_b14_cpu_mps_sgemm",
+      "gate": false,
+      "records": 3579,
+      "skips": 1421,
+      "misses": 2559,
+      "worker_tid": 12023,
+      "process_pid": 12016,
+      "raw_sha256": "06275e6367744b9af22b750f43c817d6e0a4e0ad3184276cd3f698d13ca60d9f"
+    },
+    {
+      "name": "r05_b15_gpu_alone",
+      "gate": false,
+      "records": 5000,
+      "skips": 0,
+      "misses": 0,
+      "worker_tid": 12079,
+      "process_pid": 12073,
+      "raw_sha256": "f11d18fd359bc6ea802edd1263d373cb7571a61af70b65b5076be7bbd4b5f414"
+    },
+    {
+      "name": "r05_b15_cpu_alone",
+      "gate": false,
+      "records": 5000,
+      "skips": 0,
+      "misses": 0,
+      "worker_tid": 12121,
+      "process_pid": 12115,
+      "raw_sha256": "2d2e6e6468740af37c99a8717ea62ccd68693cab3562592bde6e605d91a6023e"
+    },
+    {
+      "name": "r06_b16_cpu_proc_sgemm",
+      "gate": false,
+      "records": 1042,
+      "skips": 3958,
+      "misses": 5000,
+      "worker_tid": 12182,
+      "process_pid": 12177,
+      "raw_sha256": "612c6dbc5b9ea624a5941de47702b7fcb64d681dec2c032e6a0faaeb4b8b4610"
+    },
+    {
+      "name": "r06_b16_gpu_proc_sgemm",
+      "gate": false,
+      "records": 2610,
+      "skips": 2390,
+      "misses": 2967,
+      "worker_tid": 12254,
+      "process_pid": 12249,
+      "raw_sha256": "a2da94418f8e93e8c09a0304bc3d6165543d4c454a4867fb2cf197d5b0d84fdc"
+    },
+    {
+      "name": "r06_b17_gpu_alone",
+      "gate": false,
+      "records": 5000,
+      "skips": 0,
+      "misses": 0,
+      "worker_tid": 12301,
+      "process_pid": 12295,
+      "raw_sha256": "1a28fab1214d40b2796bedd611414886f43028038c3a9c053b2f6358aacfd4ec"
+    },
+    {
+      "name": "r06_b17_cpu_alone",
+      "gate": false,
+      "records": 5000,
+      "skips": 0,
+      "misses": 0,
+      "worker_tid": 12343,
+      "process_pid": 12337,
+      "raw_sha256": "cd77c251c030fae6f5a1f63359929f6da587e3304e5439babfc55ec7e918fa6a"
+    },
+    {
+      "name": "r06_b18_cpu_mps_sgemm",
+      "gate": false,
+      "records": 3549,
+      "skips": 1451,
+      "misses": 2569,
+      "worker_tid": 12421,
+      "process_pid": 12414,
+      "raw_sha256": "f03980d86afac878eaffd70c877aa0caffa9de452407d7f749ca767908bc6e2f"
+    },
+    {
+      "name": "r06_b18_gpu_mps_sgemm",
+      "gate": false,
+      "records": 3557,
+      "skips": 1443,
+      "misses": 2555,
+      "worker_tid": 12497,
+      "process_pid": 12490,
+      "raw_sha256": "427e889519dac213745fec6b34b7f1b22df8f7645b5b0f004b13c9559c45ca45"
+    }
+  ]
+}

@@ -419,6 +419,39 @@ def test_run_success_collects_then_destroys(tmp_path):
     assert "estimated spend" in msgs and "destroyed" in msgs
 
 
+def test_run_null_actual_status_uses_cur_state_and_collects(tmp_path, monkeypatch):
+    data = make_tar({"cloud/M1_x/summary.json": b"{}"})
+    final = block("cloud/M1_x", data) + "=====SLOTBENCH-DONE=====\n"
+    api = FakeApi(logs=[final, final], status=None)
+    show_instance = api.show_instance
+    monkeypatch.setattr(api, "show_instance", lambda iid: dict(show_instance(iid), cur_state="running"))
+    log_calls = []
+    logs = api.logs
+
+    def fetch_logs(iid, tail=None):
+        log_calls.append(tail)
+        return logs(iid, tail=tail)
+
+    monkeypatch.setattr(api, "logs", fetch_logs)
+    args = run_args(tmp_path)
+    clock = Clock()
+    rc, msgs = run_with(api, args, clock)
+    assert rc == 0 and api.destroyed == [1234]
+    assert log_calls == [args.poll_tail, args.collect_tail]
+    assert clock.t == 1000.0 + args.poll_s
+    assert "] running:" in msgs and "stopping: DONE (ok)" in msgs
+    assert (tmp_path / "res" / "cloud/M1_x/summary.json").exists()
+
+
+def test_run_actual_status_takes_precedence_over_cur_state(tmp_path, monkeypatch):
+    api = FakeApi(logs=["container exited\n"], status="exited")
+    show_instance = api.show_instance
+    monkeypatch.setattr(api, "show_instance", lambda iid: dict(show_instance(iid), cur_state="running"))
+    rc, msgs = run_with(api, run_args(tmp_path))
+    assert rc == 1 and api.destroyed == [1234]
+    assert "] exited:" in msgs and "stopping: instance is exited" in msgs
+
+
 def test_run_cost_cap_stops_collects_and_destroys(tmp_path):
     api = FakeApi(logs=["still running\n"], dph=6.0)  # $6/h, cap $1 -> stops after ~9 min
     clock = Clock()

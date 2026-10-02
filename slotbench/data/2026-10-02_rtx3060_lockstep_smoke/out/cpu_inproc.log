@@ -1,0 +1,1 @@
+cpu  load=stream cpu_inproc       start_err p50    62.62 p99   165.01 p99.9   194.19 max    194.19 us | launch_prec p50   62.55 | exec p50  772.1 | miss 1584/2000 skipped 999 err 0

@@ -1,0 +1,9 @@
+mkdir -p build
+/usr/local/cuda/bin/nvcc -O2 -g -lineinfo -std=c++17 -gencode arch=compute_86,code=sm_86 -gencode arch=compute_86,code=compute_86 -Icommon -Iphy -Xcompiler -Wall -c -o build/lockstep_driver.o driver/lockstep_driver.cu
+/usr/local/cuda/bin/nvcc -O2 -g -lineinfo -std=c++17 -gencode arch=compute_86,code=sm_86 -gencode arch=compute_86,code=compute_86 -Icommon -Iphy -Xcompiler -Wall -rdc=true -c -o build/lockstep_exec.o driver/lockstep_exec.cu
+/usr/local/cuda/bin/nvcc -O2 -g -lineinfo -std=c++17 -gencode arch=compute_86,code=sm_86 -gencode arch=compute_86,code=compute_86 -Icommon -Iphy -Xcompiler -Wall -c -o build/slot_pipeline.o phy/slot_pipeline.cu
+/usr/local/cuda/bin/nvcc -O2 -g -lineinfo -std=c++17 -gencode arch=compute_86,code=sm_86 -gencode arch=compute_86,code=compute_86 -Icommon -Iphy -Xcompiler -Wall -c -o build/phy_kernels.o phy/phy_kernels.cu
+g++ -O2 -g -std=c++17 -Wall -Wextra -Icommon -Iphy -c -o build/ldpc_code.o phy/ldpc_code.cpp
+mkdir -p bin
+/usr/local/cuda/bin/nvcc -O2 -g -lineinfo -std=c++17 -gencode arch=compute_86,code=sm_86 -gencode arch=compute_86,code=compute_86 -Icommon -Iphy -Xcompiler -Wall -rdc=true -o bin/lockstep_driver build/lockstep_driver.o build/lockstep_exec.o build/slot_pipeline.o build/phy_kernels.o build/ldpc_code.o -lcublas -lcufft -lpthread -ldl -lcudadevrt
+/usr/local/cuda/bin/nvcc -O2 -g -lineinfo -std=c++17 -gencode arch=compute_86,code=sm_86 -gencode arch=compute_86,code=compute_86 -Icommon -Iphy -Xcompiler -Wall -o bin/adversary adversary/adversary.cu -lcublas -lcufft -lpthread -ldl

@@ -37,7 +37,15 @@ finish() {
 }
 trap 'echo "=====SLOTBENCH-ERROR $LINENO $BASH_COMMAND====="; tail -n 30 "$LOGS/current.log" 2>/dev/null | sed "s/^/  | /"; finish error' ERR
 trap 'echo "=====SLOTBENCH-ERROR 0 SIGTERM====="; finish term' TERM
-step() { local name="$1"; shift; log "$name"; : > "$LOGS/current.log"; "$@" >>"$LOGS/current.log" 2>&1; cat "$LOGS/current.log" >> "$LOGS/$name.log"; }
+step() {
+    local name="$1" rc=0
+    shift
+    log "$name"
+    : > "$LOGS/current.log"
+    "$@" >>"$LOGS/current.log" 2>&1 || rc=$?
+    cat "$LOGS/current.log" >> "$LOGS/$name.log"
+    return "$rc"
+}
 
 { date -u; nvidia-smi; nproc; free -g; } > "$LOGS/header.txt" 2>&1 || true
 head -12 "$LOGS/header.txt"
@@ -49,6 +57,12 @@ cd "$W/repo/slotbench"
 step build make SM="$GPU_CC" CUDA_HOME=/usr/local/cuda bin/lockstep_driver bin/adversary
 log "running matrix (slots ${SB_SLOTS:-30000})"
 # shellcheck disable=SC2086
-bash scripts/lockstep_matrix.sh --out "$OUT" --slots "${SB_SLOTS:-30000}" --gpu 0 ${SB_MATRIX_ARGS:-} 2>&1 | tee "$LOGS/matrix.log" || true
-cp "$LOGS/header.txt" "$OUT/" || true
-finish ok
+matrix_rc=0
+bash scripts/lockstep_matrix.sh --out "$OUT" --slots "${SB_SLOTS:-30000}" --gpu 0 ${SB_MATRIX_ARGS:-} 2>&1 | tee "$LOGS/matrix.log" || matrix_rc=$?
+cp "$LOGS/header.txt" "$OUT/cloud_header.txt" || true
+if [[ $matrix_rc -ne 0 ]]; then
+    log "matrix failed (exit $matrix_rc); preserving partial results and logs"
+    finish "error-matrix-$matrix_rc"
+else
+    finish ok
+fi

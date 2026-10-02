@@ -1,0 +1,45 @@
+2026-10-02T19:56:57Z
+2bc92934b3208416fcb3aad79fa3f29ce781b0fd
+85796206a068087c3e2e03bafb7a22118fa7f27ce87f94f00afcf1ec4ac106ca  /workspace/cuphy-lockstep/tv/GPU_test_input/TVnr_7304_PUSCH_gNB_CUPHY_s0p0.h5
+PHY CPU=1 adversary CPU=2 telemetry CPU=3 background=0,2,3,4,5,6,7,8,10,11,12,13,14,15
+Requested PHY/adversary CPU is outside the allowed cpuset
+=====SLOTBENCH-ERROR 296 OBSERVER_CPU=$(python3 - "${SB_TELEMETRY_CPU:-}" "${SB_CUPHY_CPU:-0}" "${SB_ADVERSARY_CPU:-}" <<'PY'
+import os, sys
+cpus = sorted(os.sched_getaffinity(0))
+phy = int(sys.argv[2])
+adv = int(sys.argv[3]) if sys.argv[3] else None
+if phy not in cpus or (adv is not None and adv not in cpus):
+    raise SystemExit("Requested PHY/adversary CPU is outside the allowed cpuset")
+cpu = int(sys.argv[1]) if sys.argv[1] else next((c for c in reversed(cpus) if c not in (phy, adv)), cpus[0])
+if cpu not in cpus:
+    raise SystemExit("SB_TELEMETRY_CPU is outside the allowed cpuset")
+print(cpu)
+PY
+)=====
+Threads:	1
+SigQ:	2/381321
+SigPnd:	0000000000000000
+ShdPnd:	0000000000000000
+SigBlk:	0000000000000000
+SigIgn:	0000000000000000
+SigCgt:	0000000000000000
+CapInh:	0000000000000000
+CapPrm:	00000000a80405fb
+CapEff:	00000000a80405fb
+CapBnd:	00000000a80405fb
+CapAmb:	0000000000000000
+NoNewPrivs:	0
+Seccomp:	2
+Seccomp_filters:	1
+Speculation_Store_Bypass:	thread vulnerable
+SpeculationIndirectBranch:	conditional enabled
+Cpus_allowed:	fdfd
+Cpus_allowed_list:	0,2-8,10-15
+Mems_allowed:	00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000001
+Mems_allowed_list:	0
+voluntary_ctxt_switches:	0
+nonvoluntary_ctxt_switches:	0
+x86_Thread_features:	
+x86_Thread_features_locked:	
+[cuphy-lockstep 19:56:57] Refusing unsafe or existing archive path: /workspace/cuphy-lockstep/collection-repeat-20261002T195657Z-9947.tar.gz
+=====SLOTBENCH-DONE status=error archive=/workspace/cuphy-lockstep/collection-repeat-20261002T195657Z-9947.tar.gz=====

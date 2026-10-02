@@ -1,0 +1,118 @@
+2026-10-02T20:00:55Z
+1c57f9526b091fd1dfb7d4be6261ce18fa996ed6
+85796206a068087c3e2e03bafb7a22118fa7f27ce87f94f00afcf1ec4ac106ca  /workspace/cuphy-lockstep/tv/GPU_test_input/TVnr_7304_PUSCH_gNB_CUPHY_s0p0.h5
+PHY CPU=1 adversary CPU=2 telemetry CPU=3 background=0,2,3,4,5,6,7,8,10,11,12,13,14,15
+[cuphy-lockstep 20:00:56] case gate_cpu_alone: launcher=cpu isolation=none workload=none
+[cuphy-lockstep 20:01:01] gate_cpu_alone: {"misses": 0, "recorded": 64, "skipped": 0, "valid": true}
+[cuphy-lockstep 20:01:01] case gate_gpu_alone: launcher=gpu isolation=none workload=none
+[cuphy-lockstep 20:01:07] gate_gpu_alone: {"misses": 0, "recorded": 64, "skipped": 0, "valid": true}
+[cuphy-lockstep 20:01:07] Measured case 1/36: pair=1 block=1 condition=proc_sgemm
+[cuphy-lockstep 20:01:11] case r01_b01_gpu_proc_sgemm: launcher=gpu isolation=none workload=sgemm
+[cuphy-lockstep 20:01:21] r01_b01_gpu_proc_sgemm: {"misses": 2958, "recorded": 2619, "skipped": 2381, "valid": true}
+[cuphy-lockstep 20:01:21] Measured case 2/36: pair=1 block=1 condition=proc_sgemm
+[cuphy-lockstep 20:01:25] case r01_b01_cpu_proc_sgemm: launcher=cpu isolation=none workload=sgemm
+[cuphy-lockstep 20:01:35] r01_b01_cpu_proc_sgemm: {"misses": 4999, "recorded": 1043, "skipped": 3957, "valid": true}
+[cuphy-lockstep 20:01:35] Measured case 3/36: pair=1 block=2 condition=alone
+[cuphy-lockstep 20:01:35] case r01_b02_cpu_alone: launcher=cpu isolation=none workload=none
+[cuphy-lockstep 20:01:43] r01_b02_cpu_alone: {"misses": 0, "recorded": 5000, "skipped": 0, "valid": true}
+[cuphy-lockstep 20:01:43] Measured case 4/36: pair=1 block=2 condition=alone
+[cuphy-lockstep 20:01:44] case r01_b02_gpu_alone: launcher=gpu isolation=none workload=none
+[cuphy-lockstep 20:01:52] r01_b02_gpu_alone: {"misses": 0, "recorded": 5000, "skipped": 0, "valid": true}
+[cuphy-lockstep 20:01:52] Measured case 5/36: pair=1 block=3 condition=mps_sgemm
+[cuphy-lockstep 20:01:56] case r01_b03_gpu_mps_sgemm: launcher=gpu isolation=mps workload=sgemm
+[cuphy-lockstep 20:02:05] r01_b03_gpu_mps_sgemm: {"misses": 2544, "recorded": 3598, "skipped": 1402, "valid": true}
+[cuphy-lockstep 20:02:05] Measured case 6/36: pair=1 block=3 condition=mps_sgemm
+[cuphy-lockstep 20:02:09] case r01_b03_cpu_mps_sgemm: launcher=cpu isolation=mps workload=sgemm
+[cuphy-lockstep 20:02:18] r01_b03_cpu_mps_sgemm: {"misses": 2629, "recorded": 3509, "skipped": 1491, "valid": true}
+[cuphy-lockstep 20:02:18] Measured case 7/36: pair=2 block=4 condition=alone
+[cuphy-lockstep 20:02:19] case r02_b04_gpu_alone: launcher=gpu isolation=none workload=none
+[cuphy-lockstep 20:02:27] r02_b04_gpu_alone: {"misses": 0, "recorded": 5000, "skipped": 0, "valid": true}
+[cuphy-lockstep 20:02:27] Measured case 8/36: pair=2 block=4 condition=alone
+[cuphy-lockstep 20:02:27] case r02_b04_cpu_alone: launcher=cpu isolation=none workload=none
+[cuphy-lockstep 20:02:35] r02_b04_cpu_alone: {"misses": 0, "recorded": 5000, "skipped": 0, "valid": true}
+[cuphy-lockstep 20:02:35] Measured case 9/36: pair=2 block=5 condition=mps_sgemm
+[cuphy-lockstep 20:02:40] case r02_b05_gpu_mps_sgemm: launcher=gpu isolation=mps workload=sgemm
+[cuphy-lockstep 20:02:48] r02_b05_gpu_mps_sgemm: {"misses": 2569, "recorded": 3550, "skipped": 1450, "valid": true}
+[cuphy-lockstep 20:02:49] Measured case 10/36: pair=2 block=5 condition=mps_sgemm
+[cuphy-lockstep 20:02:53] case r02_b05_cpu_mps_sgemm: launcher=cpu isolation=mps workload=sgemm
+[cuphy-lockstep 20:03:02] r02_b05_cpu_mps_sgemm: {"misses": 2592, "recorded": 3537, "skipped": 1463, "valid": true}
+[cuphy-lockstep 20:03:02] Measured case 11/36: pair=2 block=6 condition=proc_sgemm
+[cuphy-lockstep 20:03:06] case r02_b06_cpu_proc_sgemm: launcher=cpu isolation=none workload=sgemm
+[cuphy-lockstep 20:03:16] r02_b06_cpu_proc_sgemm: {"misses": 4998, "recorded": 1044, "skipped": 3956, "valid": true}
+[cuphy-lockstep 20:03:16] Measured case 12/36: pair=2 block=6 condition=proc_sgemm
+[cuphy-lockstep 20:03:20] case r02_b06_gpu_proc_sgemm: launcher=gpu isolation=none workload=sgemm
+[cuphy-lockstep 20:03:30] r02_b06_gpu_proc_sgemm: {"misses": 2968, "recorded": 2609, "skipped": 2391, "valid": true}
+[cuphy-lockstep 20:03:30] Measured case 13/36: pair=3 block=7 condition=proc_sgemm
+[cuphy-lockstep 20:03:34] case r03_b07_gpu_proc_sgemm: launcher=gpu isolation=none workload=sgemm
+[cuphy-lockstep 20:03:44] r03_b07_gpu_proc_sgemm: {"misses": 2957, "recorded": 2620, "skipped": 2380, "valid": true}
+[cuphy-lockstep 20:03:44] Measured case 14/36: pair=3 block=7 condition=proc_sgemm
+[cuphy-lockstep 20:03:48] case r03_b07_cpu_proc_sgemm: launcher=cpu isolation=none workload=sgemm
+[cuphy-lockstep 20:03:57] r03_b07_cpu_proc_sgemm: {"misses": 5000, "recorded": 1043, "skipped": 3957, "valid": true}
+[cuphy-lockstep 20:03:58] Measured case 15/36: pair=3 block=8 condition=alone
+[cuphy-lockstep 20:03:58] case r03_b08_cpu_alone: launcher=cpu isolation=none workload=none
+[cuphy-lockstep 20:04:06] r03_b08_cpu_alone: {"misses": 0, "recorded": 5000, "skipped": 0, "valid": true}
+[cuphy-lockstep 20:04:06] Measured case 16/36: pair=3 block=8 condition=alone
+[cuphy-lockstep 20:04:06] case r03_b08_gpu_alone: launcher=gpu isolation=none workload=none
+[cuphy-lockstep 20:04:14] r03_b08_gpu_alone: {"misses": 0, "recorded": 5000, "skipped": 0, "valid": true}
+[cuphy-lockstep 20:04:14] Measured case 17/36: pair=3 block=9 condition=mps_sgemm
+[cuphy-lockstep 20:04:19] case r03_b09_cpu_mps_sgemm: launcher=cpu isolation=mps workload=sgemm
+[cuphy-lockstep 20:04:28] r03_b09_cpu_mps_sgemm: {"misses": 2675, "recorded": 3496, "skipped": 1504, "valid": true}
+[cuphy-lockstep 20:04:28] Measured case 18/36: pair=3 block=9 condition=mps_sgemm
+[cuphy-lockstep 20:04:32] case r03_b09_gpu_mps_sgemm: launcher=gpu isolation=mps workload=sgemm
+[cuphy-lockstep 20:04:41] r03_b09_gpu_mps_sgemm: {"misses": 2590, "recorded": 3553, "skipped": 1447, "valid": true}
+[cuphy-lockstep 20:04:41] Measured case 19/36: pair=4 block=10 condition=proc_sgemm
+[cuphy-lockstep 20:04:45] case r04_b10_cpu_proc_sgemm: launcher=cpu isolation=none workload=sgemm
+[cuphy-lockstep 20:04:55] r04_b10_cpu_proc_sgemm: {"misses": 5000, "recorded": 1043, "skipped": 3957, "valid": true}
+[cuphy-lockstep 20:04:55] Measured case 20/36: pair=4 block=10 condition=proc_sgemm
+[cuphy-lockstep 20:04:59] case r04_b10_gpu_proc_sgemm: launcher=gpu isolation=none workload=sgemm
+[cuphy-lockstep 20:05:09] r04_b10_gpu_proc_sgemm: {"misses": 2967, "recorded": 2610, "skipped": 2390, "valid": true}
+[cuphy-lockstep 20:05:09] Measured case 21/36: pair=4 block=11 condition=alone
+[cuphy-lockstep 20:05:09] case r04_b11_cpu_alone: launcher=cpu isolation=none workload=none
+[cuphy-lockstep 20:05:17] r04_b11_cpu_alone: {"misses": 0, "recorded": 5000, "skipped": 0, "valid": true}
+[cuphy-lockstep 20:05:17] Measured case 22/36: pair=4 block=11 condition=alone
+[cuphy-lockstep 20:05:17] case r04_b11_gpu_alone: launcher=gpu isolation=none workload=none
+[cuphy-lockstep 20:05:25] r04_b11_gpu_alone: {"misses": 0, "recorded": 5000, "skipped": 0, "valid": true}
+[cuphy-lockstep 20:05:26] Measured case 23/36: pair=4 block=12 condition=mps_sgemm
+[cuphy-lockstep 20:05:30] case r04_b12_cpu_mps_sgemm: launcher=cpu isolation=mps workload=sgemm
+[cuphy-lockstep 20:05:39] r04_b12_cpu_mps_sgemm: {"misses": 2636, "recorded": 3501, "skipped": 1499, "valid": true}
+[cuphy-lockstep 20:05:39] Measured case 24/36: pair=4 block=12 condition=mps_sgemm
+[cuphy-lockstep 20:05:43] case r04_b12_gpu_mps_sgemm: launcher=gpu isolation=mps workload=sgemm
+[cuphy-lockstep 20:05:52] r04_b12_gpu_mps_sgemm: {"misses": 2607, "recorded": 3538, "skipped": 1462, "valid": true}
+[cuphy-lockstep 20:05:52] Measured case 25/36: pair=5 block=13 condition=proc_sgemm
+[cuphy-lockstep 20:05:57] case r05_b13_gpu_proc_sgemm: launcher=gpu isolation=none workload=sgemm
+[cuphy-lockstep 20:06:06] r05_b13_gpu_proc_sgemm: {"misses": 2965, "recorded": 2612, "skipped": 2388, "valid": true}
+[cuphy-lockstep 20:06:06] Measured case 26/36: pair=5 block=13 condition=proc_sgemm
+[cuphy-lockstep 20:06:10] case r05_b13_cpu_proc_sgemm: launcher=cpu isolation=none workload=sgemm
+[cuphy-lockstep 20:06:20] r05_b13_cpu_proc_sgemm: {"misses": 5000, "recorded": 1043, "skipped": 3957, "valid": true}
+[cuphy-lockstep 20:06:20] Measured case 27/36: pair=5 block=14 condition=mps_sgemm
+[cuphy-lockstep 20:06:24] case r05_b14_gpu_mps_sgemm: launcher=gpu isolation=mps workload=sgemm
+[cuphy-lockstep 20:06:33] r05_b14_gpu_mps_sgemm: {"misses": 2530, "recorded": 3588, "skipped": 1412, "valid": true}
+[cuphy-lockstep 20:06:34] Measured case 28/36: pair=5 block=14 condition=mps_sgemm
+[cuphy-lockstep 20:06:38] case r05_b14_cpu_mps_sgemm: launcher=cpu isolation=mps workload=sgemm
+[cuphy-lockstep 20:06:47] r05_b14_cpu_mps_sgemm: {"misses": 2559, "recorded": 3579, "skipped": 1421, "valid": true}
+[cuphy-lockstep 20:06:47] Measured case 29/36: pair=5 block=15 condition=alone
+[cuphy-lockstep 20:06:47] case r05_b15_gpu_alone: launcher=gpu isolation=none workload=none
+[cuphy-lockstep 20:06:55] r05_b15_gpu_alone: {"misses": 0, "recorded": 5000, "skipped": 0, "valid": true}
+[cuphy-lockstep 20:06:55] Measured case 30/36: pair=5 block=15 condition=alone
+[cuphy-lockstep 20:06:55] case r05_b15_cpu_alone: launcher=cpu isolation=none workload=none
+[cuphy-lockstep 20:07:03] r05_b15_cpu_alone: {"misses": 0, "recorded": 5000, "skipped": 0, "valid": true}
+[cuphy-lockstep 20:07:04] Measured case 31/36: pair=6 block=16 condition=proc_sgemm
+[cuphy-lockstep 20:07:08] case r06_b16_cpu_proc_sgemm: launcher=cpu isolation=none workload=sgemm
+[cuphy-lockstep 20:07:17] r06_b16_cpu_proc_sgemm: {"misses": 5000, "recorded": 1042, "skipped": 3958, "valid": true}
+[cuphy-lockstep 20:07:17] Measured case 32/36: pair=6 block=16 condition=proc_sgemm
+[cuphy-lockstep 20:07:22] case r06_b16_gpu_proc_sgemm: launcher=gpu isolation=none workload=sgemm
+[cuphy-lockstep 20:07:31] r06_b16_gpu_proc_sgemm: {"misses": 2967, "recorded": 2610, "skipped": 2390, "valid": true}
+[cuphy-lockstep 20:07:31] Measured case 33/36: pair=6 block=17 condition=alone
+[cuphy-lockstep 20:07:32] case r06_b17_gpu_alone: launcher=gpu isolation=none workload=none
+[cuphy-lockstep 20:07:39] r06_b17_gpu_alone: {"misses": 0, "recorded": 5000, "skipped": 0, "valid": true}
+[cuphy-lockstep 20:07:40] Measured case 34/36: pair=6 block=17 condition=alone
+[cuphy-lockstep 20:07:40] case r06_b17_cpu_alone: launcher=cpu isolation=none workload=none
+[cuphy-lockstep 20:07:48] r06_b17_cpu_alone: {"misses": 0, "recorded": 5000, "skipped": 0, "valid": true}
+[cuphy-lockstep 20:07:48] Measured case 35/36: pair=6 block=18 condition=mps_sgemm
+[cuphy-lockstep 20:07:52] case r06_b18_cpu_mps_sgemm: launcher=cpu isolation=mps workload=sgemm
+[cuphy-lockstep 20:08:01] r06_b18_cpu_mps_sgemm: {"misses": 2569, "recorded": 3549, "skipped": 1451, "valid": true}
+[cuphy-lockstep 20:08:02] Measured case 36/36: pair=6 block=18 condition=mps_sgemm
+[cuphy-lockstep 20:08:06] case r06_b18_gpu_mps_sgemm: launcher=gpu isolation=mps workload=sgemm
+[cuphy-lockstep 20:08:15] r06_b18_gpu_mps_sgemm: {"misses": 2555, "recorded": 3557, "skipped": 1443, "valid": true}
+[cuphy-lockstep 20:08:15] Archive for SSH collection: /workspace/cuphy-lockstep/collection-repeat-20261002T200055Z-10078.tar.gz (3709677 bytes)
+=====SLOTBENCH-DONE status=ok archive=/workspace/cuphy-lockstep/collection-repeat-20261002T200055Z-10078.tar.gz=====

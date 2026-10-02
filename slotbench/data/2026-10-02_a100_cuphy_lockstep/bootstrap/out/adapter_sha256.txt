@@ -1,0 +1,5 @@
+92254087526d64f25f49378af84a36d8ba7dbd59fbf06eee999a5d7ccb760c29  /workspace/cuphy-lockstep/sb/slotbench/cuphy/patches/cuphy-lockstep.patch
+d9b4a5eeef71de557646489fe31164f76d32a8c1fdb8096850c390fb38979216  /workspace/cuphy-lockstep/sb/slotbench/cuphy/cuphy_lockstep.cu
+189a3b35a3765c64a7f241f334f96b47b75d71526340876f110824a4a0d8154b  /workspace/cuphy-lockstep/sb/slotbench/cuphy/cuphy_lockstep_stamps.cu
+faee4a766741dd69846a2ac388a1a7c923a5def7249b331ea88e932b8da8373f  /workspace/cuphy-lockstep/sb/slotbench/cuphy/cuphy_lockstep.h
+96a29f4de04606f86d8f4e223000ddd922999ab94702390eaa080a7ab3d87159  /workspace/cuphy-lockstep/sb/slotbench/cuphy/cuphy_lockstep_stamps.h
