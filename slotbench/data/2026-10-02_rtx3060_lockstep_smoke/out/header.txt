@@ -1,0 +1,5 @@
+name, driver_version, clocks.current.sm [MHz], clocks.current.memory [MHz], compute_mode
+NVIDIA GeForce RTX 3060, 595.71.05, 210 MHz, 405 MHz, Default
+6.8.0-124-generic
+8
+core=1 fifo=80 period_us=500 deadline_us=500 slots=2000 sizes=--subcarriers 612 --ldpc-cb 0 --ldpc-iters 3 slot_variant=no_cublas

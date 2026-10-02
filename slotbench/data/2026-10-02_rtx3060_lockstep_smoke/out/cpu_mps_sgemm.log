@@ -1,0 +1,1 @@
+cpu  load=none   cpu_mps_sgemm    start_err p50     6.42 p99    21.77 p99.9    26.97 max     29.54 us | launch_prec p50    6.49 | exec p50  217.1 | miss 0/2000 skipped 0 err 0

@@ -1,0 +1,23 @@
+﻿Timing in us; each triplet is p50/p99/max (ceil percentile convention). Invalid timing is suppressed.
+case                             status                 start_error           launch_precision                       exec       misses/N
+cpu_alone                        VALID          6.403/26.407/98.117        6.490/26.484/98.200    128.000/129.024/135.168 0/2000
+  counts: raw=2000, recorded=2000, skipped=0, errors=0, timeouts=0, missing=0, missing_stamps=0
+cpu_inproc                       VALID       62.615/165.015/194.185     62.553/164.952/194.119    772.096/917.504/921.600 1584/2000
+  counts: raw=2000, recorded=1001, skipped=999, errors=0, timeouts=0, missing=0, missing_stamps=0
+cpu_mps_sgemm                    VALID          6.422/21.771/29.542        6.490/21.832/29.601    217.088/320.512/362.496 0/2000
+  counts: raw=2000, recorded=2000, skipped=0, errors=0, timeouts=0, missing=0, missing_stamps=0
+cpu_proc_sgemm                   VALID   2012.715/3113.929/4482.321 2012.374/3113.540/4481.926    136.192/138.240/142.336 1993/2000
+  counts: raw=2000, recorded=432, skipped=1568, errors=0, timeouts=0, missing=0, missing_stamps=0
+gpu_alone                        VALID            3.618/4.109/4.114          3.577/4.074/4.081    122.880/123.904/130.048 0/2000
+  counts: raw=2000, recorded=2000, skipped=0, errors=0, timeouts=0, missing=0, missing_stamps=0
+gpu_inproc                       VALID        21.909/56.550/196.556      21.868/56.517/196.515    768.000/920.576/957.440 1699/2000
+  counts: raw=2000, recorded=1029, skipped=971, errors=0, timeouts=0, missing=0, missing_stamps=0
+gpu_mps_sgemm                    VALID            3.826/5.160/5.208          3.734/5.073/5.116    223.232/326.656/375.808 0/2000
+  counts: raw=2000, recorded=2000, skipped=0, errors=0, timeouts=0, missing=0, missing_stamps=0
+gpu_proc_sgemm                   VALID      3.749/2277.444/2311.376    3.725/2277.418/2311.355  123.904/2464.768/2525.184 1090/2000
+  counts: raw=2000, recorded=1131, skipped=869, errors=0, timeouts=0, missing=0, missing_stamps=0
+PAIR {mode}_alone: matching workloads; both cells valid
+PAIR {mode}_inproc: matching workloads; both cells valid
+PAIR {mode}_mps_sgemm: matching workloads; both cells valid
+PAIR {mode}_proc_sgemm: matching workloads; both cells valid
+missing = absent raw records; missing_stamps = non-skipped/non-error rows with zero stamps (also timeouts).

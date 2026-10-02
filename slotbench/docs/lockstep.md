@@ -82,3 +82,7 @@ Local validation on 2026-10-02: CUDA 12.6.3 build for SM86 passed, 267 host asse
 111 Python tests passed, and 37 malformed CLI cases were rejected before CUDA initialization.
 The Linux test environment used an unprivileged sudo shim for existing mocked GPU setup tests.
 Compilation alone does not establish runtime correctness or a timing advantage.
+
+The first [RTX 3060 hardware smoke and raw audit](../data/2026-10-02_rtx3060_lockstep_smoke/README.md)
+completed all eight cases on 2026-10-02. GPU launch reduced start jitter in this short sample, but
+deadline misses were not consistently lower. Both rented instances were destroyed.

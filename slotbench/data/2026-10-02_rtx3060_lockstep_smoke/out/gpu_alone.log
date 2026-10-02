@@ -1,0 +1,1 @@
+gpu  load=none   gpu_alone        start_err p50     3.62 p99     4.11 p99.9     4.12 max      4.12 us | launch_prec p50    3.58 | exec p50  122.9 | miss 0/2000 skipped 0 err 0

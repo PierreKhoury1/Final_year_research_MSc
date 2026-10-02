@@ -1,0 +1,1 @@
+cpu  load=none   cpu_proc_sgemm   start_err p50  2012.71 p99  3113.93 p99.9  4482.32 max   4482.32 us | launch_prec p50 2012.37 | exec p50  136.2 | miss 1993/2000 skipped 1568 err 0

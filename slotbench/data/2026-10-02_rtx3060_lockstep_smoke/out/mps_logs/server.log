@@ -1,0 +1,74 @@
+[2026-10-02 17:29:05.393 Server  5749] Startup
+[2026-10-02 17:29:05.393 Server  5749] Connecting to control daemon on socket: /tmp/sb-lockstep-mps.oV4jEl/pipe/control
+[2026-10-02 17:29:05.393 Server  5749] Initializing server process
+[2026-10-02 17:29:05.472 Server  5749] Creating server context on device 0 (NVIDIA GeForce RTX 3060)
+[2026-10-02 17:29:05.550 Server  5749] Created anonymous shared memory region mps.shm.0.5749
+[2026-10-02 17:29:05.550 Server  5749] CUDA MPS Server for Linux/Unix. Binary version: 13020
+[2026-10-02 17:29:05.550 Server  5749] Display Driver version: 595
+[2026-10-02 17:29:05.550 Server  5749] Active Threads Percentage set to 100.0
+[2026-10-02 17:29:05.550 Server  5749] Server Priority set to 0
+[2026-10-02 17:29:05.550 Server  5749] Static Partitioning mode disabled
+[2026-10-02 17:29:05.550 Server  5749] Server has started
+[2026-10-02 17:29:05.550 Server  5749] Received new client request from PID 5746
+[2026-10-02 17:29:05.550 Server  5749] Priority level of client {5746} is: 0 (NORMAL)
+[2026-10-02 17:29:05.550 Server  5749] Creating worker thread for client {PID: 5746, Context ID: 0}
+[2026-10-02 17:29:05.550 Server  5749] Client {PID: 5746, Context ID: 0} connected
+[2026-10-02 17:29:05.577 Server  5749] Received new client request from PID 5746
+[2026-10-02 17:29:05.577 Server  5749] Priority level of client {5746} is: 0 (NORMAL)
+[2026-10-02 17:29:05.577 Server  5749] Client {PID: 5746, Context ID: 1} connected
+[2026-10-02 17:29:05.577 Server  5749] Creating worker thread for client {PID: 5746, Context ID: 1}
+[2026-10-02 17:29:05.577 Server  5749] Device NVIDIA GeForce RTX 3060 (uuid GPU-3d0ee14d-8e11-4452-e84d-7ca2cb04a6ae) is associated
+[2026-10-02 17:29:05.577 Server  5749] Status of client {PID: 5746, Context ID: 1} is ACTIVE
+[2026-10-02 17:29:05.577 Client  5746] Static partitioning mode disabled
+[2026-10-02 17:29:12.409 Server  5749] Received new client request from PID 5773
+[2026-10-02 17:29:12.409 Server  5749] Priority level of client {5773} is: 0 (NORMAL)
+[2026-10-02 17:29:12.409 Server  5749] Client {PID: 5773, Context ID: 0} connected
+[2026-10-02 17:29:12.409 Server  5749] Creating worker thread for client {PID: 5773, Context ID: 0}
+[2026-10-02 17:29:12.433 Server  5749] Received new client request from PID 5773
+[2026-10-02 17:29:12.433 Server  5749] Priority level of client {5773} is: 0 (NORMAL)
+[2026-10-02 17:29:12.433 Server  5749] Client {PID: 5773, Context ID: 1} connected
+[2026-10-02 17:29:12.433 Server  5749] Creating worker thread for client {PID: 5773, Context ID: 1}
+[2026-10-02 17:29:12.433 Server  5749] Device NVIDIA GeForce RTX 3060 (uuid GPU-3d0ee14d-8e11-4452-e84d-7ca2cb04a6ae) is associated
+[2026-10-02 17:29:12.433 Server  5749] Status of client {PID: 5773, Context ID: 1} is ACTIVE
+[2026-10-02 17:29:12.434 Client  5773] Static partitioning mode disabled
+[2026-10-02 17:29:17.795 Server  5749] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 5773, Context ID: 1} exit
+[2026-10-02 17:29:17.795 Server  5749] Client {PID: 5773, Context ID: 1} exiting. Number of active client contexts is 1.
+[2026-10-02 17:29:17.820 Server  5749] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 5773, Context ID: 0} exit
+[2026-10-02 17:29:17.820 Server  5749] Client process 5773 disconnected
+[2026-10-02 17:29:19.895 Server  5749] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 5746, Context ID: 1} exit
+[2026-10-02 17:29:19.895 Server  5749] Client {PID: 5746, Context ID: 1} exiting. Number of active client contexts is 0.
+[2026-10-02 17:29:19.920 Server  5749] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 5746, Context ID: 0} exit
+[2026-10-02 17:29:19.920 Server  5749] Client process 5746 disconnected
+[2026-10-02 17:29:19.986 Server  5749] Received new client request from PID 5783
+[2026-10-02 17:29:19.986 Server  5749] Priority level of client {5783} is: 0 (NORMAL)
+[2026-10-02 17:29:19.986 Server  5749] Client {PID: 5783, Context ID: 0} connected
+[2026-10-02 17:29:19.986 Server  5749] Creating worker thread for client {PID: 5783, Context ID: 0}
+[2026-10-02 17:29:20.036 Server  5749] Received new client request from PID 5783
+[2026-10-02 17:29:20.036 Server  5749] Priority level of client {5783} is: 0 (NORMAL)
+[2026-10-02 17:29:20.036 Server  5749] Client {PID: 5783, Context ID: 1} connected
+[2026-10-02 17:29:20.036 Server  5749] Creating worker thread for client {PID: 5783, Context ID: 1}
+[2026-10-02 17:29:20.036 Server  5749] Device NVIDIA GeForce RTX 3060 (uuid GPU-3d0ee14d-8e11-4452-e84d-7ca2cb04a6ae) is associated
+[2026-10-02 17:29:20.036 Server  5749] Status of client {PID: 5783, Context ID: 1} is ACTIVE
+[2026-10-02 17:29:20.036 Client  5783] Static partitioning mode disabled
+[2026-10-02 17:29:27.005 Server  5749] Received new client request from PID 5806
+[2026-10-02 17:29:27.005 Server  5749] Priority level of client {5806} is: 0 (NORMAL)
+[2026-10-02 17:29:27.006 Server  5749] Client {PID: 5806, Context ID: 0} connected
+[2026-10-02 17:29:27.007 Server  5749] Creating worker thread for client {PID: 5806, Context ID: 0}
+[2026-10-02 17:29:27.025 Server  5749] Received new client request from PID 5806
+[2026-10-02 17:29:27.026 Server  5749] Priority level of client {5806} is: 0 (NORMAL)
+[2026-10-02 17:29:27.026 Server  5749] Creating worker thread for client {PID: 5806, Context ID: 1}
+[2026-10-02 17:29:27.026 Server  5749] Client {PID: 5806, Context ID: 1} connected
+[2026-10-02 17:29:27.026 Server  5749] Device NVIDIA GeForce RTX 3060 (uuid GPU-3d0ee14d-8e11-4452-e84d-7ca2cb04a6ae) is associated
+[2026-10-02 17:29:27.026 Server  5749] Status of client {PID: 5806, Context ID: 1} is ACTIVE
+[2026-10-02 17:29:27.026 Client  5806] Static partitioning mode disabled
+[2026-10-02 17:29:32.445 Server  5749] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 5806, Context ID: 1} exit
+[2026-10-02 17:29:32.445 Server  5749] Client {PID: 5806, Context ID: 1} exiting. Number of active client contexts is 1.
+[2026-10-02 17:29:32.471 Server  5749] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 5806, Context ID: 0} exit
+[2026-10-02 17:29:32.471 Server  5749] Client process 5806 disconnected
+[2026-10-02 17:29:34.546 Server  5749] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 5783, Context ID: 1} exit
+[2026-10-02 17:29:34.546 Server  5749] Client {PID: 5783, Context ID: 1} exiting. Number of active client contexts is 0.
+[2026-10-02 17:29:34.572 Server  5749] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 5783, Context ID: 0} exit
+[2026-10-02 17:29:34.572 Server  5749] Client process 5783 disconnected
+[2026-10-02 17:29:34.596 Server  5749] Server has been notified to shutdown
+[2026-10-02 17:29:34.596 Server  5749] Waiting for current clients to finish
+[2026-10-02 17:29:34.596 Server  5749] Exiting

@@ -1,0 +1,1 @@
+gpu  load=none   gpu_proc_sgemm   start_err p50     3.75 p99  2277.44 p99.9  2298.40 max   2311.38 us | launch_prec p50    3.73 | exec p50  123.9 | miss 1090/2000 skipped 869 err 0

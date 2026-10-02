@@ -1,0 +1,1 @@
+gpu  load=stream gpu_inproc       start_err p50    21.91 p99    56.55 p99.9   173.38 max    196.56 us | launch_prec p50   21.87 | exec p50  768.0 | miss 1699/2000 skipped 971 err 0

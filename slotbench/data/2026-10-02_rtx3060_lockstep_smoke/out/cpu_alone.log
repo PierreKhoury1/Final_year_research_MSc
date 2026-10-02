@@ -1,0 +1,1 @@
+cpu  load=none   cpu_alone        start_err p50     6.40 p99    26.41 p99.9    40.77 max     98.12 us | launch_prec p50    6.49 | exec p50  128.0 | miss 0/2000 skipped 0 err 0
