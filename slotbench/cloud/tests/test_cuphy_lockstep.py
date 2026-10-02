@@ -74,7 +74,8 @@ def test_bootstrap_source_and_syntax_do_not_execute_main(tmp_path):
 
 
 @pytest.mark.parametrize("correctness_ok", [True, False])
-def test_run_case_only_continues_after_successful_correctness_gate(tmp_path, case, correctness_ok):
+@pytest.mark.parametrize("line_buffered", [False, True])
+def test_run_case_only_continues_after_successful_correctness_gate(tmp_path, case, correctness_ok, line_buffered):
     jp, rp, data, _ = case
     out = tmp_path / "out"
     out.mkdir()
@@ -89,13 +90,17 @@ def test_run_case_only_continues_after_successful_correctness_gate(tmp_path, cas
     fake.chmod(0o755)
     env = dict(W=str(tmp_path), OUT=str(out), PUSCH=str(fake), TV="unused.h5", TV_SHA="abc",
                SLOTS="2", WARMUP="1", PERIOD="500", DEADLINE="500", CASE_TIMEOUT="10",
-               FIXTURE_JSON=str(jp), FIXTURE_RAW=str(rp))
+               FIXTURE_JSON=str(jp), FIXTURE_RAW=str(rp), SB_CUPHY_LINE_BUFFERED=str(int(line_buffered)),
+               SB_CUPHY_CPU="1")
     result = shell('run_case cpu_alone cpu none none\ntouch "$OUT/should-not-run"', env)
     assert (result.returncode == 0) == correctness_ok
     assert (out / "should-not-run").exists() == correctness_ok
     if not correctness_ok:
         assert "correctness_after" in (out / "cpu_alone.check.log").read_text()
     manifest = json.loads((out / "cpu_alone.run.json").read_text())
+    assert manifest["command"] == (["stdbuf", "-oL", "-eL"] if line_buffered else []) + [str(fake), "-i", "unused.h5", "-m", "1", "-r", "1", "-c", "1"]
+    assert manifest["phy_cpu_requested"] == 1
+    assert manifest["line_buffered"] is line_buffered
     assert manifest["aerial_commit"] == "4f65f97c1d5f701ce911f7dda8f1b1f3f0c7693c"
     assert manifest["test_vector_sha256"] == "abc"
 

@@ -97,9 +97,13 @@ apply_adapter() {
 
 start_adversary() {
     local name=$1 isolation=$2 rows=0 i
-    local extra=()
+    local extra=() affinity=()
+    if [[ -n ${SB_ADVERSARY_CPU:-} ]]; then
+        [[ $SB_ADVERSARY_CPU =~ ^[0-9]+$ ]] || { log "Invalid SB_ADVERSARY_CPU"; return 2; }
+        affinity=(taskset -c "$SB_ADVERSARY_CPU")
+    fi
     [[ $isolation == mps ]] && extra+=(CUDA_MPS_PIPE_DIRECTORY="$MPS_PIPE" CUDA_MPS_LOG_DIRECTORY="$MPS_LOG" CUDA_MPS_ACTIVE_THREAD_PERCENTAGE=50)
-    env "${extra[@]}" "$ADV" --workload sgemm --duty 100 --prio default --gpu 0 \
+    env "${extra[@]}" "${affinity[@]}" "$ADV" --workload sgemm --duty 100 --prio default --gpu 0 \
         --seconds 600 --timeline "$OUT/$name.adversary.csv" --out "$OUT/$name.adversary.json" > "$OUT/$name.adversary.log" 2>&1 &
     ADV_PID=$!
     for ((i=0; i<90; i++)); do
@@ -114,7 +118,16 @@ start_adversary() {
 
 run_case() {
     local name=$1 mode=$2 isolation=$3 workload=$4 rc=0 start end
-    local extra=()
+    local extra=() launch_prefix=() pusch_args=(-i "$TV" -m 1 -r 1)
+    case ${SB_CUPHY_LINE_BUFFERED:-0} in
+        0) ;;
+        1) launch_prefix=(stdbuf -oL -eL) ;;
+        *) log "Invalid SB_CUPHY_LINE_BUFFERED"; return 2 ;;
+    esac
+    if [[ -n ${SB_CUPHY_CPU:-} ]]; then
+        [[ $SB_CUPHY_CPU =~ ^[0-9]+$ ]] || { log "Invalid SB_CUPHY_CPU"; return 2; }
+        pusch_args+=(-c "$SB_CUPHY_CPU")
+    fi
     [[ $isolation == mps ]] && extra+=(CUDA_MPS_PIPE_DIRECTORY="$MPS_PIPE" CUDA_MPS_LOG_DIRECTORY="$MPS_LOG")
     [[ $workload == sgemm ]] && start_adversary "$name" "$isolation"
     log "case $name: launcher=$mode isolation=$isolation workload=$workload"
@@ -124,7 +137,7 @@ run_case() {
         SB_CUPHY_LOCKSTEP_WARMUP="$WARMUP" SB_CUPHY_LOCKSTEP_PERIOD_US="$PERIOD" \
         SB_CUPHY_LOCKSTEP_DEADLINE_US="$DEADLINE" SB_CUPHY_LOCKSTEP_OUT="$OUT/$name.json" \
         SB_CUPHY_LOCKSTEP_RAW="$OUT/$name.bin" timeout --signal=TERM --kill-after=20 "$CASE_TIMEOUT" \
-        "$PUSCH" -i "$TV" -m 1 -r 1 > "$CURRENT_LOG" 2>&1 &
+        "${launch_prefix[@]}" "$PUSCH" "${pusch_args[@]}" > "$CURRENT_LOG" 2>&1 &
     STEP_PID=$!
     wait "$STEP_PID" || rc=$?
     STEP_PID=""
@@ -141,14 +154,17 @@ if data.get("ok") is not True or data.get("units", 0) <= 0:
 print("adversary summary valid")
 PY
     fi
-    python3 - "$OUT/$name.run.json" "$name" "$mode" "$isolation" "$workload" "$start" "$end" "$rc" "$TV_SHA" "$ACAR_COMMIT" "$SLOTS" "$WARMUP" "$PERIOD" "$DEADLINE" "$TV" "$PUSCH" <<'PY'
+    python3 - "$OUT/$name.run.json" "$name" "$mode" "$isolation" "$workload" "$start" "$end" "$rc" "$TV_SHA" "$ACAR_COMMIT" "$SLOTS" "$WARMUP" "$PERIOD" "$DEADLINE" "$TV" "$PUSCH" "${SB_ADVERSARY_CPU:-}" "${SB_CUPHY_LINE_BUFFERED:-0}" "${pusch_args[@]}" <<'PY'
 import json, sys
-p, name, mode, isolation, workload, start, end, rc, tv_sha, commit, slots, warmup, period, deadline, tv, pusch = sys.argv[1:]
+p, name, mode, isolation, workload, start, end, rc, tv_sha, commit, slots, warmup, period, deadline, tv, pusch, adversary_cpu, line_buffered, *args = sys.argv[1:]
 with open(p, "w") as f:
     json.dump(dict(name=name, mode=mode, isolation=isolation, workload=workload, start_utc=start,
                    end_utc=end, exit_code=int(rc), test_vector_sha256=tv_sha, aerial_commit=commit,
                    slots=int(slots), warmup=int(warmup), period_us=float(period), deadline_us=float(deadline),
-                   command=[pusch, "-i", tv, "-m", "1", "-r", "1"],
+                   command=(["stdbuf", "-oL", "-eL"] if line_buffered=="1" else []) + [pusch, *args],
+                   line_buffered=line_buffered=="1",
+                   phy_cpu_requested=int(args[args.index("-c")+1]) if "-c" in args else 0,
+                   adversary_cpu_requested=int(adversary_cpu) if adversary_cpu and workload!="none" else None,
                    adversary_mps_percentage=50 if isolation=="mps" and workload!="none" else None), f, indent=2)
 PY
     (( rc == 0 )) || { log "$name process failed rc=$rc"; return "$rc"; }
