@@ -220,6 +220,15 @@ CMAKE
     [[ -x $PUSCH ]]
     step adversary_build 180 make -C "$W/sb/slotbench" SM=80 CUDA_HOME=/usr/local/cuda bin/adversary
     ADV="$W/sb/slotbench/bin/adversary"
+    # Repeated campaigns upload the audited cached vector over SSH, then run
+    # repeat_cuphy_lockstep.sh. Avoid downloading MATLAB or starting smoke cases.
+    if [[ ${SB_CUPHY_PREPARE_ONLY:-0} == 1 ]]; then
+        sha256sum "$PUSCH" "$ADV" > "$OUT/executable_sha256.txt"
+        date -u +%FT%TZ > "$W/prepared.txt"
+        log "Build prepared for SSH vector upload and repeated experiments"
+        finish prepared
+        return
+    fi
     step tv "${TV_TIMEOUT_S:-2400}" bash -e -o pipefail -c tv
     TV="$W/tv/GPU_test_input/TVnr_7304_PUSCH_gNB_CUPHY_s0p0.h5"
     [[ -s $TV ]]
