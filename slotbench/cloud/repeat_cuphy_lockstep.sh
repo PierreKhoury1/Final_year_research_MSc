@@ -319,15 +319,20 @@ repeat_main() {
     local overall_timeout=${SB_CUPHY_REPEAT_TIMEOUT_S:-1800}
     [[ $REPEATS =~ ^[0-9]+$ && $REPEAT_SEED =~ ^[0-9]+$ && $SLOTS =~ ^[0-9]+$ && $WARMUP =~ ^[0-9]+$ && $CASE_TIMEOUT =~ ^[0-9]+$ && $overall_timeout =~ ^[0-9]+$ ]]
     (( REPEATS >= 2 && REPEATS <= 20 && REPEATS % 2 == 0 && SLOTS >= 1 && SLOTS <= 5000 && WARMUP <= 1000 && CASE_TIMEOUT >= 10 && CASE_TIMEOUT <= 600 && overall_timeout >= 60 && overall_timeout <= 7200 ))
-    [[ $PERIOD == 500 ]]
-    awk -v p="$PERIOD" -v d="$DEADLINE" 'BEGIN {exit !(d > 0 && d <= p)}'
-    [[ $(git -C "$S" rev-parse HEAD) == "$ACAR_COMMIT" ]]
+    [[ $PERIOD == 500 ]] || { echo "repeat: period must be 500 us" >&2; return 4; }
+    awk -v p="$PERIOD" -v d="$DEADLINE" 'BEGIN {exit !(d > 0 && d <= p)}' || { echo "repeat: deadline must be in (0, period]" >&2; return 4; }
+    [[ $(git -C "$S" rev-parse HEAD) == "$ACAR_COMMIT" ]] || { echo "repeat: $S is not at $ACAR_COMMIT" >&2; return 4; }
     PUSCH="$W/build/cuPHY/examples/pusch_rx_multi_pipe/cuphy_ex_pusch_rx_multi_pipe"
     ADV="$W/sb/slotbench/bin/adversary"
     TV="$W/tv/GPU_test_input/TVnr_7304_PUSCH_gNB_CUPHY_s0p0.h5"
-    [[ -x $PUSCH && -x $ADV && -s $TV && -s $S/cuPHY/nvlog/config/nvlog_config.yaml ]]
+    [[ -x $PUSCH && -x $ADV && -s $TV && -s $S/cuPHY/nvlog/config/nvlog_config.yaml ]] \
+        || { echo "repeat: missing executable, test vector or nvlog config under $W" >&2; return 4; }
     TV_SHA=$(sha256sum "$TV" | cut -d' ' -f1)
-    [[ $TV_SHA == 85796206a068087c3e2e03bafb7a22118fa7f27ce87f94f00afcf1ec4ac106ca ]]
+    # The pinned recipe regenerates TC7304 with the same parameters but a different random payload each
+    # time, so a campaign may pass the hash of the vector it generated (SB_CUPHY_TV_SHA256); it is recorded
+    # with the results either way.
+    [[ $TV_SHA == "${SB_CUPHY_TV_SHA256:-85796206a068087c3e2e03bafb7a22118fa7f27ce87f94f00afcf1ec4ac106ca}" ]] \
+        || { echo "repeat: test vector sha256 $TV_SHA is not the expected vector" >&2; return 4; }
     RUN_ID="$(date -u +%Y%m%dT%H%M%SZ)-$$"
     export LOGS="$W/logs-repeat-$RUN_ID" OUT="$W/out-repeat-$RUN_ID"
     mkdir "$LOGS" "$OUT"
