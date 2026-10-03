@@ -683,7 +683,9 @@ def run(api, args, out=print, now=time.time, sleep=time.sleep):
                 st = info.get("actual_status") or info.get("cur_state")
                 if st == "running":
                     running_seen = True
-                if st in ("exited", "offline") or (info.get("intended_status") == "stopped"):
+                # intended_status can read "stopped" while the image is still being pulled; only trust it
+                # once the instance has been seen running
+                if st in ("exited", "offline") or (running_seen and info.get("intended_status") == "stopped"):
                     reason = f"instance is {st} ({(info.get('status_msg') or '')[:120]})"
                 elif not running_seen and elapsed > args.max_load_min * 60:
                     reason = f"not running after {args.max_load_min} min (status {st})"
