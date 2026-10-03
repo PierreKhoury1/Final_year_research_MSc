@@ -5,11 +5,13 @@ set -Eeuo pipefail
 source "$(dirname "${BASH_SOURCE[0]}")/repeat_cuphy_lockstep.sh"
 
 repeat_plan() {
-    python3 - "$OUT" "$REPEAT_SEED" "$SLOTS" "$WARMUP" "$PERIOD" "$DEADLINE" "$TV_SHA" "$ACAR_COMMIT" "$OBSERVER_CPU" <<'PY'
+    python3 - "$OUT" "$REPEAT_SEED" "$SLOTS" "$WARMUP" "$PERIOD" "$DEADLINE" "$TV_SHA" "$ACAR_COMMIT" "$OBSERVER_CPU" "${REPEATS:-${SB_CUPHY_REPEATS:-6}}" <<'PY'
 import itertools, json, os, pathlib, random, sys
-out, seed, slots, warmup, period, deadline, vector, revision, observer = sys.argv[1:]
+out, seed, slots, warmup, period, deadline, vector, revision, observer, repeats = sys.argv[1:]
 out = pathlib.Path(out)
-orders = list(itertools.permutations(("cpu", "gpu", "cpu_keepalive")))
+repeats = int(repeats)
+assert repeats % 6 == 0, "REPEATS must be a multiple of 6 (one of each variant order per block of six)"
+orders = list(itertools.permutations(("cpu", "gpu", "cpu_keepalive"))) * (repeats // 6)
 random.Random(int(seed)).shuffle(orders)
 schedule = []
 for triplet, order in enumerate(orders, 1):
@@ -26,8 +28,8 @@ for triplet, order in enumerate(orders, 1):
             telemetry_continuous=name+".telemetry.continuous.csv"))
 clock = json.loads((out / "clock_control.json").read_text()) if (out / "clock_control.json").exists() else {"clocks_locked": None}
 cpu = json.loads((out / "cpu_selection.json").read_text())
-manifest = dict(schema_version=1, experiment_kind="idle_keepalive_control", seed=int(seed), repeats=6,
-    randomization="Each of the six permutations of CPU, GPU, CPU+keepalive occurs once; triplet order shuffled by seed.",
+manifest = dict(schema_version=1, experiment_kind="idle_keepalive_control", seed=int(seed), repeats=repeats,
+    randomization=f"Each of the six permutations of CPU, GPU, CPU+keepalive occurs {repeats // 6} time(s); triplet order shuffled by seed.",
     slots=int(slots), warmup=int(warmup), period_us=float(period), deadline_us=float(deadline),
     test_vector_sha256=vector, aerial_commit=revision, clocks_locked=clock.get("clocks_locked"),
     clock_control=clock, cpu_control=cpu, gates=["gate_cpu_alone", "gate_gpu_alone", "gate_cpu_keepalive_alone"],
@@ -72,7 +74,7 @@ repeat_schedule() {
         repeat_no_mps
         export SB_CUPHY_LOCKSTEP_CPU_KEEPALIVE=0
         [[ $variant != cpu_keepalive ]] || export SB_CUPHY_LOCKSTEP_CPU_KEEPALIVE=1
-        log "Activity control $case_index/18: triplet=$triplet position=$position variant=$variant"
+        log "Activity control $case_index/$(( ${REPEATS:-${SB_CUPHY_REPEATS:-6}} * 3 )): triplet=$triplet position=$position variant=$variant"
         repeat_case "$name" "$mode" none none
         activity_validate_case "$name" "$variant"
     done < "$OUT/schedule.tsv"
@@ -81,7 +83,8 @@ repeat_schedule() {
 }
 
 activity_main() {
-    export SB_CUPHY_REPEATS=6 SB_CUPHY_REPEAT_SEED="${SB_CUPHY_REPEAT_SEED:-20261003}"
+    export SB_CUPHY_REPEATS="${SB_CUPHY_REPEATS:-6}" SB_CUPHY_REPEAT_SEED="${SB_CUPHY_REPEAT_SEED:-20261003}"
+    [[ $SB_CUPHY_REPEATS =~ ^(6|12|18)$ ]]
     export SB_CUPHY_LOCKSTEP_CPU_KEEPALIVE=0
     repeat_main "$@"
 }

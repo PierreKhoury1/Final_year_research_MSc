@@ -37,12 +37,27 @@ finish() {
     tar -cf - -C "$W" "${LOGS#"$W/"}" "${OUT#"$W/"}" | gzip -9 > "$archive"
     bytes=$(stat -c %s "$archive")
     lines=$(( (4 * ((bytes + 2) / 3) + 75) / 76 + 2 ))
-    if (( lines > 18000 )); then
-        echo "=====SLOTBENCH-ERROR 0 collection-too-large-${lines}-lines====="
-        log "Full archive preserved at $archive; refusing a silently truncated collection"
-        status=error-collection-size
+    sha=$(sha256sum "$archive" | cut -d' ' -f1)
+    if (( lines > 12000 )); then
+        # The controller only ever sees the last 20000 log lines, so a large archive goes out as parts of
+        # 800 kB (about 11000 lines each) with a pause between them long enough for the controller to poll
+        # (vast.py harvests every valid block it sees; SB_PART_GAP_S must exceed twice its --poll-s).
+        local parts_dir="$W/parts" n i part
+        rm -rf "$parts_dir"; mkdir -p "$parts_dir"
+        split -b 800k -d -a 2 --additional-suffix=.bin "$archive" "$parts_dir/p"
+        n=$(ls "$parts_dir" | wc -l)
+        echo "=====SLOTBENCH-PARTS cuphy-lockstep/results $n $sha====="
+        log "archive is $bytes bytes: sending $n parts, ${SB_PART_GAP_S:-120} s apart"
+        i=0
+        for part in "$parts_dir"/p*.bin; do
+            i=$((i + 1))
+            echo "=====SLOTBENCH-BEGIN cuphy-lockstep/results.part$(printf %02d "$i") $(sha256sum "$part" | cut -d' ' -f1)====="
+            base64 -w 76 "$part"
+            echo "=====SLOTBENCH-END cuphy-lockstep/results.part$(printf %02d "$i")====="
+            if (( i < n )); then sleep "${SB_PART_GAP_S:-120}"; fi
+        done
+        echo "=====SLOTBENCH-PARTS cuphy-lockstep/results $n $sha====="
     else
-        sha=$(sha256sum "$archive" | cut -d' ' -f1)
         echo "=====SLOTBENCH-BEGIN cuphy-lockstep/results $sha====="
         base64 -w 76 "$archive"
         echo "=====SLOTBENCH-END cuphy-lockstep/results====="
@@ -251,6 +266,7 @@ CMAKE
     TV_SHA=$(sha256sum "$TV" | cut -d' ' -f1)
     printf '%s  %s\n' "$TV_SHA" "$TV" > "$OUT/test_vector_sha256.txt"
     h5dump -H "$TV" > "$OUT/test_vector_schema.txt"
+    if [[ ${SB_CUPHY_CAMPAIGN:-} == harq ]]; then harq_campaign; finish ok; return; fi
     local mps_scan_rc=0
     pgrep -f '^([^[:space:]]*/)?nvidia-cuda-mps-(control|server)([[:space:]]|$)' >/dev/null || mps_scan_rc=$?
     if [[ $mps_scan_rc -eq 0 ]]; then
@@ -274,6 +290,56 @@ CMAKE
     run_case cpu_mps_sgemm cpu mps sgemm
     run_case gpu_mps_sgemm gpu mps sgemm
     finish ok
+}
+
+# HARQ-budget campaign (SB_CUPHY_CAMPAIGN=harq): idle GPU, three launch variants (CPU, CPU with a GPU
+# keep-alive kernel, GPU) in randomised triplets, a tight completion deadline (SB_CUPHY_LOCKSTEP_DEADLINE_US,
+# default 200 us) and SB_CUPHY_REPEATS triplets of SB_CUPHY_LOCKSTEP_SLOTS slots. Everything after the build
+# reuses the audited repeat/activity runners; the raw records allow any deadline to be re-scored afterwards.
+harq_campaign() {
+    local hc="$W/host-controls" d
+    mkdir -p "$hc"
+    log "harq campaign: host probe, clock-lock attempt (recorded, never assumed), then control_cuphy_activity.sh"
+    bash "$W/sb/slotbench/cloud/cuphy_host_probe.sh" "$hc/probe" 0 > "$LOGS/host_probe.log" 2>&1 || log "host probe rc=$?"
+    python3 - "$hc/clock_control.json" <<'PY'
+import json, subprocess, sys
+def run(cmd):
+    p = subprocess.run(cmd, capture_output=True, text=True)
+    return p.returncode, (p.stdout + p.stderr).strip()
+sm_rc, sm_out = run(["nvidia-smi", "-lgc", "1110,1110"])
+mem_rc, mem_out = run(["nvidia-smi", "-lmc", "1215,1215"])
+pl_rc, pl_out = run(["nvidia-smi", "--query-gpu=power.limit", "--format=csv,noheader"])
+locked = sm_rc == 0 and "not supported" not in sm_out.lower() and "permission" not in sm_out.lower()
+json.dump(dict(clocks_locked=locked, requested_sm_mhz=1110, requested_memory_mhz=1215,
+               sm_command=["nvidia-smi", "-lgc", "1110,1110"], sm_command_rc=sm_rc, sm_result=sm_out,
+               memory_command=["nvidia-smi", "-lmc", "1215,1215"], memory_command_rc=mem_rc, memory_result=mem_out,
+               power_limit=pl_out, interpretation="Use sampled actual clocks; do not infer a lock from return codes."),
+          open(sys.argv[1], "w"), indent=2)
+print("clocks_locked", locked, "|", sm_out[:100])
+PY
+    if [[ -s $hc/probe/recommended_cpus.env ]]; then
+        # shellcheck disable=SC1091
+        source "$hc/probe/recommended_cpus.env"
+        export SB_CUPHY_CPU SB_ADVERSARY_CPU SB_TELEMETRY_CPU SB_BACKGROUND_CPUS
+    fi
+    export SB_CUPHY_CLOCK_EVIDENCE="$hc/clock_control.json"
+    export SB_CUPHY_REPEATS="${SB_CUPHY_REPEATS:-12}" SB_CUPHY_REPEAT_SEED="${SB_CUPHY_REPEAT_SEED:-20261003}"
+    export SB_CUPHY_LOCKSTEP_SLOTS="${SB_CUPHY_LOCKSTEP_SLOTS:-5000}" SB_CUPHY_LOCKSTEP_WARMUP="${SB_CUPHY_LOCKSTEP_WARMUP:-1000}"
+    export SB_CUPHY_LOCKSTEP_DEADLINE_US="${SB_CUPHY_LOCKSTEP_DEADLINE_US:-200}" SB_CUPHY_LOCKSTEP_PERIOD_US=500
+    export SB_CUPHY_REPEAT_TIMEOUT_S="${SB_CUPHY_REPEAT_TIMEOUT_S:-3000}"
+    step harq_campaign "$((SB_CUPHY_REPEAT_TIMEOUT_S + 120))" bash "$W/sb/slotbench/cloud/control_cuphy_activity.sh" || log "campaign rc=$?"
+    # the runner writes out-repeat-*/logs-repeat-* under W; fold them into OUT/LOGS for the archive
+    for d in "$W"/out-repeat-*; do [[ -d $d ]] && cp -a "$d" "$OUT/$(basename "$d")"; done
+    for d in "$W"/logs-repeat-*; do [[ -d $d ]] && cp -a "$d" "$LOGS/$(basename "$d")"; done
+    cp -a "$hc" "$OUT/host-controls" 2>/dev/null || true
+    for d in "$OUT"/out-repeat-*; do
+        [[ -d $d ]] || continue
+        if python3 "$W/sb/slotbench/analysis/cuphy_deadline_sweep.py" "$d" --output-dir "$d/deadline_sweep" > "$LOGS/deadline_sweep.log" 2>&1; then
+            cat "$d/deadline_sweep/summary.txt"
+        else
+            log "deadline sweep rc=$?"
+        fi
+    done
 }
 
 # The pinned dependency/vector-generation functions below reuse onstart_cuphy.sh's

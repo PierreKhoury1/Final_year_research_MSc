@@ -319,7 +319,8 @@ repeat_main() {
     local overall_timeout=${SB_CUPHY_REPEAT_TIMEOUT_S:-1800}
     [[ $REPEATS =~ ^[0-9]+$ && $REPEAT_SEED =~ ^[0-9]+$ && $SLOTS =~ ^[0-9]+$ && $WARMUP =~ ^[0-9]+$ && $CASE_TIMEOUT =~ ^[0-9]+$ && $overall_timeout =~ ^[0-9]+$ ]]
     (( REPEATS >= 2 && REPEATS <= 20 && REPEATS % 2 == 0 && SLOTS >= 1 && SLOTS <= 5000 && WARMUP <= 1000 && CASE_TIMEOUT >= 10 && CASE_TIMEOUT <= 600 && overall_timeout >= 60 && overall_timeout <= 7200 ))
-    [[ $PERIOD == 500 && $DEADLINE == 500 ]]
+    [[ $PERIOD == 500 ]]
+    awk -v p="$PERIOD" -v d="$DEADLINE" 'BEGIN {exit !(d > 0 && d <= p)}'
     [[ $(git -C "$S" rev-parse HEAD) == "$ACAR_COMMIT" ]]
     PUSCH="$W/build/cuPHY/examples/pusch_rx_multi_pipe/cuphy_ex_pusch_rx_multi_pipe"
     ADV="$W/sb/slotbench/bin/adversary"

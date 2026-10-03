@@ -125,15 +125,26 @@ def test_finish_collects_complete_logs_raw_and_markers(tmp_path):
     assert hashlib.sha256((logs / "build.log").read_bytes()).hexdigest() == digest
 
 
-def test_finish_rejects_oversized_collection_without_truncating_sources(tmp_path):
+def test_finish_sends_oversized_collection_in_parts_without_truncating_sources(tmp_path):
     logs, out = tmp_path / "logs", tmp_path / "out"
     logs.mkdir()
     out.mkdir()
-    payload = os.urandom(1_200_000)
+    payload = os.urandom(2_000_000)
     (logs / "build.log").write_bytes(payload)
     result = shell('sleep() { return 0; }; finish ok', dict(W=str(tmp_path), LOGS=str(logs), OUT=str(out)))
-    assert "collection-too-large" in result.stdout
-    assert vast.scan_markers(result.stdout)[:2] == (True, "error-collection-size")
-    assert not vast.extract_blocks(result.stdout)
+    assert result.returncode == 0, result.stderr
+    parts = vast.PARTS_RE.findall(result.stdout)
+    assert parts and int(parts[0][1]) >= 3
+    assert vast.scan_markers(result.stdout)[:2] == (True, "ok")
+    # every part fits in the controller's log window on its own
+    blocks = vast.extract_blocks(result.stdout)
+    assert len(blocks) == int(parts[0][1]) and all(b["data"] is not None for b in blocks)
+    assert all(len(b["data"]) <= 800 * 1024 for b in blocks)
+    # the controller harvests parts from successive polls and joins them at collection time
+    harvest = vast.harvest_blocks(result.stdout, {})
+    collected = tmp_path / "collected"
+    report = vast.collect_text("=====SLOTBENCH-DONE status=ok=====\n", str(collected), out=lambda m: None, harvest=harvest)
+    assert report["done"] and not report["blocks_bad"] and report["blocks_ok"] == ["cuphy-lockstep/results"]
+    assert (collected / "logs/build.log").read_bytes() == payload
     assert (tmp_path / "collection.tar.gz").is_file()
     assert (logs / "build.log").read_bytes() == payload

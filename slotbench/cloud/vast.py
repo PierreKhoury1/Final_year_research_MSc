@@ -42,6 +42,9 @@ STATE_DIR = os.path.join(HERE, ".state")
 BEGIN_RE = re.compile(r"=====SLOTBENCH-BEGIN (\S+)(?: ([0-9a-fA-F]{64}))?=====")
 END_RE = re.compile(r"=====SLOTBENCH-END (\S+)=====")
 DONE_RE = re.compile(r"=====SLOTBENCH-DONE(?: status=(\S+?))?=====")
+# a large block is sent as NAME.part01..NAME.partNN (each inside the log window) announced by this marker
+PARTS_RE = re.compile(r"=====SLOTBENCH-PARTS (\S+) (\d+) ([0-9a-fA-F]{64})=====")
+PART_NAME_RE = re.compile(r"^(.*)\.part(\d+)$")
 ERROR_RE = re.compile(r"=====SLOTBENCH-ERROR .*?=====")
 SAFE_ARG_RE = re.compile(r"^[A-Za-z0-9._/:@+-]+$")
 
@@ -538,27 +541,75 @@ def safe_untar(data, dest):
     return names
 
 
-def collect_text(text, out_dir, out=print):
-    """Save the raw log, extract and untar every block (the last valid copy of each name wins).
+def harvest_blocks(text, harvest):
+    """Add every valid block in this log snapshot to harvest (name -> block); later copies replace earlier
+    ones. Also records PARTS announcements under harvest["__parts__"][name] = (count, sha256)."""
+    for b in extract_blocks(text):
+        if b["data"] is not None:
+            harvest[b["name"]] = b
+    for m in PARTS_RE.finditer(text):
+        harvest.setdefault("__parts__", {})[m.group(1)] = (int(m.group(2)), m.group(3).lower())
+    return harvest
+
+
+def assemble_parts(good, bad):
+    """Join NAME.partNN blocks into NAME when every part is present and the whole matches its sha256.
+    Modifies good/bad in place; the part blocks are removed from good once joined."""
+    parts = good.pop("__parts__", {}) if isinstance(good.get("__parts__"), dict) else {}
+    groups = {}
+    for name in list(good):
+        m = PART_NAME_RE.match(name)
+        if m:
+            groups.setdefault(m.group(1), {})[int(m.group(2))] = name
+    for base, idx in groups.items():
+        count, sha = parts.get(base, (None, None))
+        n = count or (max(idx) if idx else 0)
+        missing = [i for i in range(1, n + 1) if i not in idx]
+        data = None if missing else b"".join(good[idx[i]]["data"] for i in range(1, n + 1))
+        for name in idx.values():   # parts are never untarred on their own
+            del good[name]
+        if missing:
+            bad.append({"name": base, "error": f"missing parts {missing[:8]} of {n}"})
+        elif sha and hashlib.sha256(data).hexdigest() != sha:
+            bad.append({"name": base, "error": "sha256 mismatch after joining parts"})
+        else:
+            good[base] = {"name": base, "sha256": sha, "data": data, "error": None}
+    return good, bad
+
+
+def collect_text(text, out_dir, out=print, harvest=None):
+    """Save the raw log, extract and untar every block (the last valid copy of each name wins). Blocks
+    harvested from earlier polls (multi-part results that no longer fit the final log window) are merged in.
     Returns a report dict."""
     os.makedirs(out_dir, exist_ok=True)
     with open(os.path.join(out_dir, "instance.log"), "w") as f:
         f.write(text)
     blocks = extract_blocks(text)
     good, bad = {}, []
+    for name, b in (harvest or {}).items():
+        if name != "__parts__":
+            good[name] = b
+    if harvest and isinstance(harvest.get("__parts__"), dict):
+        good["__parts__"] = dict(harvest["__parts__"])
+    for m in PARTS_RE.finditer(text):
+        good.setdefault("__parts__", {})[m.group(1)] = (int(m.group(2)), m.group(3).lower())
     for b in blocks:
         if b["data"] is not None:
             good[b["name"]] = b
         else:
             bad.append(b)
+    good, bad = assemble_parts(good, bad)
     files = []
     for name, b in sorted(good.items()):
         try:
             files += safe_untar(b["data"], out_dir)
         except (VastError, tarfile.TarError, OSError, EOFError) as e:
             bad.append({"name": name, "error": f"untar failed: {e}"})
-    # a corrupt copy that was later re-sent intact is not a failure
-    bad = [b for b in bad if b["name"] not in good or b["error"].startswith("untar")]
+    # a corrupt copy that was later re-sent intact, or a part whose whole was assembled, is not a failure
+    def _covered(name):
+        m = PART_NAME_RE.match(name)
+        return name in good or (m is not None and m.group(1) in good)
+    bad = [b for b in bad if not _covered(b["name"]) or b["error"].startswith("untar")]
     done, status, errors = scan_markers(text)
     report = {"blocks_ok": sorted(good), "blocks_bad": [{"name": b["name"], "error": b["error"]} for b in bad],
               "files": sorted(set(files)), "done": done, "done_status": status, "errors": errors,
@@ -615,6 +666,7 @@ def run(api, args, out=print, now=time.time, sleep=time.sleep):
         error_seen_at = None
         running_seen = False
         reason = None
+        harvest = {}
         while True:
             sleep(args.poll_s)
             elapsed = now() - t0
@@ -642,6 +694,11 @@ def run(api, args, out=print, now=time.time, sleep=time.sleep):
                 except VastError as e:
                     out(f"  logs error (will retry): {e}")
             done, dstat, errors = scan_markers(text)
+            if text:
+                n_before = len(harvest)
+                harvest_blocks(text, harvest)
+                if len(harvest) > n_before:
+                    out(f"  harvested {len(harvest) - n_before} result block(s) from this poll")
             last = next((ln for ln in reversed(text.splitlines()) if ln.strip() and "=====" not in ln), "")
             st_txt = (info or {}).get("actual_status") or (info or {}).get("cur_state") or "?"
             out(f"[{elapsed / 60:6.1f} min  ${cost_so_far(dph, elapsed):.3f}] {st_txt}: {last[:110]}")
@@ -673,7 +730,7 @@ def run(api, args, out=print, now=time.time, sleep=time.sleep):
                         fh.write(text)
                 except OSError as e:
                     out(f"  could not save instance.log: {e}")
-                rep = collect_text(text, out_dir, out=out)
+                rep = collect_text(text, out_dir, out=out, harvest=harvest)
                 rc = 0 if rep["done"] and rep["done_status"] == "ok" and not rep["blocks_bad"] else 1
                 break
             except VastError as e:
