@@ -1,0 +1,16 @@
+12 complete triplets, 5000 measured slots per trial; differences in percentage points of missed boundaries (skips included), mean over triplets [95% whole-triplet bootstrap], triplets where the first is lower
+  deadline   200 us  gpu           - cpu          :   -5.818 pp  [-8.708, -3.320]  lower in 12/12
+  deadline   200 us  gpu           - cpu_keepalive:   -0.797 pp  [-1.093, -0.513]  lower in 12/12
+  deadline   200 us  cpu_keepalive - cpu          :   -5.022 pp  [-7.912, -2.610]  lower in 11/12
+  deadline   250 us  gpu           - cpu          :   -0.833 pp  [-1.105, -0.578]  lower in 12/12
+  deadline   250 us  gpu           - cpu_keepalive:   -0.788 pp  [-1.038, -0.533]  lower in 11/12
+  deadline   250 us  cpu_keepalive - cpu          :   -0.045 pp  [-0.353, +0.257]  lower in 5/12
+  deadline   300 us  gpu           - cpu          :   -0.803 pp  [-0.973, -0.650]  lower in 12/12
+  deadline   300 us  gpu           - cpu_keepalive:   -0.775 pp  [-0.970, -0.573]  lower in 11/12
+  deadline   300 us  cpu_keepalive - cpu          :   -0.028 pp  [-0.295, +0.223]  lower in 5/12
+  deadline   400 us  gpu           - cpu          :   -0.620 pp  [-0.655, -0.585]  lower in 12/12
+  deadline   400 us  gpu           - cpu_keepalive:   -0.662 pp  [-0.825, -0.497]  lower in 11/12
+  deadline   400 us  cpu_keepalive - cpu          :   +0.042 pp  [-0.122, +0.208]  lower in 4/12
+  deadline   500 us  gpu           - cpu          :   -0.597 pp  [-0.628, -0.563]  lower in 12/12
+  deadline   500 us  gpu           - cpu_keepalive:   -0.643 pp  [-0.805, -0.488]  lower in 11/12
+  deadline   500 us  cpu_keepalive - cpu          :   +0.047 pp  [-0.112, +0.207]  lower in 4/12

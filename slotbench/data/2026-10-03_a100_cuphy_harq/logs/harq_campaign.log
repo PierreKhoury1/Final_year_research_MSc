@@ -1,0 +1,116 @@
+[cuphy-lockstep 01:45:27] case gate_cpu_alone: launcher=cpu isolation=none workload=none
+[cuphy-lockstep 01:45:33] gate_cpu_alone: {"misses": 25, "recorded": 42, "skipped": 22, "valid": true}
+[cuphy-lockstep 01:45:34] case gate_gpu_alone: launcher=gpu isolation=none workload=none
+[cuphy-lockstep 01:45:40] gate_gpu_alone: {"misses": 0, "recorded": 64, "skipped": 0, "valid": true}
+[cuphy-lockstep 01:45:41] case gate_cpu_keepalive_alone: launcher=cpu isolation=none workload=none
+[cuphy-lockstep 01:45:47] gate_cpu_keepalive_alone: {"misses": 1, "recorded": 64, "skipped": 0, "valid": true}
+[cuphy-lockstep 01:45:47] Activity control 1/36: triplet=1 position=1 variant=gpu
+[cuphy-lockstep 01:45:47] case t01_p1_gpu_alone: launcher=gpu isolation=none workload=none
+[cuphy-lockstep 01:45:56] t01_p1_gpu_alone: {"misses": 20, "recorded": 5000, "skipped": 0, "valid": true}
+[cuphy-lockstep 01:45:56] Activity control 2/36: triplet=1 position=2 variant=cpu
+[cuphy-lockstep 01:45:57] case t01_p2_cpu_alone: launcher=cpu isolation=none workload=none
+[cuphy-lockstep 01:46:05] t01_p2_cpu_alone: {"misses": 320, "recorded": 4969, "skipped": 31, "valid": true}
+[cuphy-lockstep 01:46:06] Activity control 3/36: triplet=1 position=3 variant=cpu_keepalive
+[cuphy-lockstep 01:46:06] case t01_p3_cpu_keepalive_alone: launcher=cpu isolation=none workload=none
+[cuphy-lockstep 01:46:15] t01_p3_cpu_keepalive_alone: {"misses": 91, "recorded": 4964, "skipped": 36, "valid": true}
+[cuphy-lockstep 01:46:15] Activity control 4/36: triplet=2 position=1 variant=cpu
+[cuphy-lockstep 01:46:15] case t02_p1_cpu_alone: launcher=cpu isolation=none workload=none
+[cuphy-lockstep 01:46:24] t02_p1_cpu_alone: {"misses": 331, "recorded": 4972, "skipped": 28, "valid": true}
+[cuphy-lockstep 01:46:24] Activity control 5/36: triplet=2 position=2 variant=cpu_keepalive
+[cuphy-lockstep 01:46:24] case t02_p2_cpu_keepalive_alone: launcher=cpu isolation=none workload=none
+[cuphy-lockstep 01:46:33] t02_p2_cpu_keepalive_alone: {"misses": 83, "recorded": 4969, "skipped": 31, "valid": true}
+[cuphy-lockstep 01:46:33] Activity control 6/36: triplet=2 position=3 variant=gpu
+[cuphy-lockstep 01:46:34] case t02_p3_gpu_alone: launcher=gpu isolation=none workload=none
+[cuphy-lockstep 01:46:42] t02_p3_gpu_alone: {"misses": 0, "recorded": 5000, "skipped": 0, "valid": true}
+[cuphy-lockstep 01:46:43] Activity control 7/36: triplet=3 position=1 variant=cpu_keepalive
+[cuphy-lockstep 01:46:43] case t03_p1_cpu_keepalive_alone: launcher=cpu isolation=none workload=none
+[cuphy-lockstep 01:46:51] t03_p1_cpu_keepalive_alone: {"misses": 43, "recorded": 4967, "skipped": 33, "valid": true}
+[cuphy-lockstep 01:46:52] Activity control 8/36: triplet=3 position=2 variant=cpu
+[cuphy-lockstep 01:46:52] case t03_p2_cpu_alone: launcher=cpu isolation=none workload=none
+[cuphy-lockstep 01:47:01] t03_p2_cpu_alone: {"misses": 79, "recorded": 4978, "skipped": 22, "valid": true}
+[cuphy-lockstep 01:47:01] Activity control 9/36: triplet=3 position=3 variant=gpu
+[cuphy-lockstep 01:47:01] case t03_p3_gpu_alone: launcher=gpu isolation=none workload=none
+[cuphy-lockstep 01:47:10] t03_p3_gpu_alone: {"misses": 33, "recorded": 5000, "skipped": 0, "valid": true}
+[cuphy-lockstep 01:47:10] Activity control 10/36: triplet=4 position=1 variant=cpu_keepalive
+[cuphy-lockstep 01:47:11] case t04_p1_cpu_keepalive_alone: launcher=cpu isolation=none workload=none
+[cuphy-lockstep 01:47:19] t04_p1_cpu_keepalive_alone: {"misses": 33, "recorded": 4973, "skipped": 27, "valid": true}
+[cuphy-lockstep 01:47:20] Activity control 11/36: triplet=4 position=2 variant=cpu
+[cuphy-lockstep 01:47:20] case t04_p2_cpu_alone: launcher=cpu isolation=none workload=none
+[cuphy-lockstep 01:47:28] t04_p2_cpu_alone: {"misses": 242, "recorded": 4970, "skipped": 30, "valid": true}
+[cuphy-lockstep 01:47:29] Activity control 12/36: triplet=4 position=3 variant=gpu
+[cuphy-lockstep 01:47:29] case t04_p3_gpu_alone: launcher=gpu isolation=none workload=none
+[cuphy-lockstep 01:47:38] t04_p3_gpu_alone: {"misses": 12, "recorded": 5000, "skipped": 0, "valid": true}
+[cuphy-lockstep 01:47:38] Activity control 13/36: triplet=5 position=1 variant=cpu
+[cuphy-lockstep 01:47:38] case t05_p1_cpu_alone: launcher=cpu isolation=none workload=none
+[cuphy-lockstep 01:47:47] t05_p1_cpu_alone: {"misses": 46, "recorded": 4974, "skipped": 26, "valid": true}
+[cuphy-lockstep 01:47:47] Activity control 14/36: triplet=5 position=2 variant=cpu_keepalive
+[cuphy-lockstep 01:47:48] case t05_p2_cpu_keepalive_alone: launcher=cpu isolation=none workload=none
+[cuphy-lockstep 01:47:56] t05_p2_cpu_keepalive_alone: {"misses": 36, "recorded": 4972, "skipped": 28, "valid": true}
+[cuphy-lockstep 01:47:57] Activity control 15/36: triplet=5 position=3 variant=gpu
+[cuphy-lockstep 01:47:57] case t05_p3_gpu_alone: launcher=gpu isolation=none workload=none
+[cuphy-lockstep 01:48:05] t05_p3_gpu_alone: {"misses": 4, "recorded": 5000, "skipped": 0, "valid": true}
+[cuphy-lockstep 01:48:06] Activity control 16/36: triplet=6 position=1 variant=gpu
+[cuphy-lockstep 01:48:06] case t06_p1_gpu_alone: launcher=gpu isolation=none workload=none
+[cuphy-lockstep 01:48:15] t06_p1_gpu_alone: {"misses": 33, "recorded": 5000, "skipped": 0, "valid": true}
+[cuphy-lockstep 01:48:15] Activity control 17/36: triplet=6 position=2 variant=cpu_keepalive
+[cuphy-lockstep 01:48:15] case t06_p2_cpu_keepalive_alone: launcher=cpu isolation=none workload=none
+[cuphy-lockstep 01:48:24] t06_p2_cpu_keepalive_alone: {"misses": 44, "recorded": 4968, "skipped": 32, "valid": true}
+[cuphy-lockstep 01:48:24] Activity control 18/36: triplet=6 position=3 variant=cpu
+[cuphy-lockstep 01:48:25] case t06_p3_cpu_alone: launcher=cpu isolation=none workload=none
+[cuphy-lockstep 01:48:33] t06_p3_cpu_alone: {"misses": 109, "recorded": 4976, "skipped": 24, "valid": true}
+[cuphy-lockstep 01:48:34] Activity control 19/36: triplet=7 position=1 variant=cpu
+[cuphy-lockstep 01:48:34] case t07_p1_cpu_alone: launcher=cpu isolation=none workload=none
+[cuphy-lockstep 01:48:42] t07_p1_cpu_alone: {"misses": 374, "recorded": 4971, "skipped": 29, "valid": true}
+[cuphy-lockstep 01:48:43] Activity control 20/36: triplet=7 position=2 variant=gpu
+[cuphy-lockstep 01:48:43] case t07_p2_gpu_alone: launcher=gpu isolation=none workload=none
+[cuphy-lockstep 01:48:51] t07_p2_gpu_alone: {"misses": 2, "recorded": 5000, "skipped": 0, "valid": true}
+[cuphy-lockstep 01:48:52] Activity control 21/36: triplet=7 position=3 variant=cpu_keepalive
+[cuphy-lockstep 01:48:52] case t07_p3_cpu_keepalive_alone: launcher=cpu isolation=none workload=none
+[cuphy-lockstep 01:49:01] t07_p3_cpu_keepalive_alone: {"misses": 77, "recorded": 4972, "skipped": 28, "valid": true}
+[cuphy-lockstep 01:49:01] Activity control 22/36: triplet=8 position=1 variant=gpu
+[cuphy-lockstep 01:49:02] case t08_p1_gpu_alone: launcher=gpu isolation=none workload=none
+[cuphy-lockstep 01:49:10] t08_p1_gpu_alone: {"misses": 0, "recorded": 5000, "skipped": 0, "valid": true}
+[cuphy-lockstep 01:49:11] Activity control 23/36: triplet=8 position=2 variant=cpu
+[cuphy-lockstep 01:49:11] case t08_p2_cpu_alone: launcher=cpu isolation=none workload=none
+[cuphy-lockstep 01:49:20] t08_p2_cpu_alone: {"misses": 882, "recorded": 4970, "skipped": 30, "valid": true}
+[cuphy-lockstep 01:49:20] Activity control 24/36: triplet=8 position=3 variant=cpu_keepalive
+[cuphy-lockstep 01:49:20] case t08_p3_cpu_keepalive_alone: launcher=cpu isolation=none workload=none
+[cuphy-lockstep 01:49:29] t08_p3_cpu_keepalive_alone: {"misses": 31, "recorded": 4976, "skipped": 24, "valid": true}
+[cuphy-lockstep 01:49:29] Activity control 25/36: triplet=9 position=1 variant=cpu_keepalive
+[cuphy-lockstep 01:49:29] case t09_p1_cpu_keepalive_alone: launcher=cpu isolation=none workload=none
+[cuphy-lockstep 01:49:38] t09_p1_cpu_keepalive_alone: {"misses": 71, "recorded": 4949, "skipped": 51, "valid": true}
+[cuphy-lockstep 01:49:38] Activity control 26/36: triplet=9 position=2 variant=gpu
+[cuphy-lockstep 01:49:39] case t09_p2_gpu_alone: launcher=gpu isolation=none workload=none
+[cuphy-lockstep 01:49:47] t09_p2_gpu_alone: {"misses": 16, "recorded": 5000, "skipped": 0, "valid": true}
+[cuphy-lockstep 01:49:47] Activity control 27/36: triplet=9 position=3 variant=cpu
+[cuphy-lockstep 01:49:48] case t09_p3_cpu_alone: launcher=cpu isolation=none workload=none
+[cuphy-lockstep 01:49:56] t09_p3_cpu_alone: {"misses": 260, "recorded": 4972, "skipped": 28, "valid": true}
+[cuphy-lockstep 01:49:57] Activity control 28/36: triplet=10 position=1 variant=cpu_keepalive
+[cuphy-lockstep 01:49:57] case t10_p1_cpu_keepalive_alone: launcher=cpu isolation=none workload=none
+[cuphy-lockstep 01:50:06] t10_p1_cpu_keepalive_alone: {"misses": 52, "recorded": 4974, "skipped": 26, "valid": true}
+[cuphy-lockstep 01:50:06] Activity control 29/36: triplet=10 position=2 variant=gpu
+[cuphy-lockstep 01:50:06] case t10_p2_gpu_alone: launcher=gpu isolation=none workload=none
+[cuphy-lockstep 01:50:15] t10_p2_gpu_alone: {"misses": 5, "recorded": 5000, "skipped": 0, "valid": true}
+[cuphy-lockstep 01:50:15] Activity control 30/36: triplet=10 position=3 variant=cpu
+[cuphy-lockstep 01:50:15] case t10_p3_cpu_alone: launcher=cpu isolation=none workload=none
+[cuphy-lockstep 01:50:24] t10_p3_cpu_alone: {"misses": 350, "recorded": 4971, "skipped": 29, "valid": true}
+[cuphy-lockstep 01:50:25] Activity control 31/36: triplet=11 position=1 variant=gpu
+[cuphy-lockstep 01:50:25] case t11_p1_gpu_alone: launcher=gpu isolation=none workload=none
+[cuphy-lockstep 01:50:33] t11_p1_gpu_alone: {"misses": 6, "recorded": 5000, "skipped": 0, "valid": true}
+[cuphy-lockstep 01:50:34] Activity control 32/36: triplet=11 position=2 variant=cpu_keepalive
+[cuphy-lockstep 01:50:34] case t11_p2_cpu_keepalive_alone: launcher=cpu isolation=none workload=none
+[cuphy-lockstep 01:50:43] t11_p2_cpu_keepalive_alone: {"misses": 9, "recorded": 5000, "skipped": 0, "valid": true}
+[cuphy-lockstep 01:50:43] Activity control 33/36: triplet=11 position=3 variant=cpu
+[cuphy-lockstep 01:50:43] case t11_p3_cpu_alone: launcher=cpu isolation=none workload=none
+[cuphy-lockstep 01:50:52] t11_p3_cpu_alone: {"misses": 594, "recorded": 4973, "skipped": 27, "valid": true}
+[cuphy-lockstep 01:50:52] Activity control 34/36: triplet=12 position=1 variant=cpu
+[cuphy-lockstep 01:50:53] case t12_p1_cpu_alone: launcher=cpu isolation=none workload=none
+[cuphy-lockstep 01:51:01] t12_p1_cpu_alone: {"misses": 35, "recorded": 4975, "skipped": 25, "valid": true}
+[cuphy-lockstep 01:51:02] Activity control 35/36: triplet=12 position=2 variant=gpu
+[cuphy-lockstep 01:51:02] case t12_p2_gpu_alone: launcher=gpu isolation=none workload=none
+[cuphy-lockstep 01:51:11] t12_p2_gpu_alone: {"misses": 0, "recorded": 5000, "skipped": 0, "valid": true}
+[cuphy-lockstep 01:51:11] Activity control 36/36: triplet=12 position=3 variant=cpu_keepalive
+[cuphy-lockstep 01:51:11] case t12_p3_cpu_keepalive_alone: launcher=cpu isolation=none workload=none
+[cuphy-lockstep 01:51:20] t12_p3_cpu_keepalive_alone: {"misses": 39, "recorded": 4971, "skipped": 29, "valid": true}
+[cuphy-lockstep 01:51:21] Archive for SSH collection: /workspace/cuphy-lockstep/collection-repeat-20261003T014526Z-35314.tar.gz (4330575 bytes)
+=====SLOTBENCH-DONE status=ok archive=/workspace/cuphy-lockstep/collection-repeat-20261003T014526Z-35314.tar.gz=====

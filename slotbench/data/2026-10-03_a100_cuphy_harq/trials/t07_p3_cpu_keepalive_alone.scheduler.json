@@ -1,0 +1,22 @@
+{
+  "observed": true,
+  "utc": "2026-10-03T01:48:53.068539+00:00",
+  "tid": 36460,
+  "reported_cpu": 1,
+  "status": "Name:\tcuphy_ex_pusch_\nUmask:\t0022\nState:\tR (running)\nTgid:\t36454\nNgid:\t0\nPid:\t36460\nPPid:\t36453\nTracerPid:\t0\nUid:\t0\t0\t0\t0\nGid:\t0\t0\t0\t0\nFDSize:\t64\nGroups:\t0 44 993 \nNStgid:\t36454\nNSpid:\t36460\nNSpgid:\t36453\nNSsid:\t1\nKthread:\t0\nVmPeak:\t 7938060 kB\nVmSize:\t 7413776 kB\nVmLck:\t       0 kB\nVmPin:\t       0 kB\nVmHWM:\t  433620 kB\nVmRSS:\t  433620 kB\nRssAnon:\t  127432 kB\nRssFile:\t  295948 kB\nRssShmem:\t   10240 kB\nVmData:\t  258268 kB\nVmStk:\t     140 kB\nVmExe:\t    1508 kB\nVmLib:\t  552408 kB\nVmPTE:\t    1616 kB\nVmSwap:\t       0 kB\nHugetlbPages:\t       0 kB\nCoreDumping:\t0\nTHP_enabled:\t1\nuntag_mask:\t0xffffffffffffffff\nThreads:\t6\nSigQ:\t11/1030567\nSigPnd:\t0000000000000000\nShdPnd:\t0000000000000000\nSigBlk:\t0000000000000000\nSigIgn:\t0000000000000000\nSigCgt:\t0000000100000000\nCapInh:\t0000000000000000\nCapPrm:\t00000000a80405fb\nCapEff:\t00000000a80405fb\nCapBnd:\t00000000a80405fb\nCapAmb:\t0000000000000000\nNoNewPrivs:\t0\nSeccomp:\t2\nSeccomp_filters:\t1\nSpeculation_Store_Bypass:\tthread vulnerable\nSpeculationIndirectBranch:\tconditional enabled\nCpus_allowed:\t00000000,00000000,00000000,00000000,00000000,00000002\nCpus_allowed_list:\t1\nMems_allowed:\t00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000003\nMems_allowed_list:\t0-1\nvoluntary_ctxt_switches:\t10\nnonvoluntary_ctxt_switches:\t3\nx86_Thread_features:\t\nx86_Thread_features_locked:\t\n",
+  "policy": 0,
+  "rt_priority": 0,
+  "affinity": [
+    1
+  ],
+  "nice": 0,
+  "policy_names": {
+    "0": "SCHED_OTHER",
+    "1": "SCHED_FIFO",
+    "2": "SCHED_RR",
+    "3": "SCHED_BATCH",
+    "5": "SCHED_IDLE"
+  },
+  "expected_cpu": 1,
+  "affinity_matches_requested": true
+}

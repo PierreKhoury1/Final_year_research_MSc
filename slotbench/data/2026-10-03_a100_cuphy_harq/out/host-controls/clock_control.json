@@ -1,0 +1,21 @@
+{
+  "clocks_locked": false,
+  "requested_sm_mhz": 1110,
+  "requested_memory_mhz": 1215,
+  "sm_command": [
+    "nvidia-smi",
+    "-lgc",
+    "1110,1110"
+  ],
+  "sm_command_rc": 4,
+  "sm_result": "The current user does not have permission to change clocks for GPU 00000000:41:00.0.\nTerminating early due to previous errors.",
+  "memory_command": [
+    "nvidia-smi",
+    "-lmc",
+    "1215,1215"
+  ],
+  "memory_command_rc": 0,
+  "memory_result": "Setting locked Memory clocks is not supported for GPU 00000000:41:00.0.\nAll done.",
+  "power_limit": "400.00 W",
+  "interpretation": "Use sampled actual clocks; do not infer a lock from return codes."
+}

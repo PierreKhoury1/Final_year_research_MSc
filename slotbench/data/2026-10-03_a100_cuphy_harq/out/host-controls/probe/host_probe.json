@@ -1,0 +1,3409 @@
+{
+  "schema_version": 1,
+  "timestamp_utc": "2026-10-03T01:45:26.057926+00:00",
+  "hostname": "7d56c82e3862",
+  "kernel": "6.8.0-139-generic",
+  "uid": 0,
+  "gpu_index_requested": 0,
+  "gpu_identity": {
+    "index": "0",
+    "uuid": "GPU-23828baf-cf55-407d-0bbf-65ba683ae89a",
+    "name": "NVIDIA A100-SXM4-40GB",
+    "pci.bus_id": "00000000:41:00.0",
+    "driver_version": "595.91.07"
+  },
+  "gpu_identity_verified": true,
+  "cuda_visible_devices": null,
+  "gpu_numa_node": 0,
+  "gpu_locality_source": "/sys/bus/pci/devices/0000:41:00.0/local_cpulist",
+  "gpu_local_cpus": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    96,
+    97,
+    98,
+    99,
+    100,
+    101,
+    102,
+    103,
+    104,
+    105,
+    106,
+    107,
+    108,
+    109,
+    110,
+    111,
+    112,
+    113,
+    114,
+    115,
+    116,
+    117,
+    118,
+    119,
+    120,
+    121,
+    122,
+    123,
+    124,
+    125,
+    126,
+    127,
+    128,
+    129,
+    130,
+    131,
+    132,
+    133,
+    134,
+    135,
+    136,
+    137,
+    138,
+    139,
+    140,
+    141,
+    142,
+    143
+  ],
+  "allowed_cpus": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49,
+    50,
+    51,
+    52,
+    53,
+    54,
+    55,
+    56,
+    57,
+    58,
+    59,
+    60,
+    61,
+    62,
+    63,
+    64,
+    65,
+    66,
+    67,
+    68,
+    69,
+    70,
+    71,
+    72,
+    73,
+    74,
+    75,
+    76,
+    77,
+    78,
+    79,
+    80,
+    81,
+    82,
+    83,
+    84,
+    85,
+    86,
+    87,
+    88,
+    89,
+    90,
+    91,
+    92,
+    93,
+    94,
+    95,
+    96,
+    97,
+    98,
+    99,
+    100,
+    101,
+    102,
+    103,
+    104,
+    105,
+    106,
+    107,
+    108,
+    109,
+    110,
+    111,
+    112,
+    113,
+    114,
+    115,
+    116,
+    117,
+    118,
+    119,
+    120,
+    121,
+    122,
+    123,
+    124,
+    125,
+    126,
+    127,
+    128,
+    129,
+    130,
+    131,
+    132,
+    133,
+    134,
+    135,
+    136,
+    137,
+    138,
+    139,
+    140,
+    141,
+    142,
+    143,
+    144,
+    145,
+    146,
+    147,
+    148,
+    149,
+    150,
+    151,
+    152,
+    153,
+    154,
+    155,
+    156,
+    157,
+    158,
+    159,
+    160,
+    161,
+    162,
+    163,
+    164,
+    165,
+    166,
+    167,
+    168,
+    169,
+    170,
+    171,
+    172,
+    173,
+    174,
+    175,
+    176,
+    177,
+    178,
+    179,
+    180,
+    181,
+    182,
+    183,
+    184,
+    185,
+    186,
+    187,
+    188,
+    189,
+    190,
+    191
+  ],
+  "gpu_local_allowed_cpus": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    96,
+    97,
+    98,
+    99,
+    100,
+    101,
+    102,
+    103,
+    104,
+    105,
+    106,
+    107,
+    108,
+    109,
+    110,
+    111,
+    112,
+    113,
+    114,
+    115,
+    116,
+    117,
+    118,
+    119,
+    120,
+    121,
+    122,
+    123,
+    124,
+    125,
+    126,
+    127,
+    128,
+    129,
+    130,
+    131,
+    132,
+    133,
+    134,
+    135,
+    136,
+    137,
+    138,
+    139,
+    140,
+    141,
+    142,
+    143
+  ],
+  "cpu_topology": [
+    {
+      "cpu": 0,
+      "package": 0,
+      "die": 0,
+      "core": 0,
+      "thread_siblings": [
+        0,
+        96
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1466789
+    },
+    {
+      "cpu": 1,
+      "package": 0,
+      "die": 0,
+      "core": 1,
+      "thread_siblings": [
+        1,
+        97
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 2447583
+    },
+    {
+      "cpu": 2,
+      "package": 0,
+      "die": 0,
+      "core": 2,
+      "thread_siblings": [
+        2,
+        98
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 3300323
+    },
+    {
+      "cpu": 3,
+      "package": 0,
+      "die": 0,
+      "core": 3,
+      "thread_siblings": [
+        3,
+        99
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 4,
+      "package": 0,
+      "die": 0,
+      "core": 4,
+      "thread_siblings": [
+        4,
+        100
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 5,
+      "package": 0,
+      "die": 0,
+      "core": 5,
+      "thread_siblings": [
+        5,
+        101
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 6,
+      "package": 0,
+      "die": 0,
+      "core": 6,
+      "thread_siblings": [
+        6,
+        102
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 7,
+      "package": 0,
+      "die": 0,
+      "core": 7,
+      "thread_siblings": [
+        7,
+        103
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 8,
+      "package": 0,
+      "die": 0,
+      "core": 8,
+      "thread_siblings": [
+        8,
+        104
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 9,
+      "package": 0,
+      "die": 0,
+      "core": 9,
+      "thread_siblings": [
+        9,
+        105
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 2600000
+    },
+    {
+      "cpu": 10,
+      "package": 0,
+      "die": 0,
+      "core": 10,
+      "thread_siblings": [
+        10,
+        106
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 11,
+      "package": 0,
+      "die": 0,
+      "core": 11,
+      "thread_siblings": [
+        11,
+        107
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 12,
+      "package": 0,
+      "die": 0,
+      "core": 12,
+      "thread_siblings": [
+        12,
+        108
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 13,
+      "package": 0,
+      "die": 0,
+      "core": 13,
+      "thread_siblings": [
+        13,
+        109
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 14,
+      "package": 0,
+      "die": 0,
+      "core": 14,
+      "thread_siblings": [
+        14,
+        110
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 15,
+      "package": 0,
+      "die": 0,
+      "core": 15,
+      "thread_siblings": [
+        15,
+        111
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 16,
+      "package": 0,
+      "die": 0,
+      "core": 16,
+      "thread_siblings": [
+        16,
+        112
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 17,
+      "package": 0,
+      "die": 0,
+      "core": 17,
+      "thread_siblings": [
+        17,
+        113
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 18,
+      "package": 0,
+      "die": 0,
+      "core": 18,
+      "thread_siblings": [
+        18,
+        114
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 19,
+      "package": 0,
+      "die": 0,
+      "core": 19,
+      "thread_siblings": [
+        19,
+        115
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 20,
+      "package": 0,
+      "die": 0,
+      "core": 20,
+      "thread_siblings": [
+        20,
+        116
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 21,
+      "package": 0,
+      "die": 0,
+      "core": 21,
+      "thread_siblings": [
+        21,
+        117
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 2600000
+    },
+    {
+      "cpu": 22,
+      "package": 0,
+      "die": 0,
+      "core": 22,
+      "thread_siblings": [
+        22,
+        118
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 23,
+      "package": 0,
+      "die": 0,
+      "core": 23,
+      "thread_siblings": [
+        23,
+        119
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 24,
+      "package": 0,
+      "die": 0,
+      "core": 24,
+      "thread_siblings": [
+        24,
+        120
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 25,
+      "package": 0,
+      "die": 0,
+      "core": 25,
+      "thread_siblings": [
+        25,
+        121
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 26,
+      "package": 0,
+      "die": 0,
+      "core": 26,
+      "thread_siblings": [
+        26,
+        122
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 27,
+      "package": 0,
+      "die": 0,
+      "core": 27,
+      "thread_siblings": [
+        27,
+        123
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 28,
+      "package": 0,
+      "die": 0,
+      "core": 28,
+      "thread_siblings": [
+        28,
+        124
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 29,
+      "package": 0,
+      "die": 0,
+      "core": 29,
+      "thread_siblings": [
+        29,
+        125
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 30,
+      "package": 0,
+      "die": 0,
+      "core": 30,
+      "thread_siblings": [
+        30,
+        126
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 31,
+      "package": 0,
+      "die": 0,
+      "core": 31,
+      "thread_siblings": [
+        31,
+        127
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 32,
+      "package": 0,
+      "die": 0,
+      "core": 32,
+      "thread_siblings": [
+        32,
+        128
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 3300316
+    },
+    {
+      "cpu": 33,
+      "package": 0,
+      "die": 0,
+      "core": 33,
+      "thread_siblings": [
+        33,
+        129
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 34,
+      "package": 0,
+      "die": 0,
+      "core": 34,
+      "thread_siblings": [
+        34,
+        130
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 35,
+      "package": 0,
+      "die": 0,
+      "core": 35,
+      "thread_siblings": [
+        35,
+        131
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 36,
+      "package": 0,
+      "die": 0,
+      "core": 36,
+      "thread_siblings": [
+        36,
+        132
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 37,
+      "package": 0,
+      "die": 0,
+      "core": 37,
+      "thread_siblings": [
+        37,
+        133
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 38,
+      "package": 0,
+      "die": 0,
+      "core": 38,
+      "thread_siblings": [
+        38,
+        134
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 39,
+      "package": 0,
+      "die": 0,
+      "core": 39,
+      "thread_siblings": [
+        39,
+        135
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 40,
+      "package": 0,
+      "die": 0,
+      "core": 40,
+      "thread_siblings": [
+        40,
+        136
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 41,
+      "package": 0,
+      "die": 0,
+      "core": 41,
+      "thread_siblings": [
+        41,
+        137
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 2600000
+    },
+    {
+      "cpu": 42,
+      "package": 0,
+      "die": 0,
+      "core": 42,
+      "thread_siblings": [
+        42,
+        138
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 3300297
+    },
+    {
+      "cpu": 43,
+      "package": 0,
+      "die": 0,
+      "core": 43,
+      "thread_siblings": [
+        43,
+        139
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 44,
+      "package": 0,
+      "die": 0,
+      "core": 44,
+      "thread_siblings": [
+        44,
+        140
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1499890
+    },
+    {
+      "cpu": 45,
+      "package": 0,
+      "die": 0,
+      "core": 45,
+      "thread_siblings": [
+        45,
+        141
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 2600000
+    },
+    {
+      "cpu": 46,
+      "package": 0,
+      "die": 0,
+      "core": 46,
+      "thread_siblings": [
+        46,
+        142
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 47,
+      "package": 0,
+      "die": 0,
+      "core": 47,
+      "thread_siblings": [
+        47,
+        143
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 48,
+      "package": 1,
+      "die": 1,
+      "core": 0,
+      "thread_siblings": [
+        48,
+        144
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 3300310
+    },
+    {
+      "cpu": 49,
+      "package": 1,
+      "die": 1,
+      "core": 1,
+      "thread_siblings": [
+        49,
+        145
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 2600000
+    },
+    {
+      "cpu": 50,
+      "package": 1,
+      "die": 1,
+      "core": 2,
+      "thread_siblings": [
+        50,
+        146
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 51,
+      "package": 1,
+      "die": 1,
+      "core": 3,
+      "thread_siblings": [
+        51,
+        147
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 52,
+      "package": 1,
+      "die": 1,
+      "core": 4,
+      "thread_siblings": [
+        52,
+        148
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 53,
+      "package": 1,
+      "die": 1,
+      "core": 5,
+      "thread_siblings": [
+        53,
+        149
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 3300307
+    },
+    {
+      "cpu": 54,
+      "package": 1,
+      "die": 1,
+      "core": 6,
+      "thread_siblings": [
+        54,
+        150
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 2600000
+    },
+    {
+      "cpu": 55,
+      "package": 1,
+      "die": 1,
+      "core": 7,
+      "thread_siblings": [
+        55,
+        151
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 56,
+      "package": 1,
+      "die": 1,
+      "core": 8,
+      "thread_siblings": [
+        56,
+        152
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 57,
+      "package": 1,
+      "die": 1,
+      "core": 9,
+      "thread_siblings": [
+        57,
+        153
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 58,
+      "package": 1,
+      "die": 1,
+      "core": 10,
+      "thread_siblings": [
+        58,
+        154
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 59,
+      "package": 1,
+      "die": 1,
+      "core": 11,
+      "thread_siblings": [
+        59,
+        155
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 2600000
+    },
+    {
+      "cpu": 60,
+      "package": 1,
+      "die": 1,
+      "core": 12,
+      "thread_siblings": [
+        60,
+        156
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 2600000
+    },
+    {
+      "cpu": 61,
+      "package": 1,
+      "die": 1,
+      "core": 13,
+      "thread_siblings": [
+        61,
+        157
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 1466811
+    },
+    {
+      "cpu": 62,
+      "package": 1,
+      "die": 1,
+      "core": 14,
+      "thread_siblings": [
+        62,
+        158
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 63,
+      "package": 1,
+      "die": 1,
+      "core": 15,
+      "thread_siblings": [
+        63,
+        159
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 64,
+      "package": 1,
+      "die": 1,
+      "core": 16,
+      "thread_siblings": [
+        64,
+        160
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 65,
+      "package": 1,
+      "die": 1,
+      "core": 17,
+      "thread_siblings": [
+        65,
+        161
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 66,
+      "package": 1,
+      "die": 1,
+      "core": 18,
+      "thread_siblings": [
+        66,
+        162
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 67,
+      "package": 1,
+      "die": 1,
+      "core": 19,
+      "thread_siblings": [
+        67,
+        163
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 1479003
+    },
+    {
+      "cpu": 68,
+      "package": 1,
+      "die": 1,
+      "core": 20,
+      "thread_siblings": [
+        68,
+        164
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 69,
+      "package": 1,
+      "die": 1,
+      "core": 21,
+      "thread_siblings": [
+        69,
+        165
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 70,
+      "package": 1,
+      "die": 1,
+      "core": 22,
+      "thread_siblings": [
+        70,
+        166
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 3300289
+    },
+    {
+      "cpu": 71,
+      "package": 1,
+      "die": 1,
+      "core": 23,
+      "thread_siblings": [
+        71,
+        167
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 72,
+      "package": 1,
+      "die": 1,
+      "core": 24,
+      "thread_siblings": [
+        72,
+        168
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 73,
+      "package": 1,
+      "die": 1,
+      "core": 25,
+      "thread_siblings": [
+        73,
+        169
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 74,
+      "package": 1,
+      "die": 1,
+      "core": 26,
+      "thread_siblings": [
+        74,
+        170
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 75,
+      "package": 1,
+      "die": 1,
+      "core": 27,
+      "thread_siblings": [
+        75,
+        171
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 76,
+      "package": 1,
+      "die": 1,
+      "core": 28,
+      "thread_siblings": [
+        76,
+        172
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 3300326
+    },
+    {
+      "cpu": 77,
+      "package": 1,
+      "die": 1,
+      "core": 29,
+      "thread_siblings": [
+        77,
+        173
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 78,
+      "package": 1,
+      "die": 1,
+      "core": 30,
+      "thread_siblings": [
+        78,
+        174
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 79,
+      "package": 1,
+      "die": 1,
+      "core": 31,
+      "thread_siblings": [
+        79,
+        175
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 80,
+      "package": 1,
+      "die": 1,
+      "core": 32,
+      "thread_siblings": [
+        80,
+        176
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 81,
+      "package": 1,
+      "die": 1,
+      "core": 33,
+      "thread_siblings": [
+        81,
+        177
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 82,
+      "package": 1,
+      "die": 1,
+      "core": 34,
+      "thread_siblings": [
+        82,
+        178
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 83,
+      "package": 1,
+      "die": 1,
+      "core": 35,
+      "thread_siblings": [
+        83,
+        179
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 84,
+      "package": 1,
+      "die": 1,
+      "core": 36,
+      "thread_siblings": [
+        84,
+        180
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 85,
+      "package": 1,
+      "die": 1,
+      "core": 37,
+      "thread_siblings": [
+        85,
+        181
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 86,
+      "package": 1,
+      "die": 1,
+      "core": 38,
+      "thread_siblings": [
+        86,
+        182
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 87,
+      "package": 1,
+      "die": 1,
+      "core": 39,
+      "thread_siblings": [
+        87,
+        183
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 88,
+      "package": 1,
+      "die": 1,
+      "core": 40,
+      "thread_siblings": [
+        88,
+        184
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 2600000
+    },
+    {
+      "cpu": 89,
+      "package": 1,
+      "die": 1,
+      "core": 41,
+      "thread_siblings": [
+        89,
+        185
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 2600000
+    },
+    {
+      "cpu": 90,
+      "package": 1,
+      "die": 1,
+      "core": 42,
+      "thread_siblings": [
+        90,
+        186
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 91,
+      "package": 1,
+      "die": 1,
+      "core": 43,
+      "thread_siblings": [
+        91,
+        187
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 92,
+      "package": 1,
+      "die": 1,
+      "core": 44,
+      "thread_siblings": [
+        92,
+        188
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 93,
+      "package": 1,
+      "die": 1,
+      "core": 45,
+      "thread_siblings": [
+        93,
+        189
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 94,
+      "package": 1,
+      "die": 1,
+      "core": 46,
+      "thread_siblings": [
+        94,
+        190
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 95,
+      "package": 1,
+      "die": 1,
+      "core": 47,
+      "thread_siblings": [
+        95,
+        191
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 96,
+      "package": 0,
+      "die": 0,
+      "core": 0,
+      "thread_siblings": [
+        0,
+        96
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 97,
+      "package": 0,
+      "die": 0,
+      "core": 1,
+      "thread_siblings": [
+        1,
+        97
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 2600000
+    },
+    {
+      "cpu": 98,
+      "package": 0,
+      "die": 0,
+      "core": 2,
+      "thread_siblings": [
+        2,
+        98
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 99,
+      "package": 0,
+      "die": 0,
+      "core": 3,
+      "thread_siblings": [
+        3,
+        99
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 100,
+      "package": 0,
+      "die": 0,
+      "core": 4,
+      "thread_siblings": [
+        4,
+        100
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 101,
+      "package": 0,
+      "die": 0,
+      "core": 5,
+      "thread_siblings": [
+        5,
+        101
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 102,
+      "package": 0,
+      "die": 0,
+      "core": 6,
+      "thread_siblings": [
+        6,
+        102
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 103,
+      "package": 0,
+      "die": 0,
+      "core": 7,
+      "thread_siblings": [
+        7,
+        103
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 104,
+      "package": 0,
+      "die": 0,
+      "core": 8,
+      "thread_siblings": [
+        8,
+        104
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 105,
+      "package": 0,
+      "die": 0,
+      "core": 9,
+      "thread_siblings": [
+        9,
+        105
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 2600000
+    },
+    {
+      "cpu": 106,
+      "package": 0,
+      "die": 0,
+      "core": 10,
+      "thread_siblings": [
+        10,
+        106
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 107,
+      "package": 0,
+      "die": 0,
+      "core": 11,
+      "thread_siblings": [
+        11,
+        107
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 108,
+      "package": 0,
+      "die": 0,
+      "core": 12,
+      "thread_siblings": [
+        12,
+        108
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 109,
+      "package": 0,
+      "die": 0,
+      "core": 13,
+      "thread_siblings": [
+        13,
+        109
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 110,
+      "package": 0,
+      "die": 0,
+      "core": 14,
+      "thread_siblings": [
+        14,
+        110
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 111,
+      "package": 0,
+      "die": 0,
+      "core": 15,
+      "thread_siblings": [
+        15,
+        111
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 112,
+      "package": 0,
+      "die": 0,
+      "core": 16,
+      "thread_siblings": [
+        16,
+        112
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 113,
+      "package": 0,
+      "die": 0,
+      "core": 17,
+      "thread_siblings": [
+        17,
+        113
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 114,
+      "package": 0,
+      "die": 0,
+      "core": 18,
+      "thread_siblings": [
+        18,
+        114
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 115,
+      "package": 0,
+      "die": 0,
+      "core": 19,
+      "thread_siblings": [
+        19,
+        115
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 116,
+      "package": 0,
+      "die": 0,
+      "core": 20,
+      "thread_siblings": [
+        20,
+        116
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 117,
+      "package": 0,
+      "die": 0,
+      "core": 21,
+      "thread_siblings": [
+        21,
+        117
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 118,
+      "package": 0,
+      "die": 0,
+      "core": 22,
+      "thread_siblings": [
+        22,
+        118
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 119,
+      "package": 0,
+      "die": 0,
+      "core": 23,
+      "thread_siblings": [
+        23,
+        119
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 120,
+      "package": 0,
+      "die": 0,
+      "core": 24,
+      "thread_siblings": [
+        24,
+        120
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 3282736
+    },
+    {
+      "cpu": 121,
+      "package": 0,
+      "die": 0,
+      "core": 25,
+      "thread_siblings": [
+        25,
+        121
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 122,
+      "package": 0,
+      "die": 0,
+      "core": 26,
+      "thread_siblings": [
+        26,
+        122
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 2600000
+    },
+    {
+      "cpu": 123,
+      "package": 0,
+      "die": 0,
+      "core": 27,
+      "thread_siblings": [
+        27,
+        123
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 124,
+      "package": 0,
+      "die": 0,
+      "core": 28,
+      "thread_siblings": [
+        28,
+        124
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 125,
+      "package": 0,
+      "die": 0,
+      "core": 29,
+      "thread_siblings": [
+        29,
+        125
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 126,
+      "package": 0,
+      "die": 0,
+      "core": 30,
+      "thread_siblings": [
+        30,
+        126
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 127,
+      "package": 0,
+      "die": 0,
+      "core": 31,
+      "thread_siblings": [
+        31,
+        127
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 2102752
+    },
+    {
+      "cpu": 128,
+      "package": 0,
+      "die": 0,
+      "core": 32,
+      "thread_siblings": [
+        32,
+        128
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 129,
+      "package": 0,
+      "die": 0,
+      "core": 33,
+      "thread_siblings": [
+        33,
+        129
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 130,
+      "package": 0,
+      "die": 0,
+      "core": 34,
+      "thread_siblings": [
+        34,
+        130
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 131,
+      "package": 0,
+      "die": 0,
+      "core": 35,
+      "thread_siblings": [
+        35,
+        131
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 132,
+      "package": 0,
+      "die": 0,
+      "core": 36,
+      "thread_siblings": [
+        36,
+        132
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 133,
+      "package": 0,
+      "die": 0,
+      "core": 37,
+      "thread_siblings": [
+        37,
+        133
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 134,
+      "package": 0,
+      "die": 0,
+      "core": 38,
+      "thread_siblings": [
+        38,
+        134
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 135,
+      "package": 0,
+      "die": 0,
+      "core": 39,
+      "thread_siblings": [
+        39,
+        135
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 136,
+      "package": 0,
+      "die": 0,
+      "core": 40,
+      "thread_siblings": [
+        40,
+        136
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 137,
+      "package": 0,
+      "die": 0,
+      "core": 41,
+      "thread_siblings": [
+        41,
+        137
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 2600000
+    },
+    {
+      "cpu": 138,
+      "package": 0,
+      "die": 0,
+      "core": 42,
+      "thread_siblings": [
+        42,
+        138
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 139,
+      "package": 0,
+      "die": 0,
+      "core": 43,
+      "thread_siblings": [
+        43,
+        139
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 140,
+      "package": 0,
+      "die": 0,
+      "core": 44,
+      "thread_siblings": [
+        44,
+        140
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 141,
+      "package": 0,
+      "die": 0,
+      "core": 45,
+      "thread_siblings": [
+        45,
+        141
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 142,
+      "package": 0,
+      "die": 0,
+      "core": 46,
+      "thread_siblings": [
+        46,
+        142
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 2600000
+    },
+    {
+      "cpu": 143,
+      "package": 0,
+      "die": 0,
+      "core": 47,
+      "thread_siblings": [
+        47,
+        143
+      ],
+      "physical_core_known": true,
+      "gpu_local": true,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 144,
+      "package": 1,
+      "die": 1,
+      "core": 0,
+      "thread_siblings": [
+        48,
+        144
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 2600000
+    },
+    {
+      "cpu": 145,
+      "package": 1,
+      "die": 1,
+      "core": 1,
+      "thread_siblings": [
+        49,
+        145
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 146,
+      "package": 1,
+      "die": 1,
+      "core": 2,
+      "thread_siblings": [
+        50,
+        146
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 147,
+      "package": 1,
+      "die": 1,
+      "core": 3,
+      "thread_siblings": [
+        51,
+        147
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 148,
+      "package": 1,
+      "die": 1,
+      "core": 4,
+      "thread_siblings": [
+        52,
+        148
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 149,
+      "package": 1,
+      "die": 1,
+      "core": 5,
+      "thread_siblings": [
+        53,
+        149
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 150,
+      "package": 1,
+      "die": 1,
+      "core": 6,
+      "thread_siblings": [
+        54,
+        150
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 151,
+      "package": 1,
+      "die": 1,
+      "core": 7,
+      "thread_siblings": [
+        55,
+        151
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 3300328
+    },
+    {
+      "cpu": 152,
+      "package": 1,
+      "die": 1,
+      "core": 8,
+      "thread_siblings": [
+        56,
+        152
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 153,
+      "package": 1,
+      "die": 1,
+      "core": 9,
+      "thread_siblings": [
+        57,
+        153
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 154,
+      "package": 1,
+      "die": 1,
+      "core": 10,
+      "thread_siblings": [
+        58,
+        154
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 155,
+      "package": 1,
+      "die": 1,
+      "core": 11,
+      "thread_siblings": [
+        59,
+        155
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 156,
+      "package": 1,
+      "die": 1,
+      "core": 12,
+      "thread_siblings": [
+        60,
+        156
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 157,
+      "package": 1,
+      "die": 1,
+      "core": 13,
+      "thread_siblings": [
+        61,
+        157
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 158,
+      "package": 1,
+      "die": 1,
+      "core": 14,
+      "thread_siblings": [
+        62,
+        158
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 159,
+      "package": 1,
+      "die": 1,
+      "core": 15,
+      "thread_siblings": [
+        63,
+        159
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 160,
+      "package": 1,
+      "die": 1,
+      "core": 16,
+      "thread_siblings": [
+        64,
+        160
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 161,
+      "package": 1,
+      "die": 1,
+      "core": 17,
+      "thread_siblings": [
+        65,
+        161
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 162,
+      "package": 1,
+      "die": 1,
+      "core": 18,
+      "thread_siblings": [
+        66,
+        162
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 163,
+      "package": 1,
+      "die": 1,
+      "core": 19,
+      "thread_siblings": [
+        67,
+        163
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 164,
+      "package": 1,
+      "die": 1,
+      "core": 20,
+      "thread_siblings": [
+        68,
+        164
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 165,
+      "package": 1,
+      "die": 1,
+      "core": 21,
+      "thread_siblings": [
+        69,
+        165
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 166,
+      "package": 1,
+      "die": 1,
+      "core": 22,
+      "thread_siblings": [
+        70,
+        166
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 167,
+      "package": 1,
+      "die": 1,
+      "core": 23,
+      "thread_siblings": [
+        71,
+        167
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 168,
+      "package": 1,
+      "die": 1,
+      "core": 24,
+      "thread_siblings": [
+        72,
+        168
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 169,
+      "package": 1,
+      "die": 1,
+      "core": 25,
+      "thread_siblings": [
+        73,
+        169
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 170,
+      "package": 1,
+      "die": 1,
+      "core": 26,
+      "thread_siblings": [
+        74,
+        170
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 171,
+      "package": 1,
+      "die": 1,
+      "core": 27,
+      "thread_siblings": [
+        75,
+        171
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 172,
+      "package": 1,
+      "die": 1,
+      "core": 28,
+      "thread_siblings": [
+        76,
+        172
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 173,
+      "package": 1,
+      "die": 1,
+      "core": 29,
+      "thread_siblings": [
+        77,
+        173
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 174,
+      "package": 1,
+      "die": 1,
+      "core": 30,
+      "thread_siblings": [
+        78,
+        174
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 175,
+      "package": 1,
+      "die": 1,
+      "core": 31,
+      "thread_siblings": [
+        79,
+        175
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 176,
+      "package": 1,
+      "die": 1,
+      "core": 32,
+      "thread_siblings": [
+        80,
+        176
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 177,
+      "package": 1,
+      "die": 1,
+      "core": 33,
+      "thread_siblings": [
+        81,
+        177
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 178,
+      "package": 1,
+      "die": 1,
+      "core": 34,
+      "thread_siblings": [
+        82,
+        178
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 179,
+      "package": 1,
+      "die": 1,
+      "core": 35,
+      "thread_siblings": [
+        83,
+        179
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 2600000
+    },
+    {
+      "cpu": 180,
+      "package": 1,
+      "die": 1,
+      "core": 36,
+      "thread_siblings": [
+        84,
+        180
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 181,
+      "package": 1,
+      "die": 1,
+      "core": 37,
+      "thread_siblings": [
+        85,
+        181
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 182,
+      "package": 1,
+      "die": 1,
+      "core": 38,
+      "thread_siblings": [
+        86,
+        182
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 183,
+      "package": 1,
+      "die": 1,
+      "core": 39,
+      "thread_siblings": [
+        87,
+        183
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 184,
+      "package": 1,
+      "die": 1,
+      "core": 40,
+      "thread_siblings": [
+        88,
+        184
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 3296887
+    },
+    {
+      "cpu": 185,
+      "package": 1,
+      "die": 1,
+      "core": 41,
+      "thread_siblings": [
+        89,
+        185
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 186,
+      "package": 1,
+      "die": 1,
+      "core": 42,
+      "thread_siblings": [
+        90,
+        186
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 2600000
+    },
+    {
+      "cpu": 187,
+      "package": 1,
+      "die": 1,
+      "core": 43,
+      "thread_siblings": [
+        91,
+        187
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 188,
+      "package": 1,
+      "die": 1,
+      "core": 44,
+      "thread_siblings": [
+        92,
+        188
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 189,
+      "package": 1,
+      "die": 1,
+      "core": 45,
+      "thread_siblings": [
+        93,
+        189
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 190,
+      "package": 1,
+      "die": 1,
+      "core": 46,
+      "thread_siblings": [
+        94,
+        190
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 1500000
+    },
+    {
+      "cpu": 191,
+      "package": 1,
+      "die": 1,
+      "core": 47,
+      "thread_siblings": [
+        95,
+        191
+      ],
+      "physical_core_known": true,
+      "gpu_local": false,
+      "governor": "schedutil",
+      "current_khz": 2600000
+    }
+  ],
+  "recommended": {
+    "SB_CUPHY_CPU": 1,
+    "SB_ADVERSARY_CPU": 2,
+    "SB_TELEMETRY_CPU": 3,
+    "SB_BACKGROUND_CPUS": "0,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191"
+  },
+  "distinct_physical_cores": true,
+  "probe_thread": {
+    "tid": 35289,
+    "policy": "SCHED_OTHER",
+    "policy_number": 0,
+    "priority": 0,
+    "affinity": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34,
+      35,
+      36,
+      37,
+      38,
+      39,
+      40,
+      41,
+      42,
+      43,
+      44,
+      45,
+      46,
+      47,
+      48,
+      49,
+      50,
+      51,
+      52,
+      53,
+      54,
+      55,
+      56,
+      57,
+      58,
+      59,
+      60,
+      61,
+      62,
+      63,
+      64,
+      65,
+      66,
+      67,
+      68,
+      69,
+      70,
+      71,
+      72,
+      73,
+      74,
+      75,
+      76,
+      77,
+      78,
+      79,
+      80,
+      81,
+      82,
+      83,
+      84,
+      85,
+      86,
+      87,
+      88,
+      89,
+      90,
+      91,
+      92,
+      93,
+      94,
+      95,
+      96,
+      97,
+      98,
+      99,
+      100,
+      101,
+      102,
+      103,
+      104,
+      105,
+      106,
+      107,
+      108,
+      109,
+      110,
+      111,
+      112,
+      113,
+      114,
+      115,
+      116,
+      117,
+      118,
+      119,
+      120,
+      121,
+      122,
+      123,
+      124,
+      125,
+      126,
+      127,
+      128,
+      129,
+      130,
+      131,
+      132,
+      133,
+      134,
+      135,
+      136,
+      137,
+      138,
+      139,
+      140,
+      141,
+      142,
+      143,
+      144,
+      145,
+      146,
+      147,
+      148,
+      149,
+      150,
+      151,
+      152,
+      153,
+      154,
+      155,
+      156,
+      157,
+      158,
+      159,
+      160,
+      161,
+      162,
+      163,
+      164,
+      165,
+      166,
+      167,
+      168,
+      169,
+      170,
+      171,
+      172,
+      173,
+      174,
+      175,
+      176,
+      177,
+      178,
+      179,
+      180,
+      181,
+      182,
+      183,
+      184,
+      185,
+      186,
+      187,
+      188,
+      189,
+      190,
+      191
+    ],
+    "comm": "python3"
+  },
+  "capability_effective_hex": "a80405fb",
+  "capabilities": {
+    "CAP_SYS_ADMIN": false,
+    "CAP_SYS_NICE": false,
+    "CAP_IPC_LOCK": false
+  },
+  "resource_limits": {
+    "RLIMIT_RTPRIO": [
+      0,
+      0
+    ],
+    "RLIMIT_RTTIME": [
+      -1,
+      -1
+    ],
+    "RLIMIT_MEMLOCK": [
+      8388608,
+      8388608
+    ]
+  },
+  "realtime_permission_tested": false,
+  "gpu_clock_changes_tested": false,
+  "kernel_scheduler": {
+    "sched_rt_period_us": "1000000",
+    "sched_rt_runtime_us": "950000",
+    "sched_rr_timeslice_ms": "100"
+  },
+  "cgroup_membership": "0::/",
+  "cgroup_cpu": {
+    "cpu.max": "2304000 100000",
+    "cpu.stat": "usage_usec 4157193868\nuser_usec 3116905797\nsystem_usec 1040288070\ncore_sched.force_idle_usec 0\nnr_periods 6759\nnr_throttled 611\nthrottled_usec 6394987355\nnr_bursts 0\nburst_usec 0",
+    "cpuset.cpus.effective": "0-191",
+    "cpuset.mems.effective": "0-1"
+  },
+  "target_pid": null,
+  "target_threads": [],
+  "commands": {
+    "gpu_identity.csv": {
+      "argv": [
+        "nvidia-smi",
+        "-i",
+        "0",
+        "--query-gpu=index,uuid,name,pci.bus_id,driver_version",
+        "--format=csv"
+      ],
+      "returncode": 0
+    },
+    "gpu_supported_clocks.csv": {
+      "argv": [
+        "nvidia-smi",
+        "-i",
+        "0",
+        "--query-supported-clocks=memory,graphics",
+        "--format=csv"
+      ],
+      "returncode": 0
+    },
+    "gpu_clock_power_state.txt": {
+      "argv": [
+        "nvidia-smi",
+        "-i",
+        "0",
+        "-q",
+        "-d",
+        "CLOCK,POWER,PERFORMANCE,TEMPERATURE"
+      ],
+      "returncode": 0
+    },
+    "gpu_topology.txt": {
+      "argv": [
+        "nvidia-smi",
+        "topo",
+        "-m"
+      ],
+      "returncode": 0
+    },
+    "gpu_nearest_numa.txt": {
+      "argv": [
+        "nvidia-smi",
+        "topo",
+        "-C",
+        "-i",
+        "0"
+      ],
+      "returncode": 0
+    },
+    "gpu_query_fields.txt": {
+      "argv": [
+        "nvidia-smi",
+        "--help-query-gpu"
+      ],
+      "returncode": 0
+    },
+    "lscpu.json": {
+      "argv": [
+        "lscpu",
+        "--json"
+      ],
+      "returncode": 0
+    }
+  },
+  "warnings": []
+}

@@ -1,0 +1,2 @@
+timestamp, uuid, name, pstate, temperature.gpu, power.draw [W], power.limit [W], clocks.current.sm [MHz], clocks.current.memory [MHz], clocks.applications.graphics [MHz], clocks.applications.memory [MHz], utilization.gpu [%], utilization.memory [%]
+2026/10/03 01:50:53.071, GPU-23828baf-cf55-407d-0bbf-65ba683ae89a, NVIDIA A100-SXM4-40GB, P0, 33, 38.71 W, 400.00 W, 1095 MHz, 1215 MHz, [Requested functionality has been deprecated], [Requested functionality has been deprecated], 0 %, 0 %

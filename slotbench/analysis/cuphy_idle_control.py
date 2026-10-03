@@ -36,8 +36,8 @@ EXTRA_METRICS = {
 }
 
 
-def expected_orders(seed: int) -> list[tuple[str, ...]]:
-    orders = list(itertools.permutations(VARIANTS))
+def expected_orders(seed: int, repeats: int = 6) -> list[tuple[str, ...]]:
+    orders = list(itertools.permutations(VARIANTS)) * (repeats // 6)
     random.Random(seed).shuffle(orders)
     return orders
 
@@ -172,11 +172,11 @@ def analyze(manifest: Path, draws: int = 20000) -> dict:
     schedule = experiment["schedule"]
     repeats = int(experiment["repeats"])
     errors, warnings = [], []
-    if repeats != 6 or len(schedule) != 18:
-        raise ValueError("This balanced activity-control protocol requires six triplets and 18 cases")
-    if [entry["case_index"] for entry in schedule] != list(range(1, 19)):
+    if repeats % 6 != 0 or len(schedule) != 3 * repeats:
+        raise ValueError("This balanced activity-control protocol requires a multiple of six triplets, three cases each")
+    if [entry["case_index"] for entry in schedule] != list(range(1, 3 * repeats + 1)):
         errors.append("Schedule case indices are not sequential")
-    if len({entry["name"] for entry in schedule}) != 18:
+    if len({entry["name"] for entry in schedule}) != 3 * repeats:
         errors.append("Trial names are duplicated")
     for entry in schedule:
         if entry["variant"] not in VARIANTS:
@@ -185,11 +185,11 @@ def analyze(manifest: Path, draws: int = 20000) -> dict:
         if entry["mode"] != expected_mode or entry.get("condition", "alone") != "alone":
             raise ValueError("Activity variant was mislabeled as a different launcher or load condition")
     actual_orders = [tuple(entry["variant"] for entry in schedule if entry["triplet_index"] == index)
-                     for index in range(1, 7)]
-    balanced = sorted(actual_orders) == sorted(itertools.permutations(VARIANTS))
-    seeded = actual_orders == expected_orders(int(experiment["seed"]))
+                     for index in range(1, repeats + 1)]
+    balanced = sorted(actual_orders) == sorted(list(itertools.permutations(VARIANTS)) * (repeats // 6))
+    seeded = actual_orders == expected_orders(int(experiment["seed"]), repeats)
     if not balanced:
-        errors.append("Control does not use each of the six variant-order permutations exactly once")
+        errors.append("Control does not use each of the six variant-order permutations equally often")
     if not seeded:
         errors.append("Control ordering disagrees with the seeded permutation protocol")
     checker = base.collection_checker()
