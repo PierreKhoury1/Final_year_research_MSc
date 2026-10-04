@@ -10,7 +10,7 @@
       one row per arm (sharing x gate mode x GEMM size, pooled over repeats). Cases enter the pool only
       if cuPHY passed its checks AND (for contended cases) the tenant finished OK with the timetable loaded.
       5G side, re-scored from the raw records: misses split by cause at 500/300/250 us budgets. A miss is
-      host-caused if its slot was launched > 50 us late (or was skipped behind such a slot), else GPU-caused.
+      host-caused if its slot's launch call returned > 50 us after the target (or was skipped behind such a slot), else GPU-caused.
       Overlap: fraction of slots whose GPU execution [g0, g1] (mapped to host time with the run's two-point
       clock fit) intersects a tenant GEMM as the host saw it (issue -> completion; a superset of its GPU time,
       so overlap is an upper bound). AI side: GEMMs/s inside the slot window divided by the same GEMM size
@@ -65,12 +65,13 @@ class Case:
             raise ValueError("invalid clock anchors")
         self.rate = (gb - self.ga) / (hb - self.ha)   # GPU ns per host ns
         self.rows = []
-        for slot, t, g_t, g_l, _g_ld, g0, g1, fl in RECORD.iter_unpack(raw):
+        for slot, t, g_t, g_l, g_ld, g0, g1, fl in RECORD.iter_unpack(raw):
             if fl & 1:
                 self.rows.append(dict(skip=True))
                 continue
-            g_true = self.ga + (t - self.ha) * self.rate
-            self.rows.append(dict(skip=False, late_us=(g_l - g_t) / 1e3, lat_us=(g1 - g_true) / 1e3,
+            g_true = self.ga + round((t - self.ha) * self.rate)   # integer, as in cuphy_lockstep.cu
+            # "late" = the launch call returned > LATE_US after the target (stalls inside cudaGraphLaunch count)
+            self.rows.append(dict(skip=False, late_us=(g_ld - g_t) / 1e3, lat_us=(g1 - g_true) / 1e3,
                                   exec_us=(g1 - g0) / 1e3, h0=self.host(g0), h1=self.host(g1)))
 
     def host(self, g):
@@ -252,7 +253,7 @@ def main():
     if not a.out:
         ap.error("OUT or --busy is required")
     s = summarise(a.out, a.units_dir)
-    print(f"busy_us reserved per slot: {s['busy_us']}   (misses: % of slots; host = launched >{LATE_US:.0f} us late)")
+    print(f"busy_us reserved per slot: {s['busy_us']}   (misses: % of slots; host = launch call returned >{LATE_US:.0f} us after target)")
     print(f"{'sharing':5} {'gate':7} {'n':>5} {'runs':>4} {'slots':>6} | {'GPU miss 500':>12} {'250':>7} | "
           f"{'host 500':>8} | {'exec p50/p99':>13} | {'overlap':>7} | {'AI/s':>7} {'kept':>6} | gate")
     for t in s["arms"]:

@@ -291,6 +291,8 @@ struct Gate {
     std::vector<uint16_t> per_slot;      // units started in each slot of the window
     double est_at_load_us = NAN, est_window_us = NAN, est_min_us = NAN, est_max_us = NAN;
     bool fits_at_load = false;
+    int64_t seed_ns = 0, last_aged = -1;  // est at load; slot in which a stale sample was last replaced
+    unsigned long long aged = 0;
 
     int64_t est() const {
         int n = std::min(ndur, 32);
@@ -309,7 +311,8 @@ struct Gate {
             tt = t;
             loaded = true;
             per_slot.assign((size_t)std::max<int64_t>(0, std::min<int64_t>(t.n_slots, 10000000)), 0);
-            est_at_load_us = est() * 1e-3;
+            seed_ns = est();
+            est_at_load_us = seed_ns * 1e-3;
             fits_at_load = t.busy_ns + guard_ns + est() < t.period_ns;
             fprintf(stderr, "adversary: gate timetable loaded t0_in=%.3f ms period=%lld ns busy=%lld ns slots=%lld "
                             "est=%.1f us fits=%d\n",
@@ -358,7 +361,17 @@ struct Gate {
                 if (observe) { busy_starts++; }
                 else { wait_until(Sk + tt.busy_ns, sleep_to); continue; }
             } else if (next_is_slot && now + e + guard_ns > Sn) {   // would not finish before slot k+1
-                if (!observe) { wait_until(Sn + tt.busy_ns, sleep_to); continue; }
+                if (!observe) {
+                    // If the estimate closes the whole gap, no unit runs and the ring would never change:
+                    // replace one sample per closed slot with the load-time estimate so the gate can reopen.
+                    if (k >= 0 && k != last_aged && tt.busy_ns + guard_ns + e >= P) {
+                        dur[ndur++ % 32] = seed_ns;
+                        last_aged = k;
+                        aged++;
+                    }
+                    wait_until(Sn + tt.busy_ns, sleep_to);
+                    continue;
+                }
             }
             unit_slot = k;
             unit_slot_end = next_is_slot ? Sn : 0;
@@ -452,7 +465,7 @@ static std::string summary_json(const Summary &s) {
     gj.add("est_unit_us_final", g_gate.est() * 1e-3).add("est_unit_us_at_load", g_gate.est_at_load_us);
     gj.add("est_unit_us_window_end", g_gate.est_window_us);
     gj.add("est_unit_us_window_min", g_gate.est_min_us).add("est_unit_us_window_max", g_gate.est_max_us);
-    gj.add("fits_at_load", g_gate.fits_at_load).add("log", c.gate_log);
+    gj.add("fits_at_load", g_gate.fits_at_load).add("log", c.gate_log).add("aged_samples", g_gate.aged);
     unsigned long long h[4];
     g_gate.histogram(h);
     sb::Json hj;

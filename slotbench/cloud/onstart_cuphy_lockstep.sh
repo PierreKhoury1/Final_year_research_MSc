@@ -17,8 +17,16 @@ stop_adversary() {
     ADV_PID=""
 }
 
+stop_telemetry() {
+    [[ -n ${TEL_PID:-} ]] || return 0
+    kill "$TEL_PID" 2>/dev/null || true
+    wait "$TEL_PID" 2>/dev/null || true
+    TEL_PID=""
+}
+
 cleanup() {
     stop_adversary
+    stop_telemetry
     if [[ ${MPS_ON:-0} -eq 1 ]]; then
         echo quit | timeout 10 env CUDA_MPS_PIPE_DIRECTORY="$MPS_PIPE" nvidia-cuda-mps-control >> "$LOGS/mps.log" 2>&1 || true
         MPS_ON=0
@@ -34,7 +42,7 @@ finish() {
     # Preserve complete originals. Gzip all logs/results once, excluding the 64 MB
     # input vector (its upstream revision, generation log and SHA256 are recorded).
     [[ $LOGS == "$W/"* && $OUT == "$W/"* ]]
-    tar -cf - -C "$W" "${LOGS#"$W/"}" "${OUT#"$W/"}" | gzip -9 > "$archive"
+    tar --warning=no-file-changed -cf - -C "$W" "${LOGS#"$W/"}" "${OUT#"$W/"}" | gzip -9 > "$archive"
     bytes=$(stat -c %s "$archive")
     lines=$(( (4 * ((bytes + 2) / 3) + 75) / 76 + 2 ))
     sha=$(sha256sum "$archive" | cut -d' ' -f1)
@@ -209,7 +217,7 @@ main() {
     export S="$W/acar" LOGS="$W/logs" OUT="$W/out" ACAR_COMMIT
     mkdir -p "$W" "$LOGS" "$OUT"
     cd "$W"
-    CURRENT_LOG="$LOGS/header.txt"; ADV_PID=""; STEP_PID=""; MPS_ON=0; ADV_EXTRA=(); GATE_TT=""
+    CURRENT_LOG="$LOGS/header.txt"; ADV_PID=""; STEP_PID=""; MPS_ON=0; ADV_EXTRA=(); GATE_TT=""; TEL_PID=""
     trap 'echo "=====SLOTBENCH-ERROR $LINENO $BASH_COMMAND====="; tail -n 25 "$CURRENT_LOG" 2>/dev/null || true; finish error' ERR
     trap 'echo "=====SLOTBENCH-ERROR 0 interrupted====="; finish interrupted' TERM INT
     SLOTS=${SB_CUPHY_LOCKSTEP_SLOTS:-1000}; WARMUP=${SB_CUPHY_LOCKSTEP_WARMUP:-100}
@@ -366,7 +374,7 @@ PY
 # Per repeat the cases of each sharing block run in a seeded random order (schedule.txt); every case
 # logs the tenant's in-window GEMMs (units.bin) so overlap with the slot can be measured afterwards.
 gate_campaign() {
-    local hc="$W/host-controls" r n iso sizes repeats seed rc_scan=0 tel_pid=""
+    local hc="$W/host-controls" r n iso sizes repeats seed rc_scan=0
     mkdir -p "$hc"
     # same MPS hygiene as the default campaign: non-MPS cases are invalid if a daemon is already up
     pgrep -f '^([^[:space:]]*/)?nvidia-cuda-mps-(control|server)([[:space:]]|$)' >/dev/null || rc_scan=$?
@@ -391,12 +399,21 @@ gate_campaign() {
     { nvidia-smi -lgc 1410,1410; echo "rc=$?"; } > "$OUT/clock_lock_attempt.txt" 2>&1 || true
     taskset -c "${SB_TELEMETRY_CPU:-0}" nvidia-smi --query-gpu=timestamp,clocks.sm,clocks.mem,temperature.gpu,power.draw,utilization.gpu \
         --format=csv,noheader -lms 250 > "$OUT/gpu_telemetry.csv" 2>&1 &
-    tel_pid=$!
+    TEL_PID=$!
     GATE_TT="$W/slot_timetable.bin"; BUSY_US=300
     mkdir -p "$W/units"
-    run_case calib_alone cpu none none || { log "calibration run failed"; kill "$tel_pid" 2>/dev/null; return 1; }
-    BUSY_US=$(python3 "$W/sb/slotbench/analysis/gate_summary.py" --busy "$OUT/calib_alone" \
-        --margin-us "${SB_GATE_MARGIN_US:-30}" --period-us "$PERIOD") || { log "busy_us derivation refused"; kill "$tel_pid" 2>/dev/null; return 1; }
+    # up to 3 calibration runs (names stay outside the analysis patterns); each must pass its own check
+    local k
+    BUSY_US=""
+    for k in 1 2 3; do
+        run_case "calib_alone_$k" cpu none none || continue
+        grep -q '"valid": true' "$OUT/calib_alone_$k.check.log" || { log "calib_alone_$k failed its check"; continue; }
+        BUSY_US=$(python3 "$W/sb/slotbench/analysis/gate_summary.py" --busy "$OUT/calib_alone_$k" \
+            --margin-us "${SB_GATE_MARGIN_US:-30}" --period-us "$PERIOD") && break
+        log "calib_alone_$k: busy_us derivation refused"
+        BUSY_US=""
+    done
+    [[ -n $BUSY_US ]] || { log "no usable calibration run"; return 1; }
     log "gate: busy_us=$BUSY_US (p99.9 on-time completion + margin), sizes=$sizes, repeats=$repeats, seed=$seed"
     printf '%s\n' "$BUSY_US" > "$OUT/busy_us.txt"
     local affinity=(taskset -c "$SB_ADVERSARY_CPU") mps_env=() order case
@@ -442,7 +459,7 @@ PY
             done
         done
     done
-    kill "$tel_pid" 2>/dev/null || true
+    stop_telemetry
     python3 "$W/sb/slotbench/analysis/gate_summary.py" "$OUT" --units-dir "$W/units" --json "$OUT/gate_summary.json" \
         > "$OUT/gate_summary.txt" 2>&1 \
         || log "summary rc=$?"

@@ -70,6 +70,10 @@ int main() {
     Result s = run(false, P, busy, 200, [](int i) -> int64_t { return i == 40 ? 400000 : 100000; });
     printf("latch:   units=%d per_slot=%.2f est_end=%.1f us\n", s.units, s.per_slot, g_gate.est_window_us);
     CHECK(s.per_slot > 1.6, "a single slow unit latched the gate (per_slot %.2f)", s.per_slot);
+    // 5. several slow but clean units (finish before the next slot) must not close the gate for good
+    Result c = run(false, P, busy, 400, [](int i) -> int64_t { return i >= 100 && i < 106 ? 250000 : 100000; });
+    printf("aging:   units=%d per_slot=%.2f aged=%llu\n", c.units, c.per_slot, g_gate.aged);
+    CHECK(c.per_slot > 1.5, "slow clean units closed the gate (per_slot %.2f)", c.per_slot);
     if (g_fail) { fprintf(stderr, "%d check(s) failed\n", g_fail); return 1; }
     printf("all gate checks passed\n");
     return 0;
