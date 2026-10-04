@@ -48,6 +48,7 @@
 #include "lockstep_common.h"
 #include "slot_pipeline.h"
 #include "slottrace.h"
+#include "timetable.h"
 #include "probe.cuh"
 
 using namespace sb;
@@ -118,6 +119,8 @@ struct Opts {
     std::string prio = "high";
     // slottrace: per-slot host records and the GPU residency probe (trace/README.md)
     std::string host_raw, probe_out;
+    std::string timetable;     // publish the slot timetable here for time-aware co-located tenants
+    double busy_us = 300.0;    // GPU time reserved after each boundary in the timetable
     int probe = 0, probe_sleep_ns = 1000, probe_capacity = 1 << 20;
     double probe_gap_us = 20.0;
     PhyConfig phy;
@@ -130,6 +133,7 @@ struct Opts {
             "       [--deadline-us F] [--spin-us F] [--prio high|default|low] [--core N] [--fifo P] [--gpu N]\n"
             "       [--calib N] [--calib-spread-s F] [--out FILE.json] [--raw FILE.bin] [--label S]\n"
             "       [--slot-variant full|no_cublas]\n"
+            "       [gating: --timetable PATH --busy-us F]\n"
             "       [slottrace: --host-raw FILE.bin --probe 0|1 --probe-out FILE.bin --probe-gap-us F --probe-sleep-ns N]\n"
             "       [sizes: --fft --symbols --subcarriers --qam --ldpc-cb --ldpc-iters --ldpc-rows --ldpc-z]\n");
     exit(2);
@@ -169,6 +173,8 @@ Opts parse(int argc, char **argv) {
         else if (f == "--label") o.label = v;
         else if (f == "--slot-variant") o.slot_variant = v;
         else if (f == "--host-raw") o.host_raw = v;
+        else if (f == "--timetable") o.timetable = v;
+        else if (f == "--busy-us") o.busy_us = num(v);
         else if (f == "--probe") o.probe = integer(v);
         else if (f == "--probe-out") o.probe_out = v;
         else if (f == "--probe-gap-us") o.probe_gap_us = num(v);
@@ -573,6 +579,13 @@ int main(int argc, char **argv) {
     const auto load_before_run = load_completed.load();
     const std::string run_start_utc = iso_utc_now();
     const int64_t run_wall_start = realtime_ns();
+    if (!o.timetable.empty()) {
+        SlotTimetable tt{};
+        memcpy(tt.magic, "SBTT0001", 8);
+        tt.t0 = T[0]; tt.period_ns = period_ns; tt.busy_ns = (int64_t)llround(o.busy_us * 1000.0);
+        tt.n_slots = total; tt.written_ns = now_ns();
+        if (!write_timetable(o.timetable, tt)) fail_run("could not write the slot timetable " + o.timetable);
+    }
     if (now_ns() >= t_start) fail_run("host preparation overran first target; reduce slots or load");
     if (o.probe) {
         probe_dev.deadline_g = G.back() + 10000000000ull;  // the probe also stops on its own
@@ -773,6 +786,7 @@ int main(int argc, char **argv) {
         .add("executive_launched", (long long)stf.n_launched).add("executive_skipped", (long long)stf.n_skipped)
         .add("executive_errors", (long long)stf.n_err).add("executive_first_error", stf.first_err)
         .add("executive_chunks", stf.chunks).add("executive_finished", stf.finished)
+        .add("timetable", o.timetable).add("busy_us", o.busy_us)
         .add("launcher_tid", (long long)launcher_tid).add("launcher_cpu", launcher_cpu)
         .add("host_raw", o.host_raw).add("probe", o.probe).add("probe_out", o.probe_out)
         .add("probe_gap_us", o.probe_gap_us).add("probe_sleep_ns", o.probe_sleep_ns)

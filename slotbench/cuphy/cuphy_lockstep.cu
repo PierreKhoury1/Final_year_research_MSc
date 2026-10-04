@@ -4,6 +4,7 @@
 #include "clock_fit.h"
 #include "host_time.h"
 #include "json_writer.h"
+#include "timetable.h"
 
 #include <algorithm>
 #include <atomic>
@@ -394,6 +395,19 @@ int sb_cuphy_lockstep_run(cudaGraphExec_t graph, cudaStream_t stream,
             records[k].t_target = first_target + k * period_ns;
             records[k].g_target = targets[k] = pre.gpu_of(records[k].t_target);
         }
+        // Time-aware gating (optional): publish the slot timetable for co-located GPU tenants.
+        const std::string timetable = env_string("SB_CUPHY_LOCKSTEP_TIMETABLE");
+        const double busy_us = env_number("SB_CUPHY_LOCKSTEP_BUSY_US", 300, 0, 1000000);
+        if (!timetable.empty()) {
+            SlotTimetable tt{};
+            std::memcpy(tt.magic, "SBTT0001", 8);
+            tt.t0 = first_target;
+            tt.period_ns = period_ns;
+            tt.busy_ns = static_cast<int64_t>(std::llround(busy_us * 1000));
+            tt.n_slots = count;
+            tt.written_ns = now_ns();
+            if (!write_timetable(timetable, tt)) throw std::runtime_error("cannot write slot timetable");
+        }
         ExecutiveState state;
         state.sequence = stamps_h->sequence;
         state.deadline = targets.back() + 5000000000ull;
@@ -496,7 +510,8 @@ int sb_cuphy_lockstep_run(cudaGraphExec_t graph, cudaStream_t stream,
             .add_raw("clock_fit_pre", pre.json()).add_raw("clock_fit_post", post.json())
             .add("two_point_ok", true).add("two_point_rate_ppm", (rate - 1.) * 1e6)
             .add("executive_finished", state.finished).add("executive_chunks", state.generations)
-            .add("executive_first_error", state.first_error);
+            .add("executive_first_error", state.first_error)
+            .add("timetable", timetable).add("busy_us", busy_us);
         if (!write_json(o.out, result)) throw std::runtime_error("JSON output write failed");
         std::printf("CUPHY_LOCKSTEP mode=%s correctness=%s recorded=%lld skipped=%lld p99_start_us=%.3f misses=%lld/%d\n",
                     o.mode.c_str(), before_ok && after_ok ? "pass" : "FAIL", recorded, skipped, percentile(start_error, 99), misses, o.slots);

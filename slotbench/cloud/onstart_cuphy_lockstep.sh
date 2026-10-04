@@ -104,7 +104,8 @@ apply_adapter() {
     cp "$patch" "$OUT/applied-adapter.patch"
     cp "$patch" "$W/applied-adapter.patch"
     cp "$adapter/cuphy_lockstep.cu" "$adapter/cuphy_lockstep.h" "$example/"
-    cp "$W/sb/slotbench/common/clock_fit.h" "$W/sb/slotbench/common/host_time.h" "$W/sb/slotbench/common/json_writer.h" "$example/"
+    cp "$W/sb/slotbench/common/clock_fit.h" "$W/sb/slotbench/common/host_time.h" "$W/sb/slotbench/common/json_writer.h" \
+        "$W/sb/slotbench/common/timetable.h" "$example/"
     cp "$adapter/cuphy_lockstep_stamps.cu" "$adapter/cuphy_lockstep_stamps.h" "$channels/"
     sha256sum "$patch" "$adapter"/cuphy_lockstep*.cu "$adapter"/cuphy_lockstep*.h > "$OUT/adapter_sha256.txt"
     git -C "$S" diff --stat > "$OUT/upstream_patch_stat.txt"
@@ -118,8 +119,8 @@ start_adversary() {
         affinity=(taskset -c "$SB_ADVERSARY_CPU")
     fi
     [[ $isolation == mps ]] && extra+=(CUDA_MPS_PIPE_DIRECTORY="$MPS_PIPE" CUDA_MPS_LOG_DIRECTORY="$MPS_LOG" CUDA_MPS_ACTIVE_THREAD_PERCENTAGE=50)
-    env "${extra[@]}" "${affinity[@]}" "$ADV" --workload sgemm --duty 100 --prio default --gpu 0 \
-        --seconds 600 --timeline "$OUT/$name.adversary.csv" --out "$OUT/$name.adversary.json" > "$OUT/$name.adversary.log" 2>&1 &
+    env "${extra[@]}" "${affinity[@]}" "$ADV" --workload sgemm --size "${ADV_SIZE:-4096}" --duty 100 --prio default --gpu 0 \
+        "${ADV_EXTRA[@]}" --seconds 600 --timeline "$OUT/$name.adversary.csv" --out "$OUT/$name.adversary.json" > "$OUT/$name.adversary.log" 2>&1 &
     ADV_PID=$!
     for ((i=0; i<90; i++)); do
         sleep 1
@@ -144,6 +145,10 @@ run_case() {
         pusch_args+=(-c "$SB_CUPHY_CPU")
     fi
     [[ $isolation == mps ]] && extra+=(CUDA_MPS_PIPE_DIRECTORY="$MPS_PIPE" CUDA_MPS_LOG_DIRECTORY="$MPS_LOG")
+    if [[ -n ${GATE_TT:-} ]]; then
+        rm -f "$GATE_TT"
+        extra+=(SB_CUPHY_LOCKSTEP_TIMETABLE="$GATE_TT" SB_CUPHY_LOCKSTEP_BUSY_US="$BUSY_US")
+    fi
     [[ $workload == sgemm ]] && start_adversary "$name" "$isolation"
     log "case $name: launcher=$mode isolation=$isolation workload=$workload"
     start=$(date -u +%FT%TZ)
@@ -196,7 +201,7 @@ main() {
     export S="$W/acar" LOGS="$W/logs" OUT="$W/out" ACAR_COMMIT
     mkdir -p "$W" "$LOGS" "$OUT"
     cd "$W"
-    CURRENT_LOG="$LOGS/header.txt"; ADV_PID=""; STEP_PID=""; MPS_ON=0
+    CURRENT_LOG="$LOGS/header.txt"; ADV_PID=""; STEP_PID=""; MPS_ON=0; ADV_EXTRA=(); GATE_TT=""
     trap 'echo "=====SLOTBENCH-ERROR $LINENO $BASH_COMMAND====="; tail -n 25 "$CURRENT_LOG" 2>/dev/null || true; finish error' ERR
     trap 'echo "=====SLOTBENCH-ERROR 0 interrupted====="; finish interrupted' TERM INT
     SLOTS=${SB_CUPHY_LOCKSTEP_SLOTS:-1000}; WARMUP=${SB_CUPHY_LOCKSTEP_WARMUP:-100}
@@ -268,6 +273,7 @@ CMAKE
     h5dump -H "$TV" > "$OUT/test_vector_schema.txt"
     if [[ ${SB_CUPHY_CAMPAIGN:-} == harq ]]; then harq_campaign; finish ok; return; fi
     local mps_scan_rc=0
+    if [[ ${SB_CUPHY_CAMPAIGN:-} == gate ]]; then gate_campaign; finish ok; return; fi
     pgrep -f '^([^[:space:]]*/)?nvidia-cuda-mps-(control|server)([[:space:]]|$)' >/dev/null || mps_scan_rc=$?
     if [[ $mps_scan_rc -eq 0 ]]; then
         log "Existing MPS process makes non-MPS phases invalid"; return 3
@@ -341,6 +347,66 @@ PY
             log "deadline sweep rc=$?"
         fi
     done
+}
+
+# Time-aware gating campaign (SB_CUPHY_CAMPAIGN=gate). The cuPHY slot (CPU launcher, 500 us period)
+# publishes its timetable; the SGEMM tenant either ignores it (--gate-mode observe: ungated control,
+# counted over the same window) or only issues a GEMM when it should finish before the next slot
+# (--gate-mode on). Sharing: time-slicing between processes (proc) and MPS. GEMM sizes in SB_GATE_SIZES.
+# busy_us comes from this host's own cuPHY-alone run (max latency from target + SB_GATE_MARGIN_US).
+gate_campaign() {
+    local hc="$W/host-controls" r n mode iso sizes repeats
+    mkdir -p "$hc"
+    bash "$W/sb/slotbench/cloud/cuphy_host_probe.sh" "$hc/probe" 0 > "$LOGS/host_probe.log" 2>&1 || log "host probe rc=$?"
+    if [[ -s $hc/probe/recommended_cpus.env ]]; then
+        # shellcheck disable=SC1091
+        source "$hc/probe/recommended_cpus.env"
+        export SB_CUPHY_CPU SB_ADVERSARY_CPU
+    fi
+    cp -a "$hc" "$OUT/host-controls" 2>/dev/null || true
+    sizes=${SB_GATE_SIZES:-"1024 768"}; repeats=${SB_GATE_REPEATS:-3}
+    [[ $repeats =~ ^[0-9]+$ ]] && (( repeats >= 1 && repeats <= 10 ))
+    for n in $sizes; do [[ $n =~ ^[0-9]+$ ]] && (( n >= 64 && n <= 8192 )); done
+    GATE_TT="$W/slot_timetable.bin"; BUSY_US=300
+    run_case alone_r0 cpu none none
+    BUSY_US=$(python3 - "$OUT/alone_r0.json" "${SB_GATE_MARGIN_US:-30}" <<'PY'
+import json, math, sys
+d = json.load(open(sys.argv[1]))
+print(int(math.ceil(d["latency_from_target_us"]["max"] + float(sys.argv[2]))))
+PY
+)
+    log "gate: busy_us=$BUSY_US (cuPHY alone max latency + margin), sizes=$sizes, repeats=$repeats"
+    printf '%s\n' "$BUSY_US" > "$OUT/busy_us.txt"
+    local affinity=()
+    [[ -n ${SB_ADVERSARY_CPU:-} ]] && affinity=(taskset -c "$SB_ADVERSARY_CPU")
+    for n in $sizes; do   # tenant alone: the throughput the AI would get with the GPU to itself
+        "${affinity[@]}" "$ADV" --workload sgemm --size "$n" --duty 100 --sync spin --seconds 5 \
+            --out "$OUT/ai_alone_n$n.json" > "$OUT/ai_alone_n$n.log" 2>&1 || log "ai_alone n=$n rc=$?"
+    done
+    for iso in none mps; do
+        if [[ $iso == mps ]]; then
+            MPS_PIPE="$W/mps-pipe"; MPS_LOG="$W/mps-log"
+            mkdir -p "$MPS_PIPE" "$MPS_LOG"
+            timeout 20 env CUDA_MPS_PIPE_DIRECTORY="$MPS_PIPE" CUDA_MPS_LOG_DIRECTORY="$MPS_LOG" nvidia-cuda-mps-control -d > "$LOGS/mps.log" 2>&1
+            MPS_ON=1; sleep 2
+            [[ -e $MPS_PIPE/control ]]
+        fi
+        for ((r=1; r<=repeats; r++)); do
+            [[ $iso == none ]] && run_case "alone_r$r" cpu none none || true
+            for n in $sizes; do
+                # alternate which variant goes first so drift cannot favour one
+                local order=(observe on)
+                (( r % 2 == 0 )) && order=(on observe)
+                for mode in "${order[@]}"; do
+                    ADV_SIZE=$n; ADV_EXTRA=(--gate "$GATE_TT" --gate-mode "$mode" --sync spin)
+                    run_case "${iso/none/proc}_${mode/on/gated}_n${n}_r$r" cpu "$iso" sgemm || log "case rc=$?"
+                    ADV_EXTRA=()
+                done
+            done
+        done
+    done
+    python3 "$W/sb/slotbench/analysis/gate_summary.py" "$OUT" > "$OUT/gate_summary.txt" 2>&1 || log "summary rc=$?"
+    cat "$OUT/gate_summary.txt"
 }
 
 # The pinned dependency/vector-generation functions below reuse onstart_cuphy.sh's

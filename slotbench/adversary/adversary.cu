@@ -23,6 +23,7 @@
 
 #include "host_time.h"
 #include "json_writer.h"
+#include "timetable.h"
 
 // ---------------------------------------------------------------- config
 
@@ -40,6 +41,11 @@ struct Config {
     int llm_layers = 16;
     double vision_scale = 1.0;
     bool print_config = false;
+    // time-aware gating: only issue a unit when it is expected to finish before the next 5G slot
+    std::string gate;          // timetable path written by the slot driver (--timetable)
+    double gate_guard_us = 30; // safety margin before the next boundary
+    std::string sync = "blocking";  // blocking|spin (spin learns completion sooner; uses a CPU core)
+    std::string gate_mode = "on";   // on: wait for slot gaps; observe: never wait, only count (ungated control)
 };
 
 static void usage(FILE *f) {
@@ -57,6 +63,11 @@ static void usage(FILE *f) {
             "  --llm-params F      (1e9)   llm proxy parameter count (fp16 weights = 2 bytes each)\n"
             "  --llm-layers N      (16)    llm proxy layers\n"
             "  --vision-scale F    (1.0)   vision proxy spatial scale (640x640 input at 1.0)\n"
+            "  --gate FILE         (\"\")    slot timetable written by the slot driver; issue a unit only when it is\n"
+            "                              expected to finish before the next slot boundary\n"
+            "  --gate-mode on|observe (on) observe = never wait, only count units/overruns against the timetable\n"
+            "  --gate-guard-us F   (30)    margin kept before each boundary\n"
+            "  --sync blocking|spin (blocking) how the host waits for a unit to complete\n"
             "  --print-config              print resolved config JSON and exit (no GPU needed)\n");
 }
 
@@ -101,6 +112,10 @@ static Config parse_args(int argc, char **argv) {
         else if (a == "--llm-params") ok = parse_double(v, c.llm_params);
         else if (a == "--llm-layers") ok = parse_int(v, c.llm_layers);
         else if (a == "--vision-scale") ok = parse_double(v, c.vision_scale);
+        else if (a == "--gate") c.gate = v;
+        else if (a == "--gate-guard-us") ok = parse_double(v, c.gate_guard_us);
+        else if (a == "--sync") c.sync = v;
+        else if (a == "--gate-mode") c.gate_mode = v;
         else bad("unknown flag " + a);
         if (!ok) bad("bad value for " + a + ": " + v);
     }
@@ -115,6 +130,9 @@ static Config parse_args(int argc, char **argv) {
     if (c.llm_layers < 1 || c.llm_layers > 1024) bad("--llm-layers must be in [1, 1024]");
     if (c.vision_scale <= 0 || c.vision_scale > 8) bad("--vision-scale must be in (0, 8]");
     if (c.out.empty()) bad("--out must not be empty");
+    if (c.sync != "blocking" && c.sync != "spin") bad("--sync must be blocking|spin");
+    if (c.gate_mode != "on" && c.gate_mode != "observe") bad("--gate-mode must be on|observe");
+    if (c.gate_guard_us < 0 || c.gate_guard_us > 1e6) bad("--gate-guard-us out of range");
     return c;
 }
 
@@ -246,6 +264,95 @@ struct Summary {
 };
 static Summary g_sum;
 
+// ---------------------------------------------------------------- time-aware gate
+// The slot driver publishes a timetable: slot k's GPU work starts near S_k = t0 + k*P and is done by
+// S_k + busy. The gate lets a unit start only inside [S_k + busy, S_{k+1} - guard - est], where est is
+// 1.1 x the longest of the last 32 measured unit durations. Before the timetable appears and after
+// its last slot the tenant runs ungated. In observe mode it never waits but counts the same things,
+// which is the ungated control measured over the identical window.
+struct Gate {
+    bool enabled = false, observe = false, loaded = false;
+    std::string path;
+    sb::SlotTimetable tt{};
+    int64_t start_ns = 0, next_poll = 0, guard_ns = 0;
+    int64_t dur[32] = {0};
+    int ndur = 0;
+    // statistics (units "in window" started in [t0, t0 + n*P))
+    unsigned long long units_in_window = 0, waits = 0, overrun_units = 0, busy_starts = 0;
+    double wait_s = 0, unit_s_in_window = 0;
+    int64_t unit_slot_end = 0;   // boundary the current unit must finish before (0 = none)
+    bool unit_in_window = false;
+
+    int64_t est() const {
+        int64_t m = 0;
+        for (int i = 0; i < std::min(ndur, 32); i++) m = std::max(m, dur[i]);
+        return (int64_t)(1.1 * (double)m);
+    }
+    int64_t window_end() const { return tt.t0 + tt.n_slots * tt.period_ns; }
+    void poll_file(int64_t now) {
+        if (loaded || now < next_poll) return;
+        next_poll = now + 1000000;   // at most once per ms
+        sb::SlotTimetable t{};
+        if (sb::read_timetable(path, t) && t.written_ns >= start_ns) {
+            tt = t;
+            loaded = true;
+            fprintf(stderr, "adversary: gate timetable loaded t0_in=%.3f ms period=%lld ns busy=%lld ns slots=%lld\n",
+                    (t.t0 - now) * 1e-6, (long long)t.period_ns, (long long)t.busy_ns, (long long)t.n_slots);
+        }
+    }
+    // floor((now - t0) / P) for any sign
+    int64_t slot_of(int64_t now) const {
+        int64_t d = now - tt.t0;
+        return d >= 0 ? d / tt.period_ns : -((-d + tt.period_ns - 1) / tt.period_ns);
+    }
+    template <class Sleep>
+    void wait_until(int64_t t, Sleep sleep_to) {
+        int64_t now = sb::now_ns();
+        if (t <= now) return;
+        waits++;
+        wait_s += (t - now) * 1e-9;
+        // Gaps are sub-millisecond and sleep wake-ups overshoot by 100+ us on VMs, so short waits spin
+        // (the gated tenant therefore uses one CPU core; pin it away from the slot launcher).
+        if (t - now > 2000000) sleep_to(t - 1000000);
+        while (sb::now_ns() < t && !g_stop_signal) sb::cpu_relax();
+    }
+    // Called before each unit. Returns once the unit may start.
+    template <class Sleep>
+    void before(Sleep sleep_to) {
+        unit_slot_end = 0;
+        unit_in_window = false;
+        if (!enabled) return;
+        for (;;) {
+            int64_t now = sb::now_ns();
+            poll_file(now);
+            if (!loaded || g_stop_signal) return;
+            const int64_t P = tt.period_ns, k = slot_of(now);
+            if (k >= tt.n_slots) return;                         // after the last slot: ungated
+            const int64_t Sk = tt.t0 + k * P, Sn = k < 0 ? tt.t0 : Sk + P;   // before t0 the next slot is slot 0
+            const bool next_is_slot = k + 1 < tt.n_slots;
+            if (k >= 0 && now < Sk + tt.busy_ns) {               // slot k is (assumed) on the GPU
+                if (observe) { busy_starts++; }
+                else { wait_until(Sk + tt.busy_ns, sleep_to); continue; }
+            } else if (next_is_slot && now + est() + guard_ns > Sn) {   // would not finish before slot k+1
+                if (!observe) { wait_until(Sn + tt.busy_ns, sleep_to); continue; }
+            }
+            unit_in_window = k >= 0;
+            unit_slot_end = next_is_slot ? Sn : 0;
+            if (k >= 0 && now < Sk + tt.busy_ns) unit_slot_end = Sk;   // observe: already overlapping slot k
+            return;
+        }
+    }
+    // Called after each unit with its start (after the gate) and completion times.
+    void after(int64_t t_start, int64_t t_done) {
+        if (!enabled) return;
+        dur[ndur++ % 32] = t_done - t_start;
+        if (!loaded) return;
+        if (unit_in_window) { units_in_window++; unit_s_in_window += (t_done - t_start) * 1e-9; }
+        if (unit_slot_end && (t_done > unit_slot_end || unit_slot_end <= t_start)) overrun_units++;
+    }
+};
+static Gate g_gate;
+
 static std::string summary_json(const Summary &s) {
     const Config &c = s.cfg;
     sb::Json j;
@@ -284,7 +391,8 @@ static std::string summary_json(const Summary &s) {
     j.add("gpu", c.gpu).add("gpu_name", s.gpu_name).add("gpu_uuid", s.gpu_uuid);
     j.add("free_mem_before", (unsigned long long)s.free_mem_before).add("total_mem", (unsigned long long)s.total_mem);
     j.add("cuda_runtime_version", s.runtime_version).add("cuda_driver_version", s.driver_version);
-    j.add("sync", "cudaDeviceScheduleBlockingSync + cudaStreamSynchronize after each unit");
+    j.add("sync", c.sync == "spin" ? "cudaDeviceScheduleSpin + cudaStreamSynchronize after each unit"
+                                   : "cudaDeviceScheduleBlockingSync + cudaStreamSynchronize after each unit");
     j.add("sgemm_math", "CUBLAS_DEFAULT_MATH (FP32, no TF32)");
     j.add("host", sb::hostname()).add("pid", (long)getpid());
     const char *mps = getenv("CUDA_MPS_ACTIVE_THREAD_PERCENTAGE");
@@ -293,6 +401,19 @@ static std::string summary_json(const Summary &s) {
     if (cvd) j.add("cuda_visible_devices", cvd); else j.add_null("cuda_visible_devices");
     j.add("start_time", s.start_time).add("end_time", s.end_time);
     j.add("timeline", c.timeline);
+    sb::Json gj;
+    gj.add("path", c.gate).add("mode", c.gate.empty() ? "off" : c.gate_mode).add("guard_us", c.gate_guard_us);
+    gj.add("sync", c.sync).add("timetable_loaded", g_gate.loaded);
+    gj.add("t0_ns", (long long)g_gate.tt.t0).add("period_ns", (long long)g_gate.tt.period_ns);
+    gj.add("busy_ns", (long long)g_gate.tt.busy_ns).add("n_slots", (long long)g_gate.tt.n_slots);
+    double win_s = g_gate.loaded ? g_gate.tt.n_slots * (double)g_gate.tt.period_ns * 1e-9 : NAN;
+    gj.add("window_s", win_s).add("units_in_window", g_gate.units_in_window);
+    gj.add("units_per_s_in_window", g_gate.loaded ? g_gate.units_in_window / win_s : NAN);
+    gj.add("gpu_busy_fraction_in_window", g_gate.loaded ? g_gate.unit_s_in_window / win_s : NAN);
+    gj.add("waits", g_gate.waits).add("wait_s", g_gate.wait_s);
+    gj.add("overrun_units", g_gate.overrun_units).add("starts_during_slot_busy", g_gate.busy_starts);
+    gj.add("est_unit_us_final", g_gate.est() * 1e-3);
+    j.add("gate", gj);
     return j.str();
 }
 
@@ -557,10 +678,12 @@ static void duty_loop(const Config &cfg, bool work, RunUnit run_unit) {
         g_sum.periods++;
         if (work) {
             for (;;) {
+                g_gate.before(sleep_to);   // time-aware gate (no-op unless --gate)
                 int64_t now = sb::now_ns();
                 if (stop_now(now) || (!full && now - ps >= active_ns) || (full && now - ps >= P)) break;
                 run_unit();   // issues one unit and synchronises the stream
                 int64_t done = sb::now_ns();
+                g_gate.after(now, done);
                 double dt_s = (done - now) * 1e-9;
                 g_sum.units++;
                 g_sum.unit_s_sum += dt_s;
@@ -602,7 +725,7 @@ int main(int argc, char **argv) {
 
     // Blocking sync: the adversary must not spin a CPU core that the slot driver may share.
     ACK(cudaSetDevice(cfg.gpu));
-    ACK(cudaSetDeviceFlags(cudaDeviceScheduleBlockingSync));
+    ACK(cudaSetDeviceFlags(cfg.sync == "spin" ? cudaDeviceScheduleSpin : cudaDeviceScheduleBlockingSync));
     ACK(cudaFree(nullptr));
     cudaDeviceProp prop;
     ACK(cudaGetDeviceProperties(&prop, cfg.gpu));
@@ -668,6 +791,22 @@ int main(int argc, char **argv) {
         ACK(cudaGetLastError());
         ACK(cudaStreamSynchronize(g.s));
         g_sum.warmup_units = 1;
+    }
+    if (!cfg.gate.empty()) {
+        g_gate.enabled = true;
+        g_gate.observe = cfg.gate_mode == "observe";
+        g_gate.path = cfg.gate;
+        g_gate.guard_ns = (int64_t)std::llround(cfg.gate_guard_us * 1e3);
+        g_gate.start_ns = sb::now_ns();
+        // Seed the duration estimate with 8 measured units (not counted).
+        for (int i = 0; i < 8 && !idle && cfg.duty > 0; i++) {
+            int64_t a = sb::now_ns();
+            issue_unit();
+            ACK(cudaStreamSynchronize(g.s));
+            g_gate.dur[g_gate.ndur++ % 32] = sb::now_ns() - a;
+        }
+        fprintf(stderr, "adversary: gate %s path=%s est_unit_us=%.1f guard_us=%.1f\n", cfg.gate_mode.c_str(),
+                cfg.gate.c_str(), g_gate.est() * 1e-3, cfg.gate_guard_us);
     }
 
     duty_loop(cfg, !idle && cfg.duty > 0, [&]() {
