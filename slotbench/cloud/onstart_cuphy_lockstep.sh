@@ -149,7 +149,15 @@ run_case() {
         rm -f "$GATE_TT"
         extra+=(SB_CUPHY_LOCKSTEP_TIMETABLE="$GATE_TT" SB_CUPHY_LOCKSTEP_BUSY_US="$BUSY_US")
     fi
-    [[ $workload == sgemm ]] && start_adversary "$name" "$isolation"
+    if [[ $workload == sgemm ]]; then
+        # never run the 5G slot without its tenant in a contended case: that would pass as "contended" data
+        if ! start_adversary "$name" "$isolation"; then
+            log "case $name: tenant failed to start; cuPHY not run"
+            stop_adversary
+            echo "tenant failed to start" > "$OUT/$name.skipped"
+            return 1
+        fi
+    fi
     log "case $name: launcher=$mode isolation=$isolation workload=$workload"
     start=$(date -u +%FT%TZ)
     CURRENT_LOG="$OUT/$name.pusch.log"
@@ -352,37 +360,47 @@ PY
 # Time-aware gating campaign (SB_CUPHY_CAMPAIGN=gate). The cuPHY slot (CPU launcher, 500 us period)
 # publishes its timetable; the SGEMM tenant either ignores it (--gate-mode observe: ungated control,
 # counted over the same window) or only issues a GEMM when it should finish before the next slot
-# (--gate-mode on). Sharing: time-slicing between processes (proc) and MPS. GEMM sizes in SB_GATE_SIZES.
-# busy_us comes from this host's own cuPHY-alone run (max latency from target + SB_GATE_MARGIN_US).
+# (--gate-mode on). Sharing: time-slicing between processes (proc) and MPS (tenant at 50% threads).
+# busy_us comes from a separate calibration run of cuPHY alone: p99.9 of completion latency over slots
+# launched on time (host launch stalls excluded) + SB_GATE_MARGIN_US, and must leave room in the period.
+# Per repeat the cases of each sharing block run in a seeded random order (schedule.txt); every case
+# logs the tenant's in-window GEMMs (units.bin) so overlap with the slot can be measured afterwards.
 gate_campaign() {
-    local hc="$W/host-controls" r n mode iso sizes repeats
+    local hc="$W/host-controls" r n iso sizes repeats seed rc_scan=0 tel_pid=""
     mkdir -p "$hc"
+    # same MPS hygiene as the default campaign: non-MPS cases are invalid if a daemon is already up
+    pgrep -f '^([^[:space:]]*/)?nvidia-cuda-mps-(control|server)([[:space:]]|$)' >/dev/null || rc_scan=$?
+    if [[ $rc_scan -ne 1 ]]; then log "MPS process present or cannot inspect (rc=$rc_scan); refusing"; return 3; fi
+    unset CUDA_MPS_PIPE_DIRECTORY CUDA_MPS_LOG_DIRECTORY CUDA_MPS_ACTIVE_THREAD_PERCENTAGE CUDA_MPS_CLIENT_PRIORITY \
+        CUDA_MPS_PINNED_DEVICE_MEM_LIMIT CUDA_MPS_ENABLE_PER_CTX_DEVICE_MULTIPROCESSOR_PARTITIONING
     bash "$W/sb/slotbench/cloud/cuphy_host_probe.sh" "$hc/probe" 0 > "$LOGS/host_probe.log" 2>&1 || log "host probe rc=$?"
     if [[ -s $hc/probe/recommended_cpus.env ]]; then
         # shellcheck disable=SC1091
         source "$hc/probe/recommended_cpus.env"
         export SB_CUPHY_CPU SB_ADVERSARY_CPU
     fi
+    [[ -n ${SB_CUPHY_CPU:-} && -n ${SB_ADVERSARY_CPU:-} ]] || { log "no CPU pinning available; refusing"; return 3; }
     cp -a "$hc" "$OUT/host-controls" 2>/dev/null || true
-    sizes=${SB_GATE_SIZES:-"1024 768"}; repeats=${SB_GATE_REPEATS:-3}
-    [[ $repeats =~ ^[0-9]+$ ]] && (( repeats >= 1 && repeats <= 10 ))
-    for n in $sizes; do [[ $n =~ ^[0-9]+$ ]] && (( n >= 64 && n <= 8192 )); done
-    GATE_TT="$W/slot_timetable.bin"; BUSY_US=300
-    run_case alone_r0 cpu none none
-    BUSY_US=$(python3 - "$OUT/alone_r0.json" "${SB_GATE_MARGIN_US:-30}" <<'PY'
-import json, math, sys
-d = json.load(open(sys.argv[1]))
-print(int(math.ceil(d["latency_from_target_us"]["max"] + float(sys.argv[2]))))
-PY
-)
-    log "gate: busy_us=$BUSY_US (cuPHY alone max latency + margin), sizes=$sizes, repeats=$repeats"
-    printf '%s\n' "$BUSY_US" > "$OUT/busy_us.txt"
-    local affinity=()
-    [[ -n ${SB_ADVERSARY_CPU:-} ]] && affinity=(taskset -c "$SB_ADVERSARY_CPU")
-    for n in $sizes; do   # tenant alone: the throughput the AI would get with the GPU to itself
-        "${affinity[@]}" "$ADV" --workload sgemm --size "$n" --duty 100 --sync spin --seconds 5 \
-            --out "$OUT/ai_alone_n$n.json" > "$OUT/ai_alone_n$n.log" 2>&1 || log "ai_alone n=$n rc=$?"
+    sizes=${SB_GATE_SIZES:-"1024 768 512"}; repeats=${SB_GATE_REPEATS:-4}; seed=${SB_GATE_SEED:-20261004}
+    [[ $repeats =~ ^[0-9]+$ ]] && (( repeats >= 1 && repeats <= 10 )) || { log "invalid SB_GATE_REPEATS"; return 2; }
+    [[ $seed =~ ^[0-9]+$ ]] || { log "invalid SB_GATE_SEED"; return 2; }
+    for n in $sizes; do
+        [[ $n =~ ^[0-9]+$ ]] && (( n >= 64 && n <= 8192 )) || { log "invalid size $n in SB_GATE_SIZES"; return 2; }
     done
+    # GPU clocks cannot be locked in these containers: record what they actually were
+    { nvidia-smi -lgc 1410,1410; echo "rc=$?"; } > "$OUT/clock_lock_attempt.txt" 2>&1 || true
+    taskset -c "${SB_TELEMETRY_CPU:-0}" nvidia-smi --query-gpu=timestamp,clocks.sm,clocks.mem,temperature.gpu,power.draw,utilization.gpu \
+        --format=csv,noheader -lms 250 > "$OUT/gpu_telemetry.csv" 2>&1 &
+    tel_pid=$!
+    GATE_TT="$W/slot_timetable.bin"; BUSY_US=300
+    mkdir -p "$W/units"
+    run_case calib_alone cpu none none || { log "calibration run failed"; kill "$tel_pid" 2>/dev/null; return 1; }
+    BUSY_US=$(python3 "$W/sb/slotbench/analysis/gate_summary.py" --busy "$OUT/calib_alone" \
+        --margin-us "${SB_GATE_MARGIN_US:-30}" --period-us "$PERIOD") || { log "busy_us derivation refused"; kill "$tel_pid" 2>/dev/null; return 1; }
+    log "gate: busy_us=$BUSY_US (p99.9 on-time completion + margin), sizes=$sizes, repeats=$repeats, seed=$seed"
+    printf '%s\n' "$BUSY_US" > "$OUT/busy_us.txt"
+    local affinity=(taskset -c "$SB_ADVERSARY_CPU") mps_env=() order case
+    : > "$OUT/schedule.txt"
     for iso in none mps; do
         if [[ $iso == mps ]]; then
             MPS_PIPE="$W/mps-pipe"; MPS_LOG="$W/mps-log"
@@ -390,22 +408,44 @@ PY
             timeout 20 env CUDA_MPS_PIPE_DIRECTORY="$MPS_PIPE" CUDA_MPS_LOG_DIRECTORY="$MPS_LOG" nvidia-cuda-mps-control -d > "$LOGS/mps.log" 2>&1
             MPS_ON=1; sleep 2
             [[ -e $MPS_PIPE/control ]]
+            mps_env=(CUDA_MPS_PIPE_DIRECTORY="$MPS_PIPE" CUDA_MPS_LOG_DIRECTORY="$MPS_LOG" CUDA_MPS_ACTIVE_THREAD_PERCENTAGE=50)
         fi
+        for n in $sizes; do   # tenant alone, same sharing setting: the throughput it would get without 5G
+            env "${mps_env[@]}" "${affinity[@]}" "$ADV" --workload sgemm --size "$n" --duty 100 --sync spin --seconds 5 \
+                --out "$OUT/ai_alone_${iso/none/proc}_n$n.json" > "$OUT/ai_alone_${iso/none/proc}_n$n.log" 2>&1 \
+                || log "ai_alone ${iso} n=$n rc=$?"
+        done
         for ((r=1; r<=repeats; r++)); do
-            [[ $iso == none ]] && run_case "alone_r$r" cpu none none || true
-            for n in $sizes; do
-                # alternate which variant goes first so drift cannot favour one
-                local order=(observe on)
-                (( r % 2 == 0 )) && order=(on observe)
-                for mode in "${order[@]}"; do
-                    ADV_SIZE=$n; ADV_EXTRA=(--gate "$GATE_TT" --gate-mode "$mode" --sync spin)
-                    run_case "${iso/none/proc}_${mode/on/gated}_n${n}_r$r" cpu "$iso" sgemm || log "case rc=$?"
-                    ADV_EXTRA=()
-                done
+            mapfile -t order < <(python3 - "$seed" "$iso" "$r" $sizes <<'PY'
+import random, sys
+seed, iso, r, *sizes = sys.argv[1:]
+cases = ["alone"] + [f"{m}:{n}" for n in sizes for m in ("observe", "on")]
+random.Random(f"{seed}-{iso}-{r}").shuffle(cases)
+print("\n".join(cases))
+PY
+)
+            for case in "${order[@]}"; do
+                echo "${iso} r$r $case" >> "$OUT/schedule.txt"
+                if [[ $case == alone ]]; then
+                    run_case "alone_${iso/none/proc}_r$r" cpu "$iso" none || log "case rc=$?"
+                    continue
+                fi
+                local mode=${case%%:*} name
+                n=${case##*:}
+                name="${iso/none/proc}_${mode/on/gated}_n${n}_r$r"
+                ADV_SIZE=$n
+                # full unit logs stay on the instance (analysed there); the archive keeps the first 2000 units
+                ADV_EXTRA=(--gate "$GATE_TT" --gate-mode "$mode" --sync spin --gate-log "$W/units/$name.units.bin")
+                run_case "$name" cpu "$iso" sgemm || log "case rc=$?"
+                ADV_EXTRA=()
+                [[ -s $W/units/$name.units.bin ]] && head -c 32000 "$W/units/$name.units.bin" > "$OUT/$name.units.head.bin"
             done
         done
     done
-    python3 "$W/sb/slotbench/analysis/gate_summary.py" "$OUT" > "$OUT/gate_summary.txt" 2>&1 || log "summary rc=$?"
+    kill "$tel_pid" 2>/dev/null || true
+    python3 "$W/sb/slotbench/analysis/gate_summary.py" "$OUT" --units-dir "$W/units" --json "$OUT/gate_summary.json" \
+        > "$OUT/gate_summary.txt" 2>&1 \
+        || log "summary rc=$?"
     cat "$OUT/gate_summary.txt"
 }
 
