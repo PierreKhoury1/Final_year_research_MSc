@@ -1,0 +1,58 @@
+{
+  "instance": "slottrace",
+  "tracefs": "/sys/kernel/tracing",
+  "cpus": [
+    2
+  ],
+  "buffer_mb": 64,
+  "clock": "mono_raw",
+  "events": [
+    "sched/sched_switch",
+    "sched/sched_waking",
+    "sched/sched_wakeup",
+    "sched/sched_migrate_task",
+    "irq/irq_handler_entry",
+    "irq/irq_handler_exit",
+    "irq/softirq_entry",
+    "irq/softirq_exit",
+    "timer/hrtimer_expire_entry"
+  ],
+  "events_missing": [],
+  "kernel": "6.18.44-fc-v64",
+  "start_mono_raw_ns": 1112746659842,
+  "stop_mono_raw_ns": 1121053801265,
+  "per_cpu_stats": {
+    "2": {
+      "entries": "701463",
+      "overrun": "0",
+      "commit overrun": "0",
+      "bytes": "13114244",
+      "oldest event ts": "1112.747027",
+      "now ts": "1121.053866",
+      "dropped events": "0",
+      "read events": "0"
+    }
+  },
+  "events_lost": 0,
+  "resolution": "ns (trace-cmd)",
+  "dat": "/tmp/claude-0/-home-user/c22b0607-07f1-5108-a24d-4caf6e85f472/scratchpad/st/e1/trace.dat",
+  "txt": "/tmp/claude-0/-home-user/c22b0607-07f1-5108-a24d-4caf6e85f472/scratchpad/st/e1/trace.txt",
+  "command": [
+    "bin/mock_slots",
+    "--out",
+    "/tmp/claude-0/-home-user/c22b0607-07f1-5108-a24d-4caf6e85f472/scratchpad/st/e1/m.json",
+    "--raw",
+    "/tmp/claude-0/-home-user/c22b0607-07f1-5108-a24d-4caf6e85f472/scratchpad/st/e1/m.bin",
+    "--host-raw",
+    "/tmp/claude-0/-home-user/c22b0607-07f1-5108-a24d-4caf6e85f472/scratchpad/st/e1/m.host.bin",
+    "--slots",
+    "16000",
+    "--core",
+    "2",
+    "--fifo",
+    "0",
+    "--label",
+    "e1_cfs"
+  ],
+  "command_rc": 0
+}

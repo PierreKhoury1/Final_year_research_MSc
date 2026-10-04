@@ -9,7 +9,7 @@ SM        ?= 80 86 89 90
 
 GENCODE   := $(foreach s,$(SM),-gencode arch=compute_$(s),code=sm_$(s)) \
              -gencode arch=compute_$(lastword $(SM)),code=compute_$(lastword $(SM))
-INC       := -Icommon -Iphy
+INC       := -Icommon -Iphy -Itrace
 CXXFLAGS  ?= -O2 -g
 CXXFLAGS  += -std=c++17 -Wall -Wextra $(INC)
 NVFLAGS   := -O2 -g -lineinfo -std=c++17 $(GENCODE) $(INC) -Xcompiler -Wall
@@ -43,7 +43,7 @@ bin/slot_driver: build/slot_driver.o build/slot_pipeline.o build/phy_kernels.o b
 # Device graph launch (the GPU launching the slot graph itself) needs relocatable device code + cudadevrt.
 # Only the executive's translation unit is built that way. Whether an MPS device-runtime module
 # refusal also affects CPU mode depends on runtime module loading and must be checked on the GPU.
-build/lockstep_driver.o: driver/lockstep_driver.cu driver/lockstep_common.h $(COMMON_H) $(PHY_H) | build
+build/lockstep_driver.o: driver/lockstep_driver.cu driver/lockstep_common.h trace/slottrace.h trace/probe.cuh $(COMMON_H) $(PHY_H) | build
 	$(NVCC) $(NVFLAGS) -c -o $@ $<
 build/lockstep_exec.o: driver/lockstep_exec.cu driver/lockstep_common.h | build
 	$(NVCC) $(NVFLAGS) -rdc=true -c -o $@ $<
@@ -57,6 +57,9 @@ bin/clockcal: clock/clockcal.cu $(COMMON_H) | bin
 	$(NVCC) $(NVFLAGS) -o $@ $< $(CUDA_LIBS)
 
 # ---- host-only ----
+bin/mock_slots: trace/mock_slots.cpp trace/slottrace.h $(COMMON_H) | bin
+	$(CXX) $(CXXFLAGS) -o $@ $< -lpthread
+
 bin/phc_offset: clock/phc_offset.c | bin
 	$(CC) -O2 -g -std=gnu11 -Wall -Wextra -o $@ $<
 

@@ -1,0 +1,82 @@
+{
+  "slots": 26000,
+  "late": 591,
+  "skipped": 461,
+  "late_by_root_cause": {
+    "preempt_rt": 248,
+    "invisible": 196,
+    "timer_late": 135,
+    "rt_throttle": 6,
+    "driver_call": 6
+  },
+  "late_slots_direct_cause": {
+    "preempt_rt": 50,
+    "invisible": 38,
+    "timer_late": 38,
+    "rt_throttle": 2,
+    "driver_call": 2
+  },
+  "component_medians_on_time_us": {
+    "host_us": 0.062,
+    "call_us": 8.06,
+    "queue_us": 5.0,
+    "exec_us": 140.0
+  },
+  "confusion": {
+    "none": {
+      "invisible": 25,
+      "timer_late": 30,
+      "driver_call": 4
+    },
+    "rt_hog": {
+      "rt_throttle": 5,
+      "invisible": 9,
+      "preempt_rt": 248,
+      "driver_call": 2
+    },
+    "rt_throttle": {
+      "invisible": 154,
+      "timer_late": 63,
+      "rt_throttle": 1
+    },
+    "cfs_hog": {
+      "timer_late": 42,
+      "invisible": 8
+    }
+  },
+  "per_fault": {
+    "cfs_hog": {
+      "late_slots": 50,
+      "correct": 0,
+      "recall": 0.0,
+      "precision": null
+    },
+    "rt_hog": {
+      "late_slots": 264,
+      "correct": 248,
+      "recall": 0.9393939393939394,
+      "precision": 1.0
+    },
+    "rt_throttle": {
+      "late_slots": 218,
+      "correct": 1,
+      "recall": 0.0045871559633027525,
+      "precision": 0.16666666666666666
+    }
+  },
+  "inputs": {
+    "run": "/tmp/claude-0/-home-user/c22b0607-07f1-5108-a24d-4caf6e85f472/scratchpad/st/e2/m.json",
+    "raw": "/tmp/claude-0/-home-user/c22b0607-07f1-5108-a24d-4caf6e85f472/scratchpad/st/e2/m.bin",
+    "host_raw": "/tmp/claude-0/-home-user/c22b0607-07f1-5108-a24d-4caf6e85f472/scratchpad/st/e2/m.host.bin",
+    "trace": "/tmp/claude-0/-home-user/c22b0607-07f1-5108-a24d-4caf6e85f472/scratchpad/st/e2/trace.txt",
+    "probe": null,
+    "faults": "/tmp/claude-0/-home-user/c22b0607-07f1-5108-a24d-4caf6e85f472/scratchpad/st/e2/faults.jsonl"
+  },
+  "launcher_prio_ftrace": 49,
+  "trace_meta": {
+    "events_lost": 0,
+    "resolution": "ns (trace-cmd)",
+    "cpu_time_delta_ms": null,
+    "kernel": "6.18.44-fc-v64"
+  }
+}

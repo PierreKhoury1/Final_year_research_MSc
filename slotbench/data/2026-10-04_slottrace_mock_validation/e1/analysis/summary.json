@@ -1,0 +1,70 @@
+{
+  "slots": 16000,
+  "late": 3034,
+  "skipped": 2418,
+  "late_by_root_cause": {
+    "cpu_contention": 2954,
+    "timer_late": 41,
+    "invisible": 37,
+    "driver_call": 2
+  },
+  "late_slots_direct_cause": {
+    "cpu_contention": 586,
+    "invisible": 17,
+    "timer_late": 12,
+    "driver_call": 1
+  },
+  "component_medians_on_time_us": {
+    "host_us": 0.06,
+    "call_us": 8.063,
+    "queue_us": 5.0,
+    "exec_us": 140.0
+  },
+  "confusion": {
+    "cfs_hog": {
+      "cpu_contention": 1349,
+      "invisible": 4,
+      "timer_late": 15,
+      "driver_call": 2
+    },
+    "none": {
+      "timer_late": 19,
+      "invisible": 30,
+      "cpu_contention": 7
+    },
+    "irq_storm": {
+      "cpu_contention": 1598,
+      "invisible": 3,
+      "timer_late": 7
+    }
+  },
+  "per_fault": {
+    "cfs_hog": {
+      "late_slots": 1370,
+      "correct": 1349,
+      "recall": 0.9846715328467154,
+      "precision": 0.456668923493568
+    },
+    "irq_storm": {
+      "late_slots": 1608,
+      "correct": 0,
+      "recall": 0.0,
+      "precision": null
+    }
+  },
+  "inputs": {
+    "run": "/tmp/claude-0/-home-user/c22b0607-07f1-5108-a24d-4caf6e85f472/scratchpad/st/e1/m.json",
+    "raw": "/tmp/claude-0/-home-user/c22b0607-07f1-5108-a24d-4caf6e85f472/scratchpad/st/e1/m.bin",
+    "host_raw": "/tmp/claude-0/-home-user/c22b0607-07f1-5108-a24d-4caf6e85f472/scratchpad/st/e1/m.host.bin",
+    "trace": "/tmp/claude-0/-home-user/c22b0607-07f1-5108-a24d-4caf6e85f472/scratchpad/st/e1/trace.txt",
+    "probe": null,
+    "faults": "/tmp/claude-0/-home-user/c22b0607-07f1-5108-a24d-4caf6e85f472/scratchpad/st/e1/faults.jsonl"
+  },
+  "launcher_prio_ftrace": 120,
+  "trace_meta": {
+    "events_lost": 0,
+    "resolution": "ns (trace-cmd)",
+    "cpu_time_delta_ms": null,
+    "kernel": "6.18.44-fc-v64"
+  }
+}

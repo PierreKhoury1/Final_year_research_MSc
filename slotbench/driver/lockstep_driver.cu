@@ -32,7 +32,9 @@
 #include <thread>
 #include <vector>
 
+#include <sched.h>
 #include <sys/prctl.h>
+#include <sys/syscall.h>
 #include <sys/stat.h>
 #include <unistd.h>
 
@@ -45,6 +47,8 @@
 #include "json_writer.h"
 #include "lockstep_common.h"
 #include "slot_pipeline.h"
+#include "slottrace.h"
+#include "probe.cuh"
 
 using namespace sb;
 
@@ -112,6 +116,10 @@ struct Opts {
     double period_us = 500, deadline_us = 500, spin_us = 200, calib_spread_s = 2.0;
     int gpu = 0, core = -1, fifo = 0, calib = 20000;
     std::string prio = "high";
+    // slottrace: per-slot host records and the GPU residency probe (trace/README.md)
+    std::string host_raw, probe_out;
+    int probe = 0, probe_sleep_ns = 1000, probe_capacity = 1 << 20;
+    double probe_gap_us = 20.0;
     PhyConfig phy;
 };
 
@@ -122,6 +130,7 @@ struct Opts {
             "       [--deadline-us F] [--spin-us F] [--prio high|default|low] [--core N] [--fifo P] [--gpu N]\n"
             "       [--calib N] [--calib-spread-s F] [--out FILE.json] [--raw FILE.bin] [--label S]\n"
             "       [--slot-variant full|no_cublas]\n"
+            "       [slottrace: --host-raw FILE.bin --probe 0|1 --probe-out FILE.bin --probe-gap-us F --probe-sleep-ns N]\n"
             "       [sizes: --fft --symbols --subcarriers --qam --ldpc-cb --ldpc-iters --ldpc-rows --ldpc-z]\n");
     exit(2);
 }
@@ -159,6 +168,11 @@ Opts parse(int argc, char **argv) {
         else if (f == "--raw") o.raw = v;
         else if (f == "--label") o.label = v;
         else if (f == "--slot-variant") o.slot_variant = v;
+        else if (f == "--host-raw") o.host_raw = v;
+        else if (f == "--probe") o.probe = integer(v);
+        else if (f == "--probe-out") o.probe_out = v;
+        else if (f == "--probe-gap-us") o.probe_gap_us = num(v);
+        else if (f == "--probe-sleep-ns") o.probe_sleep_ns = integer(v);
         else if (f == "--fft") o.phy.fft = integer(v);
         else if (f == "--symbols") o.phy.symbols = integer(v);
         else if (f == "--subcarriers") o.phy.subcarriers = integer(v);
@@ -182,6 +196,9 @@ Opts parse(int argc, char **argv) {
     if (o.prio != "high" && o.prio != "default" && o.prio != "low") usage("bad priority");
     if (o.gpu < 0 || o.core < -1 || o.core >= CPU_SETSIZE || o.fifo < 0 || o.fifo > 99)
         usage("bad gpu/core/fifo");
+    if ((o.probe != 0 && o.probe != 1) || o.probe_gap_us < 2 || o.probe_gap_us > 1e6 || o.probe_sleep_ns < 0
+        || o.probe_sleep_ns > 1000000 || (o.probe && o.probe_out.empty()))
+        usage("bad probe options (--probe 1 needs --probe-out; gap >= 2 us)");
     return o;
 }
 
@@ -433,6 +450,29 @@ int main(int argc, char **argv) {
     volatile int *finished_h = nullptr;
     int *finished_d = nullptr;
     std::string exec_error;
+    // GPU residency probe (allocated before targets exist; launched just before the first boundary)
+    ProbeDev probe_dev{};
+    cudaStream_t s_probe = nullptr;
+    volatile int *probe_stop_h = nullptr;
+    unsigned long long probe_stats[4] = {0, 0, 0, 0};
+    std::vector<ProbeGap> probe_gaps;
+    if (o.probe) {
+        int *stop_d = nullptr;
+        CK(cudaHostAlloc((void **)&probe_stop_h, sizeof(int), cudaHostAllocMapped));
+        *probe_stop_h = 0;
+        CK(cudaHostGetDevicePointer((void **)&stop_d, (void *)probe_stop_h, 0));
+        CK(cudaMalloc(&probe_dev.gaps, (size_t)o.probe_capacity * sizeof(ProbeGap)));
+        CK(cudaMalloc(&probe_dev.stats, 4 * sizeof(unsigned long long)));
+        CK(cudaMemset(probe_dev.stats, 0, 4 * sizeof(unsigned long long)));
+        probe_dev.capacity = (unsigned)o.probe_capacity;
+        probe_dev.gap_ns = (unsigned long long)llround(o.probe_gap_us * 1000.0);
+        probe_dev.sleep_ns = (unsigned)o.probe_sleep_ns;
+        probe_dev.stop = stop_d;
+        int lo_p, hi_p;
+        CK(cudaDeviceGetStreamPriorityRange(&lo_p, &hi_p));
+        CK(cudaStreamCreateWithPriority(&s_probe, cudaStreamNonBlocking, lo_p));
+        CK(cudaDeviceSynchronize());
+    }
     if (o.mode == "gpu") {
         CK(cudaMalloc(&exec_pool_d, kChunk * sizeof(cudaGraphExec_t)));
         CK(cudaMemcpyAsync(exec_pool_d, dev_exec.data(), kChunk * sizeof(cudaGraphExec_t), cudaMemcpyHostToDevice, s));
@@ -506,6 +546,10 @@ int main(int argc, char **argv) {
     bool pin_ok = pin_thread(o.core);
     bool fifo_ok = set_fifo(o.fifo);
     prctl(PR_SET_TIMERSLACK, 1UL, 0, 0, 0);
+    const long launcher_tid = syscall(SYS_gettid);
+    const int launcher_cpu = sched_getcpu();
+    std::vector<SlotHostRec> hrec(total);
+    memset(hrec.data(), 0, hrec.size() * sizeof(SlotHostRec));
 
     std::vector<Bracket> br = calibrate(s_cal, ctl_h, ctl_d, gt_h, gt_d, o.calib, o.calib_spread_s, cal_seq, exec_error);
     if (!exec_error.empty()) fail_run(exec_error);
@@ -521,6 +565,7 @@ int main(int argc, char **argv) {
     memset(rec.data(), 0, rec.size() * sizeof(LsRec));
     for (long k = 0; k < total; k++) {
         rec[k].slot = (unsigned long long)k; rec[k].t_target = T[k]; rec[k].g_target = G[k];
+        hrec[k].slot = (uint64_t)k; hrec[k].t_target = T[k]; hrec[k].cpu = -1;
     }
     ExecState stf{};
     stf.launched = -1;
@@ -529,6 +574,11 @@ int main(int argc, char **argv) {
     const std::string run_start_utc = iso_utc_now();
     const int64_t run_wall_start = realtime_ns();
     if (now_ns() >= t_start) fail_run("host preparation overran first target; reduce slots or load");
+    if (o.probe) {
+        probe_dev.deadline_g = G.back() + 10000000000ull;  // the probe also stops on its own
+        k_probe<<<1, 32, 0, s_probe>>>(probe_dev);
+        CK(cudaGetLastError());
+    }
 
     if (o.mode == "cpu") {
         unsigned long long seq = seq_base;
@@ -548,10 +598,12 @@ int main(int argc, char **argv) {
                 if (k >= total) break;
             }
             sleep_until_raw(T[k] - spin_ns);
+            int64_t tw = now_ns();
             spin_until(T[k]);
             int64_t t0 = now_ns();
             cudaError_t e = cudaGraphLaunch(host_exec, s);
             int64_t t1 = now_ns();
+            hrec[k].t_wake = tw; hrec[k].t_launch = t0; hrec[k].t_return = t1; hrec[k].cpu = sched_getcpu();
             rec[k].g_target = G[k];
             rec[k].g_launch = fit.gpu_of(t0);
             rec[k].g_launch_done = fit.gpu_of(t1);
@@ -609,6 +661,16 @@ int main(int argc, char **argv) {
     }
     const std::string run_end_utc = iso_utc_now();
     const int64_t run_wall_end = realtime_ns();
+    if (o.probe) {
+        *probe_stop_h = 1;
+        std::atomic_thread_fence(std::memory_order_seq_cst);
+        cudaError_t pq = wait_stream(s_probe, now_ns() + 5000000000LL);
+        if (pq != cudaSuccess) fail_run(std::string("residency probe did not stop: ") + cudaGetErrorString(pq));
+        CK(cudaMemcpy(probe_stats, probe_dev.stats, sizeof probe_stats, cudaMemcpyDeviceToHost));
+        size_t keep = (size_t)std::min<unsigned long long>(probe_stats[0], (unsigned long long)o.probe_capacity);
+        probe_gaps.resize(keep);
+        if (keep) CK(cudaMemcpy(probe_gaps.data(), probe_dev.gaps, keep * sizeof(ProbeGap), cudaMemcpyDeviceToHost));
+    }
     const auto load_during_run = load_completed.load() - load_before_run;
 
     std::string calibration_error;
@@ -660,6 +722,26 @@ int main(int argc, char **argv) {
         if (fclose(f) != 0) written = false;
         if (!written) { fprintf(stderr, "lockstep_driver: raw write failed\n"); return 2; }
     }
+    if (!o.host_raw.empty()) {
+        for (long k = 0; k < total; k++) hrec[k].flags = (uint32_t)rec[k].flags;
+        FILE *hf = fopen(o.host_raw.c_str(), "wb");
+        if (!hf) { perror("host-raw"); return 2; }
+        bool written = fwrite(hrec.data() + W, sizeof(SlotHostRec), (size_t)N, hf) == (size_t)N;
+        if (fclose(hf) != 0) written = false;
+        if (!written) { fprintf(stderr, "lockstep_driver: host-raw write failed\n"); return 2; }
+    }
+    if (o.probe) {
+        ProbeHeader ph{};
+        memcpy(ph.magic, "SBPROBE1", 8);
+        ph.gap_ns = probe_dev.gap_ns; ph.n_gaps = probe_stats[0]; ph.g_first = probe_stats[1];
+        ph.g_last = probe_stats[2]; ph.iterations = probe_stats[3]; ph.capacity = probe_gaps.size();
+        FILE *pf = fopen(o.probe_out.c_str(), "wb");
+        if (!pf) { perror("probe-out"); return 2; }
+        bool written = fwrite(&ph, sizeof ph, 1, pf) == 1
+            && (probe_gaps.empty() || fwrite(probe_gaps.data(), sizeof(ProbeGap), probe_gaps.size(), pf) == probe_gaps.size());
+        if (fclose(pf) != 0) written = false;
+        if (!written) { fprintf(stderr, "lockstep_driver: probe-out write failed\n"); return 2; }
+    }
     Json j;
     j.add("ok", ok).add("error", exec_error).add("mode", o.mode).add("load", o.load).add("label", o.label)
         .add("gpu", prop.name).add("sm", prop.multiProcessorCount).add("driver", drv).add("runtime", rt)
@@ -690,7 +772,12 @@ int main(int argc, char **argv) {
         .add("two_point_ok", tp.ok).add("two_point_rate_ppm", tp.ok ? (tp.rate - 1.0) * 1e6 : NAN)
         .add("executive_launched", (long long)stf.n_launched).add("executive_skipped", (long long)stf.n_skipped)
         .add("executive_errors", (long long)stf.n_err).add("executive_first_error", stf.first_err)
-        .add("executive_chunks", stf.chunks).add("executive_finished", stf.finished);
+        .add("executive_chunks", stf.chunks).add("executive_finished", stf.finished)
+        .add("launcher_tid", (long long)launcher_tid).add("launcher_cpu", launcher_cpu)
+        .add("host_raw", o.host_raw).add("probe", o.probe).add("probe_out", o.probe_out)
+        .add("probe_gap_us", o.probe_gap_us).add("probe_sleep_ns", o.probe_sleep_ns)
+        .add("probe_gaps", probe_stats[0]).add("probe_gaps_stored", (unsigned long long)probe_gaps.size())
+        .add("probe_iterations", probe_stats[3]).add("probe_g_first", probe_stats[1]).add("probe_g_last", probe_stats[2]);
     FILE *f = fopen(o.out.c_str(), "w");
     if (!f) { perror("out"); return 2; }
     fputs(j.str().c_str(), f);
