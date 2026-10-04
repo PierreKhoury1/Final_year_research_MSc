@@ -72,6 +72,11 @@ finish() {
     fi
     echo "=====SLOTBENCH-DONE status=$status====="
     if [[ ${SB_CUPHY_FINISH_EXIT:-0} == 1 ]]; then return; fi
+    # Leave time for the controller to collect, then stop the container so a lost controller cannot
+    # leave a finished GPU instance billing (an exited instance only pays for storage).
+    sleep "${SB_POST_DONE_GRACE_S:-900}"
+    echo "=====SLOTBENCH-SELF-STOP====="
+    kill -TERM 1; sleep 10; kill -KILL 1
     sleep infinity
 }
 
@@ -403,17 +408,18 @@ gate_campaign() {
     GATE_TT="$W/slot_timetable.bin"; BUSY_US=300
     mkdir -p "$W/units"
     # up to 3 calibration runs (names stay outside the analysis patterns); each must pass its own check
-    local k
-    BUSY_US=""
+    local k busy=""
+    BUSY_US=300   # placeholder published by the calibration runs themselves (no tenant reads it)
     for k in 1 2 3; do
         run_case "calib_alone_$k" cpu none none || continue
         grep -q '"valid": true' "$OUT/calib_alone_$k.check.log" || { log "calib_alone_$k failed its check"; continue; }
-        BUSY_US=$(python3 "$W/sb/slotbench/analysis/gate_summary.py" --busy "$OUT/calib_alone_$k" \
+        busy=$(python3 "$W/sb/slotbench/analysis/gate_summary.py" --busy "$OUT/calib_alone_$k" \
             --margin-us "${SB_GATE_MARGIN_US:-30}" --period-us "$PERIOD") && break
         log "calib_alone_$k: busy_us derivation refused"
-        BUSY_US=""
+        busy=""
     done
-    [[ -n $BUSY_US ]] || { log "no usable calibration run"; return 1; }
+    [[ $busy =~ ^[0-9]+$ ]] || { log "no usable calibration run"; return 1; }
+    BUSY_US=$busy
     log "gate: busy_us=$BUSY_US (p99.9 on-time completion + margin), sizes=$sizes, repeats=$repeats, seed=$seed"
     printf '%s\n' "$BUSY_US" > "$OUT/busy_us.txt"
     local affinity=(taskset -c "$SB_ADVERSARY_CPU") mps_env=() order case
