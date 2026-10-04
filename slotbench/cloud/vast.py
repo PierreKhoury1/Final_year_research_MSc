@@ -665,6 +665,8 @@ def run(api, args, out=print, now=time.time, sleep=time.sleep):
         out_dir = args.out or os.path.join("results", str(iid))
         error_seen_at = None
         running_seen = False
+        running_since = None   # elapsed seconds when the instance was first seen running
+        output_seen = False    # any non-empty container log since then
         reason = None
         harvest = {}
         while True:
@@ -683,6 +685,8 @@ def run(api, args, out=print, now=time.time, sleep=time.sleep):
                 st = info.get("actual_status") or info.get("cur_state")
                 if st == "running":
                     running_seen = True
+                    if running_since is None:
+                        running_since = elapsed
                 # intended_status can read "stopped" while the image is still being pulled; only trust it
                 # once the instance has been seen running
                 if st in ("exited", "offline") or (running_seen and info.get("intended_status") == "stopped"):
@@ -695,6 +699,12 @@ def run(api, args, out=print, now=time.time, sleep=time.sleep):
                     text = api.logs(iid, tail=args.poll_tail)
                 except VastError as e:
                     out(f"  logs error (will retry): {e}")
+            if text.strip():
+                output_seen = True
+            elif (reason is None and running_since is not None and not output_seen
+                  and elapsed - running_since > args.max_silent_min * 60):
+                # A dead host (onstart never started, or a broken log feed) would otherwise burn the whole cap.
+                reason = f"no container output {args.max_silent_min} min after running"
             done, dstat, errors = scan_markers(text)
             if text:
                 n_before = len(harvest)
@@ -905,6 +915,8 @@ def build_parser():
     p.add_argument("--poll-tail", type=int, default=400, help="log lines fetched per poll")
     p.add_argument("--collect-tail", type=int, default=MAX_LOG_TAIL)
     p.add_argument("--max-load-min", type=float, default=30.0, help="give up if not running after this")
+    p.add_argument("--max-silent-min", type=float, default=12.0,
+                   help="give up if a running instance has produced no log output after this")
     p.add_argument("--error-grace-s", type=float, default=600.0)
     p.add_argument("--out", default=None, help="default results/<id>")
     p.add_argument("--keep", action="store_true", help="do not destroy at the end (scp raw data, then destroy)")

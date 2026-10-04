@@ -486,6 +486,21 @@ def test_run_error_marker_then_grace(tmp_path):
     assert rc == 1 and "grace" in msgs and api.destroyed == [1234]
 
 
+def test_run_silent_instance_is_abandoned_early(tmp_path):
+    api = FakeApi(logs=[""])  # running, but the container log stays empty
+    clock = Clock()
+    rc, msgs = run_with(api, run_args(tmp_path, "--max-silent-min", "10", "--max-hours", "2"), clock)
+    assert rc == 1 and api.destroyed == [1234]
+    assert "no container output 10.0 min after running" in msgs
+    assert clock.t - 1000.0 <= 12 * 60 + 120  # stopped near 10 min, not at the 2 h cap
+
+
+def test_run_output_disables_silence_stop(tmp_path):
+    api = FakeApi(logs=["building\n"] * 20 + ["=====SLOTBENCH-DONE=====\n"])
+    rc, msgs = run_with(api, run_args(tmp_path, "--max-silent-min", "1"))
+    assert "no container output" not in msgs and "DONE" in msgs
+
+
 def test_run_instance_exited(tmp_path):
     api = FakeApi(logs=["x\n"], status="exited")
     rc, msgs = run_with(api, run_args(tmp_path))
