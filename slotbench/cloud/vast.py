@@ -699,11 +699,12 @@ def run(api, args, out=print, now=time.time, sleep=time.sleep):
                     text = api.logs(iid, tail=args.poll_tail)
                 except VastError as e:
                     out(f"  logs error (will retry): {e}")
-            if text.strip():
+            if re.search(args.expect_output, text):
                 output_seen = True
             elif (reason is None and running_since is not None and not output_seen
                   and elapsed - running_since > args.max_silent_min * 60):
                 # A dead host (onstart never started, or a broken log feed) would otherwise burn the whole cap.
+                # Only our script's own lines count: vast's ssh-proxy noise and timestamps do not.
                 reason = f"no container output {args.max_silent_min} min after running"
             done, dstat, errors = scan_markers(text)
             if text:
@@ -917,6 +918,8 @@ def build_parser():
     p.add_argument("--max-load-min", type=float, default=30.0, help="give up if not running after this")
     p.add_argument("--max-silent-min", type=float, default=12.0,
                    help="give up if a running instance has produced no log output after this")
+    p.add_argument("--expect-output", default=r"\[cuphy-lockstep |\[slotbench|=====SLOTBENCH",
+                   help="regex a log line must match to count as output from our script")
     p.add_argument("--error-grace-s", type=float, default=600.0)
     p.add_argument("--out", default=None, help="default results/<id>")
     p.add_argument("--keep", action="store_true", help="do not destroy at the end (scp raw data, then destroy)")

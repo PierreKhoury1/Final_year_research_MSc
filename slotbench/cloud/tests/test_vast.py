@@ -495,8 +495,15 @@ def test_run_silent_instance_is_abandoned_early(tmp_path):
     assert clock.t - 1000.0 <= 12 * 60 + 120  # stopped near 10 min, not at the 2 h cap
 
 
+def test_run_proxy_noise_is_not_output(tmp_path):
+    noise = "Warning: Permanently added 'ssh2.vast.ai' (ED25519) to the list of known hosts.\nSun Oct  4 22:27:28 UTC 2026\n"
+    api = FakeApi(logs=[noise])
+    rc, msgs = run_with(api, run_args(tmp_path, "--max-silent-min", "10", "--max-hours", "2"))
+    assert "no container output" in msgs and api.destroyed == [1234]
+
+
 def test_run_output_disables_silence_stop(tmp_path):
-    api = FakeApi(logs=["building\n"] * 20 + ["=====SLOTBENCH-DONE=====\n"])
+    api = FakeApi(logs=["[cuphy-lockstep 21:29:00] apt (limit 1200s)\n"] * 20 + ["=====SLOTBENCH-DONE=====\n"])
     rc, msgs = run_with(api, run_args(tmp_path, "--max-silent-min", "1"))
     assert "no container output" not in msgs and "DONE" in msgs
 
