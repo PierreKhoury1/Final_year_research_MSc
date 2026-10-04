@@ -1,0 +1,150 @@
+=== single-carrier phase noise L(f) dBc/Hz (free-running ref) ===
+FR1 3.5 GHz     XO     1k   -84.1 10k   -97.1 100k  -101.4 1M  -128.5
+FR1 3.5 GHz     TCXO   1k   -91.0 10k   -99.1 100k  -104.3 1M  -131.0
+FR1 3.5 GHz     OCXO   1k   -98.6 10k  -103.9 100k  -109.2 1M  -134.4
+FR1 3.5 GHz     CSAC   1k   -77.1 10k   -84.1 100k   -89.4 1M  -117.0
+FR2 28 GHz      XO     1k   -66.0 10k   -79.0 100k   -83.0 1M   -86.0
+FR2 28 GHz      TCXO   1k   -73.0 10k   -81.0 100k   -86.0 1M   -89.0
+FR2 28 GHz      OCXO   1k   -80.5 10k   -85.9 100k   -90.9 1M   -93.8
+FR2 28 GHz      CSAC   1k   -59.1 10k   -66.1 100k   -71.1 1M   -74.1
+subTHz 140 GHz  XO     1k   -52.1 10k   -65.0 100k   -69.1 1M   -72.1
+subTHz 140 GHz  TCXO   1k   -59.0 10k   -67.0 100k   -72.0 1M   -75.0
+subTHz 140 GHz  OCXO   1k   -66.6 10k   -71.9 100k   -76.9 1M   -79.9
+subTHz 140 GHz  CSAC   1k   -45.1 10k   -52.1 100k   -57.1 1M   -60.1
+
+=== 10 MHz ref ADEV from model (fh=10 kHz) ===
+XO ['5.9e-10', '3.0e-10', '4.1e-10', '5.3e-10']
+TCXO ['2.6e-10', '7.5e-11', '7.3e-11', '9.3e-11']
+OCXO ['1.0e-10', '1.4e-11', '5.4e-12', '5.3e-12']
+CSAC ['1.4e-09', '1.7e-09', '1.9e-09', '1.1e-09']
+
+=== deterministic drift from residual frequency offset, deg per ms ===
+2xXO 20ppm                               FR1:   5.04e+04 deg/ms FR2:   4.03e+05 deg/ms subTHz:   2.02e+06 deg/ms
+2xTCXO 2.5ppm (X310)                     FR1:    6.3e+03 deg/ms FR2:   5.04e+04 deg/ms subTHz:   2.52e+05 deg/ms
+3GPP 2x0.05ppm (PTP-only bound)          FR1:        126 deg/ms FR2:   1.01e+03 deg/ms subTHz:   5.04e+03 deg/ms
+2x GPSDO unlocked 20ppb                  FR1:       50.4 deg/ms FR2:        403 deg/ms subTHz:   2.02e+03 deg/ms
+10 ppb                                   FR1:       12.6 deg/ms FR2:        101 deg/ms subTHz:        504 deg/ms
+1 ppb                                    FR1:       1.26 deg/ms FR2:       10.1 deg/ms subTHz:       50.4 deg/ms
+Rel-19 CJTC-F finest step 0.1ppm/255     FR1:      0.491 deg/ms FR2:       3.93 deg/ms subTHz:       19.7 deg/ms
+0.2 ppb (RFClock common-ref residual)    FR1:      0.252 deg/ms FR2:       2.02 deg/ms subTHz:       10.1 deg/ms
+2x GPSDO locked 0.01ppb                  FR1:     0.0252 deg/ms FR2:      0.202 deg/ms subTHz:       1.01 deg/ms
+
+time to accumulate 10/30 deg (ms):
+eps=100.00 ppb FR1:   0.0794/   0.238 ms FR2:  0.00992/  0.0298 ms subTHz:  0.00198/ 0.00595 ms
+eps= 10.00 ppb FR1:    0.794/    2.38 ms FR2:   0.0992/   0.298 ms subTHz:   0.0198/  0.0595 ms
+eps=  1.00 ppb FR1:     7.94/    23.8 ms FR2:    0.992/    2.98 ms subTHz:    0.198/   0.595 ms
+eps=  0.10 ppb FR1:     79.4/     238 ms FR2:     9.92/    29.8 ms subTHz:     1.98/    5.95 ms
+
+=== irreducible intra-update jitter (integrated 1/T..10MHz noise, two radios) ===
+
+=== FREE-RUNNING refs, CFO removed (PTP time sync only; deterministic CFO tracked) (latency D=0.0 ms) rms inter-radio phase error [deg] vs update interval T ===
+                               0.125     0.5       1     2.5       5      10      20      50     100   1e+03
+FR1   XO    hold                 0.8     1.2     1.7     3.8     7.2    14.1    27.8    68.3   134.2  1190.0
+FR1   XO    lin                  1.1     1.2     1.4     1.8     2.7     4.7     9.4    25.9    60.2   791.7
+FR1   TCXO  hold                 0.6     0.6     0.7     0.9     1.5     2.6     5.0    12.2    23.9   211.6
+FR1   TCXO  lin                  0.8     0.8     0.9     0.9     1.1     1.4     2.1     4.8    10.8   140.8
+FR1   OCXO  hold                 0.3     0.3     0.3     0.3     0.4     0.4     0.5     0.8     1.4    11.9
+FR1   OCXO  lin                  0.4     0.4     0.5     0.5     0.5     0.5     0.5     0.6     0.9     8.0
+FR1   CSAC  hold                 3.2     4.0     5.6    11.7    22.4    43.9    84.9   190.7   330.8  2388.8
+FR1   CSAC  lin                  4.3     4.5     4.7     5.4     8.9    23.7    66.0   192.4   305.5  1620.2
+FR2   XO    hold                12.6    14.2    17.7    31.9    58.7   113.5   222.9   546.2  1073.5  9520.1
+FR2   XO    lin                 17.2    17.8    18.5    20.9    26.0    40.7    76.3   208.1   482.1  6333.2
+FR2   TCXO  hold                 8.9     9.1     9.4    10.7    14.0    22.4    41.0    97.7   191.2  1693.0
+FR2   TCXO  lin                 12.2    12.4    12.5    12.9    13.6    15.4    19.9    39.8    87.0  1126.3
+FR2   OCXO  hold                 5.1     5.1     5.1     5.1     5.2     5.3     5.8     7.8    12.3    95.5
+FR2   OCXO  lin                  7.0     7.0     7.0     7.0     7.1     7.2     7.3     7.8     9.6    64.0
+FR2   CSAC  hold                49.8    53.2    61.9   102.6   184.3   353.5   680.2  1526.5  2646.4 19110.4
+FR2   CSAC  lin                 68.0    68.7    69.5    72.9    92.7   198.3   531.3  1540.6  2445.1 12961.5
+subTHzXO    hold                63.0    71.0    88.3   159.5   293.3   567.5  1114.5  2731.1  5367.5 47600.7
+subTHzXO    lin                 85.8    88.8    92.7   104.4   129.9   203.4   381.5  1040.6  2410.6 31666.2
+subTHzTCXO  hold                44.5    45.4    46.8    53.3    70.0   112.2   204.9   488.6   956.0  8464.9
+subTHzTCXO  lin                 61.0    61.8    62.6    64.5    68.0    76.9    99.6   198.8   434.8  5631.6
+subTHzOCXO  hold                25.4    25.5    25.6    25.7    26.0    26.7    28.8    39.0    61.5   477.3
+subTHzOCXO  lin                 34.8    35.0    35.1    35.2    35.5    35.8    36.4    39.1    47.9   320.2
+subTHzCSAC  hold               248.8   266.0   309.3   512.9   921.5  1767.3  3401.1  7632.3 13232.0 95552.0
+subTHzCSAC  lin                339.8   343.3   347.3   364.6   463.3   991.7  2656.7  7702.9 12225.3 64807.4
+
+=== FREQ-SYNC (SyncE/common freq), relative noise above 10 Hz EEC BW only (latency D=0.0 ms) rms inter-radio phase error [deg] vs update interval T ===
+                               0.125     0.5       1     2.5       5      10      20      50     100   1e+03
+FR1   XO    hold                 0.8     0.9     1.1     1.6     2.3     3.7     5.7     8.5     9.5     9.9
+FR1   TCXO  hold                 0.6     0.6     0.6     0.7     0.8     1.0     1.3     1.8     1.9     2.0
+FR1   OCXO  hold                 0.3     0.3     0.3     0.3     0.3     0.4     0.4     0.4     0.4     0.4
+FR1   CSAC  hold                 3.1     3.5     4.1     6.9    12.2    22.8    41.0    70.7    76.4    75.9
+FR2   XO    hold                12.5    13.1    13.9    16.6    21.5    31.3    46.7    68.9    77.0    79.8
+FR2   TCXO  hold                 8.9     9.0     9.2     9.5    10.1    11.3    13.2    16.1    17.2    17.6
+FR2   OCXO  hold                 5.1     5.1     5.1     5.1     5.2     5.2     5.3     5.4     5.4     5.4
+FR2   CSAC  hold                49.6    51.0    54.1    69.9   106.9   187.5   330.9   567.2   612.6   608.5
+subTHzXO    hold                62.6    65.5    69.4    82.8   107.7   156.7   233.5   344.4   384.9   399.0
+subTHzTCXO  hold                44.5    45.2    45.8    47.5    50.4    56.3    66.2    80.7    86.2    88.1
+subTHzOCXO  hold                25.4    25.5    25.6    25.7    25.8    26.1    26.4    26.8    26.8    26.9
+subTHzCSAC  hold               248.1   255.2   270.4   349.4   534.5   937.6  1654.3  2836.2  3063.1  3042.5
+
+=== FREQ-SYNC, latency 1 ms (latency D=1.0 ms) rms inter-radio phase error [deg] vs update interval T ===
+                               0.125     0.5       1     2.5       5      10      20      50     100   1e+03
+FR1   XO    hold                 1.4     1.5     1.7     2.1     2.8     4.1     6.0     8.6     9.6     9.9
+FR1   TCXO  hold                 0.7     0.7     0.7     0.8     0.9     1.1     1.4     1.8     1.9     2.0
+FR1   OCXO  hold                 0.3     0.3     0.3     0.3     0.3     0.4     0.4     0.4     0.4     0.4
+FR1   CSAC  hold                 5.6     6.2     7.2    10.2    15.6    25.9    43.6    71.9    76.7    75.9
+FR2   XO    hold                15.5    16.2    17.1    19.9    25.0    34.4    49.0    69.9    77.4    79.8
+FR2   TCXO  hold                 9.4     9.5     9.6     9.9    10.5    11.7    13.6    16.3    17.3    17.6
+FR2   OCXO  hold                 5.1     5.1     5.2     5.2     5.2     5.2     5.3     5.4     5.4     5.4
+FR2   CSAC  hold                61.7    65.6    71.5    92.4   131.9   211.9   351.1   576.4   615.3   608.5
+subTHzXO    hold                77.6    80.9    85.4    99.7   124.8   171.9   244.9   349.4   386.9   399.1
+subTHzTCXO  hold                47.0    47.4    48.0    49.6    52.6    58.4    67.9    81.5    86.5    88.1
+subTHzOCXO  hold                25.7    25.7    25.8    25.8    25.9    26.2    26.4    26.8    26.9    26.9
+subTHzCSAC  hold               308.4   328.1   357.7   462.2   659.3  1059.5  1755.7  2882.1  3076.4  3042.6
+
+=== FREE-RUNNING, latency 1 ms (latency D=1.0 ms) rms inter-radio phase error [deg] vs update interval T ===
+                               0.125     0.5       1     2.5       5      10      20      50     100   1e+03
+FR1   XO    lin                  7.7     3.2     2.6     2.6     3.3     5.4    10.0    26.7    61.2   792.8
+FR1   TCXO  lin                  5.3     2.0     1.5     1.2     1.3     1.5     2.2     4.9    11.0   141.0
+FR1   OCXO  lin                  3.0     1.0     0.7     0.6     0.5     0.5     0.5     0.6     0.9     8.0
+FR1   CSAC  lin                 29.1    10.7     8.0     7.5    11.7    27.8    71.5   197.8   309.4  1622.5
+FR2   XO    lin                115.4    42.6    31.8    27.7    31.3    46.0    81.8   214.5   489.6  6342.5
+FR2   TCXO  lin                 81.4    28.8    20.6    16.2    15.5    16.6    21.0    40.9    88.3  1128.0
+FR2   OCXO  lin                 46.2    16.2    11.4     8.7     7.9     7.6     7.5     7.9     9.7    64.1
+FR2   CSAC  lin                452.6   159.9   114.5    94.0   114.1   230.8   575.2  1583.9  2475.6 12979.9
+subTHzXO    lin                577.2   212.9   158.8   138.3   156.6   229.8   409.0  1072.6  2448.1 31712.3
+subTHzTCXO  lin                406.9   144.1   103.0    81.1    77.4    83.2   104.8   204.5   441.4  5639.8
+subTHzOCXO  lin                231.2    80.8    57.0    43.6    39.6    37.8    37.5    39.7    48.4   320.7
+subTHzCSAC  lin               2263.0   799.6   572.5   469.9   570.7  1154.0  2876.0  7919.5 12377.8 64899.6
+
+=== per-radio integrated rms phase jitter 1 kHz - 10 MHz (deg) ===
+FR1 3.5 GHz TCXO 0.29 deg
+FR1 3.5 GHz OCXO 0.16 deg
+FR2 28 GHz TCXO 4.47 deg
+FR2 28 GHz OCXO 2.54 deg
+subTHz 140 GHz TCXO 22.33 deg
+subTHz 140 GHz OCXO 12.70 deg
+
+=== max update interval T (ms) for rms inter-radio error < 10 / 30 deg ===
+FR1 3.5 GHz    XO    free+CFO-hold    10deg:      6.14 ms   30deg:      19.8 ms
+FR1 3.5 GHz    XO    free+lin-extrap  10deg:      19.8 ms   30deg:      52.5 ms
+FR1 3.5 GHz    XO    SyncE-hold       10deg:  3.16e+03 ms   30deg:  3.16e+03 ms
+FR1 3.5 GHz    TCXO  free+CFO-hold    10deg:      35.6 ms   30deg:       115 ms
+FR1 3.5 GHz    TCXO  free+lin-extrap  10deg:      77.6 ms   30deg:       206 ms
+FR1 3.5 GHz    TCXO  SyncE-hold       10deg:  3.16e+03 ms   30deg:  3.16e+03 ms
+FR1 3.5 GHz    OCXO  free+CFO-hold    10deg:       807 ms   30deg:   2.6e+03 ms
+FR1 3.5 GHz    OCXO  free+lin-extrap  10deg:  1.19e+03 ms   30deg:  3.16e+03 ms
+FR1 3.5 GHz    OCXO  SyncE-hold       10deg:  3.16e+03 ms   30deg:  3.16e+03 ms
+FR1 3.5 GHz    CSAC  free+CFO-hold    10deg:       1.9 ms   30deg:      6.14 ms
+FR1 3.5 GHz    CSAC  free+lin-extrap  10deg:      5.05 ms   30deg:        11 ms
+FR1 3.5 GHz    CSAC  SyncE-hold       10deg:      3.42 ms   30deg:      13.4 ms
+FR2 28 GHz     XO    free+CFO-hold    10deg:       nan ms   30deg:       1.9 ms
+FR2 28 GHz     XO    free+lin-extrap  10deg:       nan ms   30deg:      6.14 ms
+FR2 28 GHz     XO    SyncE-hold       10deg:       nan ms   30deg:      9.07 ms
+FR2 28 GHz     TCXO  free+CFO-hold    10deg:      1.57 ms   30deg:      13.4 ms
+FR2 28 GHz     TCXO  free+lin-extrap  10deg:       nan ms   30deg:      35.6 ms
+FR2 28 GHz     TCXO  SyncE-hold       10deg:      4.16 ms   30deg:  3.16e+03 ms
+FR2 28 GHz     OCXO  free+CFO-hold    10deg:      63.8 ms   30deg:       250 ms
+FR2 28 GHz     OCXO  free+lin-extrap  10deg:      94.3 ms   30deg:       449 ms
+FR2 28 GHz     OCXO  SyncE-hold       10deg:  3.16e+03 ms   30deg:  3.16e+03 ms
+FR2 28 GHz     CSAC  free+CFO-hold    10deg:       nan ms   30deg:       nan ms
+FR2 28 GHz     CSAC  free+lin-extrap  10deg:       nan ms   30deg:       nan ms
+FR2 28 GHz     CSAC  SyncE-hold       10deg:       nan ms   30deg:       nan ms
+subTHz 140 GHz XO    free+CFO-hold    10deg:       nan ms   30deg:       nan ms
+subTHz 140 GHz XO    free+lin-extrap  10deg:       nan ms   30deg:       nan ms
+subTHz 140 GHz XO    SyncE-hold       10deg:       nan ms   30deg:       nan ms
+subTHz 140 GHz TCXO  free+CFO-hold    10deg:       nan ms   30deg:       nan ms
+subTHz 140 GHz TCXO  free+lin-extrap  10deg:       nan ms   30deg:       nan ms
+subTHz 140 GHz TCXO  SyncE-hold       10deg:       nan ms   30deg:       nan ms
