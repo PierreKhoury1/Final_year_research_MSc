@@ -3,14 +3,17 @@
 **Question.** Does letting the GPU itself trigger NVIDIA's PUSCH slot graph on its own clock (the resident
 "slot executive", `slotbench/cuphy/`) reduce the fraction of slots whose decode would be *late for HARQ*, compared
 with the ordinary host launch? Earlier campaigns scored slots against the full 500 µs period; this one scores them
-against tight completion budgets (150–500 µs after the slot boundary) so that the launcher's start jitter and the
+against tight boundary-referenced completion budgets (150–500 µs after the slot boundary; 3GPP sets no gNB decode deadline and NVIDIA's own PUSCH budget is 1.25–1.5 ms) so that the launcher's start jitter and the
 host's stalls are actually inside the budget.
 
 **Answer on this host (12 randomised triplets, 36 trials, 180 000 measured boundaries, all 36 trials passing
 decoded-payload, TB CRC, CB CRC and raw-record checks):** at every budget from 200 µs to 500 µs the GPU-launched
-slot misses fewer deadlines than the CPU-launched slot in 12 of 12 triplets, by 0.6–0.8 percentage points at
-250–500 µs and 5.8 points at 200 µs. The GPU launcher skipped no boundary and never stalled; the CPU launcher
-skipped ~28 boundaries per 5 000 and stalled (>1 ms) 2–12 times per trial, up to 13.5 ms.
+slot misses fewer deadlines than the plain CPU-launched slot in 12 of 12 triplets (0.6–0.8 percentage points at
+250–500 µs, 5.8 at 200 µs, the latter mostly a GPU-clock artefact), and fewer than the clock-matched
+CPU+keep-alive variant in 12/12 triplets at 200 µs and 11/12 at 250–500 µs (the production-relevant comparison).
+The GPU launcher skipped no boundary and never stalled; the CPU launcher skipped ~28 boundaries per 5 000, typically
+in one early 7.5–14 ms stall per 2.5 s trial plus about one 1–2 ms stall later (some of it inside
+`cudaGraphLaunch`), up to 13.5 ms (CPU) / 14.4 ms (keep-alive). Cause of the stalls not identified.
 
 ## Miss rate versus completion budget (pooled over 60 000 boundaries per launcher)
 
@@ -18,7 +21,7 @@ A miss is a boundary that was skipped (the previous slot was still running) or w
 the budget after the boundary. Start error and completion use the two-point host/GPU clock mapping of each trial
 (fit bounds 1.7–2.3 µs; timer tick 1.024 µs).
 
-| Launcher | skipped | stalls >1 ms | 200 µs | 250 µs | 300 µs | 400 µs | 500 µs | p50 / p99 / p99.9 / max completion (µs) |
+| Launcher | skipped | skipped + executions >1 ms | 200 µs | 250 µs | 300 µs | 400 µs | 500 µs | p50 / p99 / p99.9 / max completion (µs) |
 |---|---:|---:|---:|---:|---:|---:|---:|---|
 | CPU (ordinary host launch) | 329 | 354 | 6.04 % | 0.97 % | 0.85 % | 0.62 % | 0.60 % | 195.8 / 206.1 / 385.4 / 13 477 |
 | CPU + GPU keep-alive | 345 | 381 | 1.02 % | 0.92 % | 0.82 % | 0.66 % | 0.64 % | 156.4 / 166.6 / 372.1 / 14 396 |
@@ -37,8 +40,11 @@ Paired per-triplet differences, mean over 12 triplets [95 % whole-triplet bootst
 Reading the two CPU rows: with the plain host launch the A100 idles at 1095 MHz (every sampled clock in every CPU
 trial), so the PHY takes 174 µs and almost every slot is late for a 200 µs budget; the keep-alive variant holds the
 GPU at 1410 MHz (PHY 135 µs) and removes that effect, but **not** the host's skips and stalls, which are the ~0.6 %
-floor shared by both CPU rows at any budget. The GPU launcher has neither problem: p99 start error 4.9 µs
-(CPU 31–39 µs on this host), no skips, no stalls.
+floor shared by both CPU rows at any budget. The GPU launcher has neither problem: p99 start error 5.0 µs
+(CPU median of per-trial p99 31.3 µs, range 21–87; CPU+keep-alive 29.0 µs), no skips, no stalls. The CPU thread
+woke on time (p99 lateness ≤ 0.2 µs): the start-error gap is host-submission-to-GPU-start latency, which production
+Aerial hides by enqueueing PUSCH 400 µs ahead behind a GPU event, so this gain must not be claimed against
+production (see `../../docs/claim_verdict_2026-10-04.md`).
 
 What the GPU launcher's residual misses are: not launch timing. Its p99.9 start error is 5 µs in every trial;
 the 131 misses at 200 µs (and 26 at 300 µs) are slots whose *execution* took 230–330 µs instead of 136 µs
@@ -49,10 +55,12 @@ is exactly zero over 60 000 boundaries.
 
 ## In 5G terms
 
-A PUSCH slot that completes after the HARQ budget is a lost transport block for that UE (here one TB of 152 code
-blocks at MCS 27, 100 MHz, four layers) and a retransmission several milliseconds later. On this host, with the
-GPU dedicated to the cell, the ordinary CPU launch path loses about 0.6 % of slots to host-side skips and stalls
-at any budget, and 1 % at a 250 µs budget; the GPU-timed launch loses 0.13 % at 250 µs and none at ≥400 µs. The
+A PUSCH slot that completes after its budget costs a HARQ retransmission and that slot's uplink capacity (here one
+TB of 152 code blocks at MCS 27, 100 MHz, four layers), not the data itself, except where 10–14 ms bursts could
+exhaust all HARQ attempts. On this host, with the
+GPU dedicated to the cell, the boundary-launching CPU path at normal priority lost about 0.6 % of slots to host-side
+skips and stalls at any budget (mostly from one early multi-ms stall per trial, so not a long-run rate), and 1 % at a
+250 µs budget; the GPU-timed launch loses 0.13 % at 250 µs and none at ≥400 µs. The
 companion campaign on a quieter 16-CPU host (`../2026-10-02_a100_cuphy_repeated/`) showed the same ordering at a
 lower level: CPU 0.07–0.11 % lost at 160–200 µs, GPU 0. The improvement is in the tail, not the median: the
 GPU launcher removes the host's multi-millisecond stalls and the boundary skips they cause, and tightens the slot
@@ -94,6 +102,14 @@ python3 slotbench/analysis/cuphy_idle_control.py slotbench/data/2026-10-03_a100_
 `analysis/control/` holds the activity-control analysis (per-variant summaries, paired contrasts with bootstrap
 intervals, sampled clocks and power, `idle_activity_control.png`): GPU − CPU p99 start −33.8 µs [−45.4, −24.5],
 GPU − CPU+keep-alive −27.9 µs [−36.8, −21.2], GPU − CPU+keep-alive p50 PHY +1.0 µs (same clocks).
+
+## Baseline caveat (production Aerial)
+
+The CPU arm launches at the slot boundary from a `SCHED_OTHER` thread on a container host with unlocked clocks.
+Production Aerial launches PUSCH 400 µs ahead from `SCHED_FIFO` isolated cores, gates it on the GPU (order-kernel
+event, device graph launch) and locks clocks. These results therefore show robustness of GPU-resident triggering on
+hosts without real-time guarantees; they are not a comparison against a real-time-tuned production Aerial host.
+Zero misses in 60 000 GPU boundaries bounds the miss rate at about 5e-5 (95 %), not at URLLC levels.
 
 ## Limits
 
