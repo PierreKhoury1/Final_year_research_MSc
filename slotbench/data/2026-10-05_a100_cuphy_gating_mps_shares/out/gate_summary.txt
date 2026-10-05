@@ -1,0 +1,41 @@
+busy_us reserved per slot: 229   (misses: % of slots; host = launch call returned >50 us after target)
+sharing gate        n runs  slots | GPU miss 500     250 | host 500 |  exec p50/p99 | overlap |    AI/s   kept | gate
+mps   alone       0    4  20000 |        0.00%   0.00% |    0.11% |  176.1/ 178.2 | -% | - -% | 
+mps10 gated     512    4  20000 |        0.00%   0.00% |    0.00% |  138.2/ 140.3 |    0.0% |    2000  35.2% | fits=1 units=20804
+mps10 gated     768    4  20000 |        0.00%   0.00% |    0.07% |  138.2/ 176.1 |    0.0% |       0   0.0% | fits=0 units=4
+mps10 observe   512    4  20000 |        0.00%   0.00% |    0.00% |  150.5/ 171.0 |  100.0% |    5597  98.6% | fits=1 units=58213
+mps10 observe   768    4  20000 |        0.00%   0.00% |    0.00% |  149.5/ 198.7 |  100.0% |    1800  99.3% | fits=0 units=18725
+mps25 gated     512    4  20000 |        0.00%   0.00% |    0.02% |  138.2/ 139.3 |    0.0% |    4001  33.4% | fits=1 units=41608
+mps25 gated     768    4  20000 |        0.00%   0.00% |    0.00% |  137.2/ 174.1 |    0.0% |       0   0.0% | fits=0 units=4
+mps25 observe   512    4  20000 |        0.00%   0.00% |    0.01% |  152.6/ 165.9 |  100.0% |   11701  97.5% | fits=1 units=121693
+mps25 observe   768    4  20000 |        0.00%   0.00% |    0.06% |  163.8/ 205.8 |  100.0% |    4249  98.9% | fits=0 units=44192
+mps50 gated     512    4  20000 |        0.00%   0.00% |    0.19% |  138.2/ 140.3 |    0.1% |    8001  40.3% | fits=1 units=83208
+mps50 gated     768    4  20000 |        0.00%   0.00% |    0.03% |  139.3/ 141.3 |    0.0% |    3762  42.8% | fits=1 units=39120
+mps50 observe   512    4  20000 |        0.00%   0.00% |    0.02% |  179.2/ 195.6 |  100.0% |   19353  97.4% | fits=1 units=201269
+mps50 observe   768    4  20000 |        0.00%   0.03% |    0.00% |  196.6/ 228.4 |  100.0% |    8040  91.6% | fits=1 units=83621
+
+paired gated - observe (same sharing, size, repeat): GPU-caused miss change and AI throughput ratio
+  mps10 n=  512 r1: d_miss500=  +0.00 pp  d_miss250=  +0.00 pp  AI gated/observe=0.36
+  mps10 n=  512 r2: d_miss500=  +0.00 pp  d_miss250=  +0.00 pp  AI gated/observe=0.36
+  mps10 n=  512 r3: d_miss500=  +0.00 pp  d_miss250=  +0.00 pp  AI gated/observe=0.36
+  mps10 n=  512 r4: d_miss500=  +0.00 pp  d_miss250=  +0.00 pp  AI gated/observe=0.36
+  mps10 n=  768 r1: d_miss500=  +0.00 pp  d_miss250=  +0.00 pp  AI gated/observe=0.00
+  mps10 n=  768 r2: d_miss500=  +0.00 pp  d_miss250=  +0.00 pp  AI gated/observe=0.00
+  mps10 n=  768 r3: d_miss500=  +0.00 pp  d_miss250=  +0.00 pp  AI gated/observe=0.00
+  mps10 n=  768 r4: d_miss500=  +0.00 pp  d_miss250=  +0.00 pp  AI gated/observe=0.00
+  mps25 n=  512 r1: d_miss500=  +0.00 pp  d_miss250=  +0.00 pp  AI gated/observe=0.34
+  mps25 n=  512 r2: d_miss500=  +0.00 pp  d_miss250=  +0.00 pp  AI gated/observe=0.34
+  mps25 n=  512 r3: d_miss500=  +0.00 pp  d_miss250=  +0.00 pp  AI gated/observe=0.34
+  mps25 n=  512 r4: d_miss500=  +0.00 pp  d_miss250=  +0.00 pp  AI gated/observe=0.34
+  mps25 n=  768 r1: d_miss500=  +0.00 pp  d_miss250=  +0.00 pp  AI gated/observe=0.00
+  mps25 n=  768 r2: d_miss500=  +0.00 pp  d_miss250=  +0.00 pp  AI gated/observe=0.00
+  mps25 n=  768 r3: d_miss500=  +0.00 pp  d_miss250=  +0.00 pp  AI gated/observe=0.00
+  mps25 n=  768 r4: d_miss500=  +0.00 pp  d_miss250=  +0.00 pp  AI gated/observe=0.00
+  mps50 n=  512 r1: d_miss500=  +0.00 pp  d_miss250=  +0.00 pp  AI gated/observe=0.41
+  mps50 n=  512 r2: d_miss500=  +0.00 pp  d_miss250=  +0.00 pp  AI gated/observe=0.41
+  mps50 n=  512 r3: d_miss500=  +0.00 pp  d_miss250=  +0.00 pp  AI gated/observe=0.41
+  mps50 n=  512 r4: d_miss500=  +0.00 pp  d_miss250=  +0.00 pp  AI gated/observe=0.41
+  mps50 n=  768 r1: d_miss500=  +0.00 pp  d_miss250=  -0.08 pp  AI gated/observe=0.47
+  mps50 n=  768 r2: d_miss500=  +0.00 pp  d_miss250=  -0.02 pp  AI gated/observe=0.44
+  mps50 n=  768 r3: d_miss500=  +0.00 pp  d_miss250=  +0.00 pp  AI gated/observe=0.48
+  mps50 n=  768 r4: d_miss500=  +0.00 pp  d_miss250=  -0.04 pp  AI gated/observe=0.48

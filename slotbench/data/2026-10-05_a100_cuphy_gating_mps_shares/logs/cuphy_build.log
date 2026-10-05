@@ -1,0 +1,181 @@
+[1/144] Building C object cuPHY/nvlog/CMakeFiles/nvlog.dir/src/aerial_event_code.c.o
+[2/144] Building C object cuPHY/nvlog/CMakeFiles/nvlog.dir/src/nvlog.c.o
+[3/144] Building C object cuPHY/nvlog/CMakeFiles/nvlog.dir/src/nv_utils.c.o
+[4/144] Building C object cuPHY/nvlog/CMakeFiles/nvlog.dir/src/stat_log.c.o
+[5/144] Building CXX object cuPHY/src/cuphy/CMakeFiles/genPucchLUT.dir/pucch_receiver/gen_pucch_receiver_LUTs.cpp.o
+[6/144] Building CXX object cuPHY/src/cuphy/CMakeFiles/genLUT.dir/crc/gen_crc_LUTs.cpp.o
+[7/144] Building CXX object cuPHY/nvlog/CMakeFiles/nvlog.dir/src/exit_handler.cpp.o
+[8/144] Building CXX object cuPHY/util/aerial_utils/CMakeFiles/aerial_utils.dir/memfoot_global.cpp.o
+[9/144] Building CXX object cuPHY/nvlog/CMakeFiles/nvlog.dir/src/nvlog.cpp.o
+[10/144] Linking CXX shared library cuPHY/nvlog/libnvlog.so
+[11/144] Linking CXX shared library cuPHY/util/aerial_utils/libaerial_utils.so
+[12/144] Linking CXX executable cuPHY/src/cuphy/genLUT
+[13/144] Linking CXX executable cuPHY/src/cuphy/genPucchLUT
+[14/144] Generating LUTs for PUCCH receiver Format 1
+Generate look-up tables for PUCCH Receiver - Format 1
+/workspace/cuphy-lockstep/build/cuPHY/src/cuphy/LUTS
+[15/144] Generating LUTs for CRC and Descrambling
+Generate look-up tables for 3GPP NR CRC and descrambling: 
+/workspace/cuphy-lockstep/build/cuPHY/src/cuphy/LUTS
+Opening '/workspace/cuphy-lockstep/build/cuPHY/src/cuphy/LUTS/G_CRC_16_P_LUT.h' for writing...
+Opening '/workspace/cuphy-lockstep/build/cuPHY/src/cuphy/LUTS/G_CRC_24_A_P_LUT.h' for writing...
+Opening '/workspace/cuphy-lockstep/build/cuPHY/src/cuphy/LUTS/G_CRC_24_B_P_LUT.h' for writing...
+Opening '/workspace/cuphy-lockstep/build/cuPHY/src/cuphy/LUTS/GOLD_1_SEQ_LUT.h' for writing...
+Opening '/workspace/cuphy-lockstep/build/cuPHY/src/cuphy/LUTS/GOLD_2_32_P_LUT.h' for writing...
+[16/144] Building CXX object cuPHY/src/cuphy/CMakeFiles/cuphy.dir/device.cpp.o
+[17/144] Building CXX object cuPHY/src/cuphy/CMakeFiles/cuphy.dir/ch_est/ch_est_stream.cpp.o
+[18/144] Building CXX object cuPHY/src/cuphy/CMakeFiles/cuphy.dir/ch_est/chest_factory.cpp.o
+[19/144] Building CXX object cuPHY/src/cuphy/CMakeFiles/cuphy.dir/cuphy.cpp.o
+[20/144] Building CXX object cuPHY/src/cuphy/CMakeFiles/cuphy.dir/ch_est/ch_est_graph_mgr.cpp.o
+[21/144] Building CUDA object cuPHY/src/cuphy/CMakeFiles/cuphy.dir/channel_est/channel_est.cu.o
+[22/144] Building CUDA object cuPHY/src/cuphy/CMakeFiles/cuphy.dir/empty_kernels.cu.o
+[23/144] Building CXX object cuPHY/src/cuphy/CMakeFiles/cuphy.dir/ch_est/trtengine_chest.cpp.o
+[24/144] Building CXX object cuPHY/src/cuphy/CMakeFiles/cuphy.dir/ch_est/ch_est_yaml_loader.cpp.o
+[25/144] Building CUDA object cuPHY/src/cuphy/CMakeFiles/cuphy.dir/ch_est/ch_est_trtengine_pre_post_converion.cu.o
+[26/144] Building CUDA object cuPHY/src/cuphy/CMakeFiles/cuphy.dir/pusch_start_kernels.cu.o
+[27/144] Building CUDA object cuPHY/src/cuphy/CMakeFiles/cuphy.dir/descrambling/descrambling.cu.o
+[28/144] Building CUDA object cuPHY/src/cuphy/CMakeFiles/cuphy.dir/pucch_receiver/pucch_receiver.cu.o
+[29/144] Building CUDA object cuPHY/src/cuphy/CMakeFiles/cuphy.dir/pusch_rssi/pusch_rssi.cu.o
+[30/144] Building CUDA object cuPHY/src/cuphy/CMakeFiles/cuphy.dir/pusch_noise_intf_est/pusch_noise_intf_est.cu.o
+[31/144] Building CUDA object cuPHY/src/cuphy/CMakeFiles/cuphy.dir/pucch_receiver/rm_decoder.cu.o
+[32/144] Building CUDA object cuPHY/src/cuphy/CMakeFiles/cuphy.dir/simplex_decoder/simplex_decoder.cu.o
+[33/144] Building CUDA object cuPHY/src/cuphy/CMakeFiles/cuphy.dir/modulation_mapper/modulation_mapper.cu.o
+[34/144] Building CUDA object cuPHY/src/cuphy/CMakeFiles/cuphy.dir/bfc/bfc.cu.o
+[35/144] Building CUDA object cuPHY/src/cuphy/CMakeFiles/cuphy.dir/pdcch/embed_pdcch_tf_signal.cu.o
+[36/144] Building CUDA object cuPHY/src/cuphy/CMakeFiles/cuphy.dir/pdcch/pdcch_fused_tx.cu.o
+[37/144] Building CUDA object cuPHY/src/cuphy/CMakeFiles/cuphy.dir/pdsch_dmrs/pdsch_dmrs.cu.o
+[38/144] Building CXX object cuPHY/src/cuphy/CMakeFiles/cuphy.dir/trt_engine/trt_engine.cpp.o
+[39/144] Building CUDA object cuPHY/src/cuphy/CMakeFiles/cuphy.dir/ss/ss.cu.o
+[40/144] Building CUDA object cuPHY/src/cuphy/CMakeFiles/cuphy.dir/polar_encoder/polar_encoder.cu.o
+[41/144] Building CUDA object cuPHY/src/cuphy/CMakeFiles/cuphy.dir/comp_cwTreeTypes/comp_cwTreeTypes.cu.o
+[42/144] Building CUDA object cuPHY/src/cuphy/CMakeFiles/cuphy.dir/prach_receiver/prach_receiver.cu.o
+[43/144] Building CUDA object cuPHY/src/cuphy/CMakeFiles/cuphy.dir/pucch_F3_front_end/pucch_F3_csi2Ctrl.cu.o
+[44/144] Building CUDA object cuPHY/src/cuphy/CMakeFiles/cuphy.dir/pucch_F0_receiver/pucch_F0_receiver.cu.o
+[45/144] Building CUDA object cuPHY/src/cuphy/CMakeFiles/cuphy.dir/pucch_F1_receiver/pucch_F1_receiver.cu.o
+[46/144] Building CUDA object cuPHY/src/cuphy/CMakeFiles/cuphy.dir/pucch_F234_uci_seg/pucch_F234_uci_seg.cu.o
+[47/144] Building CUDA object cuPHY/src/cuphy/CMakeFiles/cuphy.dir/pucch_F3_front_end/pucch_F3_segLLRs.cu.o
+[48/144] Building CUDA object cuPHY/src/cuphy/CMakeFiles/cuphy.dir/ch_est/ch_est.cu.o
+[49/144] Building CUDA object cuPHY/src/cuphy/CMakeFiles/cuphy.dir/pucch_F2_front_end/pucch_F2_front_end.cu.o
+[50/144] Building CUDA object cuPHY/src/cuphy/CMakeFiles/cuphy.dir/csirs/csirs_tf_signal.cu.o
+[51/144] Building CXX object cuPHY/src/cuphy/CMakeFiles/cuphy.dir/variant.cpp.o
+[52/144] Building CUDA object cuPHY/src/cuphy/CMakeFiles/cuphy.dir/srstx/srstx_tf_signal.cu.o
+[53/144] Building CUDA object cuPHY/src/cuphy/CMakeFiles/cuphy.dir/rng/rng.cu.o
+[54/144] Building CUDA object cuPHY/src/cuphy/CMakeFiles/cuphy.dir/csirs_rx/csirs_rx.cu.o
+[55/144] Building CUDA object cuPHY/src/cuphy/CMakeFiles/cuphy.dir/tensor_fill.cu.o
+[56/144] Building CUDA object cuPHY/src/cuphy/CMakeFiles/cuphy.dir/tensor_tile.cu.o
+[57/144] Building CUDA object cuPHY/src/cuphy/CMakeFiles/cuphy.dir/tensor_reduction.cu.o
+[58/144] Building CUDA object cuPHY/src/cuphy/CMakeFiles/cuphy.dir/tensor_elementwise.cu.o
+[59/144] Building CUDA object cuPHY/src/cuphy/CMakeFiles/cuphy.dir/polar_seg_deRm_deItl/polar_seg_deRm_deItl.cu.o
+[60/144] Building CUDA object cuPHY/src/cuphy/CMakeFiles/cuphy.dir/pucch_F3_front_end/pucch_F3_front_end.cu.o
+[61/144] Building CUDA object cuPHY/src/cuphy/CMakeFiles/cuphy.dir/uci_on_pusch/uciOnPusch_segLLRs1.cu.o
+[62/144] Building CUDA object cuPHY/src/cuphy/CMakeFiles/cuphy.dir/uci_on_pusch/uciOnPusch_csi2Ctrl.cu.o
+[63/144] Building CUDA object cuPHY/src/cuphy/CMakeFiles/cuphy.dir/uci_on_pusch/uciOnPusch_segLLRs2.cu.o
+[64/144] Building CXX object cuPHY/src/cuphy/CMakeFiles/cuphy.dir/cuphy_pti.cpp.o
+[65/144] Building CUDA object cuPHY/src/cuphy/CMakeFiles/cuphy.dir/uci_on_pusch/uciOnPusch_segLLRs0.cu.o
+[66/144] Building CUDA object cuPHY/src/cuphy/CMakeFiles/cuphy.dir/cuphy_pti.cu.o
+[67/144] Building CUDA object cuPHY/src/cuphy/CMakeFiles/cuphy.dir/polar_decoder/polar_decoder.cu.o
+[68/144] Building CXX object cuPHY/src/cuphy/CMakeFiles/cuphy_ldpc.dir/cuphy_ldpc.cpp.o
+[69/144] Building CXX object cuPHY/src/cuphy/CMakeFiles/cuphy_ldpc.dir/cuphy_common.cpp.o
+[70/144] Building CUDA object cuPHY/src/cuphy/CMakeFiles/cuphy.dir/copy_kernel.cu.o
+[71/144] Building CXX object cuPHY/src/cuphy/CMakeFiles/cuphy_ldpc.dir/ldpc/ldpc_cb_prepare_launch.cpp.o
+[72/144] Building CXX object cuPHY/src/cuphy/CMakeFiles/cuphy_ldpc.dir/ldpc/ldpc_cb_kernel_spi.cpp.o
+[73/144] Building CXX object cuPHY/src/cuphy/CMakeFiles/cuphy_ldpc.dir/ldpc/ldpc_api.cpp.o
+[74/144] Building CXX object cuPHY/src/cuphy/CMakeFiles/cuphy.dir/cupti_helper.cpp.o
+[75/144] Building CXX object cuPHY/src/cuphy/CMakeFiles/cuphy_ldpc.dir/cuphy_context.cpp.o
+[76/144] Building CXX object cuPHY/src/cuphy/CMakeFiles/cuphy_ldpc.dir/tensor_desc.cpp.o
+[77/144] Building CXX object cuPHY/src/cuphy/CMakeFiles/cuphy_ldpc.dir/error_correction/ldpc.cpp.o
+[78/144] Building CUDA object cuPHY/src/cuphy/CMakeFiles/cuphy_ldpc.dir/soft_demapper/soft_demapper.cu.o
+[79/144] Building CXX object cuPHY/src/cuphy/CMakeFiles/cuphy_ldpc.dir/error_correction/ldpc2_bg_desc_8.cpp.o
+[80/144] Building CXX object cuPHY/src/cuphy/CMakeFiles/cuphy_ldpc.dir/error_correction/ldpc2_bg_desc_16.cpp.o
+[81/144] Building CUDA object cuPHY/src/cuphy/CMakeFiles/cuphy_ldpc.dir/convert_tensor.cu.o
+[82/144] Building CXX object cuPHY/src/cuphy/CMakeFiles/cuphy_ldpc.dir/error_correction/ldpc2_bg_adj_desc_nzs_16.cpp.o
+[83/144] Building CXX object cuPHY/src/cuphy/CMakeFiles/cuphy_ldpc.dir/error_correction/ldpc2_bg_desc_nzs_16.cpp.o
+[84/144] Building CXX object cuPHY/src/cuphy/CMakeFiles/cuphy_ldpc.dir/error_correction/ldpc2_bg_adj_desc_8.cpp.o
+[85/144] Building CXX object cuPHY/src/cuphy/CMakeFiles/cuphy_ldpc.dir/error_correction/ldpc2_bg_adj_desc_nzs_32.cpp.o
+[86/144] Building CXX object cuPHY/src/cuphy/CMakeFiles/cuphy_ldpc.dir/error_correction/ldpc2_bg_adj_desc_32.cpp.o
+[87/144] Building CXX object cuPHY/src/cuphy/CMakeFiles/cuphy_ldpc.dir/error_correction/ldpc2_bg_adj_desc_16.cpp.o
+[88/144] Building CUDA object cuPHY/src/cuphy/CMakeFiles/cuphy.dir/channel_eq/channel_eq.cu.o
+[89/144] Building CUDA object cuPHY/src/cuphy/CMakeFiles/cuphy.dir/cfo_ta_est/cfo_ta_est.cu.o
+[90/144] Building CUDA object cuPHY/src/cuphy/CMakeFiles/cuphy_ldpc.dir/error_correction/ldpc2_reg_index_fp_desc_dyn_row_dep.cu.o
+[91/144] Building CUDA object cuPHY/src/cuphy/CMakeFiles/cuphy_ldpc.dir/error_correction/ldpc2_reg_index_fp_x2_desc_dyn.cu.o
+[92/144] Building CUDA object cuPHY/src/cuphy/CMakeFiles/cuphy_ldpc.dir/error_correction/ldpc2_reg_index_fp_desc_dyn.cu.o
+[93/144] Building CUDA object cuPHY/src/cuphy/CMakeFiles/cuphy_ldpc.dir/error_correction/ldpc2_reg_index_fp_dp_desc_dyn_row_dep.cu.o
+[94/144] Building CUDA object cuPHY/src/cuphy/CMakeFiles/cuphy_ldpc.dir/error_correction/ldpc2_shm_index_fp_desc_dyn.cu.o
+[95/144] Building CUDA object cuPHY/src/cuphy/CMakeFiles/cuphy_ldpc.dir/error_correction/ldpc2_reg_index_fp_desc_dyn_small.cu.o
+[96/144] Building CUDA object cuPHY/src/cuphy/CMakeFiles/cuphy_ldpc.dir/error_correction/ldpc2_index_bp_x2_lowp.cu.o
+[97/144] Building CUDA object cuPHY/src/cuphy/CMakeFiles/cuphy_ldpc.dir/error_correction/ldpc2_algo103.cu.o
+[98/144] Building CUDA object cuPHY/src/cuphy/CMakeFiles/cuphy.dir/srs_chEst/srs_chEst.cu.o
+[99/144] Building CUDA object cuPHY/src/cuphy/CMakeFiles/cuphy_ldpc.dir/error_correction/ldpc2_algo201.cu.o
+[100/144] Building CUDA object cuPHY/src/cuphy/CMakeFiles/cuphy_ldpc.dir/error_correction/ldpc2_algo202.cu.o
+[101/144] Building CUDA object cuPHY/src/cuphy/CMakeFiles/cuphy_ldpc.dir/error_correction/ldpc2_index_fp_x2_allreg_regapp.cu.o
+[102/144] Building CUDA object cuPHY/src/cuphy/CMakeFiles/cuphy_ldpc.dir/error_correction/ldpc2_algo204.cu.o
+[103/144] Building CUDA object cuPHY/src/cuphy/CMakeFiles/cuphy_ldpc.dir/error_correction/ldpc2_algo203.cu.o
+[104/144] Building CUDA object cuPHY/src/cuphy/CMakeFiles/cuphy_ldpc.dir/error_correction/ldpc2_index_fp_x2_allreg.cu.o
+[105/144] Building CUDA object cuPHY/src/cuphy/CMakeFiles/cuphy_ldpc.dir/error_correction/ldpc2_reg_box_plus_fp8_fp.cu.o
+[106/144] Building CUDA object cuPHY/src/cuphy/CMakeFiles/cuphy_ldpc.dir/error_correction/ldpc2_split_index_dp_x2_desc_dyn.cu.o
+[107/144] Building CUDA object cuPHY/src/cuphy/CMakeFiles/cuphy_ldpc.dir/error_correction/ldpc2_split_index_p_x2_desc_dyn.cu.o
+[108/144] Building CUDA object cuPHY/src/cuphy/CMakeFiles/cuphy_ldpc.dir/error_correction/ldpc2_split_index_fp_x2_desc_dyn.cu.o
+[109/144] Building CUDA object cuPHY/src/cuphy/CMakeFiles/cuphy_ldpc.dir/error_correction/ldpc2_reg_box_plus_fp.cu.o
+[110/144] Building CUDA object cuPHY/src/cuphy/CMakeFiles/cuphy_ldpc.dir/error_correction/ldpc2_reg_box_plus_fp8_fp_dp.cu.o
+[111/144] Building CXX object cuPHY/src/cuphy/CMakeFiles/cuphy_ldpc.dir/error_correction/ldpc2.cpp.o
+[112/144] Building CUDA object cuPHY/src/cuphy/CMakeFiles/cuphy_ldpc.dir/error_correction/ldpc2_reg_box_plus_fp_dp.cu.o
+[113/144] Building CUDA object cuPHY/src/cuphy/CMakeFiles/cuphy_ldpc.dir/error_correction/ldpc2_split_index_fp_dp_x2_desc_dyn.cu.o
+[114/144] Building CXX object cuPHY/src/cuphy_hdf5/CMakeFiles/cuphy_hdf5.dir/cuphy_hdf5.cpp.o
+[115/144] Building CUDA object cuPHY/src/cuphy/CMakeFiles/cuphy_ldpc.dir/crc/crc.cu.o
+[116/144] Building CUDA object cuPHY/src/cuphy_channels/CMakeFiles/cuphy_channels.dir/cuphy_lockstep_stamps.cu.o
+[117/144] Building CUDA object cuPHY/src/cuphy/CMakeFiles/cuphy_ldpc.dir/error_correction/ldpc2_reg_box_plus_spec.cu.o
+[118/144] Building CUDA object cuPHY/src/cuphy/CMakeFiles/cuphy_ldpc.dir/error_correction/ldpc2_reg_box_plus_spec_high.cu.o
+[119/144] Building CXX object cuPHY/src/cuphy_channels/CMakeFiles/cuphy_channels.dir/pdcch_tx.cpp.o
+[120/144] Building CUDA object cuPHY/src/cuphy/CMakeFiles/cuphy_ldpc.dir/error_correction/ldpc_encode.cu.o
+[121/144] Building CXX object cuPHY/src/cuphy_channels/CMakeFiles/cuphy_channels.dir/csirs_rx.cpp.o
+[122/144] Building CXX object cuPHY/src/cuphy_channels/CMakeFiles/cuphy_channels.dir/csirs_tx.cpp.o
+[123/144] Building CXX object cuPHY/src/cuphy_channels/CMakeFiles/cuphy_channels.dir/pdsch_tx.cpp.o
+[124/144] Building CUDA object cuPHY/src/cuphy/CMakeFiles/cuphy_ldpc.dir/rate_matching/rate_matching.cu.o
+[125/144] Building CUDA object cuPHY/src/cuphy_channels/CMakeFiles/cuphy_channels.dir/pucch_rx.cpp.o
+[126/144] Building CUDA object cuPHY/src/cuphy/CMakeFiles/cuphy_ldpc.dir/error_correction/ldpc2_split_index_bp_x2_desc_dyn.cu.o
+[127/144] Building CXX object cuPHY/src/cuphy_channels/CMakeFiles/cuphy_channels.dir/pusch_rx.cpp.o
+In file included from /usr/include/c++/13/string:51,
+                 from /workspace/cuphy-lockstep/acar/cuPHY/src/cuphy_channels/pusch_rx.cpp:21:
+In static member function 'static constexpr _Up* std::__copy_move<_IsMove, true, std::random_access_iterator_tag>::__copy_m(_Tp*, _Tp*, _Up*) [with _Tp = CUgraphNode_st*; _Up = CUgraphNode_st*; bool _IsMove = false]',
+    inlined from 'constexpr _OI std::__copy_move_a2(_II, _II, _OI) [with bool _IsMove = false; _II = CUgraphNode_st**; _OI = CUgraphNode_st**]' at /usr/include/c++/13/bits/stl_algobase.h:506:30,
+    inlined from 'constexpr _OI std::__copy_move_a1(_II, _II, _OI) [with bool _IsMove = false; _II = CUgraphNode_st**; _OI = CUgraphNode_st**]' at /usr/include/c++/13/bits/stl_algobase.h:533:42,
+    inlined from 'constexpr _OI std::__copy_move_a(_II, _II, _OI) [with bool _IsMove = false; _II = CUgraphNode_st**; _OI = CUgraphNode_st**]' at /usr/include/c++/13/bits/stl_algobase.h:540:31,
+    inlined from 'constexpr _OI std::copy(_II, _II, _OI) [with _II = CUgraphNode_st**; _OI = CUgraphNode_st**]' at /usr/include/c++/13/bits/stl_algobase.h:633:7,
+    inlined from 'static _ForwardIterator std::__uninitialized_copy<true>::__uninit_copy(_InputIterator, _InputIterator, _ForwardIterator) [with _InputIterator = CUgraphNode_st**; _ForwardIterator = CUgraphNode_st**]' at /usr/include/c++/13/bits/stl_uninitialized.h:147:27,
+    inlined from '_ForwardIterator std::uninitialized_copy(_InputIterator, _InputIterator, _ForwardIterator) [with _InputIterator = CUgraphNode_st**; _ForwardIterator = CUgraphNode_st**]' at /usr/include/c++/13/bits/stl_uninitialized.h:185:15,
+    inlined from 'constexpr _ForwardIterator std::__uninitialized_copy_a(_InputIterator, _InputIterator, _ForwardIterator, allocator<_Tp>&) [with _InputIterator = CUgraphNode_st**; _ForwardIterator = CUgraphNode_st**; _Tp = CUgraphNode_st*]' at /usr/include/c++/13/bits/stl_uninitialized.h:373:37,
+    inlined from 'constexpr std::vector<_Tp, _Alloc>& std::vector<_Tp, _Alloc>::operator=(const std::vector<_Tp, _Alloc>&) [with _Tp = CUgraphNode_st*; _Alloc = std::allocator<CUgraphNode_st*>]' at /usr/include/c++/13/bits/vector.tcc:257:35,
+    inlined from 'StageResult PuschRx::buildFrontEndStage(cuphyPuschFullSlotProcMode_t, CUgraph_st**, const std::vector<CUgraphNode_st*>&, void*&)' at /workspace/cuphy-lockstep/acar/cuPHY/src/cuphy_channels/pusch_rx.cpp:4300:28:
+/usr/include/c++/13/bits/stl_algobase.h:437:30: warning: 'void* __builtin_memcpy(void*, const void*, long unsigned int)' reading between 9 and 9223372036854775807 bytes from a region of size 8 [-Wstringop-overread]
+  437 |             __builtin_memmove(__result, __first, sizeof(_Tp) * _Num);
+      |             ~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /usr/include/x86_64-linux-gnu/c++/13/bits/c++allocator.h:33,
+                 from /usr/include/c++/13/bits/allocator.h:46,
+                 from /usr/include/c++/13/string:43:
+In member function '_Tp* std::__new_allocator<_Tp>::allocate(size_type, const void*) [with _Tp = CUgraphNode_st*]',
+    inlined from 'constexpr _Tp* std::allocator< <template-parameter-1-1> >::allocate(std::size_t) [with _Tp = CUgraphNode_st*]' at /usr/include/c++/13/bits/allocator.h:198:40,
+    inlined from 'static constexpr _Tp* std::allocator_traits<std::allocator<_CharT> >::allocate(allocator_type&, size_type) [with _Tp = CUgraphNode_st*]' at /usr/include/c++/13/bits/alloc_traits.h:482:28,
+    inlined from 'constexpr std::_Vector_base<_Tp, _Alloc>::pointer std::_Vector_base<_Tp, _Alloc>::_M_allocate(std::size_t) [with _Tp = CUgraphNode_st*; _Alloc = std::allocator<CUgraphNode_st*>]' at /usr/include/c++/13/bits/stl_vector.h:381:33,
+    inlined from 'constexpr void std::vector<_Tp, _Alloc>::_M_realloc_insert(iterator, _Args&& ...) [with _Args = {CUgraphNode_st*&}; _Tp = CUgraphNode_st*; _Alloc = std::allocator<CUgraphNode_st*>]' at /usr/include/c++/13/bits/vector.tcc:459:44,
+    inlined from 'constexpr std::vector<_Tp, _Alloc>::reference std::vector<_Tp, _Alloc>::emplace_back(_Args&& ...) [with _Args = {CUgraphNode_st*&}; _Tp = CUgraphNode_st*; _Alloc = std::allocator<CUgraphNode_st*>]' at /usr/include/c++/13/bits/vector.tcc:123:21,
+    inlined from 'StageResult PuschRx::buildFrontEndStage(cuphyPuschFullSlotProcMode_t, CUgraph_st**, const std::vector<CUgraphNode_st*>&, void*&)' at /workspace/cuphy-lockstep/acar/cuPHY/src/cuphy_channels/pusch_rx.cpp:4297:42:
+/usr/include/c++/13/bits/new_allocator.h:151:55: note: at offset [0, 7] into source object of size 8 allocated by 'operator new'
+  151 |         return static_cast<_Tp*>(_GLIBCXX_OPERATOR_NEW(__n * sizeof(_Tp)));
+      |                                                       ^
+[128/144] Building CXX object cuPHY/src/cuphy_channels/CMakeFiles/cuphy_channels.dir/prach_rx.cpp.o
+[129/144] Building CXX object cuPHY/src/cuphy_channels/CMakeFiles/cuphy_channels.dir/ssb_tx.cpp.o
+[130/144] Building CXX object cuPHY/src/cuphy_channels/CMakeFiles/cuphy_channels.dir/bfw_tx.cpp.o
+[131/144] Building CXX object cuPHY/src/cuphy_channels/CMakeFiles/cuphy_channels.dir/srs_tx.cpp.o
+[132/144] Building CXX object cuPHY/src/cuphy_channels/CMakeFiles/cuphy_channels.dir/srs_rx.cpp.o
+[133/144] Building CUDA object cuPHY/examples/pusch_rx_multi_pipe/CMakeFiles/cuphy_ex_pusch_rx_multi_pipe.dir/workspace/cuphy-lockstep/acar/cuPHY/examples/common/util.cu.o
+[134/144] Building CUDA object cuPHY/examples/pusch_rx_multi_pipe/CMakeFiles/cuphy_ex_pusch_rx_multi_pipe.dir/cuphy_lockstep.cu.o
+[135/144] Building CXX object cuPHY/examples/pusch_rx_multi_pipe/CMakeFiles/cuphy_ex_pusch_rx_multi_pipe.dir/cuphy_ex_pusch_rx_multi_pipe.cpp.o
+[136/144] Building CXX object cuPHY/examples/pusch_rx_multi_pipe/CMakeFiles/cuphy_ex_pusch_rx_multi_pipe.dir/pusch_rx_test.cpp.o
+[137/144] Building CXX object cuPHY/examples/pusch_rx_multi_pipe/CMakeFiles/cuphy_ex_pusch_rx_multi_pipe.dir/workspace/cuphy-lockstep/acar/cuPHY/examples/common/datasets.cpp.o
+[138/144] Building CUDA object cuPHY/src/cuphy/CMakeFiles/cuphy_ldpc.dir/dl_rate_matching/dl_rate_matching.cu.o
+[139/144] Linking CXX shared library cuPHY/src/cuphy/libcuphy_ldpc.so
+[140/144] Linking CXX shared library cuPHY/src/cuphy/libcuphy.so
+[141/144] Linking CXX static library cuPHY/src/cuphy_hdf5/libcuphy_hdf5.a
+[142/144] Linking CXX static library cuPHY/src/cuphy_channels/libcuphy_channels.a
+[143/144] Linking CXX executable CMakeFiles/cuphy_ex_pusch_rx_multi_pipe.dir/cmake_device_link.o
+[144/144] Linking CXX executable cuPHY/examples/pusch_rx_multi_pipe/cuphy_ex_pusch_rx_multi_pipe

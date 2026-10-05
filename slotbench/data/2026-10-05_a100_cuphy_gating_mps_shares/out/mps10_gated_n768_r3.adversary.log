@@ -1,0 +1,5 @@
+adversary: start {"workload":"sgemm","duty":100,"period_ms":100,"seconds":600,"prio":"default","gpu":0,"out":"/workspace/cuphy-lockstep/out/mps10_gated_n768_r3.adversary.json","timeline":"/workspace/cuphy-lockstep/out/mps10_gated_n768_r3.adversary.csv","size":768,"llm_params":1000000000,"llm_layers":16,"vision_scale":1,"llm_derived":{"hidden":2304,"params_actual":1019215872,"weight_bytes":2038431744},"vision_derived":{"convs":30,"kernels_per_frame":60,"gflop_per_frame":3.3619968},"sgemm_flop_per_unit":905969664}
+adversary: gate on path=/workspace/cuphy-lockstep/slot_timetable.bin est_unit_us=620.3 guard_us=30.0
+adversary: gate timetable loaded t0_in=199.063 ms period=500000 ns busy=229000 ns slots=5200 est=608.3 us fits=0
+adversary: WARNING gate cannot open: busy + guard + est >= period
+adversary: done workload=sgemm duty=100 units=15373 total_s=11.130 active_s=8.520 units_per_s=1381 units_per_s_active=1804 overrun_periods=25 exit=sigterm
