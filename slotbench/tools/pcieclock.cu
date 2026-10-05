@@ -97,6 +97,9 @@ __global__ void k_clock(Shared *s, uint64_t *down_t, uint64_t *down_e, int n_dow
         } else if (ph == 3) {                // down: read host clock, then wait for the next edge
             if (n_down < n_down_max) {
                 uint64_t t = ld_sys(&s->host_clock.v);
+                // The SM does not wait for a load before reading %globaltimer unless something consumes the
+                // value: branch on it so the edge search starts only after the host clock value arrived.
+                if (t == ~0ull) asm volatile("trap;");
                 uint64_t e = next_edge();
                 down_t[n_down] = t;
                 down_e[n_down] = e;
