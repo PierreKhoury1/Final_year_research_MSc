@@ -214,6 +214,35 @@ PY
     log "$name: $(cat "$OUT/$name.check.log")"
 }
 
+# A restarted instance (e.g. after its controller was lost) re-sends the parts of the archive it already
+# built instead of running the campaign again. The workspace disk survives stop/start on vast.ai.
+reemit_archive() {
+    local parts_dir="$W/parts" sha n i=0 part gap=${SB_REEMIT_GAP_S:-40}
+    sha=$(sha256sum "$W/collection.tar.gz" | cut -d' ' -f1)
+    if [[ -d $parts_dir ]] && ls "$parts_dir"/p*.bin > /dev/null 2>&1; then
+        n=$(ls "$parts_dir"/p*.bin | wc -l)
+        log "re-sending existing archive as $n parts, ${gap} s apart"
+        echo "=====SLOTBENCH-PARTS cuphy-lockstep/results $n $sha====="
+        for part in "$parts_dir"/p*.bin; do
+            i=$((i + 1))
+            echo "=====SLOTBENCH-BEGIN cuphy-lockstep/results.part$(printf %02d "$i") $(sha256sum "$part" | cut -d' ' -f1)====="
+            base64 -w 76 "$part"
+            echo "=====SLOTBENCH-END cuphy-lockstep/results.part$(printf %02d "$i")====="
+            if (( i < n )); then sleep "$gap"; fi
+        done
+        echo "=====SLOTBENCH-PARTS cuphy-lockstep/results $n $sha====="
+    else
+        log "re-sending existing archive"
+        echo "=====SLOTBENCH-BEGIN cuphy-lockstep/results $sha====="
+        base64 -w 76 "$W/collection.tar.gz"
+        echo "=====SLOTBENCH-END cuphy-lockstep/results====="
+    fi
+    echo "=====SLOTBENCH-DONE status=resent====="
+    sleep "${SB_POST_DONE_GRACE_S:-900}"
+    echo "=====SLOTBENCH-SELF-STOP====="
+    kill -TERM 1; sleep 10; kill -KILL 1
+}
+
 main() {
     export DEBIAN_FRONTEND=noninteractive
     export SB_BRANCH="${2:-${SB_BRANCH:-codex/continue-lockstep}}"
@@ -222,6 +251,7 @@ main() {
     export S="$W/acar" LOGS="$W/logs" OUT="$W/out" ACAR_COMMIT
     mkdir -p "$W" "$LOGS" "$OUT"
     cd "$W"
+    if [[ -s $W/collection.tar.gz && ${SB_REEMIT:-1} == 1 ]]; then reemit_archive; return; fi
     CURRENT_LOG="$LOGS/header.txt"; ADV_PID=""; STEP_PID=""; MPS_ON=0; ADV_EXTRA=(); GATE_TT=""; TEL_PID=""
     trap 'echo "=====SLOTBENCH-ERROR $LINENO $BASH_COMMAND====="; tail -n 25 "$CURRENT_LOG" 2>/dev/null || true; finish error' ERR
     trap 'echo "=====SLOTBENCH-ERROR 0 interrupted====="; finish interrupted' TERM INT
