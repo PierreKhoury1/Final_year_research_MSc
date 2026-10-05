@@ -30,7 +30,7 @@ RECORD = struct.Struct("<Qq6Q")   # slot, t_target, g_target, g_launch, g_launch
 UNIT = struct.Struct("<qq")       # tenant unit: t_start, t_done (host CLOCK_MONOTONIC_RAW ns)
 LATE_US = 50.0
 BUDGETS = (500, 300, 250)
-CASE_RE = re.compile(r"^(proc|mps)_(observe|gated)_n(\d+)_r(\d+)$")
+CASE_RE = re.compile(r"^(proc|mps\d*)_(observe|gated)_n(\d+)_r(\d+)$")
 ALONE_RE = re.compile(r"^alone_(proc|mps)_r(\d+)$")
 
 
@@ -130,7 +130,7 @@ def summarise(out, units_dir=None):
     problems = []
     ai_alone = {}
     for p in glob.glob(os.path.join(out, "ai_alone_*_n*.json")):
-        m = re.search(r"ai_alone_(proc|mps)_n(\d+)\.json$", p)
+        m = re.search(r"ai_alone_(proc|mps\d*)_n(\d+)\.json$", p)
         d = load_json(p)
         if m and d and d.get("ok") and d.get("units_per_s"):
             ai_alone[(m.group(1), int(m.group(2)))] = d["units_per_s"]

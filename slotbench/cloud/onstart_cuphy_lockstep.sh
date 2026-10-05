@@ -131,7 +131,7 @@ start_adversary() {
         [[ $SB_ADVERSARY_CPU =~ ^[0-9]+$ ]] || { log "Invalid SB_ADVERSARY_CPU"; return 2; }
         affinity=(taskset -c "$SB_ADVERSARY_CPU")
     fi
-    [[ $isolation == mps ]] && extra+=(CUDA_MPS_PIPE_DIRECTORY="$MPS_PIPE" CUDA_MPS_LOG_DIRECTORY="$MPS_LOG" CUDA_MPS_ACTIVE_THREAD_PERCENTAGE=50)
+    [[ $isolation == mps ]] && extra+=(CUDA_MPS_PIPE_DIRECTORY="$MPS_PIPE" CUDA_MPS_LOG_DIRECTORY="$MPS_LOG" CUDA_MPS_ACTIVE_THREAD_PERCENTAGE="${MPS_PCT:-50}")
     env "${extra[@]}" "${affinity[@]}" "$ADV" --workload sgemm --size "${ADV_SIZE:-4096}" --duty 100 --prio default --gpu 0 \
         "${ADV_EXTRA[@]}" --seconds 600 --timeline "$OUT/$name.adversary.csv" --out "$OUT/$name.adversary.json" > "$OUT/$name.adversary.log" 2>&1 &
     ADV_PID=$!
@@ -197,6 +197,7 @@ PY
     fi
     python3 - "$OUT/$name.run.json" "$name" "$mode" "$isolation" "$workload" "$start" "$end" "$rc" "$TV_SHA" "$ACAR_COMMIT" "$SLOTS" "$WARMUP" "$PERIOD" "$DEADLINE" "$TV" "$PUSCH" "${SB_ADVERSARY_CPU:-}" "${SB_CUPHY_LINE_BUFFERED:-0}" "${pusch_args[@]}" <<'PY'
 import json, sys
+import os
 p, name, mode, isolation, workload, start, end, rc, tv_sha, commit, slots, warmup, period, deadline, tv, pusch, adversary_cpu, line_buffered, *args = sys.argv[1:]
 with open(p, "w") as f:
     json.dump(dict(name=name, mode=mode, isolation=isolation, workload=workload, start_utc=start,
@@ -206,7 +207,7 @@ with open(p, "w") as f:
                    line_buffered=line_buffered=="1",
                    phy_cpu_requested=int(args[args.index("-c")+1]) if "-c" in args else 0,
                    adversary_cpu_requested=int(adversary_cpu) if adversary_cpu and workload!="none" else None,
-                   adversary_mps_percentage=50 if isolation=="mps" and workload!="none" else None), f, indent=2)
+                   adversary_mps_percentage=int(os.environ.get("MPS_PCT", "50")) if isolation=="mps" and workload!="none" else None), f, indent=2)
 PY
     (( rc == 0 )) || { log "$name process failed rc=$rc"; return "$rc"; }
     python3 "$W/sb/slotbench/cloud/cuphy_lockstep_check.py" "$OUT/$name.json" "$OUT/$name.bin" \
@@ -452,43 +453,61 @@ gate_campaign() {
     BUSY_US=$busy
     log "gate: busy_us=$BUSY_US (p99.9 on-time completion + margin), sizes=$sizes, repeats=$repeats, seed=$seed"
     printf '%s\n' "$BUSY_US" > "$OUT/busy_us.txt"
-    local affinity=(taskset -c "$SB_ADVERSARY_CPU") mps_env=() order case
+    local affinity=(taskset -c "$SB_ADVERSARY_CPU") mps_env=() order case gblocks=()
     : > "$OUT/schedule.txt"
-    for iso in none mps; do
-        if [[ $iso == mps ]]; then
+    # Blocks: "proc" (time-slicing) and/or "mpsNN" (MPS, tenant at NN% of threads; cuPHY unrestricted).
+    # proc runs first (before the MPS daemon starts); MPS blocks are interleaved within each repeat.
+    local blocks=${SB_GATE_BLOCKS:-"proc mps50"} b mps_blocks=() group
+    for b in $blocks; do
+        [[ $b == proc || $b =~ ^mps([0-9]{1,3})$ ]] || { log "invalid block $b in SB_GATE_BLOCKS"; return 2; }
+        [[ $b == proc ]] || mps_blocks+=("$b")
+    done
+    for group in proc mps; do
+        if [[ $group == proc ]]; then
+            [[ " $blocks " == *" proc "* ]] || continue
+            gblocks=(proc)
+        else
+            (( ${#mps_blocks[@]} )) || continue
+            gblocks=("${mps_blocks[@]}")
             MPS_PIPE="$W/mps-pipe"; MPS_LOG="$W/mps-log"
             mkdir -p "$MPS_PIPE" "$MPS_LOG"
             timeout 20 env CUDA_MPS_PIPE_DIRECTORY="$MPS_PIPE" CUDA_MPS_LOG_DIRECTORY="$MPS_LOG" nvidia-cuda-mps-control -d > "$LOGS/mps.log" 2>&1
             MPS_ON=1; sleep 2
             [[ -e $MPS_PIPE/control ]]
-            mps_env=(CUDA_MPS_PIPE_DIRECTORY="$MPS_PIPE" CUDA_MPS_LOG_DIRECTORY="$MPS_LOG" CUDA_MPS_ACTIVE_THREAD_PERCENTAGE=50)
         fi
-        for n in $sizes; do   # tenant alone, same sharing setting: the throughput it would get without 5G
-            env "${mps_env[@]}" "${affinity[@]}" "$ADV" --workload sgemm --size "$n" --duty 100 --sync spin --seconds 5 \
-                --out "$OUT/ai_alone_${iso/none/proc}_n$n.json" > "$OUT/ai_alone_${iso/none/proc}_n$n.log" 2>&1 \
-                || log "ai_alone ${iso} n=$n rc=$?"
+        for b in "${gblocks[@]}"; do   # tenant alone under the same sharing setting
+            mps_env=()
+            [[ $b == proc ]] || mps_env=(CUDA_MPS_PIPE_DIRECTORY="$MPS_PIPE" CUDA_MPS_LOG_DIRECTORY="$MPS_LOG" \
+                CUDA_MPS_ACTIVE_THREAD_PERCENTAGE="${b#mps}")
+            for n in $sizes; do
+                env "${mps_env[@]}" "${affinity[@]}" "$ADV" --workload sgemm --size "$n" --duty 100 --sync spin --seconds 5 \
+                    --out "$OUT/ai_alone_${b}_n$n.json" > "$OUT/ai_alone_${b}_n$n.log" 2>&1 || log "ai_alone $b n=$n rc=$?"
+            done
         done
         for ((r=1; r<=repeats; r++)); do
-            mapfile -t order < <(python3 - "$seed" "$iso" "$r" $sizes <<'PY'
+            mapfile -t order < <(python3 - "$seed" "$group" "$r" "${gblocks[*]}" $sizes <<'PY'
 import random, sys
-seed, iso, r, *sizes = sys.argv[1:]
-cases = ["alone"] + [f"{m}:{n}" for n in sizes for m in ("observe", "on")]
-random.Random(f"{seed}-{iso}-{r}").shuffle(cases)
+seed, group, r, blocks, *sizes = sys.argv[1:]
+cases = ["alone"] + [f"{b}:{m}:{n}" for b in blocks.split() for n in sizes for m in ("observe", "on")]
+random.Random(f"{seed}-{group}-{r}").shuffle(cases)
 print("\n".join(cases))
 PY
 )
             for case in "${order[@]}"; do
-                echo "${iso} r$r $case" >> "$OUT/schedule.txt"
+                echo "${group} r$r $case" >> "$OUT/schedule.txt"
+                iso=none; [[ $group == mps ]] && iso=mps
                 if [[ $case == alone ]]; then
-                    run_case "alone_${iso/none/proc}_r$r" cpu "$iso" none || log "case rc=$?"
+                    run_case "alone_${group}_r$r" cpu "$iso" none || log "case rc=$?"
                     continue
                 fi
-                local mode=${case%%:*} name
-                n=${case##*:}
-                name="${iso/none/proc}_${mode/on/gated}_n${n}_r$r"
-                ADV_SIZE=$n
+                local mode name
+                IFS=: read -r b mode n <<< "$case"
+                name="${b}_${mode/on/gated}_n${n}_r$r"
+                ADV_SIZE=$n; MPS_PCT=50
+                [[ $b == proc ]] || MPS_PCT=${b#mps}
                 # full unit logs stay on the instance (analysed there); the archive keeps the first 2000 units
                 ADV_EXTRA=(--gate "$GATE_TT" --gate-mode "$mode" --sync spin --gate-log "$W/units/$name.units.bin")
+                export MPS_PCT
                 run_case "$name" cpu "$iso" sgemm || log "case rc=$?"
                 ADV_EXTRA=()
                 [[ -s $W/units/$name.units.bin ]] && head -c 32000 "$W/units/$name.units.bin" > "$OUT/$name.units.head.bin"
