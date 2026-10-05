@@ -1,0 +1,30 @@
+{
+ "gpus": [
+  {
+   "gpu": "0000:07:00.0",
+   "path": [
+    {
+     "bdf": "0000:00:02.6",
+     "vendor": "0x1b36",
+     "device": "0x000c",
+     "class": "0x060400",
+     "config_bytes": 64,
+     "ext_config_readable": false,
+     "ext_cap_ids": [],
+     "ptm_present": null
+    },
+    {
+     "bdf": "0000:07:00.0",
+     "vendor": "0x10de",
+     "device": "0x2330",
+     "class": "0x030200",
+     "config_bytes": 64,
+     "ext_config_readable": false,
+     "ext_cap_ids": [],
+     "ptm_present": null
+    }
+   ]
+  }
+ ],
+ "uid": 0
+}

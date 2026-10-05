@@ -1,0 +1,14 @@
+lspci: Unable to load libkmod resources: error -2
+07:00.0 3D controller: NVIDIA Corporation GH100 [H100 SXM5 80GB] (rev a1)
+	Subsystem: NVIDIA Corporation Device 16c1
+	Physical Slot: 0-7
+	Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr+ Stepping- SERR+ FastB2B- DisINTx+
+	Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
+	Latency: 0
+	Interrupt: pin A routed to IRQ 22
+	Region 0: Memory at 6002000000 (64-bit, prefetchable) [size=16M]
+	Region 2: Memory at 4000000000 (64-bit, prefetchable) [size=128G]
+	Region 4: Memory at 6000000000 (64-bit, prefetchable) [size=32M]
+	Capabilities: <access denied>
+	Kernel driver in use: nvidia
+

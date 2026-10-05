@@ -1,0 +1,113 @@
+lspci: Unable to load libkmod resources: error -2
+01:00.0 3D controller: NVIDIA Corporation GA100 [A100 SXM4 40GB] (rev a1)
+	Subsystem: NVIDIA Corporation Device 134f
+	Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B- DisINTx+
+	Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
+	Latency: 0
+	Interrupt: pin A routed to IRQ 342
+	NUMA node: 0
+	IOMMU group: 49
+	Region 0: Memory at f6000000 (32-bit, non-prefetchable) [size=16M]
+	Region 1: Memory at 36000000000 (64-bit, prefetchable) [size=64G]
+	Region 3: Memory at 37420000000 (64-bit, prefetchable) [size=32M]
+	Capabilities: <access denied>
+	Kernel driver in use: nvidia
+
+25:00.0 3D controller: NVIDIA Corporation GA100 [A100 SXM4 40GB] (rev a1)
+	Subsystem: NVIDIA Corporation Device 134f
+	Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B- DisINTx+
+	Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
+	Latency: 0
+	Interrupt: pin A routed to IRQ 343
+	NUMA node: 0
+	IOMMU group: 32
+	Region 0: Memory at c4000000 (32-bit, non-prefetchable) [size=16M]
+	Region 1: Memory at 26000000000 (64-bit, prefetchable) [size=64G]
+	Region 3: Memory at 27420000000 (64-bit, prefetchable) [size=32M]
+	Capabilities: <access denied>
+	Kernel driver in use: nvidia
+
+41:00.0 3D controller: NVIDIA Corporation GA100 [A100 SXM4 40GB] (rev a1)
+	Subsystem: NVIDIA Corporation Device 134f
+	Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B- DisINTx+
+	Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
+	Latency: 0
+	Interrupt: pin A routed to IRQ 341
+	NUMA node: 0
+	IOMMU group: 13
+	Region 0: Memory at f0000000 (32-bit, non-prefetchable) [size=16M]
+	Region 1: Memory at 1e000000000 (64-bit, prefetchable) [size=64G]
+	Region 3: Memory at 1f420000000 (64-bit, prefetchable) [size=32M]
+	Capabilities: <access denied>
+	Kernel driver in use: nvidia
+
+61:00.0 3D controller: NVIDIA Corporation GA100 [A100 SXM4 40GB] (rev a1)
+	Subsystem: NVIDIA Corporation Device 134f
+	Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B- DisINTx+
+	Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
+	Latency: 0
+	Interrupt: pin A routed to IRQ 340
+	NUMA node: 0
+	IOMMU group: 2
+	Region 0: Memory at ca000000 (32-bit, non-prefetchable) [size=16M]
+	Region 1: Memory at 16000000000 (64-bit, prefetchable) [size=64G]
+	Region 3: Memory at 17420000000 (64-bit, prefetchable) [size=32M]
+	Capabilities: <access denied>
+	Kernel driver in use: nvidia
+
+81:00.0 3D controller: NVIDIA Corporation GA100 [A100 SXM4 40GB] (rev a1)
+	Subsystem: NVIDIA Corporation Device 134f
+	Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B- DisINTx+
+	Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
+	Latency: 0
+	Interrupt: pin A routed to IRQ 346
+	NUMA node: 1
+	IOMMU group: 115
+	Region 0: Memory at b0000000 (32-bit, non-prefetchable) [size=16M]
+	Region 1: Memory at 56000000000 (64-bit, prefetchable) [size=64G]
+	Region 3: Memory at 57420000000 (64-bit, prefetchable) [size=32M]
+	Capabilities: <access denied>
+	Kernel driver in use: nvidia
+
+a1:00.0 3D controller: NVIDIA Corporation GA100 [A100 SXM4 40GB] (rev a1)
+	Subsystem: NVIDIA Corporation Device 134f
+	Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B- DisINTx+
+	Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
+	Latency: 0
+	Interrupt: pin A routed to IRQ 347
+	NUMA node: 1
+	IOMMU group: 98
+	Region 0: Memory at b6000000 (32-bit, non-prefetchable) [size=16M]
+	Region 1: Memory at 4e000000000 (64-bit, prefetchable) [size=64G]
+	Region 3: Memory at 4f420000000 (64-bit, prefetchable) [size=32M]
+	Capabilities: <access denied>
+	Kernel driver in use: nvidia
+
+c1:00.0 3D controller: NVIDIA Corporation GA100 [A100 SXM4 40GB] (rev a1)
+	Subsystem: NVIDIA Corporation Device 134f
+	Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B- DisINTx+
+	Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
+	Latency: 0
+	Interrupt: pin A routed to IRQ 345
+	NUMA node: 1
+	IOMMU group: 79
+	Region 0: Memory at ba000000 (32-bit, non-prefetchable) [size=16M]
+	Region 1: Memory at 46000000000 (64-bit, prefetchable) [size=64G]
+	Region 3: Memory at 47420000000 (64-bit, prefetchable) [size=32M]
+	Capabilities: <access denied>
+	Kernel driver in use: nvidia
+
+e1:00.0 3D controller: NVIDIA Corporation GA100 [A100 SXM4 40GB] (rev a1)
+	Subsystem: NVIDIA Corporation Device 134f
+	Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B- DisINTx+
+	Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
+	Latency: 0
+	Interrupt: pin A routed to IRQ 344
+	NUMA node: 1
+	IOMMU group: 68
+	Region 0: Memory at c0000000 (32-bit, non-prefetchable) [size=16M]
+	Region 1: Memory at 3e000000000 (64-bit, prefetchable) [size=64G]
+	Region 3: Memory at 3f420000000 (64-bit, prefetchable) [size=32M]
+	Capabilities: <access denied>
+	Kernel driver in use: nvidia
+
