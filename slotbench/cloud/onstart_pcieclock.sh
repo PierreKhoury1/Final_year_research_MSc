@@ -34,11 +34,23 @@ log "clone $BRANCH"
 git clone -q --depth 1 --branch "$BRANCH" "$REPO" "$W/sb"
 git -C "$W/sb" rev-parse HEAD > "$OUT/commit.txt"
 { date -u; nvidia-smi; nvidia-smi -q | grep -iE "persistence|link width|link gen|clocks" ; nproc; lscpu | head -20; } > "$OUT/header.txt" 2>&1 || true
+log "ptm check"
+apt-get install -y -qq --no-install-recommends pciutils >> "$OUT/apt.log" 2>&1 || true
+python3 "$W/sb/slotbench/tools/ptm_check.py" > "$OUT/ptm.json" 2> "$OUT/ptm.err" || true
+lspci -vvv -d 10de: > "$OUT/lspci_nvidia.txt" 2>&1 || true
+lspci -tv > "$OUT/lspci_tree.txt" 2>&1 || true
+python3 - "$OUT/ptm.json" <<'PY' || true
+import json, sys
+r = json.load(open(sys.argv[1]))
+for g in r["gpus"]:
+    print("[slotbench] PTM", g["gpu"], [(d["bdf"], d.get("ext_config_readable"), d.get("ptm_present"), d.get("ptm")) for d in g["path"]])
+PY
+grep -iE "PTM|Precision Time" "$OUT/lspci_nvidia.txt" | head -5 | sed 's/^/[slotbench] lspci: /' || true
 cc=$(nvidia-smi --query-gpu=compute_cap --format=csv,noheader | head -1 | tr -d '.')
 log "build sm_$cc"
 nvcc -O2 -std=c++17 -arch=sm_$cc -I"$W/sb/slotbench/common" -o "$W/pcieclock" "$W/sb/slotbench/tools/pcieclock.cu" -lpthread > "$OUT/build.log" 2>&1
 NP=$(nproc); CORE=$(( NP > 4 ? 2 : 0 )); CCORE=$(( NP > 4 ? 3 : 1 ))
-for run in 1 2 3 4 5; do
+for run in 1 2 3; do
     log "run $run (cores $CORE/$CCORE)"
     "$W/pcieclock" --rounds "${SB_PC_ROUNDS:-10}" --per-phase "${SB_PC_PER_PHASE:-2000}" --core "$CORE" --clock-core "$CCORE" \
         --out "$OUT/run$run" > "$OUT/run$run.log" 2>&1
