@@ -38,7 +38,7 @@ cc=$(nvidia-smi --query-gpu=compute_cap --format=csv,noheader | head -1 | tr -d 
 log "build sm_$cc"
 nvcc -O2 -std=c++17 -arch=sm_$cc -I"$W/sb/slotbench/common" -o "$W/pcieclock" "$W/sb/slotbench/tools/pcieclock.cu" -lpthread > "$OUT/build.log" 2>&1
 NP=$(nproc); CORE=$(( NP > 4 ? 2 : 0 )); CCORE=$(( NP > 4 ? 3 : 1 ))
-for run in 1 2 3; do
+for run in 1 2 3 4 5; do
     log "run $run (cores $CORE/$CCORE)"
     "$W/pcieclock" --rounds "${SB_PC_ROUNDS:-10}" --per-phase "${SB_PC_PER_PHASE:-2000}" --core "$CORE" --clock-core "$CCORE" \
         --out "$OUT/run$run" > "$OUT/run$run.log" 2>&1
@@ -47,9 +47,9 @@ for run in 1 2 3; do
     python3 - "$OUT/run$run.analysis.json" <<'PY' || true
 import json, sys
 r = json.load(open(sys.argv[1]))
-c, e = r["classic"], r["edge"]
-print(f"[slotbench] classic eps {c['eps_ns']:.0f} ns (+tick {c['eps_with_tick_ns']:.0f}), min bracket {c['min_width_ns']} ns | "
-      f"edge bound {e['bound_ns']:.0f} ns feasible={e['feasible']} rate {e['rate_ppm']:.2f} ppm | tick {r['tick_ns']} ns")
+c, e, t = r["classic"], r["edge"], r["edge_trim2"]
+print(f"[slotbench] classic eps {c['eps_ns']:.0f} ns (+half tick {c['eps_with_tick_ns']:.0f}) | edge strict {e['bound_ns']:.0f} ns "
+      f"feasible={e['feasible']} | edge trim2 {t['bound_ns']:.0f} ns | rate {e['rate_ppm']:.2f} ppm | tick {r['tick_ns']} ns")
 PY
     sleep 20
 done

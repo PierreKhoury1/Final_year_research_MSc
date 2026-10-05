@@ -65,7 +65,9 @@ __device__ __forceinline__ uint64_t next_edge() {
 }
 
 // One thread. Follows the phase word; writes "down" results to device-visible pinned arrays.
-__global__ void k_clock(Shared *s, uint64_t *down_t, uint64_t *down_e, int n_down_max, int *n_down_out) {
+__global__ void k_clock(Shared *s, uint64_t *down_t, uint64_t *down_e, int n_down_max, int *n_down_out,
+                        uint64_t *tick_probe) {
+    for (int i = 0; i < 64; i++) tick_probe[i] = next_edge();   // 64 consecutive timer edges
     int n_down = 0;
     uint64_t up_seq = 0, last_req = 0, acked = ~0ull;
     for (;;) {
@@ -78,19 +80,17 @@ __global__ void k_clock(Shared *s, uint64_t *down_t, uint64_t *down_e, int n_dow
                 if (r == ~0ull) break;           // host leaves the classic phase
                 if (r != last_req) {
                     uint64_t g = gtimer();
-                    st_sys(&s->ack_g.v, g);
-                    __threadfence_system();
-                    st_sys(&s->ack_seq.v, r);
+                    // one 64-bit store, so value and sequence can never arrive torn or reordered
+                    st_sys(&s->ack_g.v, ((g >> 10) << 12) | (r & 0xfff) | ((g & 1023) ? (1ull << 63) : 0));
                     __threadfence_system();
                     last_req = r;
                 }
             }
         } else if (ph == 2) {                // up: edge, then publish immediately
             uint64_t e = next_edge();
-            st_sys(&s->up_e.v, e);
+            st_sys(&s->up_e.v, e);            // single store: the value is its own sequence number
             __threadfence_system();
-            st_sys(&s->up_seq.v, ++up_seq);
-            __threadfence_system();
+            ++up_seq;
             // let the host see it before the next sample (spin ~3 us of GPU time)
             uint64_t until = e + 3000;
             while (gtimer() < until) {}
@@ -152,7 +152,10 @@ int main(int argc, char **argv) {
 
     cudaStream_t st;
     CK(cudaStreamCreateWithFlags(&st, cudaStreamNonBlocking));
-    k_clock<<<1, 1, 0, st>>>(s_d, down_t_d, down_e_d, n_down_max, n_down_d);
+    uint64_t *tick_probe = nullptr, *tick_probe_d;
+    CK(cudaHostAlloc((void **)&tick_probe, sizeof(uint64_t) * 64, cudaHostAllocMapped));
+    CK(cudaHostGetDevicePointer((void **)&tick_probe_d, tick_probe, 0));
+    k_clock<<<1, 1, 0, st>>>(s_d, down_t_d, down_e_d, n_down_max, n_down_d, tick_probe_d);
     CK(cudaGetLastError());
 
     auto set_phase = [&](uint64_t p) {
@@ -168,24 +171,28 @@ int main(int argc, char **argv) {
     up_h.reserve(rounds * per_phase); up_e.reserve(rounds * per_phase);
     const int64_t t_start = now();
     uint64_t req = 0, up_seen = 0;
+    long long bad_classic = 0;
     for (int r = 0; r < rounds; r++) {
         s->req.v = req;                                  // last answered request: GPU waits for req+1
         set_phase(1);                                    // classic
         for (int i = 0; i < per_phase; i++) {
             int64_t t0 = now();
             s->req.v = ++req;
-            while (s->ack_seq.v != req) {}
+            uint64_t w;
+            while (((w = s->ack_g.v) & 0xfff) != (req & 0xfff)) {}
             int64_t t1 = now();
-            c_t0.push_back(t0); c_t1.push_back(t1); c_g.push_back((uint64_t)s->ack_g.v);
+            if (w >> 63) bad_classic++;
+            c_t0.push_back(t0); c_t1.push_back(t1); c_g.push_back(((w & ~(1ull << 63)) >> 12) << 10);
         }
         s->req.v = ~0ull;                                // release the GPU from its classic poll loop
         set_phase(2);                                    // up
-        up_seen = s->up_seq.v;
+        up_seen = s->up_e.v;
         for (int i = 0; i < per_phase; i++) {
-            while (s->up_seq.v == up_seen) {}
+            uint64_t e;
+            while ((e = s->up_e.v) == up_seen) {}
             int64_t h = now();
-            up_seen = s->up_seq.v;
-            up_h.push_back(h); up_e.push_back((uint64_t)s->up_e.v);
+            up_seen = e;
+            up_h.push_back(h); up_e.push_back(e);
         }
         set_phase(3);                                    // down: GPU samples while the clock thread writes
         int64_t until = now() + (int64_t)per_phase * 3000;  // ~3 us per sample
@@ -215,7 +222,10 @@ int main(int argc, char **argv) {
         .add("pci_bus", prop.pciBusID).add("rounds", rounds).add("per_phase", per_phase)
         .add("n_classic", (long long)c_t0.size()).add("n_up", (long long)up_h.size()).add("n_down", (long long)*n_down)
         .add("core", core).add("clock_core", clock_core).add("seconds", (t_end - t_start) * 1e-9)
-        .add("host", sb::hostname()).add("time", sb::iso_utc_now());
+        .add("host", sb::hostname()).add("time", sb::iso_utc_now()).add("bad_classic_unaligned_g", bad_classic);
+    std::string ticks;
+    for (int i = 1; i < 64; i++) ticks += (i > 1 ? "," : "") + std::to_string((long long)(tick_probe[i] - tick_probe[i - 1]));
+    j.add_raw("timer_edge_steps_ns", "[" + ticks + "]");
     FILE *f = fopen((out + ".json").c_str(), "w");
     fprintf(f, "%s\n", j.str().c_str());
     fclose(f);
