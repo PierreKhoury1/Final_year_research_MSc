@@ -1,0 +1,30 @@
+{
+  "name": "mps_observe_n768_r3",
+  "mode": "cpu",
+  "isolation": "mps",
+  "workload": "sgemm",
+  "start_utc": "2026-10-04T23:46:26Z",
+  "end_utc": "2026-10-04T23:46:33Z",
+  "exit_code": 0,
+  "test_vector_sha256": "64a2652fca495879837867b74d88a6cc4672db0a11889b3ca13990be056d0dc5",
+  "aerial_commit": "4f65f97c1d5f701ce911f7dda8f1b1f3f0c7693c",
+  "slots": 5000,
+  "warmup": 200,
+  "period_us": 500.0,
+  "deadline_us": 500.0,
+  "command": [
+    "/workspace/cuphy-lockstep/build/cuPHY/examples/pusch_rx_multi_pipe/cuphy_ex_pusch_rx_multi_pipe",
+    "-i",
+    "/workspace/cuphy-lockstep/tv/GPU_test_input/TVnr_7304_PUSCH_gNB_CUPHY_s0p0.h5",
+    "-m",
+    "1",
+    "-r",
+    "1",
+    "-c",
+    "1"
+  ],
+  "line_buffered": false,
+  "phy_cpu_requested": 1,
+  "adversary_cpu_requested": 2,
+  "adversary_mps_percentage": 50
+}

@@ -1,0 +1,839 @@
+[2026-10-04 23:42:20.822 Server 14296] Startup
+[2026-10-04 23:42:20.822 Server 14296] Connecting to control daemon on socket: /workspace/cuphy-lockstep/mps-pipe/control
+[2026-10-04 23:42:20.822 Server 14296] Initializing server process
+[2026-10-04 23:42:20.909 Server 14296] Creating server context on device 0 (NVIDIA A100-SXM4-40GB)
+[2026-10-04 23:42:20.983 Server 14296] Created anonymous shared memory region mps.shm.0.14296
+[2026-10-04 23:42:20.983 Server 14296] CUDA MPS Server for Linux/Unix. Binary version: 13020
+[2026-10-04 23:42:20.983 Server 14296] Display Driver version: 595
+[2026-10-04 23:42:20.983 Server 14296] Active Threads Percentage set to 100.0
+[2026-10-04 23:42:20.983 Server 14296] Server Priority set to 0
+[2026-10-04 23:42:20.983 Server 14296] Static Partitioning mode disabled
+[2026-10-04 23:42:20.983 Server 14296] Server has started
+[2026-10-04 23:42:20.983 Server 14296] Received new client request from PID 14294
+[2026-10-04 23:42:20.983 Server 14296] Priority level of client {14294} is: 0 (NORMAL)
+[2026-10-04 23:42:20.983 Server 14296] Client {PID: 14294, Context ID: 0} connected
+[2026-10-04 23:42:20.983 Server 14296] Creating worker thread for client {PID: 14294, Context ID: 0}
+[2026-10-04 23:42:21.012 Server 14296] Received new client request from PID 14294
+[2026-10-04 23:42:21.012 Server 14296] Priority level of client {14294} is: 0 (NORMAL)
+[2026-10-04 23:42:21.012 Server 14296] Client {PID: 14294, Context ID: 1} connected
+[2026-10-04 23:42:21.012 Server 14296] Creating worker thread for client {PID: 14294, Context ID: 1}
+[2026-10-04 23:42:21.012 Server 14296] Device NVIDIA A100-SXM4-40GB (uuid GPU-268644bb-5aaf-7d44-3eb2-ea796a695aa1) is associated
+[2026-10-04 23:42:21.012 Server 14296] Status of client {PID: 14294, Context ID: 1} is ACTIVE
+[2026-10-04 23:42:21.016 Client 14294] Static partitioning mode disabled
+[2026-10-04 23:42:26.232 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 14294, Context ID: 1} exit
+[2026-10-04 23:42:26.232 Server 14296] Client {PID: 14294, Context ID: 1} exiting. Number of active client contexts is 0.
+[2026-10-04 23:42:26.250 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 14294, Context ID: 0} exit
+[2026-10-04 23:42:26.250 Server 14296] Client process 14294 disconnected
+[2026-10-04 23:42:26.329 Server 14296] Received new client request from PID 14304
+[2026-10-04 23:42:26.329 Server 14296] Priority level of client {14304} is: 0 (NORMAL)
+[2026-10-04 23:42:26.329 Server 14296] Client {PID: 14304, Context ID: 0} connected
+[2026-10-04 23:42:26.329 Server 14296] Creating worker thread for client {PID: 14304, Context ID: 0}
+[2026-10-04 23:42:26.343 Server 14296] Received new client request from PID 14304
+[2026-10-04 23:42:26.343 Server 14296] Priority level of client {14304} is: 0 (NORMAL)
+[2026-10-04 23:42:26.343 Server 14296] Client {PID: 14304, Context ID: 1} connected
+[2026-10-04 23:42:26.343 Server 14296] Creating worker thread for client {PID: 14304, Context ID: 1}
+[2026-10-04 23:42:26.343 Server 14296] Device NVIDIA A100-SXM4-40GB (uuid GPU-268644bb-5aaf-7d44-3eb2-ea796a695aa1) is associated
+[2026-10-04 23:42:26.343 Server 14296] Status of client {PID: 14304, Context ID: 1} is ACTIVE
+[2026-10-04 23:42:26.347 Client 14304] Static partitioning mode disabled
+[2026-10-04 23:42:31.537 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 14304, Context ID: 1} exit
+[2026-10-04 23:42:31.537 Server 14296] Client {PID: 14304, Context ID: 1} exiting. Number of active client contexts is 0.
+[2026-10-04 23:42:31.555 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 14304, Context ID: 0} exit
+[2026-10-04 23:42:31.555 Server 14296] Client process 14304 disconnected
+[2026-10-04 23:42:31.636 Server 14296] Received new client request from PID 14310
+[2026-10-04 23:42:31.636 Server 14296] Priority level of client {14310} is: 0 (NORMAL)
+[2026-10-04 23:42:31.636 Server 14296] Client {PID: 14310, Context ID: 0} connected
+[2026-10-04 23:42:31.636 Server 14296] Creating worker thread for client {PID: 14310, Context ID: 0}
+[2026-10-04 23:42:31.694 Server 14296] Received new client request from PID 14310
+[2026-10-04 23:42:31.694 Server 14296] Priority level of client {14310} is: 0 (NORMAL)
+[2026-10-04 23:42:31.694 Server 14296] Client {PID: 14310, Context ID: 1} connected
+[2026-10-04 23:42:31.694 Server 14296] Creating worker thread for client {PID: 14310, Context ID: 1}
+[2026-10-04 23:42:31.694 Server 14296] Device NVIDIA A100-SXM4-40GB (uuid GPU-268644bb-5aaf-7d44-3eb2-ea796a695aa1) is associated
+[2026-10-04 23:42:31.694 Server 14296] Status of client {PID: 14310, Context ID: 1} is ACTIVE
+[2026-10-04 23:42:31.698 Client 14310] Static partitioning mode disabled
+[2026-10-04 23:42:36.881 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 14310, Context ID: 1} exit
+[2026-10-04 23:42:36.881 Server 14296] Client {PID: 14310, Context ID: 1} exiting. Number of active client contexts is 0.
+[2026-10-04 23:42:36.903 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 14310, Context ID: 0} exit
+[2026-10-04 23:42:36.903 Server 14296] Client process 14310 disconnected
+[2026-10-04 23:42:36.989 Server 14296] Received new client request from PID 14319
+[2026-10-04 23:42:36.989 Server 14296] Priority level of client {14319} is: 0 (NORMAL)
+[2026-10-04 23:42:36.989 Server 14296] Client {PID: 14319, Context ID: 0} connected
+[2026-10-04 23:42:36.989 Server 14296] Creating worker thread for client {PID: 14319, Context ID: 0}
+[2026-10-04 23:42:37.009 Server 14296] Received new client request from PID 14319
+[2026-10-04 23:42:37.009 Server 14296] Priority level of client {14319} is: 0 (NORMAL)
+[2026-10-04 23:42:37.009 Server 14296] Client {PID: 14319, Context ID: 1} connected
+[2026-10-04 23:42:37.009 Server 14296] Creating worker thread for client {PID: 14319, Context ID: 1}
+[2026-10-04 23:42:37.009 Server 14296] Device NVIDIA A100-SXM4-40GB (uuid GPU-268644bb-5aaf-7d44-3eb2-ea796a695aa1) is associated
+[2026-10-04 23:42:37.009 Server 14296] Status of client {PID: 14319, Context ID: 1} is ACTIVE
+[2026-10-04 23:42:37.013 Client 14319] Static partitioning mode disabled
+[2026-10-04 23:42:41.001 Server 14296] Received new client request from PID 14342
+[2026-10-04 23:42:41.001 Server 14296] Priority level of client {14342} is: 0 (NORMAL)
+[2026-10-04 23:42:41.001 Server 14296] Client {PID: 14342, Context ID: 0} connected
+[2026-10-04 23:42:41.001 Server 14296] Creating worker thread for client {PID: 14342, Context ID: 0}
+[2026-10-04 23:42:41.044 Server 14296] Received new client request from PID 14342
+[2026-10-04 23:42:41.044 Server 14296] Priority level of client {14342} is: 0 (NORMAL)
+[2026-10-04 23:42:41.044 Server 14296] Client {PID: 14342, Context ID: 1} connected
+[2026-10-04 23:42:41.044 Server 14296] Creating worker thread for client {PID: 14342, Context ID: 1}
+[2026-10-04 23:42:41.044 Server 14296] Device NVIDIA A100-SXM4-40GB (uuid GPU-268644bb-5aaf-7d44-3eb2-ea796a695aa1) is associated
+[2026-10-04 23:42:41.044 Server 14296] Status of client {PID: 14342, Context ID: 1} is ACTIVE
+[2026-10-04 23:42:41.044 Client 14342] Static partitioning mode disabled
+[2026-10-04 23:42:48.242 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 14342, Context ID: 1} exit
+[2026-10-04 23:42:48.242 Server 14296] Client {PID: 14342, Context ID: 1} exiting. Number of active client contexts is 1.
+[2026-10-04 23:42:48.262 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 14342, Context ID: 0} exit
+[2026-10-04 23:42:48.262 Server 14296] Client process 14342 disconnected
+[2026-10-04 23:42:48.360 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 14319, Context ID: 1} exit
+[2026-10-04 23:42:48.360 Server 14296] Client {PID: 14319, Context ID: 1} exiting. Number of active client contexts is 0.
+[2026-10-04 23:42:48.379 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 14319, Context ID: 0} exit
+[2026-10-04 23:42:48.379 Server 14296] Client process 14319 disconnected
+[2026-10-04 23:42:49.412 Server 14296] Received new client request from PID 14367
+[2026-10-04 23:42:49.412 Server 14296] Priority level of client {14367} is: 0 (NORMAL)
+[2026-10-04 23:42:49.412 Server 14296] Client {PID: 14367, Context ID: 0} connected
+[2026-10-04 23:42:49.412 Server 14296] Creating worker thread for client {PID: 14367, Context ID: 0}
+[2026-10-04 23:42:49.442 Server 14296] Received new client request from PID 14367
+[2026-10-04 23:42:49.442 Server 14296] Priority level of client {14367} is: 0 (NORMAL)
+[2026-10-04 23:42:49.442 Server 14296] Client {PID: 14367, Context ID: 1} connected
+[2026-10-04 23:42:49.442 Server 14296] Creating worker thread for client {PID: 14367, Context ID: 1}
+[2026-10-04 23:42:49.442 Server 14296] Device NVIDIA A100-SXM4-40GB (uuid GPU-268644bb-5aaf-7d44-3eb2-ea796a695aa1) is associated
+[2026-10-04 23:42:49.442 Server 14296] Status of client {PID: 14367, Context ID: 1} is ACTIVE
+[2026-10-04 23:42:49.443 Client 14367] Static partitioning mode disabled
+[2026-10-04 23:42:56.646 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 14367, Context ID: 1} exit
+[2026-10-04 23:42:56.646 Server 14296] Client {PID: 14367, Context ID: 1} exiting. Number of active client contexts is 0.
+[2026-10-04 23:42:56.671 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 14367, Context ID: 0} exit
+[2026-10-04 23:42:56.671 Server 14296] Client process 14367 disconnected
+[2026-10-04 23:42:56.814 Server 14296] Received new client request from PID 14384
+[2026-10-04 23:42:56.814 Server 14296] Priority level of client {14384} is: 0 (NORMAL)
+[2026-10-04 23:42:56.814 Server 14296] Client {PID: 14384, Context ID: 0} connected
+[2026-10-04 23:42:56.814 Server 14296] Creating worker thread for client {PID: 14384, Context ID: 0}
+[2026-10-04 23:42:56.834 Server 14296] Received new client request from PID 14384
+[2026-10-04 23:42:56.834 Server 14296] Priority level of client {14384} is: 0 (NORMAL)
+[2026-10-04 23:42:56.834 Server 14296] Client {PID: 14384, Context ID: 1} connected
+[2026-10-04 23:42:56.834 Server 14296] Creating worker thread for client {PID: 14384, Context ID: 1}
+[2026-10-04 23:42:56.834 Server 14296] Device NVIDIA A100-SXM4-40GB (uuid GPU-268644bb-5aaf-7d44-3eb2-ea796a695aa1) is associated
+[2026-10-04 23:42:56.834 Server 14296] Status of client {PID: 14384, Context ID: 1} is ACTIVE
+[2026-10-04 23:42:56.838 Client 14384] Static partitioning mode disabled
+[2026-10-04 23:43:00.817 Server 14296] Received new client request from PID 14407
+[2026-10-04 23:43:00.817 Server 14296] Priority level of client {14407} is: 0 (NORMAL)
+[2026-10-04 23:43:00.817 Server 14296] Client {PID: 14407, Context ID: 0} connected
+[2026-10-04 23:43:00.817 Server 14296] Creating worker thread for client {PID: 14407, Context ID: 0}
+[2026-10-04 23:43:00.845 Server 14296] Received new client request from PID 14407
+[2026-10-04 23:43:00.845 Server 14296] Priority level of client {14407} is: 0 (NORMAL)
+[2026-10-04 23:43:00.845 Server 14296] Client {PID: 14407, Context ID: 1} connected
+[2026-10-04 23:43:00.845 Server 14296] Creating worker thread for client {PID: 14407, Context ID: 1}
+[2026-10-04 23:43:00.845 Server 14296] Device NVIDIA A100-SXM4-40GB (uuid GPU-268644bb-5aaf-7d44-3eb2-ea796a695aa1) is associated
+[2026-10-04 23:43:00.845 Server 14296] Status of client {PID: 14407, Context ID: 1} is ACTIVE
+[2026-10-04 23:43:00.846 Client 14407] Static partitioning mode disabled
+[2026-10-04 23:43:08.037 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 14407, Context ID: 1} exit
+[2026-10-04 23:43:08.037 Server 14296] Client {PID: 14407, Context ID: 1} exiting. Number of active client contexts is 1.
+[2026-10-04 23:43:08.056 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 14407, Context ID: 0} exit
+[2026-10-04 23:43:08.056 Server 14296] Client process 14407 disconnected
+[2026-10-04 23:43:08.149 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 14384, Context ID: 1} exit
+[2026-10-04 23:43:08.149 Server 14296] Client {PID: 14384, Context ID: 1} exiting. Number of active client contexts is 0.
+[2026-10-04 23:43:08.168 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 14384, Context ID: 0} exit
+[2026-10-04 23:43:08.168 Server 14296] Client process 14384 disconnected
+[2026-10-04 23:43:09.209 Server 14296] Received new client request from PID 14427
+[2026-10-04 23:43:09.209 Server 14296] Priority level of client {14427} is: 0 (NORMAL)
+[2026-10-04 23:43:09.209 Server 14296] Client {PID: 14427, Context ID: 0} connected
+[2026-10-04 23:43:09.209 Server 14296] Creating worker thread for client {PID: 14427, Context ID: 0}
+[2026-10-04 23:43:09.234 Server 14296] Received new client request from PID 14427
+[2026-10-04 23:43:09.234 Server 14296] Priority level of client {14427} is: 0 (NORMAL)
+[2026-10-04 23:43:09.234 Server 14296] Client {PID: 14427, Context ID: 1} connected
+[2026-10-04 23:43:09.234 Server 14296] Creating worker thread for client {PID: 14427, Context ID: 1}
+[2026-10-04 23:43:09.234 Server 14296] Device NVIDIA A100-SXM4-40GB (uuid GPU-268644bb-5aaf-7d44-3eb2-ea796a695aa1) is associated
+[2026-10-04 23:43:09.234 Server 14296] Status of client {PID: 14427, Context ID: 1} is ACTIVE
+[2026-10-04 23:43:09.238 Client 14427] Static partitioning mode disabled
+[2026-10-04 23:43:13.212 Server 14296] Received new client request from PID 14450
+[2026-10-04 23:43:13.212 Server 14296] Priority level of client {14450} is: 0 (NORMAL)
+[2026-10-04 23:43:13.212 Server 14296] Client {PID: 14450, Context ID: 0} connected
+[2026-10-04 23:43:13.212 Server 14296] Creating worker thread for client {PID: 14450, Context ID: 0}
+[2026-10-04 23:43:13.242 Server 14296] Received new client request from PID 14450
+[2026-10-04 23:43:13.242 Server 14296] Priority level of client {14450} is: 0 (NORMAL)
+[2026-10-04 23:43:13.242 Server 14296] Client {PID: 14450, Context ID: 1} connected
+[2026-10-04 23:43:13.242 Server 14296] Creating worker thread for client {PID: 14450, Context ID: 1}
+[2026-10-04 23:43:13.242 Server 14296] Device NVIDIA A100-SXM4-40GB (uuid GPU-268644bb-5aaf-7d44-3eb2-ea796a695aa1) is associated
+[2026-10-04 23:43:13.242 Server 14296] Status of client {PID: 14450, Context ID: 1} is ACTIVE
+[2026-10-04 23:43:13.242 Client 14450] Static partitioning mode disabled
+[2026-10-04 23:43:20.432 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 14450, Context ID: 1} exit
+[2026-10-04 23:43:20.432 Server 14296] Client {PID: 14450, Context ID: 1} exiting. Number of active client contexts is 1.
+[2026-10-04 23:43:20.451 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 14450, Context ID: 0} exit
+[2026-10-04 23:43:20.451 Server 14296] Client process 14450 disconnected
+[2026-10-04 23:43:20.546 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 14427, Context ID: 1} exit
+[2026-10-04 23:43:20.546 Server 14296] Client {PID: 14427, Context ID: 1} exiting. Number of active client contexts is 0.
+[2026-10-04 23:43:20.564 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 14427, Context ID: 0} exit
+[2026-10-04 23:43:20.564 Server 14296] Client process 14427 disconnected
+[2026-10-04 23:43:21.605 Server 14296] Received new client request from PID 14470
+[2026-10-04 23:43:21.605 Server 14296] Priority level of client {14470} is: 0 (NORMAL)
+[2026-10-04 23:43:21.605 Server 14296] Client {PID: 14470, Context ID: 0} connected
+[2026-10-04 23:43:21.605 Server 14296] Creating worker thread for client {PID: 14470, Context ID: 0}
+[2026-10-04 23:43:21.620 Server 14296] Received new client request from PID 14470
+[2026-10-04 23:43:21.620 Server 14296] Priority level of client {14470} is: 0 (NORMAL)
+[2026-10-04 23:43:21.620 Server 14296] Client {PID: 14470, Context ID: 1} connected
+[2026-10-04 23:43:21.620 Server 14296] Creating worker thread for client {PID: 14470, Context ID: 1}
+[2026-10-04 23:43:21.620 Server 14296] Device NVIDIA A100-SXM4-40GB (uuid GPU-268644bb-5aaf-7d44-3eb2-ea796a695aa1) is associated
+[2026-10-04 23:43:21.620 Server 14296] Status of client {PID: 14470, Context ID: 1} is ACTIVE
+[2026-10-04 23:43:21.624 Client 14470] Static partitioning mode disabled
+[2026-10-04 23:43:25.607 Server 14296] Received new client request from PID 14493
+[2026-10-04 23:43:25.607 Server 14296] Priority level of client {14493} is: 0 (NORMAL)
+[2026-10-04 23:43:25.607 Server 14296] Client {PID: 14493, Context ID: 0} connected
+[2026-10-04 23:43:25.607 Server 14296] Creating worker thread for client {PID: 14493, Context ID: 0}
+[2026-10-04 23:43:25.638 Server 14296] Received new client request from PID 14493
+[2026-10-04 23:43:25.638 Server 14296] Priority level of client {14493} is: 0 (NORMAL)
+[2026-10-04 23:43:25.638 Server 14296] Client {PID: 14493, Context ID: 1} connected
+[2026-10-04 23:43:25.638 Server 14296] Creating worker thread for client {PID: 14493, Context ID: 1}
+[2026-10-04 23:43:25.638 Server 14296] Device NVIDIA A100-SXM4-40GB (uuid GPU-268644bb-5aaf-7d44-3eb2-ea796a695aa1) is associated
+[2026-10-04 23:43:25.638 Server 14296] Status of client {PID: 14493, Context ID: 1} is ACTIVE
+[2026-10-04 23:43:25.638 Client 14493] Static partitioning mode disabled
+[2026-10-04 23:43:32.827 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 14493, Context ID: 1} exit
+[2026-10-04 23:43:32.827 Server 14296] Client {PID: 14493, Context ID: 1} exiting. Number of active client contexts is 1.
+[2026-10-04 23:43:32.847 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 14493, Context ID: 0} exit
+[2026-10-04 23:43:32.847 Server 14296] Client process 14493 disconnected
+[2026-10-04 23:43:32.943 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 14470, Context ID: 1} exit
+[2026-10-04 23:43:32.943 Server 14296] Client {PID: 14470, Context ID: 1} exiting. Number of active client contexts is 0.
+[2026-10-04 23:43:32.961 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 14470, Context ID: 0} exit
+[2026-10-04 23:43:32.961 Server 14296] Client process 14470 disconnected
+[2026-10-04 23:43:34.003 Server 14296] Received new client request from PID 14513
+[2026-10-04 23:43:34.003 Server 14296] Priority level of client {14513} is: 0 (NORMAL)
+[2026-10-04 23:43:34.003 Server 14296] Client {PID: 14513, Context ID: 0} connected
+[2026-10-04 23:43:34.003 Server 14296] Creating worker thread for client {PID: 14513, Context ID: 0}
+[2026-10-04 23:43:34.022 Server 14296] Received new client request from PID 14513
+[2026-10-04 23:43:34.022 Server 14296] Priority level of client {14513} is: 0 (NORMAL)
+[2026-10-04 23:43:34.022 Server 14296] Client {PID: 14513, Context ID: 1} connected
+[2026-10-04 23:43:34.022 Server 14296] Creating worker thread for client {PID: 14513, Context ID: 1}
+[2026-10-04 23:43:34.022 Server 14296] Device NVIDIA A100-SXM4-40GB (uuid GPU-268644bb-5aaf-7d44-3eb2-ea796a695aa1) is associated
+[2026-10-04 23:43:34.022 Server 14296] Status of client {PID: 14513, Context ID: 1} is ACTIVE
+[2026-10-04 23:43:34.026 Client 14513] Static partitioning mode disabled
+[2026-10-04 23:43:38.006 Server 14296] Received new client request from PID 14536
+[2026-10-04 23:43:38.006 Server 14296] Priority level of client {14536} is: 0 (NORMAL)
+[2026-10-04 23:43:38.006 Server 14296] Client {PID: 14536, Context ID: 0} connected
+[2026-10-04 23:43:38.006 Server 14296] Creating worker thread for client {PID: 14536, Context ID: 0}
+[2026-10-04 23:43:38.038 Server 14296] Received new client request from PID 14536
+[2026-10-04 23:43:38.038 Server 14296] Priority level of client {14536} is: 0 (NORMAL)
+[2026-10-04 23:43:38.038 Server 14296] Client {PID: 14536, Context ID: 1} connected
+[2026-10-04 23:43:38.038 Server 14296] Creating worker thread for client {PID: 14536, Context ID: 1}
+[2026-10-04 23:43:38.038 Server 14296] Device NVIDIA A100-SXM4-40GB (uuid GPU-268644bb-5aaf-7d44-3eb2-ea796a695aa1) is associated
+[2026-10-04 23:43:38.038 Server 14296] Status of client {PID: 14536, Context ID: 1} is ACTIVE
+[2026-10-04 23:43:38.039 Client 14536] Static partitioning mode disabled
+[2026-10-04 23:43:45.222 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 14536, Context ID: 1} exit
+[2026-10-04 23:43:45.222 Server 14296] Client {PID: 14536, Context ID: 1} exiting. Number of active client contexts is 1.
+[2026-10-04 23:43:45.242 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 14536, Context ID: 0} exit
+[2026-10-04 23:43:45.242 Server 14296] Client process 14536 disconnected
+[2026-10-04 23:43:45.338 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 14513, Context ID: 1} exit
+[2026-10-04 23:43:45.338 Server 14296] Client {PID: 14513, Context ID: 1} exiting. Number of active client contexts is 0.
+[2026-10-04 23:43:45.357 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 14513, Context ID: 0} exit
+[2026-10-04 23:43:45.357 Server 14296] Client process 14513 disconnected
+[2026-10-04 23:43:46.397 Server 14296] Received new client request from PID 14556
+[2026-10-04 23:43:46.397 Server 14296] Priority level of client {14556} is: 0 (NORMAL)
+[2026-10-04 23:43:46.397 Server 14296] Client {PID: 14556, Context ID: 0} connected
+[2026-10-04 23:43:46.397 Server 14296] Creating worker thread for client {PID: 14556, Context ID: 0}
+[2026-10-04 23:43:46.412 Server 14296] Received new client request from PID 14556
+[2026-10-04 23:43:46.412 Server 14296] Priority level of client {14556} is: 0 (NORMAL)
+[2026-10-04 23:43:46.412 Server 14296] Client {PID: 14556, Context ID: 1} connected
+[2026-10-04 23:43:46.412 Server 14296] Creating worker thread for client {PID: 14556, Context ID: 1}
+[2026-10-04 23:43:46.412 Server 14296] Device NVIDIA A100-SXM4-40GB (uuid GPU-268644bb-5aaf-7d44-3eb2-ea796a695aa1) is associated
+[2026-10-04 23:43:46.412 Server 14296] Status of client {PID: 14556, Context ID: 1} is ACTIVE
+[2026-10-04 23:43:46.416 Client 14556] Static partitioning mode disabled
+[2026-10-04 23:43:50.399 Server 14296] Received new client request from PID 14579
+[2026-10-04 23:43:50.399 Server 14296] Priority level of client {14579} is: 0 (NORMAL)
+[2026-10-04 23:43:50.399 Server 14296] Client {PID: 14579, Context ID: 0} connected
+[2026-10-04 23:43:50.399 Server 14296] Creating worker thread for client {PID: 14579, Context ID: 0}
+[2026-10-04 23:43:50.429 Server 14296] Received new client request from PID 14579
+[2026-10-04 23:43:50.429 Server 14296] Priority level of client {14579} is: 0 (NORMAL)
+[2026-10-04 23:43:50.429 Server 14296] Client {PID: 14579, Context ID: 1} connected
+[2026-10-04 23:43:50.429 Server 14296] Creating worker thread for client {PID: 14579, Context ID: 1}
+[2026-10-04 23:43:50.429 Server 14296] Device NVIDIA A100-SXM4-40GB (uuid GPU-268644bb-5aaf-7d44-3eb2-ea796a695aa1) is associated
+[2026-10-04 23:43:50.429 Server 14296] Status of client {PID: 14579, Context ID: 1} is ACTIVE
+[2026-10-04 23:43:50.430 Client 14579] Static partitioning mode disabled
+[2026-10-04 23:43:57.619 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 14579, Context ID: 1} exit
+[2026-10-04 23:43:57.619 Server 14296] Client {PID: 14579, Context ID: 1} exiting. Number of active client contexts is 1.
+[2026-10-04 23:43:57.642 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 14579, Context ID: 0} exit
+[2026-10-04 23:43:57.642 Server 14296] Client process 14579 disconnected
+[2026-10-04 23:43:57.737 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 14556, Context ID: 1} exit
+[2026-10-04 23:43:57.737 Server 14296] Client {PID: 14556, Context ID: 1} exiting. Number of active client contexts is 0.
+[2026-10-04 23:43:57.755 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 14556, Context ID: 0} exit
+[2026-10-04 23:43:57.755 Server 14296] Client process 14556 disconnected
+[2026-10-04 23:43:58.806 Server 14296] Received new client request from PID 14601
+[2026-10-04 23:43:58.806 Server 14296] Priority level of client {14601} is: 0 (NORMAL)
+[2026-10-04 23:43:58.806 Server 14296] Client {PID: 14601, Context ID: 0} connected
+[2026-10-04 23:43:58.806 Server 14296] Creating worker thread for client {PID: 14601, Context ID: 0}
+[2026-10-04 23:43:58.821 Server 14296] Received new client request from PID 14601
+[2026-10-04 23:43:58.821 Server 14296] Priority level of client {14601} is: 0 (NORMAL)
+[2026-10-04 23:43:58.821 Server 14296] Client {PID: 14601, Context ID: 1} connected
+[2026-10-04 23:43:58.821 Server 14296] Creating worker thread for client {PID: 14601, Context ID: 1}
+[2026-10-04 23:43:58.821 Server 14296] Device NVIDIA A100-SXM4-40GB (uuid GPU-268644bb-5aaf-7d44-3eb2-ea796a695aa1) is associated
+[2026-10-04 23:43:58.821 Server 14296] Status of client {PID: 14601, Context ID: 1} is ACTIVE
+[2026-10-04 23:43:58.825 Client 14601] Static partitioning mode disabled
+[2026-10-04 23:44:02.809 Server 14296] Received new client request from PID 14624
+[2026-10-04 23:44:02.809 Server 14296] Priority level of client {14624} is: 0 (NORMAL)
+[2026-10-04 23:44:02.809 Server 14296] Client {PID: 14624, Context ID: 0} connected
+[2026-10-04 23:44:02.809 Server 14296] Creating worker thread for client {PID: 14624, Context ID: 0}
+[2026-10-04 23:44:02.838 Server 14296] Received new client request from PID 14624
+[2026-10-04 23:44:02.838 Server 14296] Priority level of client {14624} is: 0 (NORMAL)
+[2026-10-04 23:44:02.838 Server 14296] Client {PID: 14624, Context ID: 1} connected
+[2026-10-04 23:44:02.838 Server 14296] Creating worker thread for client {PID: 14624, Context ID: 1}
+[2026-10-04 23:44:02.838 Server 14296] Device NVIDIA A100-SXM4-40GB (uuid GPU-268644bb-5aaf-7d44-3eb2-ea796a695aa1) is associated
+[2026-10-04 23:44:02.838 Server 14296] Status of client {PID: 14624, Context ID: 1} is ACTIVE
+[2026-10-04 23:44:02.839 Client 14624] Static partitioning mode disabled
+[2026-10-04 23:44:10.025 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 14624, Context ID: 1} exit
+[2026-10-04 23:44:10.025 Server 14296] Client {PID: 14624, Context ID: 1} exiting. Number of active client contexts is 1.
+[2026-10-04 23:44:10.046 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 14624, Context ID: 0} exit
+[2026-10-04 23:44:10.046 Server 14296] Client process 14624 disconnected
+[2026-10-04 23:44:10.143 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 14601, Context ID: 1} exit
+[2026-10-04 23:44:10.143 Server 14296] Client {PID: 14601, Context ID: 1} exiting. Number of active client contexts is 0.
+[2026-10-04 23:44:10.161 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 14601, Context ID: 0} exit
+[2026-10-04 23:44:10.161 Server 14296] Client process 14601 disconnected
+[2026-10-04 23:44:11.202 Server 14296] Received new client request from PID 14644
+[2026-10-04 23:44:11.202 Server 14296] Priority level of client {14644} is: 0 (NORMAL)
+[2026-10-04 23:44:11.202 Server 14296] Client {PID: 14644, Context ID: 0} connected
+[2026-10-04 23:44:11.202 Server 14296] Creating worker thread for client {PID: 14644, Context ID: 0}
+[2026-10-04 23:44:11.216 Server 14296] Received new client request from PID 14644
+[2026-10-04 23:44:11.216 Server 14296] Priority level of client {14644} is: 0 (NORMAL)
+[2026-10-04 23:44:11.216 Server 14296] Client {PID: 14644, Context ID: 1} connected
+[2026-10-04 23:44:11.216 Server 14296] Creating worker thread for client {PID: 14644, Context ID: 1}
+[2026-10-04 23:44:11.216 Server 14296] Device NVIDIA A100-SXM4-40GB (uuid GPU-268644bb-5aaf-7d44-3eb2-ea796a695aa1) is associated
+[2026-10-04 23:44:11.216 Server 14296] Status of client {PID: 14644, Context ID: 1} is ACTIVE
+[2026-10-04 23:44:11.220 Client 14644] Static partitioning mode disabled
+[2026-10-04 23:44:15.204 Server 14296] Received new client request from PID 14667
+[2026-10-04 23:44:15.204 Server 14296] Priority level of client {14667} is: 0 (NORMAL)
+[2026-10-04 23:44:15.204 Server 14296] Client {PID: 14667, Context ID: 0} connected
+[2026-10-04 23:44:15.204 Server 14296] Creating worker thread for client {PID: 14667, Context ID: 0}
+[2026-10-04 23:44:15.236 Server 14296] Received new client request from PID 14667
+[2026-10-04 23:44:15.236 Server 14296] Priority level of client {14667} is: 0 (NORMAL)
+[2026-10-04 23:44:15.236 Server 14296] Client {PID: 14667, Context ID: 1} connected
+[2026-10-04 23:44:15.236 Server 14296] Creating worker thread for client {PID: 14667, Context ID: 1}
+[2026-10-04 23:44:15.236 Server 14296] Device NVIDIA A100-SXM4-40GB (uuid GPU-268644bb-5aaf-7d44-3eb2-ea796a695aa1) is associated
+[2026-10-04 23:44:15.236 Server 14296] Status of client {PID: 14667, Context ID: 1} is ACTIVE
+[2026-10-04 23:44:15.237 Client 14667] Static partitioning mode disabled
+[2026-10-04 23:44:22.421 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 14667, Context ID: 1} exit
+[2026-10-04 23:44:22.421 Server 14296] Client {PID: 14667, Context ID: 1} exiting. Number of active client contexts is 1.
+[2026-10-04 23:44:22.445 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 14667, Context ID: 0} exit
+[2026-10-04 23:44:22.445 Server 14296] Client process 14667 disconnected
+[2026-10-04 23:44:22.541 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 14644, Context ID: 1} exit
+[2026-10-04 23:44:22.541 Server 14296] Client {PID: 14644, Context ID: 1} exiting. Number of active client contexts is 0.
+[2026-10-04 23:44:22.560 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 14644, Context ID: 0} exit
+[2026-10-04 23:44:22.560 Server 14296] Client process 14644 disconnected
+[2026-10-04 23:44:23.601 Server 14296] Received new client request from PID 14687
+[2026-10-04 23:44:23.601 Server 14296] Priority level of client {14687} is: 0 (NORMAL)
+[2026-10-04 23:44:23.601 Server 14296] Client {PID: 14687, Context ID: 0} connected
+[2026-10-04 23:44:23.601 Server 14296] Creating worker thread for client {PID: 14687, Context ID: 0}
+[2026-10-04 23:44:23.615 Server 14296] Received new client request from PID 14687
+[2026-10-04 23:44:23.615 Server 14296] Priority level of client {14687} is: 0 (NORMAL)
+[2026-10-04 23:44:23.615 Server 14296] Client {PID: 14687, Context ID: 1} connected
+[2026-10-04 23:44:23.615 Server 14296] Creating worker thread for client {PID: 14687, Context ID: 1}
+[2026-10-04 23:44:23.616 Server 14296] Device NVIDIA A100-SXM4-40GB (uuid GPU-268644bb-5aaf-7d44-3eb2-ea796a695aa1) is associated
+[2026-10-04 23:44:23.616 Server 14296] Status of client {PID: 14687, Context ID: 1} is ACTIVE
+[2026-10-04 23:44:23.619 Client 14687] Static partitioning mode disabled
+[2026-10-04 23:44:27.605 Server 14296] Received new client request from PID 14710
+[2026-10-04 23:44:27.605 Server 14296] Priority level of client {14710} is: 0 (NORMAL)
+[2026-10-04 23:44:27.605 Server 14296] Client {PID: 14710, Context ID: 0} connected
+[2026-10-04 23:44:27.605 Server 14296] Creating worker thread for client {PID: 14710, Context ID: 0}
+[2026-10-04 23:44:27.633 Server 14296] Received new client request from PID 14710
+[2026-10-04 23:44:27.633 Server 14296] Priority level of client {14710} is: 0 (NORMAL)
+[2026-10-04 23:44:27.633 Server 14296] Client {PID: 14710, Context ID: 1} connected
+[2026-10-04 23:44:27.633 Server 14296] Creating worker thread for client {PID: 14710, Context ID: 1}
+[2026-10-04 23:44:27.633 Server 14296] Device NVIDIA A100-SXM4-40GB (uuid GPU-268644bb-5aaf-7d44-3eb2-ea796a695aa1) is associated
+[2026-10-04 23:44:27.633 Server 14296] Status of client {PID: 14710, Context ID: 1} is ACTIVE
+[2026-10-04 23:44:27.633 Client 14710] Static partitioning mode disabled
+[2026-10-04 23:44:34.821 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 14710, Context ID: 1} exit
+[2026-10-04 23:44:34.821 Server 14296] Client {PID: 14710, Context ID: 1} exiting. Number of active client contexts is 1.
+[2026-10-04 23:44:34.846 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 14710, Context ID: 0} exit
+[2026-10-04 23:44:34.846 Server 14296] Client process 14710 disconnected
+[2026-10-04 23:44:34.942 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 14687, Context ID: 1} exit
+[2026-10-04 23:44:34.942 Server 14296] Client {PID: 14687, Context ID: 1} exiting. Number of active client contexts is 0.
+[2026-10-04 23:44:34.960 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 14687, Context ID: 0} exit
+[2026-10-04 23:44:34.960 Server 14296] Client process 14687 disconnected
+[2026-10-04 23:44:36.002 Server 14296] Received new client request from PID 14730
+[2026-10-04 23:44:36.002 Server 14296] Priority level of client {14730} is: 0 (NORMAL)
+[2026-10-04 23:44:36.002 Server 14296] Client {PID: 14730, Context ID: 0} connected
+[2026-10-04 23:44:36.002 Server 14296] Creating worker thread for client {PID: 14730, Context ID: 0}
+[2026-10-04 23:44:36.016 Server 14296] Received new client request from PID 14730
+[2026-10-04 23:44:36.016 Server 14296] Priority level of client {14730} is: 0 (NORMAL)
+[2026-10-04 23:44:36.016 Server 14296] Client {PID: 14730, Context ID: 1} connected
+[2026-10-04 23:44:36.016 Server 14296] Creating worker thread for client {PID: 14730, Context ID: 1}
+[2026-10-04 23:44:36.016 Server 14296] Device NVIDIA A100-SXM4-40GB (uuid GPU-268644bb-5aaf-7d44-3eb2-ea796a695aa1) is associated
+[2026-10-04 23:44:36.016 Server 14296] Status of client {PID: 14730, Context ID: 1} is ACTIVE
+[2026-10-04 23:44:36.020 Client 14730] Static partitioning mode disabled
+[2026-10-04 23:44:40.004 Server 14296] Received new client request from PID 14753
+[2026-10-04 23:44:40.004 Server 14296] Priority level of client {14753} is: 0 (NORMAL)
+[2026-10-04 23:44:40.004 Server 14296] Client {PID: 14753, Context ID: 0} connected
+[2026-10-04 23:44:40.004 Server 14296] Creating worker thread for client {PID: 14753, Context ID: 0}
+[2026-10-04 23:44:40.037 Server 14296] Received new client request from PID 14753
+[2026-10-04 23:44:40.037 Server 14296] Priority level of client {14753} is: 0 (NORMAL)
+[2026-10-04 23:44:40.037 Server 14296] Client {PID: 14753, Context ID: 1} connected
+[2026-10-04 23:44:40.037 Server 14296] Creating worker thread for client {PID: 14753, Context ID: 1}
+[2026-10-04 23:44:40.037 Server 14296] Device NVIDIA A100-SXM4-40GB (uuid GPU-268644bb-5aaf-7d44-3eb2-ea796a695aa1) is associated
+[2026-10-04 23:44:40.037 Server 14296] Status of client {PID: 14753, Context ID: 1} is ACTIVE
+[2026-10-04 23:44:40.038 Client 14753] Static partitioning mode disabled
+[2026-10-04 23:44:47.222 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 14753, Context ID: 1} exit
+[2026-10-04 23:44:47.222 Server 14296] Client {PID: 14753, Context ID: 1} exiting. Number of active client contexts is 1.
+[2026-10-04 23:44:47.245 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 14753, Context ID: 0} exit
+[2026-10-04 23:44:47.245 Server 14296] Client process 14753 disconnected
+[2026-10-04 23:44:47.300 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 14730, Context ID: 1} exit
+[2026-10-04 23:44:47.300 Server 14296] Client {PID: 14730, Context ID: 1} exiting. Number of active client contexts is 0.
+[2026-10-04 23:44:47.318 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 14730, Context ID: 0} exit
+[2026-10-04 23:44:47.318 Server 14296] Client process 14730 disconnected
+[2026-10-04 23:44:48.393 Server 14296] Received new client request from PID 14778
+[2026-10-04 23:44:48.393 Server 14296] Priority level of client {14778} is: 0 (NORMAL)
+[2026-10-04 23:44:48.393 Server 14296] Client {PID: 14778, Context ID: 0} connected
+[2026-10-04 23:44:48.393 Server 14296] Creating worker thread for client {PID: 14778, Context ID: 0}
+[2026-10-04 23:44:48.427 Server 14296] Received new client request from PID 14778
+[2026-10-04 23:44:48.427 Server 14296] Priority level of client {14778} is: 0 (NORMAL)
+[2026-10-04 23:44:48.427 Server 14296] Client {PID: 14778, Context ID: 1} connected
+[2026-10-04 23:44:48.427 Server 14296] Creating worker thread for client {PID: 14778, Context ID: 1}
+[2026-10-04 23:44:48.427 Server 14296] Device NVIDIA A100-SXM4-40GB (uuid GPU-268644bb-5aaf-7d44-3eb2-ea796a695aa1) is associated
+[2026-10-04 23:44:48.427 Server 14296] Status of client {PID: 14778, Context ID: 1} is ACTIVE
+[2026-10-04 23:44:48.428 Client 14778] Static partitioning mode disabled
+[2026-10-04 23:44:55.638 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 14778, Context ID: 1} exit
+[2026-10-04 23:44:55.638 Server 14296] Client {PID: 14778, Context ID: 1} exiting. Number of active client contexts is 0.
+[2026-10-04 23:44:55.660 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 14778, Context ID: 0} exit
+[2026-10-04 23:44:55.660 Server 14296] Client process 14778 disconnected
+[2026-10-04 23:44:55.804 Server 14296] Received new client request from PID 14795
+[2026-10-04 23:44:55.804 Server 14296] Priority level of client {14795} is: 0 (NORMAL)
+[2026-10-04 23:44:55.804 Server 14296] Client {PID: 14795, Context ID: 0} connected
+[2026-10-04 23:44:55.804 Server 14296] Creating worker thread for client {PID: 14795, Context ID: 0}
+[2026-10-04 23:44:55.825 Server 14296] Received new client request from PID 14795
+[2026-10-04 23:44:55.825 Server 14296] Priority level of client {14795} is: 0 (NORMAL)
+[2026-10-04 23:44:55.825 Server 14296] Client {PID: 14795, Context ID: 1} connected
+[2026-10-04 23:44:55.825 Server 14296] Creating worker thread for client {PID: 14795, Context ID: 1}
+[2026-10-04 23:44:55.825 Server 14296] Device NVIDIA A100-SXM4-40GB (uuid GPU-268644bb-5aaf-7d44-3eb2-ea796a695aa1) is associated
+[2026-10-04 23:44:55.825 Server 14296] Status of client {PID: 14795, Context ID: 1} is ACTIVE
+[2026-10-04 23:44:55.829 Client 14795] Static partitioning mode disabled
+[2026-10-04 23:44:59.807 Server 14296] Received new client request from PID 14818
+[2026-10-04 23:44:59.807 Server 14296] Priority level of client {14818} is: 0 (NORMAL)
+[2026-10-04 23:44:59.807 Server 14296] Client {PID: 14818, Context ID: 0} connected
+[2026-10-04 23:44:59.807 Server 14296] Creating worker thread for client {PID: 14818, Context ID: 0}
+[2026-10-04 23:44:59.837 Server 14296] Received new client request from PID 14818
+[2026-10-04 23:44:59.837 Server 14296] Priority level of client {14818} is: 0 (NORMAL)
+[2026-10-04 23:44:59.837 Server 14296] Client {PID: 14818, Context ID: 1} connected
+[2026-10-04 23:44:59.838 Server 14296] Creating worker thread for client {PID: 14818, Context ID: 1}
+[2026-10-04 23:44:59.838 Server 14296] Device NVIDIA A100-SXM4-40GB (uuid GPU-268644bb-5aaf-7d44-3eb2-ea796a695aa1) is associated
+[2026-10-04 23:44:59.838 Server 14296] Status of client {PID: 14818, Context ID: 1} is ACTIVE
+[2026-10-04 23:44:59.838 Client 14818] Static partitioning mode disabled
+[2026-10-04 23:45:07.027 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 14818, Context ID: 1} exit
+[2026-10-04 23:45:07.027 Server 14296] Client {PID: 14818, Context ID: 1} exiting. Number of active client contexts is 1.
+[2026-10-04 23:45:07.052 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 14818, Context ID: 0} exit
+[2026-10-04 23:45:07.052 Server 14296] Client process 14818 disconnected
+[2026-10-04 23:45:07.149 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 14795, Context ID: 1} exit
+[2026-10-04 23:45:07.149 Server 14296] Client {PID: 14795, Context ID: 1} exiting. Number of active client contexts is 0.
+[2026-10-04 23:45:07.167 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 14795, Context ID: 0} exit
+[2026-10-04 23:45:07.167 Server 14296] Client process 14795 disconnected
+[2026-10-04 23:45:08.207 Server 14296] Received new client request from PID 14838
+[2026-10-04 23:45:08.207 Server 14296] Priority level of client {14838} is: 0 (NORMAL)
+[2026-10-04 23:45:08.207 Server 14296] Client {PID: 14838, Context ID: 0} connected
+[2026-10-04 23:45:08.207 Server 14296] Creating worker thread for client {PID: 14838, Context ID: 0}
+[2026-10-04 23:45:08.222 Server 14296] Received new client request from PID 14838
+[2026-10-04 23:45:08.222 Server 14296] Priority level of client {14838} is: 0 (NORMAL)
+[2026-10-04 23:45:08.222 Server 14296] Client {PID: 14838, Context ID: 1} connected
+[2026-10-04 23:45:08.222 Server 14296] Creating worker thread for client {PID: 14838, Context ID: 1}
+[2026-10-04 23:45:08.222 Server 14296] Device NVIDIA A100-SXM4-40GB (uuid GPU-268644bb-5aaf-7d44-3eb2-ea796a695aa1) is associated
+[2026-10-04 23:45:08.222 Server 14296] Status of client {PID: 14838, Context ID: 1} is ACTIVE
+[2026-10-04 23:45:08.226 Client 14838] Static partitioning mode disabled
+[2026-10-04 23:45:12.210 Server 14296] Received new client request from PID 14861
+[2026-10-04 23:45:12.210 Server 14296] Priority level of client {14861} is: 0 (NORMAL)
+[2026-10-04 23:45:12.210 Server 14296] Client {PID: 14861, Context ID: 0} connected
+[2026-10-04 23:45:12.210 Server 14296] Creating worker thread for client {PID: 14861, Context ID: 0}
+[2026-10-04 23:45:12.241 Server 14296] Received new client request from PID 14861
+[2026-10-04 23:45:12.241 Server 14296] Priority level of client {14861} is: 0 (NORMAL)
+[2026-10-04 23:45:12.241 Server 14296] Client {PID: 14861, Context ID: 1} connected
+[2026-10-04 23:45:12.241 Server 14296] Creating worker thread for client {PID: 14861, Context ID: 1}
+[2026-10-04 23:45:12.241 Server 14296] Device NVIDIA A100-SXM4-40GB (uuid GPU-268644bb-5aaf-7d44-3eb2-ea796a695aa1) is associated
+[2026-10-04 23:45:12.241 Server 14296] Status of client {PID: 14861, Context ID: 1} is ACTIVE
+[2026-10-04 23:45:12.241 Client 14861] Static partitioning mode disabled
+[2026-10-04 23:45:19.432 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 14861, Context ID: 1} exit
+[2026-10-04 23:45:19.432 Server 14296] Client {PID: 14861, Context ID: 1} exiting. Number of active client contexts is 1.
+[2026-10-04 23:45:19.456 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 14861, Context ID: 0} exit
+[2026-10-04 23:45:19.456 Server 14296] Client process 14861 disconnected
+[2026-10-04 23:45:19.552 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 14838, Context ID: 1} exit
+[2026-10-04 23:45:19.552 Server 14296] Client {PID: 14838, Context ID: 1} exiting. Number of active client contexts is 0.
+[2026-10-04 23:45:19.571 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 14838, Context ID: 0} exit
+[2026-10-04 23:45:19.571 Server 14296] Client process 14838 disconnected
+[2026-10-04 23:45:20.622 Server 14296] Received new client request from PID 14883
+[2026-10-04 23:45:20.622 Server 14296] Priority level of client {14883} is: 0 (NORMAL)
+[2026-10-04 23:45:20.622 Server 14296] Creating worker thread for client {PID: 14883, Context ID: 0}
+[2026-10-04 23:45:20.622 Server 14296] Client {PID: 14883, Context ID: 0} connected
+[2026-10-04 23:45:20.644 Server 14296] Received new client request from PID 14883
+[2026-10-04 23:45:20.644 Server 14296] Priority level of client {14883} is: 0 (NORMAL)
+[2026-10-04 23:45:20.644 Server 14296] Client {PID: 14883, Context ID: 1} connected
+[2026-10-04 23:45:20.644 Server 14296] Creating worker thread for client {PID: 14883, Context ID: 1}
+[2026-10-04 23:45:20.644 Server 14296] Device NVIDIA A100-SXM4-40GB (uuid GPU-268644bb-5aaf-7d44-3eb2-ea796a695aa1) is associated
+[2026-10-04 23:45:20.644 Server 14296] Status of client {PID: 14883, Context ID: 1} is ACTIVE
+[2026-10-04 23:45:20.647 Client 14883] Static partitioning mode disabled
+[2026-10-04 23:45:24.625 Server 14296] Received new client request from PID 14906
+[2026-10-04 23:45:24.625 Server 14296] Priority level of client {14906} is: 0 (NORMAL)
+[2026-10-04 23:45:24.625 Server 14296] Client {PID: 14906, Context ID: 0} connected
+[2026-10-04 23:45:24.625 Server 14296] Creating worker thread for client {PID: 14906, Context ID: 0}
+[2026-10-04 23:45:24.658 Server 14296] Received new client request from PID 14906
+[2026-10-04 23:45:24.658 Server 14296] Priority level of client {14906} is: 0 (NORMAL)
+[2026-10-04 23:45:24.658 Server 14296] Client {PID: 14906, Context ID: 1} connected
+[2026-10-04 23:45:24.658 Server 14296] Creating worker thread for client {PID: 14906, Context ID: 1}
+[2026-10-04 23:45:24.658 Server 14296] Device NVIDIA A100-SXM4-40GB (uuid GPU-268644bb-5aaf-7d44-3eb2-ea796a695aa1) is associated
+[2026-10-04 23:45:24.658 Server 14296] Status of client {PID: 14906, Context ID: 1} is ACTIVE
+[2026-10-04 23:45:24.659 Client 14906] Static partitioning mode disabled
+[2026-10-04 23:45:31.848 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 14906, Context ID: 1} exit
+[2026-10-04 23:45:31.848 Server 14296] Client {PID: 14906, Context ID: 1} exiting. Number of active client contexts is 1.
+[2026-10-04 23:45:31.868 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 14906, Context ID: 0} exit
+[2026-10-04 23:45:31.868 Server 14296] Client process 14906 disconnected
+[2026-10-04 23:45:31.967 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 14883, Context ID: 1} exit
+[2026-10-04 23:45:31.967 Server 14296] Client {PID: 14883, Context ID: 1} exiting. Number of active client contexts is 0.
+[2026-10-04 23:45:31.985 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 14883, Context ID: 0} exit
+[2026-10-04 23:45:31.985 Server 14296] Client process 14883 disconnected
+[2026-10-04 23:45:33.026 Server 14296] Received new client request from PID 14926
+[2026-10-04 23:45:33.026 Server 14296] Priority level of client {14926} is: 0 (NORMAL)
+[2026-10-04 23:45:33.026 Server 14296] Client {PID: 14926, Context ID: 0} connected
+[2026-10-04 23:45:33.026 Server 14296] Creating worker thread for client {PID: 14926, Context ID: 0}
+[2026-10-04 23:45:33.044 Server 14296] Received new client request from PID 14926
+[2026-10-04 23:45:33.044 Server 14296] Priority level of client {14926} is: 0 (NORMAL)
+[2026-10-04 23:45:33.044 Server 14296] Client {PID: 14926, Context ID: 1} connected
+[2026-10-04 23:45:33.044 Server 14296] Creating worker thread for client {PID: 14926, Context ID: 1}
+[2026-10-04 23:45:33.044 Server 14296] Device NVIDIA A100-SXM4-40GB (uuid GPU-268644bb-5aaf-7d44-3eb2-ea796a695aa1) is associated
+[2026-10-04 23:45:33.044 Server 14296] Status of client {PID: 14926, Context ID: 1} is ACTIVE
+[2026-10-04 23:45:33.048 Client 14926] Static partitioning mode disabled
+[2026-10-04 23:45:37.028 Server 14296] Received new client request from PID 14949
+[2026-10-04 23:45:37.028 Server 14296] Priority level of client {14949} is: 0 (NORMAL)
+[2026-10-04 23:45:37.028 Server 14296] Client {PID: 14949, Context ID: 0} connected
+[2026-10-04 23:45:37.028 Server 14296] Creating worker thread for client {PID: 14949, Context ID: 0}
+[2026-10-04 23:45:37.057 Server 14296] Received new client request from PID 14949
+[2026-10-04 23:45:37.057 Server 14296] Priority level of client {14949} is: 0 (NORMAL)
+[2026-10-04 23:45:37.057 Server 14296] Client {PID: 14949, Context ID: 1} connected
+[2026-10-04 23:45:37.057 Server 14296] Creating worker thread for client {PID: 14949, Context ID: 1}
+[2026-10-04 23:45:37.057 Server 14296] Device NVIDIA A100-SXM4-40GB (uuid GPU-268644bb-5aaf-7d44-3eb2-ea796a695aa1) is associated
+[2026-10-04 23:45:37.057 Server 14296] Status of client {PID: 14949, Context ID: 1} is ACTIVE
+[2026-10-04 23:45:37.058 Client 14949] Static partitioning mode disabled
+[2026-10-04 23:45:44.254 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 14949, Context ID: 1} exit
+[2026-10-04 23:45:44.254 Server 14296] Client {PID: 14949, Context ID: 1} exiting. Number of active client contexts is 1.
+[2026-10-04 23:45:44.275 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 14949, Context ID: 0} exit
+[2026-10-04 23:45:44.275 Server 14296] Client process 14949 disconnected
+[2026-10-04 23:45:44.375 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 14926, Context ID: 1} exit
+[2026-10-04 23:45:44.375 Server 14296] Client {PID: 14926, Context ID: 1} exiting. Number of active client contexts is 0.
+[2026-10-04 23:45:44.394 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 14926, Context ID: 0} exit
+[2026-10-04 23:45:44.394 Server 14296] Client process 14926 disconnected
+[2026-10-04 23:45:45.436 Server 14296] Received new client request from PID 14969
+[2026-10-04 23:45:45.436 Server 14296] Priority level of client {14969} is: 0 (NORMAL)
+[2026-10-04 23:45:45.436 Server 14296] Client {PID: 14969, Context ID: 0} connected
+[2026-10-04 23:45:45.436 Server 14296] Creating worker thread for client {PID: 14969, Context ID: 0}
+[2026-10-04 23:45:45.453 Server 14296] Received new client request from PID 14969
+[2026-10-04 23:45:45.453 Server 14296] Priority level of client {14969} is: 0 (NORMAL)
+[2026-10-04 23:45:45.453 Server 14296] Client {PID: 14969, Context ID: 1} connected
+[2026-10-04 23:45:45.454 Server 14296] Creating worker thread for client {PID: 14969, Context ID: 1}
+[2026-10-04 23:45:45.454 Server 14296] Device NVIDIA A100-SXM4-40GB (uuid GPU-268644bb-5aaf-7d44-3eb2-ea796a695aa1) is associated
+[2026-10-04 23:45:45.454 Server 14296] Status of client {PID: 14969, Context ID: 1} is ACTIVE
+[2026-10-04 23:45:45.457 Client 14969] Static partitioning mode disabled
+[2026-10-04 23:45:49.437 Server 14296] Received new client request from PID 14992
+[2026-10-04 23:45:49.437 Server 14296] Priority level of client {14992} is: 0 (NORMAL)
+[2026-10-04 23:45:49.437 Server 14296] Client {PID: 14992, Context ID: 0} connected
+[2026-10-04 23:45:49.437 Server 14296] Creating worker thread for client {PID: 14992, Context ID: 0}
+[2026-10-04 23:45:49.466 Server 14296] Received new client request from PID 14992
+[2026-10-04 23:45:49.466 Server 14296] Priority level of client {14992} is: 0 (NORMAL)
+[2026-10-04 23:45:49.466 Server 14296] Client {PID: 14992, Context ID: 1} connected
+[2026-10-04 23:45:49.466 Server 14296] Creating worker thread for client {PID: 14992, Context ID: 1}
+[2026-10-04 23:45:49.466 Server 14296] Device NVIDIA A100-SXM4-40GB (uuid GPU-268644bb-5aaf-7d44-3eb2-ea796a695aa1) is associated
+[2026-10-04 23:45:49.466 Server 14296] Status of client {PID: 14992, Context ID: 1} is ACTIVE
+[2026-10-04 23:45:49.466 Client 14992] Static partitioning mode disabled
+[2026-10-04 23:45:56.661 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 14992, Context ID: 1} exit
+[2026-10-04 23:45:56.661 Server 14296] Client {PID: 14992, Context ID: 1} exiting. Number of active client contexts is 1.
+[2026-10-04 23:45:56.680 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 14992, Context ID: 0} exit
+[2026-10-04 23:45:56.680 Server 14296] Client process 14992 disconnected
+[2026-10-04 23:45:56.780 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 14969, Context ID: 1} exit
+[2026-10-04 23:45:56.780 Server 14296] Client {PID: 14969, Context ID: 1} exiting. Number of active client contexts is 0.
+[2026-10-04 23:45:56.798 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 14969, Context ID: 0} exit
+[2026-10-04 23:45:56.798 Server 14296] Client process 14969 disconnected
+[2026-10-04 23:45:57.839 Server 14296] Received new client request from PID 15012
+[2026-10-04 23:45:57.839 Server 14296] Priority level of client {15012} is: 0 (NORMAL)
+[2026-10-04 23:45:57.839 Server 14296] Client {PID: 15012, Context ID: 0} connected
+[2026-10-04 23:45:57.839 Server 14296] Creating worker thread for client {PID: 15012, Context ID: 0}
+[2026-10-04 23:45:57.855 Server 14296] Received new client request from PID 15012
+[2026-10-04 23:45:57.855 Server 14296] Priority level of client {15012} is: 0 (NORMAL)
+[2026-10-04 23:45:57.855 Server 14296] Client {PID: 15012, Context ID: 1} connected
+[2026-10-04 23:45:57.855 Server 14296] Creating worker thread for client {PID: 15012, Context ID: 1}
+[2026-10-04 23:45:57.855 Server 14296] Device NVIDIA A100-SXM4-40GB (uuid GPU-268644bb-5aaf-7d44-3eb2-ea796a695aa1) is associated
+[2026-10-04 23:45:57.855 Server 14296] Status of client {PID: 15012, Context ID: 1} is ACTIVE
+[2026-10-04 23:45:57.859 Client 15012] Static partitioning mode disabled
+[2026-10-04 23:46:01.841 Server 14296] Received new client request from PID 15035
+[2026-10-04 23:46:01.841 Server 14296] Priority level of client {15035} is: 0 (NORMAL)
+[2026-10-04 23:46:01.841 Server 14296] Client {PID: 15035, Context ID: 0} connected
+[2026-10-04 23:46:01.841 Server 14296] Creating worker thread for client {PID: 15035, Context ID: 0}
+[2026-10-04 23:46:01.869 Server 14296] Received new client request from PID 15035
+[2026-10-04 23:46:01.869 Server 14296] Priority level of client {15035} is: 0 (NORMAL)
+[2026-10-04 23:46:01.869 Server 14296] Client {PID: 15035, Context ID: 1} connected
+[2026-10-04 23:46:01.869 Server 14296] Creating worker thread for client {PID: 15035, Context ID: 1}
+[2026-10-04 23:46:01.869 Server 14296] Device NVIDIA A100-SXM4-40GB (uuid GPU-268644bb-5aaf-7d44-3eb2-ea796a695aa1) is associated
+[2026-10-04 23:46:01.869 Server 14296] Status of client {PID: 15035, Context ID: 1} is ACTIVE
+[2026-10-04 23:46:01.870 Client 15035] Static partitioning mode disabled
+[2026-10-04 23:46:09.064 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 15035, Context ID: 1} exit
+[2026-10-04 23:46:09.064 Server 14296] Client {PID: 15035, Context ID: 1} exiting. Number of active client contexts is 1.
+[2026-10-04 23:46:09.084 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 15035, Context ID: 0} exit
+[2026-10-04 23:46:09.084 Server 14296] Client process 15035 disconnected
+[2026-10-04 23:46:09.148 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 15012, Context ID: 1} exit
+[2026-10-04 23:46:09.148 Server 14296] Client {PID: 15012, Context ID: 1} exiting. Number of active client contexts is 0.
+[2026-10-04 23:46:09.166 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 15012, Context ID: 0} exit
+[2026-10-04 23:46:09.166 Server 14296] Client process 15012 disconnected
+[2026-10-04 23:46:10.248 Server 14296] Received new client request from PID 15055
+[2026-10-04 23:46:10.248 Server 14296] Priority level of client {15055} is: 0 (NORMAL)
+[2026-10-04 23:46:10.248 Server 14296] Client {PID: 15055, Context ID: 0} connected
+[2026-10-04 23:46:10.248 Server 14296] Creating worker thread for client {PID: 15055, Context ID: 0}
+[2026-10-04 23:46:10.262 Server 14296] Received new client request from PID 15055
+[2026-10-04 23:46:10.262 Server 14296] Priority level of client {15055} is: 0 (NORMAL)
+[2026-10-04 23:46:10.262 Server 14296] Client {PID: 15055, Context ID: 1} connected
+[2026-10-04 23:46:10.262 Server 14296] Creating worker thread for client {PID: 15055, Context ID: 1}
+[2026-10-04 23:46:10.262 Server 14296] Device NVIDIA A100-SXM4-40GB (uuid GPU-268644bb-5aaf-7d44-3eb2-ea796a695aa1) is associated
+[2026-10-04 23:46:10.262 Server 14296] Status of client {PID: 15055, Context ID: 1} is ACTIVE
+[2026-10-04 23:46:10.266 Client 15055] Static partitioning mode disabled
+[2026-10-04 23:46:14.250 Server 14296] Received new client request from PID 15078
+[2026-10-04 23:46:14.250 Server 14296] Priority level of client {15078} is: 0 (NORMAL)
+[2026-10-04 23:46:14.250 Server 14296] Client {PID: 15078, Context ID: 0} connected
+[2026-10-04 23:46:14.250 Server 14296] Creating worker thread for client {PID: 15078, Context ID: 0}
+[2026-10-04 23:46:14.278 Server 14296] Received new client request from PID 15078
+[2026-10-04 23:46:14.278 Server 14296] Priority level of client {15078} is: 0 (NORMAL)
+[2026-10-04 23:46:14.278 Server 14296] Client {PID: 15078, Context ID: 1} connected
+[2026-10-04 23:46:14.278 Server 14296] Creating worker thread for client {PID: 15078, Context ID: 1}
+[2026-10-04 23:46:14.278 Server 14296] Device NVIDIA A100-SXM4-40GB (uuid GPU-268644bb-5aaf-7d44-3eb2-ea796a695aa1) is associated
+[2026-10-04 23:46:14.278 Server 14296] Status of client {PID: 15078, Context ID: 1} is ACTIVE
+[2026-10-04 23:46:14.278 Client 15078] Static partitioning mode disabled
+[2026-10-04 23:46:21.467 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 15078, Context ID: 1} exit
+[2026-10-04 23:46:21.467 Server 14296] Client {PID: 15078, Context ID: 1} exiting. Number of active client contexts is 1.
+[2026-10-04 23:46:21.485 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 15078, Context ID: 0} exit
+[2026-10-04 23:46:21.485 Server 14296] Client process 15078 disconnected
+[2026-10-04 23:46:21.584 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 15055, Context ID: 1} exit
+[2026-10-04 23:46:21.584 Server 14296] Client {PID: 15055, Context ID: 1} exiting. Number of active client contexts is 0.
+[2026-10-04 23:46:21.603 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 15055, Context ID: 0} exit
+[2026-10-04 23:46:21.603 Server 14296] Client process 15055 disconnected
+[2026-10-04 23:46:22.643 Server 14296] Received new client request from PID 15098
+[2026-10-04 23:46:22.644 Server 14296] Priority level of client {15098} is: 0 (NORMAL)
+[2026-10-04 23:46:22.644 Server 14296] Client {PID: 15098, Context ID: 0} connected
+[2026-10-04 23:46:22.644 Server 14296] Creating worker thread for client {PID: 15098, Context ID: 0}
+[2026-10-04 23:46:22.663 Server 14296] Received new client request from PID 15098
+[2026-10-04 23:46:22.663 Server 14296] Priority level of client {15098} is: 0 (NORMAL)
+[2026-10-04 23:46:22.663 Server 14296] Client {PID: 15098, Context ID: 1} connected
+[2026-10-04 23:46:22.664 Server 14296] Creating worker thread for client {PID: 15098, Context ID: 1}
+[2026-10-04 23:46:22.664 Server 14296] Device NVIDIA A100-SXM4-40GB (uuid GPU-268644bb-5aaf-7d44-3eb2-ea796a695aa1) is associated
+[2026-10-04 23:46:22.664 Server 14296] Status of client {PID: 15098, Context ID: 1} is ACTIVE
+[2026-10-04 23:46:22.667 Client 15098] Static partitioning mode disabled
+[2026-10-04 23:46:26.647 Server 14296] Received new client request from PID 15121
+[2026-10-04 23:46:26.647 Server 14296] Priority level of client {15121} is: 0 (NORMAL)
+[2026-10-04 23:46:26.647 Server 14296] Client {PID: 15121, Context ID: 0} connected
+[2026-10-04 23:46:26.647 Server 14296] Creating worker thread for client {PID: 15121, Context ID: 0}
+[2026-10-04 23:46:26.677 Server 14296] Received new client request from PID 15121
+[2026-10-04 23:46:26.677 Server 14296] Priority level of client {15121} is: 0 (NORMAL)
+[2026-10-04 23:46:26.677 Server 14296] Client {PID: 15121, Context ID: 1} connected
+[2026-10-04 23:46:26.677 Server 14296] Creating worker thread for client {PID: 15121, Context ID: 1}
+[2026-10-04 23:46:26.677 Server 14296] Device NVIDIA A100-SXM4-40GB (uuid GPU-268644bb-5aaf-7d44-3eb2-ea796a695aa1) is associated
+[2026-10-04 23:46:26.677 Server 14296] Status of client {PID: 15121, Context ID: 1} is ACTIVE
+[2026-10-04 23:46:26.678 Client 15121] Static partitioning mode disabled
+[2026-10-04 23:46:33.871 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 15121, Context ID: 1} exit
+[2026-10-04 23:46:33.871 Server 14296] Client {PID: 15121, Context ID: 1} exiting. Number of active client contexts is 1.
+[2026-10-04 23:46:33.891 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 15121, Context ID: 0} exit
+[2026-10-04 23:46:33.891 Server 14296] Client process 15121 disconnected
+[2026-10-04 23:46:33.993 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 15098, Context ID: 1} exit
+[2026-10-04 23:46:33.993 Server 14296] Client {PID: 15098, Context ID: 1} exiting. Number of active client contexts is 0.
+[2026-10-04 23:46:34.011 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 15098, Context ID: 0} exit
+[2026-10-04 23:46:34.011 Server 14296] Client process 15098 disconnected
+[2026-10-04 23:46:35.034 Server 14296] Received new client request from PID 15146
+[2026-10-04 23:46:35.034 Server 14296] Priority level of client {15146} is: 0 (NORMAL)
+[2026-10-04 23:46:35.034 Server 14296] Client {PID: 15146, Context ID: 0} connected
+[2026-10-04 23:46:35.034 Server 14296] Creating worker thread for client {PID: 15146, Context ID: 0}
+[2026-10-04 23:46:35.062 Server 14296] Received new client request from PID 15146
+[2026-10-04 23:46:35.062 Server 14296] Priority level of client {15146} is: 0 (NORMAL)
+[2026-10-04 23:46:35.062 Server 14296] Client {PID: 15146, Context ID: 1} connected
+[2026-10-04 23:46:35.062 Server 14296] Creating worker thread for client {PID: 15146, Context ID: 1}
+[2026-10-04 23:46:35.062 Server 14296] Device NVIDIA A100-SXM4-40GB (uuid GPU-268644bb-5aaf-7d44-3eb2-ea796a695aa1) is associated
+[2026-10-04 23:46:35.062 Server 14296] Status of client {PID: 15146, Context ID: 1} is ACTIVE
+[2026-10-04 23:46:35.063 Client 15146] Static partitioning mode disabled
+[2026-10-04 23:46:42.262 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 15146, Context ID: 1} exit
+[2026-10-04 23:46:42.262 Server 14296] Client {PID: 15146, Context ID: 1} exiting. Number of active client contexts is 0.
+[2026-10-04 23:46:42.285 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 15146, Context ID: 0} exit
+[2026-10-04 23:46:42.285 Server 14296] Client process 15146 disconnected
+[2026-10-04 23:46:42.433 Server 14296] Received new client request from PID 15170
+[2026-10-04 23:46:42.433 Server 14296] Priority level of client {15170} is: 0 (NORMAL)
+[2026-10-04 23:46:42.433 Server 14296] Client {PID: 15170, Context ID: 0} connected
+[2026-10-04 23:46:42.433 Server 14296] Creating worker thread for client {PID: 15170, Context ID: 0}
+[2026-10-04 23:46:42.467 Server 14296] Received new client request from PID 15170
+[2026-10-04 23:46:42.467 Server 14296] Priority level of client {15170} is: 0 (NORMAL)
+[2026-10-04 23:46:42.467 Server 14296] Client {PID: 15170, Context ID: 1} connected
+[2026-10-04 23:46:42.467 Server 14296] Creating worker thread for client {PID: 15170, Context ID: 1}
+[2026-10-04 23:46:42.467 Server 14296] Device NVIDIA A100-SXM4-40GB (uuid GPU-268644bb-5aaf-7d44-3eb2-ea796a695aa1) is associated
+[2026-10-04 23:46:42.467 Server 14296] Status of client {PID: 15170, Context ID: 1} is ACTIVE
+[2026-10-04 23:46:42.467 Client 15170] Static partitioning mode disabled
+[2026-10-04 23:46:49.761 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 15170, Context ID: 1} exit
+[2026-10-04 23:46:49.761 Server 14296] Client {PID: 15170, Context ID: 1} exiting. Number of active client contexts is 0.
+[2026-10-04 23:46:49.784 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 15170, Context ID: 0} exit
+[2026-10-04 23:46:49.784 Server 14296] Client process 15170 disconnected
+[2026-10-04 23:46:49.928 Server 14296] Received new client request from PID 15187
+[2026-10-04 23:46:49.928 Server 14296] Priority level of client {15187} is: 0 (NORMAL)
+[2026-10-04 23:46:49.928 Server 14296] Client {PID: 15187, Context ID: 0} connected
+[2026-10-04 23:46:49.928 Server 14296] Creating worker thread for client {PID: 15187, Context ID: 0}
+[2026-10-04 23:46:49.946 Server 14296] Received new client request from PID 15187
+[2026-10-04 23:46:49.946 Server 14296] Priority level of client {15187} is: 0 (NORMAL)
+[2026-10-04 23:46:49.946 Server 14296] Client {PID: 15187, Context ID: 1} connected
+[2026-10-04 23:46:49.946 Server 14296] Creating worker thread for client {PID: 15187, Context ID: 1}
+[2026-10-04 23:46:49.946 Server 14296] Device NVIDIA A100-SXM4-40GB (uuid GPU-268644bb-5aaf-7d44-3eb2-ea796a695aa1) is associated
+[2026-10-04 23:46:49.946 Server 14296] Status of client {PID: 15187, Context ID: 1} is ACTIVE
+[2026-10-04 23:46:49.950 Client 15187] Static partitioning mode disabled
+[2026-10-04 23:46:53.931 Server 14296] Received new client request from PID 15210
+[2026-10-04 23:46:53.931 Server 14296] Priority level of client {15210} is: 0 (NORMAL)
+[2026-10-04 23:46:53.931 Server 14296] Client {PID: 15210, Context ID: 0} connected
+[2026-10-04 23:46:53.931 Server 14296] Creating worker thread for client {PID: 15210, Context ID: 0}
+[2026-10-04 23:46:53.959 Server 14296] Received new client request from PID 15210
+[2026-10-04 23:46:53.959 Server 14296] Priority level of client {15210} is: 0 (NORMAL)
+[2026-10-04 23:46:53.959 Server 14296] Client {PID: 15210, Context ID: 1} connected
+[2026-10-04 23:46:53.959 Server 14296] Creating worker thread for client {PID: 15210, Context ID: 1}
+[2026-10-04 23:46:53.959 Server 14296] Device NVIDIA A100-SXM4-40GB (uuid GPU-268644bb-5aaf-7d44-3eb2-ea796a695aa1) is associated
+[2026-10-04 23:46:53.959 Server 14296] Status of client {PID: 15210, Context ID: 1} is ACTIVE
+[2026-10-04 23:46:53.960 Client 15210] Static partitioning mode disabled
+[2026-10-04 23:47:01.149 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 15210, Context ID: 1} exit
+[2026-10-04 23:47:01.149 Server 14296] Client {PID: 15210, Context ID: 1} exiting. Number of active client contexts is 1.
+[2026-10-04 23:47:01.169 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 15210, Context ID: 0} exit
+[2026-10-04 23:47:01.169 Server 14296] Client process 15210 disconnected
+[2026-10-04 23:47:01.269 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 15187, Context ID: 1} exit
+[2026-10-04 23:47:01.269 Server 14296] Client {PID: 15187, Context ID: 1} exiting. Number of active client contexts is 0.
+[2026-10-04 23:47:01.287 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 15187, Context ID: 0} exit
+[2026-10-04 23:47:01.287 Server 14296] Client process 15187 disconnected
+[2026-10-04 23:47:02.323 Server 14296] Received new client request from PID 15230
+[2026-10-04 23:47:02.323 Server 14296] Priority level of client {15230} is: 0 (NORMAL)
+[2026-10-04 23:47:02.323 Server 14296] Client {PID: 15230, Context ID: 0} connected
+[2026-10-04 23:47:02.323 Server 14296] Creating worker thread for client {PID: 15230, Context ID: 0}
+[2026-10-04 23:47:02.344 Server 14296] Received new client request from PID 15230
+[2026-10-04 23:47:02.344 Server 14296] Priority level of client {15230} is: 0 (NORMAL)
+[2026-10-04 23:47:02.344 Server 14296] Client {PID: 15230, Context ID: 1} connected
+[2026-10-04 23:47:02.344 Server 14296] Creating worker thread for client {PID: 15230, Context ID: 1}
+[2026-10-04 23:47:02.344 Server 14296] Device NVIDIA A100-SXM4-40GB (uuid GPU-268644bb-5aaf-7d44-3eb2-ea796a695aa1) is associated
+[2026-10-04 23:47:02.344 Server 14296] Status of client {PID: 15230, Context ID: 1} is ACTIVE
+[2026-10-04 23:47:02.348 Client 15230] Static partitioning mode disabled
+[2026-10-04 23:47:06.325 Server 14296] Received new client request from PID 15253
+[2026-10-04 23:47:06.325 Server 14296] Priority level of client {15253} is: 0 (NORMAL)
+[2026-10-04 23:47:06.325 Server 14296] Client {PID: 15253, Context ID: 0} connected
+[2026-10-04 23:47:06.325 Server 14296] Creating worker thread for client {PID: 15253, Context ID: 0}
+[2026-10-04 23:47:06.353 Server 14296] Received new client request from PID 15253
+[2026-10-04 23:47:06.353 Server 14296] Priority level of client {15253} is: 0 (NORMAL)
+[2026-10-04 23:47:06.353 Server 14296] Client {PID: 15253, Context ID: 1} connected
+[2026-10-04 23:47:06.353 Server 14296] Creating worker thread for client {PID: 15253, Context ID: 1}
+[2026-10-04 23:47:06.353 Server 14296] Device NVIDIA A100-SXM4-40GB (uuid GPU-268644bb-5aaf-7d44-3eb2-ea796a695aa1) is associated
+[2026-10-04 23:47:06.353 Server 14296] Status of client {PID: 15253, Context ID: 1} is ACTIVE
+[2026-10-04 23:47:06.354 Client 15253] Static partitioning mode disabled
+[2026-10-04 23:47:13.544 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 15253, Context ID: 1} exit
+[2026-10-04 23:47:13.544 Server 14296] Client {PID: 15253, Context ID: 1} exiting. Number of active client contexts is 1.
+[2026-10-04 23:47:13.565 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 15253, Context ID: 0} exit
+[2026-10-04 23:47:13.565 Server 14296] Client process 15253 disconnected
+[2026-10-04 23:47:13.661 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 15230, Context ID: 1} exit
+[2026-10-04 23:47:13.661 Server 14296] Client {PID: 15230, Context ID: 1} exiting. Number of active client contexts is 0.
+[2026-10-04 23:47:13.679 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 15230, Context ID: 0} exit
+[2026-10-04 23:47:13.679 Server 14296] Client process 15230 disconnected
+[2026-10-04 23:47:14.721 Server 14296] Received new client request from PID 15273
+[2026-10-04 23:47:14.721 Server 14296] Priority level of client {15273} is: 0 (NORMAL)
+[2026-10-04 23:47:14.721 Server 14296] Client {PID: 15273, Context ID: 0} connected
+[2026-10-04 23:47:14.721 Server 14296] Creating worker thread for client {PID: 15273, Context ID: 0}
+[2026-10-04 23:47:14.740 Server 14296] Received new client request from PID 15273
+[2026-10-04 23:47:14.740 Server 14296] Priority level of client {15273} is: 0 (NORMAL)
+[2026-10-04 23:47:14.740 Server 14296] Client {PID: 15273, Context ID: 1} connected
+[2026-10-04 23:47:14.740 Server 14296] Creating worker thread for client {PID: 15273, Context ID: 1}
+[2026-10-04 23:47:14.740 Server 14296] Device NVIDIA A100-SXM4-40GB (uuid GPU-268644bb-5aaf-7d44-3eb2-ea796a695aa1) is associated
+[2026-10-04 23:47:14.740 Server 14296] Status of client {PID: 15273, Context ID: 1} is ACTIVE
+[2026-10-04 23:47:14.744 Client 15273] Static partitioning mode disabled
+[2026-10-04 23:47:18.723 Server 14296] Received new client request from PID 15296
+[2026-10-04 23:47:18.723 Server 14296] Priority level of client {15296} is: 0 (NORMAL)
+[2026-10-04 23:47:18.723 Server 14296] Client {PID: 15296, Context ID: 0} connected
+[2026-10-04 23:47:18.723 Server 14296] Creating worker thread for client {PID: 15296, Context ID: 0}
+[2026-10-04 23:47:18.754 Server 14296] Received new client request from PID 15296
+[2026-10-04 23:47:18.754 Server 14296] Priority level of client {15296} is: 0 (NORMAL)
+[2026-10-04 23:47:18.754 Server 14296] Client {PID: 15296, Context ID: 1} connected
+[2026-10-04 23:47:18.754 Server 14296] Creating worker thread for client {PID: 15296, Context ID: 1}
+[2026-10-04 23:47:18.754 Server 14296] Device NVIDIA A100-SXM4-40GB (uuid GPU-268644bb-5aaf-7d44-3eb2-ea796a695aa1) is associated
+[2026-10-04 23:47:18.754 Server 14296] Status of client {PID: 15296, Context ID: 1} is ACTIVE
+[2026-10-04 23:47:18.755 Client 15296] Static partitioning mode disabled
+[2026-10-04 23:47:25.948 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 15296, Context ID: 1} exit
+[2026-10-04 23:47:25.948 Server 14296] Client {PID: 15296, Context ID: 1} exiting. Number of active client contexts is 1.
+[2026-10-04 23:47:25.966 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 15296, Context ID: 0} exit
+[2026-10-04 23:47:25.966 Server 14296] Client process 15296 disconnected
+[2026-10-04 23:47:26.023 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 15273, Context ID: 1} exit
+[2026-10-04 23:47:26.023 Server 14296] Client {PID: 15273, Context ID: 1} exiting. Number of active client contexts is 0.
+[2026-10-04 23:47:26.046 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 15273, Context ID: 0} exit
+[2026-10-04 23:47:26.046 Server 14296] Client process 15273 disconnected
+[2026-10-04 23:47:27.120 Server 14296] Received new client request from PID 15316
+[2026-10-04 23:47:27.120 Server 14296] Priority level of client {15316} is: 0 (NORMAL)
+[2026-10-04 23:47:27.120 Server 14296] Client {PID: 15316, Context ID: 0} connected
+[2026-10-04 23:47:27.120 Server 14296] Creating worker thread for client {PID: 15316, Context ID: 0}
+[2026-10-04 23:47:27.140 Server 14296] Received new client request from PID 15316
+[2026-10-04 23:47:27.140 Server 14296] Priority level of client {15316} is: 0 (NORMAL)
+[2026-10-04 23:47:27.140 Server 14296] Client {PID: 15316, Context ID: 1} connected
+[2026-10-04 23:47:27.140 Server 14296] Creating worker thread for client {PID: 15316, Context ID: 1}
+[2026-10-04 23:47:27.140 Server 14296] Device NVIDIA A100-SXM4-40GB (uuid GPU-268644bb-5aaf-7d44-3eb2-ea796a695aa1) is associated
+[2026-10-04 23:47:27.140 Server 14296] Status of client {PID: 15316, Context ID: 1} is ACTIVE
+[2026-10-04 23:47:27.144 Client 15316] Static partitioning mode disabled
+[2026-10-04 23:47:31.123 Server 14296] Received new client request from PID 15339
+[2026-10-04 23:47:31.123 Server 14296] Priority level of client {15339} is: 0 (NORMAL)
+[2026-10-04 23:47:31.123 Server 14296] Client {PID: 15339, Context ID: 0} connected
+[2026-10-04 23:47:31.123 Server 14296] Creating worker thread for client {PID: 15339, Context ID: 0}
+[2026-10-04 23:47:31.156 Server 14296] Received new client request from PID 15339
+[2026-10-04 23:47:31.156 Server 14296] Priority level of client {15339} is: 0 (NORMAL)
+[2026-10-04 23:47:31.156 Server 14296] Client {PID: 15339, Context ID: 1} connected
+[2026-10-04 23:47:31.156 Server 14296] Creating worker thread for client {PID: 15339, Context ID: 1}
+[2026-10-04 23:47:31.156 Server 14296] Device NVIDIA A100-SXM4-40GB (uuid GPU-268644bb-5aaf-7d44-3eb2-ea796a695aa1) is associated
+[2026-10-04 23:47:31.156 Server 14296] Status of client {PID: 15339, Context ID: 1} is ACTIVE
+[2026-10-04 23:47:31.157 Client 15339] Static partitioning mode disabled
+[2026-10-04 23:47:38.345 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 15339, Context ID: 1} exit
+[2026-10-04 23:47:38.345 Server 14296] Client {PID: 15339, Context ID: 1} exiting. Number of active client contexts is 1.
+[2026-10-04 23:47:38.365 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 15339, Context ID: 0} exit
+[2026-10-04 23:47:38.365 Server 14296] Client process 15339 disconnected
+[2026-10-04 23:47:38.464 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 15316, Context ID: 1} exit
+[2026-10-04 23:47:38.464 Server 14296] Client {PID: 15316, Context ID: 1} exiting. Number of active client contexts is 0.
+[2026-10-04 23:47:38.482 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 15316, Context ID: 0} exit
+[2026-10-04 23:47:38.482 Server 14296] Client process 15316 disconnected
+[2026-10-04 23:47:39.505 Server 14296] Received new client request from PID 15359
+[2026-10-04 23:47:39.505 Server 14296] Priority level of client {15359} is: 0 (NORMAL)
+[2026-10-04 23:47:39.505 Server 14296] Client {PID: 15359, Context ID: 0} connected
+[2026-10-04 23:47:39.505 Server 14296] Creating worker thread for client {PID: 15359, Context ID: 0}
+[2026-10-04 23:47:39.519 Server 14296] Received new client request from PID 15359
+[2026-10-04 23:47:39.519 Server 14296] Priority level of client {15359} is: 0 (NORMAL)
+[2026-10-04 23:47:39.519 Server 14296] Client {PID: 15359, Context ID: 1} connected
+[2026-10-04 23:47:39.519 Server 14296] Creating worker thread for client {PID: 15359, Context ID: 1}
+[2026-10-04 23:47:39.519 Server 14296] Device NVIDIA A100-SXM4-40GB (uuid GPU-268644bb-5aaf-7d44-3eb2-ea796a695aa1) is associated
+[2026-10-04 23:47:39.519 Server 14296] Status of client {PID: 15359, Context ID: 1} is ACTIVE
+[2026-10-04 23:47:39.523 Client 15359] Static partitioning mode disabled
+[2026-10-04 23:47:43.516 Server 14296] Received new client request from PID 15382
+[2026-10-04 23:47:43.516 Server 14296] Priority level of client {15382} is: 0 (NORMAL)
+[2026-10-04 23:47:43.516 Server 14296] Client {PID: 15382, Context ID: 0} connected
+[2026-10-04 23:47:43.516 Server 14296] Creating worker thread for client {PID: 15382, Context ID: 0}
+[2026-10-04 23:47:43.545 Server 14296] Received new client request from PID 15382
+[2026-10-04 23:47:43.545 Server 14296] Priority level of client {15382} is: 0 (NORMAL)
+[2026-10-04 23:47:43.545 Server 14296] Client {PID: 15382, Context ID: 1} connected
+[2026-10-04 23:47:43.545 Server 14296] Creating worker thread for client {PID: 15382, Context ID: 1}
+[2026-10-04 23:47:43.545 Server 14296] Device NVIDIA A100-SXM4-40GB (uuid GPU-268644bb-5aaf-7d44-3eb2-ea796a695aa1) is associated
+[2026-10-04 23:47:43.545 Server 14296] Status of client {PID: 15382, Context ID: 1} is ACTIVE
+[2026-10-04 23:47:43.545 Client 15382] Static partitioning mode disabled
+[2026-10-04 23:47:50.733 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 15382, Context ID: 1} exit
+[2026-10-04 23:47:50.733 Server 14296] Client {PID: 15382, Context ID: 1} exiting. Number of active client contexts is 1.
+[2026-10-04 23:47:50.752 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 15382, Context ID: 0} exit
+[2026-10-04 23:47:50.752 Server 14296] Client process 15382 disconnected
+[2026-10-04 23:47:50.847 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 15359, Context ID: 1} exit
+[2026-10-04 23:47:50.847 Server 14296] Client {PID: 15359, Context ID: 1} exiting. Number of active client contexts is 0.
+[2026-10-04 23:47:50.865 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 15359, Context ID: 0} exit
+[2026-10-04 23:47:50.865 Server 14296] Client process 15359 disconnected
+[2026-10-04 23:47:51.907 Server 14296] Received new client request from PID 15402
+[2026-10-04 23:47:51.907 Server 14296] Priority level of client {15402} is: 0 (NORMAL)
+[2026-10-04 23:47:51.907 Server 14296] Client {PID: 15402, Context ID: 0} connected
+[2026-10-04 23:47:51.907 Server 14296] Creating worker thread for client {PID: 15402, Context ID: 0}
+[2026-10-04 23:47:51.927 Server 14296] Received new client request from PID 15402
+[2026-10-04 23:47:51.927 Server 14296] Priority level of client {15402} is: 0 (NORMAL)
+[2026-10-04 23:47:51.927 Server 14296] Client {PID: 15402, Context ID: 1} connected
+[2026-10-04 23:47:51.927 Server 14296] Creating worker thread for client {PID: 15402, Context ID: 1}
+[2026-10-04 23:47:51.927 Server 14296] Device NVIDIA A100-SXM4-40GB (uuid GPU-268644bb-5aaf-7d44-3eb2-ea796a695aa1) is associated
+[2026-10-04 23:47:51.927 Server 14296] Status of client {PID: 15402, Context ID: 1} is ACTIVE
+[2026-10-04 23:47:51.931 Client 15402] Static partitioning mode disabled
+[2026-10-04 23:47:55.909 Server 14296] Received new client request from PID 15425
+[2026-10-04 23:47:55.909 Server 14296] Priority level of client {15425} is: 0 (NORMAL)
+[2026-10-04 23:47:55.909 Server 14296] Client {PID: 15425, Context ID: 0} connected
+[2026-10-04 23:47:55.909 Server 14296] Creating worker thread for client {PID: 15425, Context ID: 0}
+[2026-10-04 23:47:55.944 Server 14296] Received new client request from PID 15425
+[2026-10-04 23:47:55.944 Server 14296] Priority level of client {15425} is: 0 (NORMAL)
+[2026-10-04 23:47:55.944 Server 14296] Client {PID: 15425, Context ID: 1} connected
+[2026-10-04 23:47:55.944 Server 14296] Creating worker thread for client {PID: 15425, Context ID: 1}
+[2026-10-04 23:47:55.944 Server 14296] Device NVIDIA A100-SXM4-40GB (uuid GPU-268644bb-5aaf-7d44-3eb2-ea796a695aa1) is associated
+[2026-10-04 23:47:55.944 Server 14296] Status of client {PID: 15425, Context ID: 1} is ACTIVE
+[2026-10-04 23:47:55.945 Client 15425] Static partitioning mode disabled
+[2026-10-04 23:48:03.138 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 15425, Context ID: 1} exit
+[2026-10-04 23:48:03.138 Server 14296] Client {PID: 15425, Context ID: 1} exiting. Number of active client contexts is 1.
+[2026-10-04 23:48:03.159 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 15425, Context ID: 0} exit
+[2026-10-04 23:48:03.159 Server 14296] Client process 15425 disconnected
+[2026-10-04 23:48:03.260 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 15402, Context ID: 1} exit
+[2026-10-04 23:48:03.260 Server 14296] Client {PID: 15402, Context ID: 1} exiting. Number of active client contexts is 0.
+[2026-10-04 23:48:03.279 Server 14296] Server failed to receive command: the remote procedural call between the MPS server and the MPS client failed, assuming client {PID: 15402, Context ID: 0} exit
+[2026-10-04 23:48:03.279 Server 14296] Client process 15402 disconnected
+[2026-10-04 23:48:06.453 Server 14296] Server has been notified to shutdown
+[2026-10-04 23:48:06.453 Server 14296] Waiting for current clients to finish
+[2026-10-04 23:48:06.453 Server 14296] Exiting

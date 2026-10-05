@@ -1,0 +1,11 @@
+{
+  "output": "/workspace/cuphy-lockstep/host-controls/probe",
+  "recommended": {
+    "SB_CUPHY_CPU": 1,
+    "SB_ADVERSARY_CPU": 2,
+    "SB_TELEMETRY_CPU": 3,
+    "SB_BACKGROUND_CPUS": "0,2,3,4,5,6,7,8,10,11,12,13,14,15"
+  },
+  "distinct_physical_cores": true,
+  "warnings": []
+}

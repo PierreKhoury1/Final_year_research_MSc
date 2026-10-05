@@ -1,0 +1,42 @@
+busy_us reserved per slot: 229   (misses: % of slots; host = launch call returned >50 us after target)
+sharing gate        n runs  slots | GPU miss 500     250 | host 500 |  exec p50/p99 | overlap |    AI/s   kept | gate
+mps   alone       0    4  20000 |        0.00%   0.00% |    0.00% |  176.1/ 178.2 | -% | - -% | 
+mps   gated     512    4  20000 |        0.00%   0.00% |    0.10% |  138.2/ 140.3 |    0.0% |    8001  40.0% | fits=1 units=83207
+mps   gated     768    4  20000 |        0.00%   0.00% |    0.00% |  139.3/ 141.3 |    0.0% |    3806  43.3% | fits=1 units=39581
+mps   gated    1024    4  20000 |        0.00%   0.00% |    0.03% |  137.2/ 175.1 |    0.0% |       0   0.0% | fits=0 units=4
+mps   observe   512    4  20000 |        0.00%   0.00% |    0.47% |  179.2/ 194.6 |  100.0% |   19349  96.8% | fits=1 units=201232
+mps   observe   768    4  20000 |        0.00%   0.03% |    0.04% |  196.6/ 228.4 |  100.0% |    8040  91.5% | fits=1 units=83611
+mps   observe  1024    4  20000 |        0.00%  64.00% |    0.04% |  246.8/ 318.5 |  100.0% |    3891  99.4% | fits=0 units=40471
+proc  alone       0    4  20000 |        0.00%   0.00% |    0.07% |  178.2/ 185.3 | -% | - -% | 
+proc  gated     512    4  20000 |        0.00%  15.19% |    0.00% |  136.2/ 139.3 |   12.1% |     365   1.2% | fits=1 units=3793
+proc  gated     768    4  20000 |       12.95% 100.00% |    0.00% |  140.3/ 142.3 |  100.0% |    2257  15.6% | fits=1 units=23474
+proc  gated    1024    4  20000 |       49.91%  99.96% |    0.04% |  154.6/ 157.7 |  100.0% |    1997  27.1% | fits=1 units=20768
+proc  observe   512    4  20000 |        0.00% 100.00% |    0.00% |  137.2/ 143.4 |  100.0% |    3363  11.2% | fits=1 units=34973
+proc  observe   768    4  20000 |       13.48% 100.00% |    0.00% |  140.3/ 142.3 |  100.0% |    2404  16.6% | fits=1 units=24997
+proc  observe  1024    4  20000 |       51.90%  99.93% |    0.07% |  154.6/ 157.7 |  100.0% |    2319  31.4% | fits=1 units=24120
+
+paired gated - observe (same sharing, size, repeat): GPU-caused miss change and AI throughput ratio
+  mps   n=  512 r1: d_miss500=  +0.00 pp  d_miss250=  +0.00 pp  AI gated/observe=0.41
+  mps   n=  512 r2: d_miss500=  +0.00 pp  d_miss250=  +0.00 pp  AI gated/observe=0.41
+  mps   n=  512 r3: d_miss500=  +0.00 pp  d_miss250=  +0.00 pp  AI gated/observe=0.41
+  mps   n=  512 r4: d_miss500=  +0.00 pp  d_miss250=  +0.00 pp  AI gated/observe=0.41
+  mps   n=  768 r1: d_miss500=  +0.00 pp  d_miss250=  -0.02 pp  AI gated/observe=0.44
+  mps   n=  768 r2: d_miss500=  +0.00 pp  d_miss250=  -0.04 pp  AI gated/observe=0.48
+  mps   n=  768 r3: d_miss500=  +0.00 pp  d_miss250=  -0.02 pp  AI gated/observe=0.49
+  mps   n=  768 r4: d_miss500=  +0.00 pp  d_miss250=  -0.02 pp  AI gated/observe=0.49
+  mps   n= 1024 r1: d_miss500=  +0.00 pp  d_miss250= -63.50 pp  AI gated/observe=0.00
+  mps   n= 1024 r2: d_miss500=  +0.00 pp  d_miss250= -62.62 pp  AI gated/observe=0.00
+  mps   n= 1024 r3: d_miss500=  +0.00 pp  d_miss250= -65.52 pp  AI gated/observe=0.00
+  mps   n= 1024 r4: d_miss500=  +0.00 pp  d_miss250= -64.34 pp  AI gated/observe=0.00
+  proc  n=  512 r1: d_miss500=  +0.00 pp  d_miss250= -84.82 pp  AI gated/observe=0.11
+  proc  n=  512 r2: d_miss500=  +0.00 pp  d_miss250= -84.82 pp  AI gated/observe=0.11
+  proc  n=  512 r3: d_miss500=  +0.00 pp  d_miss250= -84.82 pp  AI gated/observe=0.11
+  proc  n=  512 r4: d_miss500=  +0.00 pp  d_miss250= -84.80 pp  AI gated/observe=0.11
+  proc  n=  768 r1: d_miss500=  -0.42 pp  d_miss250=  +0.00 pp  AI gated/observe=0.94
+  proc  n=  768 r2: d_miss500=  -0.46 pp  d_miss250=  +0.00 pp  AI gated/observe=0.94
+  proc  n=  768 r3: d_miss500=  -0.40 pp  d_miss250=  +0.00 pp  AI gated/observe=0.94
+  proc  n=  768 r4: d_miss500=  -0.84 pp  d_miss250=  +0.00 pp  AI gated/observe=0.94
+  proc  n= 1024 r1: d_miss500=  -2.40 pp  d_miss250=  +0.00 pp  AI gated/observe=0.86
+  proc  n= 1024 r2: d_miss500=  -1.32 pp  d_miss250=  +0.00 pp  AI gated/observe=0.87
+  proc  n= 1024 r3: d_miss500=  -2.94 pp  d_miss250=  -0.06 pp  AI gated/observe=0.85
+  proc  n= 1024 r4: d_miss500=  -1.28 pp  d_miss250=  +0.18 pp  AI gated/observe=0.87
