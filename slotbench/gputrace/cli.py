@@ -287,14 +287,13 @@ def cmd_characterize(a):
             tr = export(os.path.join(out_dir, name), max_kernels=200)
             path = os.path.join(out_dir, name + ".trace.json")
             json.dump(tr, open(path, "w"), separators=(",", ":"))
-            if r["strategy"] in ("concurrency", "timeslice", "nccl", "launch", "dispatch"):
-                specs.append((path, f"{g['name']} · {name}", one_line_safe(r)))
+            specs.append((path, f"{g['name']} · {name}", one_line_safe(r)))   # every run goes into the viewer (first 8)
         except Exception as e:
             print(f"  export {name} skipped: {e}")
     viewer = os.path.join(out_dir, "timeline.html")
     try:
         from analysis.gputrace_compact import compact
-        ds = [compact(p, n, note) for p, n, note in specs[:6]]
+        ds = [compact(p, n, note) for p, n, note in specs[:8]]
         t = open(os.path.join(ROOT, "tools", "timeline", "template.html")).read()
         open(viewer, "w").write(t.replace("/*DATA*/[]", json.dumps(ds, separators=(",", ":"))))
     except Exception as e:

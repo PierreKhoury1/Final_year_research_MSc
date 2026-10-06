@@ -19,7 +19,7 @@ import sys
 import numpy as np
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from analysis.gputrace import EV, Run, per_gpu_fits  # noqa: E402
+from analysis.gputrace import KINDS as INSTR_KINDS, EV, Run, per_gpu_fits  # noqa: E402
 
 EV_NAME = {v: k for k, v in EV.items()}
 HOST_PID, GPU_PID0 = 1, 10
@@ -40,7 +40,9 @@ def export(prefix, max_kernels=200, start_ms=None, window_ms=None, max_events=40
     ev = run.ev
     kids = sorted(set(int(k) for k in run.recs["kernel_id"]))
     keep_kids = set(kids[:max_kernels]) if max_kernels else set(kids)
-    recs = run.recs[np.isin(run.recs["kernel_id"], list(keep_kids)) | np.isin(run.recs["tag"], [2, 3])]
+    recs = run.recs[np.isin(run.recs["kernel_id"], list(keep_kids)) | np.isin(run.recs["tag"], [2, 3] if strategy != "instr" else [])]
+    enter = run.events("LAUNCH_ENTER")
+    ws_of = {int(k): int(a) for k, a in zip(enter["kernel_id"], enter["a"])}   # instr: working set per bracket kernel
     dev_of = (recs["flags"] if strategy == "nccl" else np.zeros(len(recs), dtype=np.uint32)).astype(int)
 
     # time origin: first host event or first block, whichever is earlier
@@ -106,9 +108,15 @@ def export(prefix, max_kernels=200, start_ms=None, window_ms=None, max_events=40
             tag = int(r["tag"])
             if strategy == "nccl":
                 continue   # stamps are drawn as collective slices below
-            if tag == 2:
+            if strategy == "instr" and tag < 13 and int(r["clk_begin"]) == 0:   # one bracket sample: kind, chain length N
+                ws = int(ws_of.get(int(r["kernel_id"]), 0))
+                tid = int(r["smid"])
+                name = INSTR_KINDS.get(tag, str(tag)) + (f" {ws >> 10}K" if 0 < ws < 1 << 20 else (f" {ws >> 20}M" if ws else ""))
+            elif tag == 20:
+                tid, name = int(r["smid"]), "co-tenant stream"
+            elif tag == 2 and strategy != "instr":
                 tid, name = 100000, "not running (time-sliced out)"
-            elif tag == 3:
+            elif tag == 3 and strategy != "instr":
                 continue
             else:
                 tid, name = int(r["smid"]), f"k{int(r['kernel_id'])} b{int(r['block'])}"
@@ -116,7 +124,7 @@ def export(prefix, max_kernels=200, start_ms=None, window_ms=None, max_events=40
                 meta(pid, None, tid, "resident thread" if tid == 100000 else f"SM {tid}")
                 seen_sm.add(tid)
             out.append(dict(ph="X", pid=pid, tid=tid, name=name, ts=us(float(a)), dur=max(0.001, (float(b) - float(a)) / 1000.0),
-                            args=dict(kernel=int(r["kernel_id"]), block=int(r["block"]), tag=tag, sm=int(r["smid"]),
+                            args=dict(kernel=int(r["kernel_id"]), block=int(r["block"]), tag=tag, sm=int(r["smid"]), n=int(r["n_iters"]),
                                       max_gap_ns=int(r["max_gap_ns"]), sm_cycles=int(r["clk_end"]) - int(r["clk_begin"]),
                                       bound_ns=round(bound))))
             if len(out) > max_events:
