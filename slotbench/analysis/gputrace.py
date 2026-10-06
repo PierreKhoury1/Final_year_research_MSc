@@ -485,7 +485,9 @@ def a_instr(run):
             return False
         b, e = int(rec["g_begin"]), int(rec["g_end"])
         return any(cb <= b and e <= ce for cb, ce in iv)
-    use_shared = bool(run.meta.get("cotenant")) and co.size > 0
+    # Only the in-process streamer (cotenant=1) shares the probe's SM by design; a hog process under MPS gets its own
+    # SMs (the table then measures the shared L2 and fabric, on every sample), and without MPS it never overlaps.
+    use_shared = run.meta.get("cotenant") == 1 and co.size > 0
     groups, n_shared, n_all = {}, 0, 0
     for rec in r:
         n_all += 1
@@ -521,7 +523,7 @@ def a_instr(run):
                           ns_per_instr_at_Nmax=ns_total / Nmax, sm_ghz=ghz, Nmax=Nmax))
     return dict(cotenant=run.meta.get("cotenant"), reps=run.meta.get("reps"), table=table, bound_ns=run.clock["bound_ns"],
                 samples=n_all, samples_shared=n_shared, fit_on="shared samples" if use_shared else "all samples",
-                cotenant_blocks=int(co.size))
+                cotenant_blocks=int(co.size), hog_mps_pct=run.meta.get("hog_mps_pct"))
 
 
 def a_copy(run):
