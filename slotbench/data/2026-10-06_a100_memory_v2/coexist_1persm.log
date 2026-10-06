@@ -1,0 +1,1 @@
+gputrace concurrency: NVIDIA A100-SXM4-40GB sms=108 recs=327 events=26 kernels=6 in 0.22 s (sync pre ok post ok)

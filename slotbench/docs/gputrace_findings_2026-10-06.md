@@ -46,6 +46,13 @@ so each of its kernel ends must fall inside one of our not-running intervals. It
 the summary statistics hid: our not-running intervals alternate between ≈ 0.79 ms (the other process's 5 ms
 kernel finishes about 80 % into its turn and it yields) and ≈ 2.44 ms (a full turn ending in mid-block preemption).
 
+## 3c. Memory latency under a co-tenant (A100, RTX 3060; `data/2026-10-06_*_memory_v*`)
+One warp pointer-chasing 4 KB–128 MB with each PTX modifier, cycles and ns from the same record. Alone, A100:
+L1 39 cy (≤ 128 KB), L2 211 cy, far L2 half 428 cy (24–32 MB), DRAM 571 cy (405 ns); RTX 3060: 41 / 215 / 515 cy
+with knees at 128 KB and 4 MB. **Beside a streaming co-tenant block on the same SM, every load costs ~945 cycles at
+every tier, L1-resident sets included** (4.5× at L2, 24× at L1), with the SM clock unchanged. A kernel from another
+stream starts within 6–8 µs even while a 50 ms kernel occupies half the SMs or one block per SM (`coexist_*`).
+
 ## 4. Launch and completion latencies (p50; p99 in the datasets)
 | | RTX 3060 | A100 (host 1 / 2) | H100 |
 |---|---|---|---|

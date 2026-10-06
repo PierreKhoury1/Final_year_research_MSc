@@ -1,0 +1,100 @@
+{
+ "prefix": "/workspace/gputrace/out/coexist_1persm",
+ "strategy": "concurrency",
+ "gpu": "NVIDIA A100-SXM4-40GB",
+ "sms": 108,
+ "host": "391c0a61d0b2",
+ "clock": {
+  "tick_ns": 1024,
+  "method": "edge",
+  "bound_ns": 528.1205842285926,
+  "rate_ppm": -0.42787762466467427,
+  "feasible": true,
+  "windows": {
+   "pre": {
+    "edge_bound_ns": 539.3948530587368,
+    "edge_feasible": true,
+    "n_up": 3000,
+    "n_down": 2932,
+    "rate_ppm": 0.8625491809688413
+   },
+   "post": {
+    "edge_bound_ns": 538.8275035936385,
+    "edge_feasible": true,
+    "n_up": 3000,
+    "n_down": 2934,
+    "rate_ppm": -0.935852898953371
+   }
+  },
+  "width_ns": 1056.2411684571853
+ },
+ "n_gpu_recs": 327,
+ "gpu_recs_dropped": 0,
+ "n_host_events": 26,
+ "result": {
+  "bound_ns": 528.1205842285926,
+  "priority": 0,
+  "reps": [
+   {
+    "kernel_a": 1,
+    "kernel_b": 2,
+    "blocks_a": 108,
+    "blocks_b": 1,
+    "b_launch_to_first_block_ns": 7769.9375,
+    "b_blocks_started_before_a_end": 1,
+    "a_blocks_running_when_b_started": 108,
+    "sms_shared_at_b_start": 1,
+    "b_sms": 1,
+    "a_blocks_with_gap_gt_5us": 0,
+    "a_max_gap_ns": 2048,
+    "b_blocks_with_gap_gt_5us": 0,
+    "b_max_gap_ns": 2048,
+    "a_block_dur_us": 50000.0,
+    "b_timer_reads_per_us": 0.9665975765306122,
+    "b_span_ns": 100352.0,
+    "a_span_ns": 50000896.0,
+    "b_block_dur_median_ns": 100352.0
+   },
+   {
+    "kernel_a": 3,
+    "kernel_b": 4,
+    "blocks_a": 108,
+    "blocks_b": 1,
+    "b_launch_to_first_block_ns": 7126.53125,
+    "b_blocks_started_before_a_end": 1,
+    "a_blocks_running_when_b_started": 108,
+    "sms_shared_at_b_start": 1,
+    "b_sms": 1,
+    "a_blocks_with_gap_gt_5us": 0,
+    "a_max_gap_ns": 1024,
+    "b_blocks_with_gap_gt_5us": 0,
+    "b_max_gap_ns": 2048,
+    "a_block_dur_us": 50000.0,
+    "b_timer_reads_per_us": 0.9665975765306122,
+    "b_span_ns": 100352.0,
+    "a_span_ns": 50001920.0,
+    "b_block_dur_median_ns": 100352.0
+   },
+   {
+    "kernel_a": 5,
+    "kernel_b": 6,
+    "blocks_a": 108,
+    "blocks_b": 1,
+    "b_launch_to_first_block_ns": 5642.125,
+    "b_blocks_started_before_a_end": 1,
+    "a_blocks_running_when_b_started": 108,
+    "sms_shared_at_b_start": 1,
+    "b_sms": 1,
+    "a_blocks_with_gap_gt_5us": 0,
+    "a_max_gap_ns": 2048,
+    "b_blocks_with_gap_gt_5us": 0,
+    "b_max_gap_ns": 2048,
+    "a_block_dur_us": 50000.0,
+    "b_timer_reads_per_us": 0.9665975765306122,
+    "b_span_ns": 100352.0,
+    "a_span_ns": 50000896.0,
+    "b_block_dur_median_ns": 100352.0
+   }
+  ]
+ }
+}
