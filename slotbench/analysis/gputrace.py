@@ -116,6 +116,9 @@ def a_launch(run):
     recs = run.recs[(run.recs["tag"] == 0) & (run.recs["kernel_id"] != 0)]
     if graph:   # the graph kernel carries a constant id: match i-th launch with i-th record (one stream, in order)
         recs = run.recs[np.argsort(run.recs["g_begin"])]
+        # drop the warm-up launch made before the first traced one (it precedes the first host enter time)
+        slack = 2 * (run.clock["bound_ns"] or 0) + 20_000
+        recs = recs[run.host_of(recs["g_begin"]) >= float(enter["t"][0]) - slack]
         n = min(len(recs), len(enter))
         recs, enter, ret = recs[:n], enter[:n], ret[:n]
         g_begin, g_end = recs["g_begin"], recs["g_end"]
