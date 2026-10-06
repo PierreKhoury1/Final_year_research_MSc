@@ -1,0 +1,1 @@
+gputrace copy: NVIDIA H100 PCIe sms=114 recs=1000 events=2405 kernels=801 in 0.07 s (sync pre ok post ok)

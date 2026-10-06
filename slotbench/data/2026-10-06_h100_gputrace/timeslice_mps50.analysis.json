@@ -1,0 +1,98 @@
+{
+ "prefix": "/workspace/gputrace/out/timeslice_mps50",
+ "strategy": "timeslice",
+ "gpu": "NVIDIA H100 PCIe",
+ "sms": 114,
+ "host": "f58e62a3670f",
+ "clock": {
+  "tick_ns": 64,
+  "method": "edge",
+  "bound_ns": 546.7963624000549,
+  "rate_ppm": -10.116544424620955,
+  "feasible": true,
+  "windows": {
+   "pre": {
+    "edge_bound_ns": 557.0139601363335,
+    "edge_feasible": true,
+    "n_up": 3000,
+    "n_down": 3000,
+    "rate_ppm": -9.938398493725131
+   },
+   "post": {
+    "edge_bound_ns": 548.4284269632772,
+    "edge_feasible": true,
+    "n_up": 3000,
+    "n_down": 3000,
+    "rate_ppm": -9.853228754908017
+   }
+  },
+  "width_ns": 1093.5927248001099
+ },
+ "n_gpu_recs": 12,
+ "gpu_recs_dropped": 0,
+ "n_host_events": 7,
+ "result": {
+  "gap_threshold_us": 20,
+  "n_gaps": 11,
+  "gap_ns": {
+   "p50": 408832.0,
+   "p90": 560896.0,
+   "p99": 682086.4,
+   "p100": 695552.0,
+   "n": 11,
+   "mean": 451374.54545454547
+  },
+  "gaps_alone": {
+   "p50": null,
+   "p90": null,
+   "p99": null,
+   "p100": null,
+   "n": 0
+  },
+  "gaps_with_hog": {
+   "p50": 408832.0,
+   "p90": 560896.0,
+   "p99": 682086.4,
+   "p100": 695552.0,
+   "n": 11,
+   "mean": 451374.54545454547
+  },
+  "hog_window_s": 7.49991985825,
+  "fraction_not_running_with_hog": 0.000662023074091693,
+  "switches_per_s_with_hog": 1.4666823389985788,
+  "our_quantum_ns": {
+   "p50": 5292416.0,
+   "p90": 675852108.7999977,
+   "p99": 5839006830.080001,
+   "p100": 6412690688.0,
+   "n": 10,
+   "mean": 649650662.4
+  },
+  "resident_window_ns": 8000000000.0,
+  "resident_iters": 176599541,
+  "hog": {
+   "blocks": 111440,
+   "sms_used": 56,
+   "sms": 56,
+   "block_dur_ns": {
+    "p50": 5000192.0,
+    "p90": 5000192.0,
+    "p99": 5000192.0,
+    "p100": 5000192.0,
+    "n": 111440,
+    "mean": 5000114.359224695
+   },
+   "max_gap_ns": {
+    "p50": 384.0,
+    "p90": 480.0,
+    "p99": 512.0,
+    "p100": 608.0,
+    "n": 111440,
+    "mean": 377.3651112706389
+   },
+   "blocks_with_gap_gt_5us": 0,
+   "hog_dur_us": 5000,
+   "mps_pct": "50"
+  }
+ }
+}

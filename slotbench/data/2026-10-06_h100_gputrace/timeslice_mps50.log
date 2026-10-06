@@ -1,0 +1,2 @@
+gputrace hog: NVIDIA H100 PCIe sms=56 recs=111440 events=2987 kernels=995 in 6.21 s (sync pre ok post ok)
+gputrace timeslice: NVIDIA H100 PCIe sms=114 recs=12 events=7 kernels=1 in 8.06 s (sync pre ok post ok)

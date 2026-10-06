@@ -1,0 +1,98 @@
+{
+ "prefix": "/workspace/gputrace/out/timeslice",
+ "strategy": "timeslice",
+ "gpu": "NVIDIA H100 PCIe",
+ "sms": 114,
+ "host": "f58e62a3670f",
+ "clock": {
+  "tick_ns": 64,
+  "method": "edge",
+  "bound_ns": 542.656625569798,
+  "rate_ppm": -10.185634472970051,
+  "feasible": true,
+  "windows": {
+   "pre": {
+    "edge_bound_ns": 542.8926833160222,
+    "edge_feasible": true,
+    "n_up": 3000,
+    "n_down": 3000,
+    "rate_ppm": -9.973669512719496
+   },
+   "post": {
+    "edge_bound_ns": 554.1609458897728,
+    "edge_feasible": true,
+    "n_up": 3000,
+    "n_down": 3000,
+    "rate_ppm": -10.17283975990324
+   }
+  },
+  "width_ns": 1085.313251139596
+ },
+ "n_gpu_recs": 1695,
+ "gpu_recs_dropped": 0,
+ "n_host_events": 7,
+ "result": {
+  "gap_threshold_us": 20,
+  "n_gaps": 1694,
+  "gap_ns": {
+   "p50": 2425728.0,
+   "p90": 2433280.0,
+   "p99": 2433792.0,
+   "p100": 2436864.0,
+   "n": 1694,
+   "mean": 1612422.9515938608
+  },
+  "gaps_alone": {
+   "p50": null,
+   "p90": null,
+   "p99": null,
+   "p100": null,
+   "n": 0
+  },
+  "gaps_with_hog": {
+   "p50": 2425728.0,
+   "p90": 2433280.0,
+   "p99": 2433792.0,
+   "p100": 2436864.0,
+   "n": 1694,
+   "mean": 1612422.9515938608
+  },
+  "hog_window_s": 7.499919254500001,
+  "fraction_not_running_with_hog": 0.3641965182973291,
+  "switches_per_s_with_hog": 225.86909838843783,
+  "our_quantum_ns": {
+   "p50": 2089728.0,
+   "p90": 2090700.8,
+   "p99": 3447572.48,
+   "p100": 120118272.0,
+   "n": 1693,
+   "mean": 2288788.337861784
+  },
+  "resident_window_ns": 8000000032.0,
+  "resident_iters": 121158045,
+  "hog": {
+   "blocks": 182400,
+   "sms_used": 114,
+   "sms": 114,
+   "block_dur_ns": {
+    "p50": 5000192.0,
+    "p90": 5000192.0,
+    "p99": 5000192.0,
+    "p100": 5000192.0,
+    "n": 182400,
+    "mean": 5000102.832280702
+   },
+   "max_gap_ns": {
+    "p50": 2435840.0,
+    "p90": 2436608.0,
+    "p99": 2437120.0,
+    "p100": 2441728.0,
+    "n": 182400,
+    "mean": 2435725.058245614
+   },
+   "blocks_with_gap_gt_5us": 182400,
+   "hog_dur_us": 5000,
+   "mps_pct": ""
+  }
+ }
+}

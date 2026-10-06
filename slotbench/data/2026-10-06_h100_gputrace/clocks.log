@@ -1,0 +1,1 @@
+gputrace clocks: NVIDIA H100 PCIe sms=114 recs=40457 events=9 kernels=2 in 4.06 s (sync pre ok post ok)

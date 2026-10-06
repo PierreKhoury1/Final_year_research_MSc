@@ -36,7 +36,7 @@ emit() {   # small summary block first (analysis JSON, logs, meta), then the raw
     sleep "${SB_PART_GAP_S:-50}"
     emit_archive results -C "$W" out
     echo "=====SLOTBENCH-DONE status=$status====="
-    sleep "${SB_POST_DONE_GRACE_S:-900}"; echo "=====SLOTBENCH-SELF-STOP====="; kill -TERM 1; sleep 10; kill -KILL 1
+    sleep "${SB_POST_DONE_GRACE_S:-120}"; echo "=====SLOTBENCH-SELF-STOP====="; kill -TERM 1; sleep 10; kill -KILL 1
 }
 trap 'echo "=====SLOTBENCH-ERROR $LINENO $BASH_COMMAND====="; emit error' ERR
 

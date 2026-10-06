@@ -1,0 +1,1 @@
+gputrace dispatch: NVIDIA H100 PCIe sms=114 recs=14706 events=50 kernels=12 in 0.06 s (sync pre ok post ok)
