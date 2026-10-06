@@ -57,7 +57,7 @@ def test_clock_fit_recovers_model(tmp_path):
     assert run.clock["method"] == "edge" and run.clock["feasible"]
     assert run.clock["bound_ns"] < 1000
     g = 10_000_000 + 30_000_000_000
-    assert abs(float(run.host_of(g)) - host_of(g)) <= run.clock["bound_ns"] + 1
+    assert abs(float(run.host_of(g - run.g_ref)) - host_of(g)) <= run.clock["bound_ns"] + 1
 
 
 def test_launch_latency(tmp_path):
@@ -360,21 +360,25 @@ def test_ktrace_places_warps_and_checks_order(tmp_path):
     write_run(p, "ktrace", recs, evs, dict(ffma=ffma))
     run = gt.Run(p)
     T = kt.kernel_timeline(run, kid)
-    assert T["n_warps"] == 64 and T["n_sms"] == 4 and T["sm_fit"]["n"] == 4 and T["sm_fit"]["infeasible"] == 0
-    # each SM's clock recovered; bound well below the tick
-    assert abs(T["sm_fit"]["ghz_p50"] - 1.46) < 0.05
-    assert T["sm_fit"]["bound_ns_max"] < TICK / 2
+    assert T["n_warps"] == 64 and T["n_sms"] == 4 and T["sm_fit"]["n"] == B and T["sm_fit"]["infeasible"] == 0
+    # every block's feasible clock interval contains its SM's true clock; bounds below the tick
+    from analysis.ktrace import fit_block_lines, warp_table as wt
+    lines, guard = fit_block_lines(wt(kt.kt_stamps(run), kid), TICK)
+    assert guard == 0.0
+    for b, f in lines.items():
+        assert f["ghz_lo"] - 1e-6 <= sm_ghz[b % 4] <= f["ghz_hi"] + 1e-6
+    assert T["sm_fit"]["bound_ns_max"] < TICK
     # every stamp inside its window on the fitted line
     for r in T["rows"]:
         assert np.all(r["t_gpu"] >= r["g"] - r["bound_ns"] - 1e-6) and np.all(r["t_gpu"] < r["g1"] + TICK + r["bound_ns"] + 1e-6)
         assert abs(r["phases"]["compute"] - (4 * ffma + 40)) < 1 and abs(r["phases"]["store_fence"] - 800) < 1
     assert all(b["release_before_last_arrival"] == 0 for b in T["barriers"])
-    assert all(abs(x - 26) < 1 for b in T["barriers"] for x in b["latency_per_warp"])
+    assert all(abs(x - 26) < 1 for b in T["barriers"] for x in b["latency_per_warp"])   # touch chain (60) calibrated out
     assert T["ticket"]["n"] == B and T["ticket"]["violations"] == 0
     # block starts recovered to within the SM line bounds (dispatch ~300 ns apart)
     starts = {r["block"]: r["t_gpu"][0] for r in T["rows"] if r["warp"] == 0}
     for b in range(B):
-        tb = 20_000_000 + 300 * b   # +[0,50) jitter in the generator
+        tb = 20_000_000 + 300 * b - run.g_ref   # +[0,50) jitter in the generator; t_gpu is on the rebased axis
         assert abs(starts[b] - tb) < T["sm_fit"]["bound_ns_max"] + 60
     res = gt.analyse(p)
     assert res["result"]["by_blocks"][B]["ticket"]["violations"] == 0

@@ -24,6 +24,9 @@ GPU_DT = np.dtype([("g_begin", "<u8"), ("g_end", "<u8"), ("clk_begin", "<u8"), (
                    ("max_gap_ns", "<u8"), ("smid", "<u4"), ("kernel_id", "<u4"), ("block", "<u4"), ("tag", "<u4"),
                    ("n_iters", "<u4"), ("flags", "<u4")])
 HOST_DT = np.dtype([("t", "<i8"), ("type", "<u4"), ("kernel_id", "<u4"), ("a", "<u8"), ("b", "<u8")])
+# in-memory layout after rebasing: timer fields signed, so differences and float casts are exact
+GPU_DT_REL = np.dtype([("g_begin", "<i8"), ("g_end", "<i8"), ("clk_begin", "<u8"), ("clk_end", "<u8"), ("max_gap_ns", "<u8"),
+                       ("smid", "<u4"), ("kernel_id", "<u4"), ("block", "<u4"), ("tag", "<u4"), ("n_iters", "<u4"), ("flags", "<u4")])
 assert GPU_DT.itemsize == 64 and HOST_DT.itemsize == 32
 
 EV = dict(LAUNCH_ENTER=1, LAUNCH_RETURN=2, SYNC_ENTER=3, SYNC_RETURN=4, EVENT_SEEN=5, FLAG_SEEN=6, MARK=7,
@@ -38,17 +41,39 @@ def q(x, ps=(50, 90, 99, 100)):
 
 
 class Run:
-    def __init__(self, prefix):
+    def __init__(self, prefix, g_ref=None):
         self.prefix = prefix
         self.meta = json.load(open(prefix + ".json"))
         self.recs = np.fromfile(prefix + ".gpu.bin", dtype=GPU_DT)
         self.ev = np.fromfile(prefix + ".host.bin", dtype=HOST_DT)
+        # %globaltimer can read 1e18 ns (an RTX 3060 host: 1.79e18), where float64 resolves only 256 ns. Every timer
+        # value is rebased to the run's first record in integer arithmetic before anything is cast to float, and
+        # the clock model is built on the same rebased axis. A second run compared with this one (the hog process)
+        # must be loaded with g_ref=this.g_ref so that its records are on the same axis.
+        self.g_ref = int(g_ref) if g_ref is not None else (int(self.recs["g_begin"][self.recs["g_begin"] > 0].min()) if (self.recs["g_begin"] > 0).any() else 0)
+        self.recs = self.rebase(self.recs)
         self.clock = self.fit_clock()
 
+    def rebase(self, recs):
+        """Records with %globaltimer fields moved to this run's axis (int64 arithmetic, exact)."""
+        out = np.empty(recs.shape, dtype=GPU_DT_REL)
+        for name in GPU_DT.names:
+            out[name] = recs[name]
+        for name in ("g_begin", "g_end"):
+            out[name] = recs[name].astype(np.int64) - self.g_ref
+        return out
+
+    def load_recs(self, path):
+        """Another file's records on this run's axis (e.g. the hog process's PREFIX.hog.gpu.bin)."""
+        return self.rebase(np.fromfile(path, dtype=GPU_DT))
+
     def _samples(self, tag):
+        """Clock-sync samples with the GPU timer rebased to g_ref (integer arithmetic)."""
         try:
-            return (load_cols(f"{self.prefix}.{tag}.classic.bin", 3), load_cols(f"{self.prefix}.{tag}.up.bin", 2),
-                    load_cols(f"{self.prefix}.{tag}.down.bin", 2))
+            c = [(t0, t1, e - self.g_ref) for t0, t1, e in load_cols(f"{self.prefix}.{tag}.classic.bin", 3)]
+            u = [(h, e - self.g_ref) for h, e in load_cols(f"{self.prefix}.{tag}.up.bin", 2)]
+            d = [(t, e - self.g_ref) for t, e in load_cols(f"{self.prefix}.{tag}.down.bin", 2)]
+            return c, u, d
         except FileNotFoundError:
             return [], [], []
 
@@ -161,7 +186,7 @@ def a_notify(run):
         out[name] = q(lat)
         if tag == 0 and recs.size:   # the flag carries the GPU time of the write: distance between record end and flag write
             fl = {int(k): int(a) for k, a in zip(seen["kernel_id"], seen["a"])}
-            out["flag_write_after_end_ns"] = q([fl[int(r["kernel_id"])] - float(r["g_end"]) for r in recs if int(r["kernel_id"]) in fl])
+            out["flag_write_after_end_ns"] = q([fl[int(r["kernel_id"])] - run.g_ref - float(r["g_end"]) for r in recs if int(r["kernel_id"]) in fl])
     return out
 
 
@@ -308,9 +333,9 @@ def per_gpu_fits(run, n, reps):
         for r in range(reps):
             pre = f"{run.prefix}.gpu{d}.r{r}"
             try:
-                classic += load_cols(pre + ".classic.bin", 3)
-                up += load_cols(pre + ".up.bin", 2)
-                down += load_cols(pre + ".down.bin", 2)
+                classic += [(t0, t1, e - run.g_ref) for t0, t1, e in load_cols(pre + ".classic.bin", 3)]
+                up += [(h, e - run.g_ref) for h, e in load_cols(pre + ".up.bin", 2)]
+                down += [(t, e - run.g_ref) for t, e in load_cols(pre + ".down.bin", 2)]
             except FileNotFoundError:
                 continue
         if len(up) > 10 and len(down) > 10:
@@ -474,7 +499,7 @@ def a_instr(run):
     co = run.recs[run.recs["tag"] == 20]
     hog_prefix = run.prefix + ".hog"
     if os.path.exists(hog_prefix + ".gpu.bin"):
-        hr = np.fromfile(hog_prefix + ".gpu.bin", dtype=GPU_DT)
+        hr = run.load_recs(hog_prefix + ".gpu.bin")
         co = np.concatenate([co, hr[(hr["tag"] == 20) | (hr["tag"] == 9)]])
     co_by_sm = {}
     for c in co:

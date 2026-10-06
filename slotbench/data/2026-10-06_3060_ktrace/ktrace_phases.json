@@ -1,0 +1,195 @@
+{
+ "kernel": "_ZN2sb2gt8k_ktraceENS0_8TraceDevEjPK6float4PS2_PjPVmjj",
+ "checkpoints": 12,
+ "phases": {
+  "entry -> cal": {
+   "n": 0,
+   "opcodes": {},
+   "listing": []
+  },
+  "cal -> loaded": {
+   "n": 12,
+   "opcodes": {
+    "S2R": 2,
+    "IMAD.MOV.U32": 1,
+    "IMAD": 1,
+    "IMAD.WIDE.U32": 2,
+    "LDG.E.CONSTANT": 1,
+    "LOP3.LUT": 1,
+    "IADD3": 1,
+    "LDG.E.128.CONSTANT": 1,
+    "IMAD.SHL.U32": 1,
+    "STS.128": 1
+   },
+   "listing": [
+    "0060 S2R R41, SR_TID.X",
+    "0070 IMAD.MOV.U32 R4, RZ, RZ, 0x10",
+    "0080 S2R R30, SR_CTAID.X",
+    "0090 IMAD R0, R30, c[0x0][0x0], R41",
+    "00a0 IMAD.WIDE.U32 R2, R0, R4, c[0x0][0x180]",
+    "00b0 LDG.E.CONSTANT R2, [R2.64+0xc]",
+    "00c0 LOP3.LUT R5, R2, 0x3ff, RZ, 0xc0, !PT",
+    "00d0 IADD3 R5, R0, R5, RZ",
+    "00e0 IMAD.WIDE.U32 R4, R5, R4, c[0x0][0x180]",
+    "00f0 LDG.E.128.CONSTANT R4, [R4.64]",
+    "0100 IMAD.SHL.U32 R8, R41, 0x10, RZ",
+    "0110 STS.128 [R41.X16], R4"
+   ]
+  },
+  "loaded -> bar1_arrive": {
+   "n": 0,
+   "opcodes": {},
+   "listing": []
+  },
+  "bar1_arrive -> bar1_release": {
+   "n": 1,
+   "opcodes": {
+    "BAR.SYNC.DEFER_BLOCKING": 1
+   },
+   "listing": [
+    "0160 BAR.SYNC.DEFER_BLOCKING 0x0"
+   ]
+  },
+  "bar1_release -> computed": {
+   "n": 39,
+   "opcodes": {
+    "IADD3": 5,
+    "ISETP.NE.AND": 4,
+    "LOP3.LUT": 2,
+    "LDS.128": 1,
+    "FADD": 1,
+    "BRA": 5,
+    "IMAD.MOV.U32": 2,
+    "ISETP.GE.U32.AND": 1,
+    "MOV": 1,
+    "FFMA": 17
+   },
+   "listing": [
+    "0190 IADD3 R8, R8, 0x200, RZ",
+    "01a0 ISETP.NE.AND P0, PT, RZ, c[0x0][0x1a0], PT",
+    "01b0 LOP3.LUT R5, R8, 0xff0, RZ, 0xc0, !PT",
+    "01c0 LDS.128 R4, [R5]",
+    "01d0 FADD R4, R4, 1",
+    "01e0 @!P0 BRA 0x400",
+    "01f0 IMAD.MOV.U32 R2, RZ, RZ, c[0x0][0x1a0]",
+    "0200 IADD3 R3, R2.reuse, -0x1, RZ",
+    "0210 LOP3.LUT R2, R2, 0xf, RZ, 0xc0, !PT",
+    "0220 ISETP.GE.U32.AND P1, PT, R3, 0xf, PT",
+    "0230 ISETP.NE.AND P0, PT, R2, RZ, PT",
+    "0240 @!P1 BRA 0x3a0",
+    "0250 IADD3 R8, -R2, c[0x0][0x1a0], RZ",
+    "0260 MOV R3, 0x3f800347",
+    "0270 FFMA R4, R4, R3, 0.5",
+    "0280 IADD3 R8, R8, -0x10, RZ",
+    "0290 FFMA R4, R4, R3, 0.5",
+    "02a0 ISETP.NE.AND P1, PT, R8, RZ, PT",
+    "02b0 FFMA R4, R4, R3, 0.5",
+    "02c0 FFMA R4, R4, R3, 0.5",
+    "02d0 FFMA R4, R4, R3, 0.5",
+    "02e0 FFMA R4, R4, R3, 0.5",
+    "02f0 FFMA R4, R4, R3, 0.5",
+    "0300 FFMA R4, R4, R3, 0.5",
+    "0310 FFMA R4, R4, R3, 0.5",
+    "0320 FFMA R4, R4, R3, 0.5",
+    "0330 FFMA R4, R4, R3, 0.5",
+    "0340 FFMA R4, R4, R3, 0.5",
+    "0350 FFMA R4, R4, R3, 0.5",
+    "0360 FFMA R4, R4, R3, 0.5",
+    "0370 FFMA R4, R4, R3, 0.5",
+    "0380 FFMA R4, R4, R3, 0.5",
+    "0390 @P1 BRA 0x270",
+    "03a0 @!P0 BRA 0x400",
+    "03b0 IMAD.MOV.U32 R3, RZ, RZ, 0x3f800347",
+    "03c0 IADD3 R2, R2, -0x1, RZ",
+    "03d0 FFMA R4, R4, R3, 0.5",
+    "03e0 ISETP.NE.AND P0, PT, R2, RZ, PT",
+    "03f0 @P0 BRA 0x3c0"
+   ]
+  },
+  "computed -> bar2_arrive": {
+   "n": 0,
+   "opcodes": {},
+   "listing": []
+  },
+  "bar2_arrive -> bar2_release": {
+   "n": 1,
+   "opcodes": {
+    "BAR.SYNC.DEFER_BLOCKING": 1
+   },
+   "listing": [
+    "0440 BAR.SYNC.DEFER_BLOCKING 0x0"
+   ]
+  },
+  "bar2_release -> stored": {
+   "n": 6,
+   "opcodes": {
+    "LEA": 1,
+    "LEA.HI.X": 1,
+    "STG.E.128": 1,
+    "MEMBAR.SC.GPU": 1,
+    "ERRBAR": 1,
+    "CCTL.IVALL": 1
+   },
+   "listing": [
+    "0470 LEA R42, P0, R0, c[0x0][0x188], 0x4",
+    "0480 LEA.HI.X R43, R0, c[0x0][0x18c], RZ, 0x4, P0",
+    "0490 STG.E.128 [R42.64], R4",
+    "04a0 MEMBAR.SC.GPU",
+    "04b0 ERRBAR",
+    "04c0 CCTL.IVALL"
+   ]
+  },
+  "stored -> ticket": {
+   "n": 9,
+   "opcodes": {
+    "ISETP.NE.AND": 1,
+    "BSSY": 1,
+    "BRA": 1,
+    "MOV": 1,
+    "IMAD.MOV.U32": 2,
+    "ATOMG.E.ADD.STRONG.GPU": 1,
+    "STS": 1,
+    "BSYNC": 1
+   },
+   "listing": [
+    "04f0 ISETP.NE.AND P0, PT, R41, RZ, PT",
+    "0500 BSSY B0, 0x580",
+    "0510 @P0 BRA 0x570",
+    "0520 MOV R42, c[0x0][0x190]",
+    "0530 IMAD.MOV.U32 R31, RZ, RZ, 0x1",
+    "0540 IMAD.MOV.U32 R43, RZ, RZ, c[0x0][0x194]",
+    "0550 ATOMG.E.ADD.STRONG.GPU PT, R42, [R42.64], R31",
+    "0560 STS [0x1000], R42",
+    "0570 BSYNC B0"
+   ]
+  },
+  "ticket -> exit": {
+   "n": 11,
+   "opcodes": {
+    "BAR.SYNC.DEFER_BLOCKING": 1,
+    "ISETP.NE.U32.AND": 1,
+    "ISETP.NE.AND.EX": 1,
+    "UMOV": 1,
+    "BSSY": 1,
+    "ULDC": 1,
+    "ISETP.NE.OR": 2,
+    "UIADD3": 1,
+    "LDS": 1,
+    "BRA": 1
+   },
+   "listing": [
+    "05a0 BAR.SYNC.DEFER_BLOCKING 0x0",
+    "05b0 ISETP.NE.U32.AND P0, PT, RZ, c[0x0][0x198], PT",
+    "05c0 ISETP.NE.AND.EX P0, PT, RZ, c[0x0][0x19c], PT, P0",
+    "05d0 UMOV UR4, 0x1",
+    "05e0 BSSY B0, 0x6d0",
+    "05f0 ULDC UR5, c[0x0][0x1a4]",
+    "0600 ISETP.NE.OR P0, PT, R41, RZ, !P0",
+    "0610 UIADD3 UR4, -UR4, UR5, URZ",
+    "0620 LDS R40, [0x1000]",
+    "0630 ISETP.NE.OR P0, PT, R40, UR4, P0",
+    "0640 @P0 BRA 0x6c0"
+   ]
+  }
+ }
+}

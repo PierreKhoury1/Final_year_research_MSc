@@ -1,0 +1,7 @@
+building gputrace_sm86 ...
+GPU 0: NVIDIA GeForce RTX 3060 (sm_86), 1 GPU(s), profile ktrace, output /workspace/gputrace/out/
+  ktrace (0 s): ktrace ±329 ns (edge): B=28: load 512 | bar1 wait 24/155 lat 29 | compute 1237 | store+fence 569 | ticket 33 cy; span 3.3 us, starts spread 0.3 us, SM lines ±211 ns, ticket order 16/140 viol, launch->first 3862 ns, flag write->seen 1110 ns || B=112: load 821 | bar1 wait 65/874 lat 37 | compute 1488 | store+fence 559 | ticket 35 cy; span 8.4 us, starts spread 4.1 us, SM lines ±74 ns, ticket order 50/560 viol, launch->first 3760 ns, flag write->seen 536 ns
+  ktrace_long (0 s): ktrace ±333 ns (edge): B=112: load 735 | bar1 wait 130/939 lat 38 | compute 22470 | store+fence 556 | ticket 35 cy; span 28.4 us, starts spread 14.1 us, SM lines ±14 ns, ticket order 187/336 viol, launch->first 4505 ns, flag write->seen 1208 ns
+  ktrace_idle (1 s): ktrace ±338 ns (edge): B=28: load 510 | bar1 wait 24/157 lat 29 | compute 1237 | store+fence 569 | ticket 33 cy; span 3.1 us, starts spread 0.0 us, SM lines ±199 ns, ticket order 24/140 viol, launch->first 38147 ns, flag write->seen 1268 ns
+
+/workspace/gputrace/out/report.md written; 3/3 runs analysed in 0.2 min
