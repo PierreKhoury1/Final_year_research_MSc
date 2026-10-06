@@ -117,8 +117,8 @@ def a_launch(run):
     if graph:   # the graph kernel carries a constant id: match i-th launch with i-th record (one stream, in order)
         recs = run.recs[np.argsort(run.recs["g_begin"])]
         # drop the warm-up launch made before the first traced one (it precedes the first host enter time)
-        slack = 2 * (run.clock["bound_ns"] or 0) + 20_000
-        recs = recs[run.host_of(recs["g_begin"]) >= float(enter["t"][0]) - slack]
+        slack = 2 * (run.clock["bound_ns"] or 0)
+        recs = recs[run.host_of(recs["g_end"]) >= float(enter["t"][0]) - slack]
         n = min(len(recs), len(enter))
         recs, enter, ret = recs[:n], enter[:n], ret[:n]
         g_begin, g_end = recs["g_begin"], recs["g_end"]
@@ -205,7 +205,11 @@ def a_dispatch(run):
             waves=waves, block_dur_ns=dur, kernel_span_ns=g1 - g0, ideal_span_ns=waves * dur,
             launch_to_first_block_ns=float(run.host_of(g0)) - float(e["t"]),
             first_wave_sm_order=[int(x) for x in wave1["smid"][:64]],
-            preempted_blocks=int((r["max_gap_ns"] > 5000).sum()), max_gap_ns=int(r["max_gap_ns"].max())))
+            # a block's largest gap between two consecutive timer reads: one tick when it ran undisturbed;
+            # much longer when its warp was not issued (contention from other resident warps, or preemption)
+            max_gap_ns=q(r["max_gap_ns"]), blocks_with_gap_gt_5us=int((r["max_gap_ns"] > 5000).sum()),
+            timer_reads_per_us=q(r["n_iters"].astype(float) / np.maximum(1.0, (r["g_end"].astype(float) - r["g_begin"].astype(float)) / 1000)),
+            block_overrun_ns=q(r["g_end"].astype(float) - r["g_begin"].astype(float) - dur)))
     return dict(bound_ns=run.clock["bound_ns"], kernels=kernels)
 
 
@@ -230,7 +234,9 @@ def a_concurrency(run):
             b_blocks_started_before_a_end=int((B["g_begin"].astype(float) < a_last_end).sum()),
             a_blocks_running_when_b_started=int(a_running_at_b.size),
             sms_shared_at_b_start=len(co_sms), b_sms=len(set(int(s) for s in B["smid"])),
-            a_preempted_blocks=int((A["max_gap_ns"] > 5000).sum()), a_max_gap_ns=int(A["max_gap_ns"].max()),
+            a_blocks_with_gap_gt_5us=int((A["max_gap_ns"] > 5000).sum()), a_max_gap_ns=int(A["max_gap_ns"].max()),
+            b_blocks_with_gap_gt_5us=int((B["max_gap_ns"] > 5000).sum()), b_max_gap_ns=int(B["max_gap_ns"].max()),
+            a_block_dur_us=float(run.meta.get("dur_us", 0)), b_timer_reads_per_us=float(np.median(B["n_iters"] / np.maximum(1.0, (B["g_end"].astype(float) - B["g_begin"].astype(float)) / 1000))),
             b_span_ns=float(B["g_end"].max() - B["g_begin"].min()), a_span_ns=float(A["g_end"].max() - A["g_begin"].min()),
             b_block_dur_median_ns=float(np.median(B["g_end"].astype(float) - B["g_begin"].astype(float)))))
     return dict(bound_ns=run.clock["bound_ns"], priority=int(run.meta.get("priority", 0)), reps=reps)
@@ -260,6 +266,40 @@ def a_clocks(run):
     # a timeline for plotting / CSV: host time, GHz
     out["timeline"] = [(float(t), float(x)) for t, x in zip(tmid[::max(1, len(tmid) // 2000)], f[::max(1, len(f) // 2000)])]
     return out
+
+
+def a_ramp(run):
+    """SM clock vs time since block start, after an idle gap of idle_us; averaged over reps."""
+    s = run.recs[run.recs["tag"] == 1]
+    if s.size < 3:
+        return dict(error="no samples")
+    kids = sorted(set(int(k) for k in s["kernel_id"]))
+    curves, first, launch = [], [], []
+    for kid in kids:
+        r = s[s["kernel_id"] == kid]
+        r = r[np.argsort(r["g_begin"])]
+        if r.size < 3:
+            continue
+        g, c = r["g_begin"].astype(float), r["clk_begin"].astype(float)
+        f = np.diff(c) / np.diff(g)
+        t = (g[1:] - g[0])   # ns since the block's first sample
+        curves.append((t, f))
+        first.append(f[0])
+        te = run.ev_time("LAUNCH_ENTER", kid)
+        if te is not None:
+            launch.append(float(run.host_of(g[0])) - te)
+    if not curves:
+        return dict(error="no curves")
+    # common grid: median across reps at each sample index
+    n = min(len(t) for t, _ in curves)
+    grid_t = np.median(np.array([t[:n] for t, _ in curves]), axis=0)
+    grid_f = np.median(np.array([f[:n] for _, f in curves]), axis=0)
+    fmax = float(np.percentile(grid_f, 95))
+    idx = np.where(grid_f >= 0.95 * fmax)[0]
+    return dict(idle_us=run.meta.get("idle_us"), reps=len(curves), ghz_first_sample=q(first), ghz_steady=fmax,
+                ramp_to_95pct_ns=float(grid_t[idx[0]]) if idx.size else None,
+                launch_to_start_ns=q(launch), bound_ns=run.clock["bound_ns"],
+                curve=[(float(a), float(b)) for a, b in zip(grid_t[::max(1, n // 200)], grid_f[::max(1, n // 200)])])
 
 
 def a_copy(run):
@@ -323,13 +363,14 @@ def a_timeslice(run):
         hr = hog.recs[hog.recs["tag"] == 9]
         out["hog"] = dict(blocks=int(hr.size), sms_used=len(set(int(s) for s in hr["smid"])), sms=int(hog.meta["sms"]),
                           block_dur_ns=q(hr["g_end"].astype(float) - hr["g_begin"].astype(float)),
-                          max_gap_ns=q(hr["max_gap_ns"]), preempted_blocks=int((hr["max_gap_ns"] > 5000).sum()),
+                          max_gap_ns=q(hr["max_gap_ns"]), blocks_with_gap_gt_5us=int((hr["max_gap_ns"] > 5000).sum()),
+                          hog_dur_us=hog.meta.get("hog_dur_us"),
                           mps_pct=hog.meta.get("mps_pct"))
     return out
 
 
 STRATEGIES = dict(launch=a_launch, notify=a_notify, dispatch=a_dispatch, concurrency=a_concurrency, clocks=a_clocks,
-                  copy=a_copy, timeslice=a_timeslice)
+                  copy=a_copy, timeslice=a_timeslice, ramp=a_ramp)
 
 
 def analyse(prefix):
@@ -364,7 +405,7 @@ def one_line(res):
         parts = [f"{k['blocks']}b:{k['sms_used']}sm x{k['max_blocks_per_sm_concurrent']} "
                  f"{(k['first_wave_rate_blocks_per_us'] or 0):.1f}b/us w{k['waves']} "
                  f"span {k['kernel_span_ns'] / 1000:.0f}/{k['ideal_span_ns'] / 1000:.0f}us" for k in ks[::max(1, len(ks) // 5)]]
-        return "dispatch: " + " | ".join(parts) + f" {bs}"
+        return "dispatch: " + " | ".join(parts) + f"; gaps>5us in {sum(k['blocks_with_gap_gt_5us'] for k in ks)}/{sum(k['blocks'] for k in ks)} blocks {bs}"
     if s == "concurrency":
         reps = r.get("reps", [])
         if not reps:
@@ -372,12 +413,17 @@ def one_line(res):
         lat = [x["b_launch_to_first_block_ns"] for x in reps]
         return (f"concurrency(prio={r.get('priority')}): B launch->first block {np.median(lat) / 1000:.1f} us median "
                 f"(max {max(lat) / 1000:.1f}) {bs}; B before A end {np.median([x['b_blocks_started_before_a_end'] for x in reps]):.0f}/"
-                f"{reps[0]['blocks_b']} blocks; A preempted blocks {sum(x['a_preempted_blocks'] for x in reps)}; "
+                f"{reps[0]['blocks_b']} blocks; A blocks with >5us gap {sum(x['a_blocks_with_gap_gt_5us'] for x in reps)}; "
                 f"A max gap {max(x['a_max_gap_ns'] for x in reps) / 1000:.0f} us")
     if s == "clocks":
         g = lambda k: (r.get(k) or {}).get("p50")
         return (f"clocks: before {g('ghz_before')} during {g('ghz_during')} after {g('ghz_after')} GHz; "
                 f"ramp to 95% {None if r.get('ramp_to_95pct_ns') is None else r['ramp_to_95pct_ns'] / 1000:.0f} us; n={r.get('n_samples')}")
+    if s == "ramp":
+        rr = r.get("ramp_to_95pct_ns")
+        return (f"ramp(idle {r.get('idle_us')} us): first sample {(r.get('ghz_first_sample') or {}).get('p50', float('nan')):.2f} GHz, "
+                f"steady {r.get('ghz_steady', float('nan')):.2f} GHz, to 95% in {'-' if rr is None else f'{rr / 1000:.0f}'} us; "
+                f"launch->start {P(r.get('launch_to_start_ns'))} us {bs}; reps={r.get('reps')}")
     if s == "copy":
         m = r.get("memcpy", {})
         gr = r.get("gpu_read_host_mem", {})

@@ -1,0 +1,79 @@
+{
+ "prefix": "/workspace/gputrace/out/launch_idle2000",
+ "strategy": "launch",
+ "gpu": "NVIDIA GeForce RTX 3060",
+ "sms": 28,
+ "host": "d9ca5608d7bd",
+ "clock": {
+  "tick_ns": 1024,
+  "method": "edge",
+  "bound_ns": 362.693012714386,
+  "rate_ppm": -24.511696724571763,
+  "feasible": true,
+  "windows": {
+   "pre": {
+    "edge_bound_ns": 371.44410441070795,
+    "edge_feasible": true,
+    "n_up": 3000,
+    "n_down": 3000,
+    "rate_ppm": -24.553236574131887
+   },
+   "post": {
+    "edge_bound_ns": 362.8915989147499,
+    "edge_feasible": true,
+    "n_up": 3000,
+    "n_down": 3000,
+    "rate_ppm": -24.17146567434969
+   }
+  },
+  "width_ns": 725.386025428772
+ },
+ "n_gpu_recs": 1000,
+ "gpu_recs_dropped": 0,
+ "n_host_events": 5002,
+ "result": {
+  "graph": false,
+  "n": 1000,
+  "launch_to_start_ns": {
+   "p50": 26370.25,
+   "p90": 27137.125,
+   "p99": 43772.8075,
+   "p100": 49401.875,
+   "n": 1000,
+   "mean": 27028.34775
+  },
+  "call_ns": {
+   "p50": 28365.0,
+   "p90": 29060.7,
+   "p99": 45956.27,
+   "p100": 51957.0,
+   "n": 1000,
+   "mean": 29140.756
+  },
+  "bound_ns": 362.693012714386,
+  "exec_ns": {
+   "p50": 1024.0,
+   "p90": 1024.0,
+   "p99": 1024.0,
+   "p100": 1024.0,
+   "n": 1000,
+   "mean": 1024.0
+  },
+  "sm_clock_ghz": {
+   "p50": 1.009765625,
+   "p90": 1.7275390625,
+   "p99": 1.897470703125,
+   "p100": 1.8994140625,
+   "n": 1000,
+   "mean": 1.0487861328125
+  },
+  "end_to_sync_return_ns": {
+   "p50": 6628.6875,
+   "p90": 7160.9625,
+   "p99": 21729.071249999994,
+   "p100": 35301.0,
+   "n": 1000,
+   "mean": 6940.47475
+  }
+ }
+}

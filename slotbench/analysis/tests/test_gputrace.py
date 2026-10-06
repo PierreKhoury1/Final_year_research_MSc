@@ -117,7 +117,7 @@ def test_dispatch_waves_and_sm_fill(tmp_path):
     assert k["waves"] == 2 and k["first_wave_span_ns"] == 7000
     assert abs(k["first_wave_rate_blocks_per_us"] - 1.0) < 1e-9
     assert abs(k["launch_to_first_block_ns"] - 6000) <= gt.Run(p).clock["bound_ns"] + TICK
-    assert k["preempted_blocks"] == 0
+    assert k["blocks_with_gap_gt_5us"] == 0 and k["max_gap_ns"]["p100"] == 0
 
 
 def test_concurrency_and_preemption_flag(tmp_path):
@@ -132,7 +132,7 @@ def test_concurrency_and_preemption_flag(tmp_path):
     r = gt.analyse(p)["result"]["reps"][0]
     assert abs(r["b_launch_to_first_block_ns"] - 30_000) <= gt.Run(p).clock["bound_ns"] + TICK
     assert r["b_blocks_started_before_a_end"] == 4 and r["a_blocks_running_when_b_started"] == 4
-    assert r["a_preempted_blocks"] == 1 and r["a_max_gap_ns"] == 8000
+    assert r["a_blocks_with_gap_gt_5us"] == 1 and r["a_max_gap_ns"] == 8000
 
 
 def test_timeslice_gaps(tmp_path):

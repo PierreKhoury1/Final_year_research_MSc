@@ -15,7 +15,7 @@ emit_archive() {   # emit_archive NAME TARARGS... : archive, print as (multi-par
     tar --warning=no-file-changed -czf "$archive" "$@" || true
     sha=$(sha256sum "$archive" | cut -d' ' -f1)
     rm -rf "$W/parts"; mkdir -p "$W/parts"
-    split -b 800k -d -a 2 --additional-suffix=.bin "$archive" "$W/parts/p"
+    split -b 400k -d -a 2 --additional-suffix=.bin "$archive" "$W/parts/p"
     n=$(ls "$W/parts" | wc -l)
     echo "=====SLOTBENCH-PARTS gputrace/$name $n $sha====="
     for part in "$W"/parts/p*.bin; do
@@ -74,15 +74,21 @@ for rep in $(seq 1 "$REPEAT"); do
     run "launch_idle50000$R" --strategy launch --iters 200 --idle-us 50000
     run "launch_depth8$R"    --strategy launch --iters 500 --depth 8
     run "launch_graph$R"     --strategy launch --iters "$ITERS" --graph 1
+    run "launch_spin2000$R"  --strategy launch --iters 1000 --idle-us 2000 --idle-spin 1
     run "notify$R"           --strategy notify --iters "$ITERS" --dur-us 20
     run "dispatch$R"         --strategy dispatch --dur-us 200 --reps 5
     run "dispatch_t64$R"     --strategy dispatch --dur-us 200 --reps 3 --threads 64 --blocks 1,sm,2sm,8sm
-    run "dispatch_smem$R"    --strategy dispatch --dur-us 200 --reps 3 --smem 49152 --blocks sm,2sm,8sm
-    run "concurrency$R"      --strategy concurrency --dur-us 2000 --dur-b-us 200 --offset-us 500 --reps 5
-    run "concurrency_prio$R" --strategy concurrency --dur-us 2000 --dur-b-us 200 --offset-us 500 --reps 5 --priority 1
-    run "clocks$R"           --strategy clocks --seconds "$SECS" --sample-us 100
+    run "dispatch_smem$R"    --strategy dispatch --dur-us 200 --reps 3 --smem 32768 --blocks sm,2sm,8sm
+    for d in 200 500 2000 10000; do   # how long the second stream waits, vs the first kernel's block length
+        run "concurrency_a${d}$R"      --strategy concurrency --dur-us "$d" --dur-b-us 200 --offset-us 100 --reps 5
+        run "concurrency_a${d}_prio$R" --strategy concurrency --dur-us "$d" --dur-b-us 200 --offset-us 100 --reps 5 --priority 1
+    done
+    run "clocks$R"           --strategy clocks --seconds 4 --sample-us 100
+    for idle in 0 100 2000 50000; do
+        run "ramp_idle${idle}$R" --strategy ramp --idle-us "$idle" --dur-us 3000 --sample-us 20 --reps 40
+    done
     run "copy$R"             --strategy copy --iters 1000
-    run "timeslice$R"        --strategy timeslice --seconds "$SECS" --gap-us 20
+    run "timeslice$R"        --strategy timeslice --seconds "$SECS" --gap-us 20 --hog-dur-us 5000
 done
 # compact: keep raw bins of the long strategies only if small
 find "$OUT" -name '*.gpu.bin' -size +40M -print -delete | sed 's/^/[slotbench] dropped large raw /' || true

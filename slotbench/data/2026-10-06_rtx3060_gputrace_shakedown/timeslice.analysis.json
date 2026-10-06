@@ -1,0 +1,97 @@
+{
+ "prefix": "/workspace/gputrace/out/timeslice",
+ "strategy": "timeslice",
+ "gpu": "NVIDIA GeForce RTX 3060",
+ "sms": 28,
+ "host": "d9ca5608d7bd",
+ "clock": {
+  "tick_ns": 1024,
+  "method": "edge",
+  "bound_ns": 370.27989216917194,
+  "rate_ppm": -23.786780610990377,
+  "feasible": true,
+  "windows": {
+   "pre": {
+    "edge_bound_ns": 372.7571753170341,
+    "edge_feasible": true,
+    "n_up": 3000,
+    "n_down": 3000,
+    "rate_ppm": -23.181972764296788
+   },
+   "post": {
+    "edge_bound_ns": 383.81473697535694,
+    "edge_feasible": true,
+    "n_up": 3000,
+    "n_down": 3000,
+    "rate_ppm": -22.51405075814894
+   }
+  },
+  "width_ns": 740.5597843383439
+ },
+ "n_gpu_recs": 1487,
+ "gpu_recs_dropped": 0,
+ "n_host_events": 7,
+ "result": {
+  "gap_threshold_us": 20,
+  "n_gaps": 1486,
+  "gap_ns": {
+   "p50": 2144256.0,
+   "p90": 2144256.0,
+   "p99": 2246656.0,
+   "p100": 2251776.0,
+   "n": 1486,
+   "mean": 2104656.9690444143
+  },
+  "gaps_alone": {
+   "p50": null,
+   "p90": null,
+   "p99": null,
+   "p100": null,
+   "n": 0
+  },
+  "gaps_with_hog": {
+   "p50": 2144256.0,
+   "p90": 2144256.0,
+   "p99": 2246656.0,
+   "p100": 2251776.0,
+   "n": 1486,
+   "mean": 2104656.9690444143
+  },
+  "hog_window_s": 7.499810519625001,
+  "fraction_not_running_with_hog": 0.4170132362432511,
+  "switches_per_s_with_hog": 198.1383391102395,
+  "our_quantum_ns": {
+   "p50": 2089984.0,
+   "p90": 2447360.0,
+   "p99": 2912092.160000023,
+   "p100": 39678976.0,
+   "n": 1485,
+   "mean": 2185197.381818182
+  },
+  "resident_window_ns": 8000000000.0,
+  "resident_iters": 132453030,
+  "hog": {
+   "blocks": 78288,
+   "sms_used": 28,
+   "sms": 28,
+   "block_dur_ns": {
+    "p50": 2000896.0,
+    "p90": 2000896.0,
+    "p99": 2000896.0,
+    "p100": 2000896.0,
+    "n": 78288,
+    "mean": 2000896.0
+   },
+   "max_gap_ns": {
+    "p50": 1024.0,
+    "p90": 1024.0,
+    "p99": 1024.0,
+    "p100": 1024.0,
+    "n": 78288,
+    "mean": 1024.0
+   },
+   "preempted_blocks": 0,
+   "mps_pct": ""
+  }
+ }
+}
