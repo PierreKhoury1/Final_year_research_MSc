@@ -12,6 +12,8 @@ KINDS = {0: ("LDG_CA", "LDG", False), 1: ("LDG_CG", "LDG", False), 2: ("LDG_CS",
 
 
 def is_target(op, expect, exact):
+    if "STRONG.SYS" in op:   # the bracket's own volatile seed load / result store, not part of the chain
+        return False
     return op == expect if exact else (op == expect or op.startswith(expect + "."))
 
 
@@ -51,8 +53,6 @@ def check(funcs):
             if not any(op.startswith("LDG.E.STRONG.SYS") for op in body[:4]) and K != 12:
                 continue
             n_target = sum(1 for op in body if is_target(op, expect, exact))
-            if expect == "STG":   # the consumer store (STG.E.STRONG.SYS) is not part of the chain
-                n_target = sum(1 for op in body if op == "STG.E" or op.startswith("STG.E.") and "STRONG.SYS" not in op)
             if best is None or n_target > best[0]:
                 best = (n_target, body)
         if best:

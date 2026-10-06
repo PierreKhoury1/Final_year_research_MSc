@@ -96,7 +96,9 @@ __global__ void k_instr(TraceDev td, uint32_t kid, const unsigned *buf, unsigned
     __shared__ unsigned sh[2048];
     if (K == I_LDS) { for (int i = threadIdx.x; i < 2048; i += blockDim.x) sh[i] = (unsigned)(((i * 613) + 1) & 2047) * 4; __syncthreads(); }
     const bool rec = threadIdx.x == 0;
-    if (!rec && K != I_BAR) return;
+    // SHFL and BAR need the whole warp / block alive: a shuffle whose other lanes have exited completes trivially
+    // (measured as a zero slope on the first runs). Every lane runs the chain; only lane 0 records.
+    if (!rec && K != I_BAR && K != I_SHFL) return;
     unsigned idx = 0; float x = 1.0f;
     uint64_t g0, g1;
     bracket<K, N>(buf, sh, out, idx, x, g0, g1);   // warm: instruction cache, TLB, the chain's lines

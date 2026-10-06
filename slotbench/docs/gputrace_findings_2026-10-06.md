@@ -56,6 +56,17 @@ stream starts within 6–8 µs even while a 50 ms kernel occupies half the SMs o
 turns L2 hits into DRAM misses (565–571 cy) with a 14 000-cycle p99 and triples DRAM-tier latency; MPS at 50 % keeps
 L1 at 39 cycles and the p99 within 4 % of p50, but L2-resident sets still cost 700 cycles (3.3×) because L2 is shared.
 
+## 3d. The instruction table, SASS-verified (A100, RTX 3060; `data/2026-10-06_*_instr_v3`)
+Chains of N dependent instructions between two clock reads, tied to the reads by volatile accesses so ptxas cannot
+move them, fitted over N to separate the instruction's latency from the bracket's cost; `tools/sass_check.py` reads
+the compiled SASS and confirms exactly N target opcodes sit between the two clock reads of every bracket kernel.
+A100 alone: FADD/FFMA/IMAD 3.9–4.0 cy, LDS 23, LDG L1 39 / L2 233 / far-L2 249 / DRAM 402 cy (272 ns), global
+atomic with return 387 cy (288 ns), store or reduction 7.7 cy to issue + 776 cy for the fence, `__syncthreads`
+26 cy (256 threads). Same-SM streaming co-tenant: every load ~950 cy, atomic 899; under MPS 50 %: L1 load 34 cy and
+ALU/barrier unchanged, L2-tier loads ~700 cy. RTX 3060 alone: L1 32.5 / L2 213–233 / DRAM 437–480 cy, ALU 4.0,
+LDS 22.9, atomic 247, barrier 32. The SASS check caught two bracket defects before they became results (chains
+hoisted above the opening read; a shuffle measured with exited lanes).
+
 ## 4. Launch and completion latencies (p50; p99 in the datasets)
 | | RTX 3060 | A100 (host 1 / 2) | H100 |
 |---|---|---|---|

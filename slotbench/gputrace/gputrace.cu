@@ -449,7 +449,8 @@ static void launch_instr(int N, cudaStream_t st, uint32_t kid, const unsigned *b
         case 4: k_instr<K, 4><<<1, T, 0, st>>>(g_dev.td, kid, buf, out, reps, wi); break;
         case 8: k_instr<K, 8><<<1, T, 0, st>>>(g_dev.td, kid, buf, out, reps, wi); break;
         case 16: k_instr<K, 16><<<1, T, 0, st>>>(g_dev.td, kid, buf, out, reps, wi); break;
-        default: k_instr<K, 32><<<1, T, 0, st>>>(g_dev.td, kid, buf, out, reps, wi); break;
+        case 32: k_instr<K, 32><<<1, T, 0, st>>>(g_dev.td, kid, buf, out, reps, wi); break;
+        default: k_instr<K, 128><<<1, T, 0, st>>>(g_dev.td, kid, buf, out, reps, wi); break;
     }
 }
 static void launch_instr_kind(int K, int N, cudaStream_t st, uint32_t kid, const unsigned *buf, unsigned *out, uint32_t reps, uint32_t wi) {
@@ -489,7 +490,7 @@ static void s_instr() {
         spin_until(now_ns() + 200000000);
     }
     std::mt19937_64 rng(42);
-    const int Ns[] = {1, 2, 4, 8, 16, 32};
+    const int Ns[] = {1, 2, 4, 8, 16, 32, 128};
     const uint32_t reps = (uint32_t)std::max(8, g_args.reps);
     for (int K = 0; K < I_N_KINDS; K++) {
         if (!(g_args.mods & (1 << K))) continue;
@@ -508,6 +509,7 @@ static void s_instr() {
                 CK(cudaStreamSynchronize(st));
             }
             for (int N : Ns) {
+                if (N == 128 && load) continue;   // long dependent load chains add nothing the memory strategy lacks
                 uint32_t kid = ++g_kid;
                 ev(EV_LAUNCH_ENTER, kid, load ? sizes[wi] : 0, (uint64_t)K);
                 launch_instr_kind(K, N, st, kid, buf, out, reps, wi);
