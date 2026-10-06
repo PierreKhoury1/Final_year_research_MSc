@@ -1,6 +1,6 @@
 # gputrace: what one day of measurements established (2026-10-06)
 
-Four GPUs on four hosts, 7 campaigns, ≈ $2.6 of rented time. Every host↔GPU number carries a hard bound from the
+Four GPU models on six hosts, 9 campaigns, ≈ $2.8 of rented time. Every host↔GPU number carries a hard bound from the
 tick-edge clock sync run before and after it; the bound was feasible on all 153 runs (0.3–0.9 µs).
 Data and per-run detail: `data/2026-10-06_{rtx3060,a100,a100_v3,h100,a100x2}_gputrace/`.
 
@@ -8,6 +8,14 @@ Data and per-run detail: `data/2026-10-06_{rtx3060,a100,a100_v3,h100,a100x2}_gpu
 Two A100s in one server: `%globaltimer` readings differ by **1.742 s** at the same instant and drift apart at
 **0.63 µs/s**. Any tracer that compares timestamps across GPUs needs a per-GPU mapping to one clock, refreshed about
 every second to hold ±1 µs. gputrace gets both mappings over PCIe from one host thread with bounds of 0.8 µs each.
+
+## 1b. NCCL across two GPUs on one bounded axis (2×A100, PCIe P2P; `data/2026-10-06_a100x2_nccl`)
+With every GPU mapped to the host clock (bounds 0.79 / 0.88 µs) and the collectives released together by one host
+store, the two GPUs start an all-reduce within −0.3 µs (p50) of each other and, up to 1 MB, finish within 0.7 µs:
+inside the ±1.67 µs skew bound. From 16 MB GPU 1 finishes 14 µs before GPU 0, a real asymmetry outside the bound.
+8 B all-reduce: 13.3 µs on the GPU. Enqueueing it for two GPUs costs the host 12–16 µs, which doubled the measured
+span (23.6 µs) and created a 3.6 µs start skew when the stamps were not gated: the tool distinguishes the two.
+0 causality violations in 2 000 collectives. Caveat: no NVLink between the two rented GPUs.
 
 ## 2. A higher-priority stream never preempts running blocks (3 GPUs, 40 reps)
 Second kernel's first block starts when the running kernel's wave finishes: wait = block length − offset, exactly,
@@ -57,6 +65,6 @@ to a whole 200 µs block without being issued (A100 and H100; 54 µs on the RTX 
 therefore the wrong residency probe; gputrace's wait yields with `__nanosleep` (then 0 gaps > 5 µs in 70 000 blocks).
 
 ## What is not yet done
-Several hosts (PTP on the host side, then the same per-GPU mapping); NCCL collective spans on the 2-GPU host;
+Several hosts (PTP on the host side, then the same per-GPU mapping); NCCL over NVLink (the rented pairs were PCIe);
 MIG; an application trace (cuPHY slots) on this timeline. Transport note: one raw part of 26 was lost on the 2×A100
 host to ssh-proxy lines in the container log; the summary block carried all results.
