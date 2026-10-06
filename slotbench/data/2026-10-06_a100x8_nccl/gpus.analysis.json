@@ -1,0 +1,129 @@
+{
+ "prefix": "/workspace/gputrace/out/gpus",
+ "strategy": "gpus",
+ "gpu": "NVIDIA A100-SXM4-40GB",
+ "sms": 108,
+ "host": "338c01042bed",
+ "clock": {
+  "tick_ns": 1024,
+  "method": "edge",
+  "bound_ns": 821.9743587970734,
+  "rate_ppm": -21.64320210051862,
+  "feasible": true,
+  "windows": {
+   "pre": {
+    "edge_bound_ns": 931.9158709309995,
+    "edge_feasible": true,
+    "n_up": 3000,
+    "n_down": 2928,
+    "rate_ppm": -18.915180798995124
+   },
+   "post": {
+    "edge_bound_ns": 822.5399086056277,
+    "edge_feasible": true,
+    "n_up": 3000,
+    "n_down": 2931,
+    "rate_ppm": -21.12290556022245
+   }
+  },
+  "width_ns": 1643.9487175941467
+ },
+ "n_gpu_recs": 0,
+ "gpu_recs_dropped": 0,
+ "n_host_events": 50,
+ "result": {
+  "n_gpus": 8,
+  "rounds": 3,
+  "t_mid": 3411855390542982.0,
+  "gpus": {
+   "0": {
+    "bound_ns": 799.5066995620728,
+    "feasible": true,
+    "rate_ppm": -21.702065102324752,
+    "n_up": 9000,
+    "n_down": 8793,
+    "classic_eps_ns": 1874.7298307055607,
+    "timer_minus_gpu0_ns": 0.0,
+    "offset_bound_ns": 1599.0133991241455,
+    "rate_minus_gpu0_ppm": 0.0
+   },
+   "1": {
+    "bound_ns": 737.9331033229828,
+    "feasible": true,
+    "rate_ppm": -13.321973882707283,
+    "n_up": 9000,
+    "n_down": 8792,
+    "classic_eps_ns": 1974.1842062473297,
+    "timer_minus_gpu0_ns": -27534501120.0,
+    "offset_bound_ns": 1537.4398028850555,
+    "rate_minus_gpu0_ppm": 8.38009121961747
+   },
+   "2": {
+    "bound_ns": 815.75228703022,
+    "feasible": true,
+    "rate_ppm": -16.673435821124016,
+    "n_up": 9000,
+    "n_down": 8793,
+    "classic_eps_ns": 2026.0113389492035,
+    "timer_minus_gpu0_ns": -17297407232.0,
+    "offset_bound_ns": 1615.2589865922928,
+    "rate_minus_gpu0_ppm": 5.028629281200736
+   },
+   "3": {
+    "bound_ns": 751.022828578949,
+    "feasible": true,
+    "rate_ppm": -17.644977167607934,
+    "n_up": 9000,
+    "n_down": 8775,
+    "classic_eps_ns": 1862.895182609558,
+    "timer_minus_gpu0_ns": -13567331328.0,
+    "offset_bound_ns": 1550.5295281410217,
+    "rate_minus_gpu0_ppm": 4.057087934716819
+   },
+   "4": {
+    "bound_ns": 925.4553102771752,
+    "feasible": true,
+    "rate_ppm": -15.993035632266839,
+    "n_up": 9000,
+    "n_down": 8793,
+    "classic_eps_ns": 1807.0,
+    "timer_minus_gpu0_ns": -19056790528.0,
+    "offset_bound_ns": 1724.962009839248,
+    "rate_minus_gpu0_ppm": 5.709029470057914
+   },
+   "5": {
+    "bound_ns": 873.043558716774,
+    "feasible": true,
+    "rate_ppm": -14.592151537984321,
+    "n_up": 9000,
+    "n_down": 8778,
+    "classic_eps_ns": 1842.0,
+    "timer_minus_gpu0_ns": -22309283840.0,
+    "offset_bound_ns": 1672.5502582788467,
+    "rate_minus_gpu0_ppm": 7.109913564340431
+   },
+   "6": {
+    "bound_ns": 878.5274718287401,
+    "feasible": true,
+    "rate_ppm": -15.312521397525813,
+    "n_up": 9000,
+    "n_down": 8786,
+    "classic_eps_ns": 2550.1589449234307,
+    "timer_minus_gpu0_ns": -22447208448.0,
+    "offset_bound_ns": 1678.0341713908128,
+    "rate_minus_gpu0_ppm": 6.389543704798939
+   },
+   "7": {
+    "bound_ns": 852.5579764246941,
+    "feasible": true,
+    "rate_ppm": -11.325458280975198,
+    "n_up": 9000,
+    "n_down": 7918,
+    "classic_eps_ns": 2325.037023305893,
+    "timer_minus_gpu0_ns": -34653967360.0,
+    "offset_bound_ns": 1652.0646759867668,
+    "rate_minus_gpu0_ppm": 10.376606821349554
+   }
+  }
+ }
+}

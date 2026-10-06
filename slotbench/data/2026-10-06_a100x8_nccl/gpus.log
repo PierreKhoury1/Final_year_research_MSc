@@ -1,0 +1,1 @@
+gputrace gpus: NVIDIA A100-SXM4-40GB sms=108 recs=0 events=50 kernels=0 in 3.01 s (sync pre ok post ok)

@@ -1,6 +1,6 @@
 # gputrace: what one day of measurements established (2026-10-06)
 
-Four GPU models on six hosts, 9 campaigns, ≈ $2.8 of rented time. Every host↔GPU number carries a hard bound from the
+Four GPU models on seven hosts, 10 campaigns, ≈ $3.6 of rented time. Every host↔GPU number carries a hard bound from the
 tick-edge clock sync run before and after it; the bound was feasible on all 153 runs (0.3–0.9 µs).
 Data and per-run detail: `data/2026-10-06_{rtx3060,a100,a100_v3,h100,a100x2}_gputrace/`.
 
@@ -16,6 +16,13 @@ inside the ±1.67 µs skew bound. From 16 MB GPU 1 finishes 14 µs before GPU 0,
 8 B all-reduce: 13.3 µs on the GPU. Enqueueing it for two GPUs costs the host 12–16 µs, which doubled the measured
 span (23.6 µs) and created a 3.6 µs start skew when the stamps were not gated: the tool distinguishes the two.
 0 causality violations in 2 000 collectives. Caveat: no NVLink between the two rented GPUs.
+
+## 1c. Eight A100s (`data/2026-10-06_a100x8_nccl`)
+All eight GPU timers mapped to the host clock with bounds 0.74–0.93 µs. Relative to GPU 0 they read −13.6 to −34.7 s
+and drift +4 to +10.4 ppm. Released together, all eight start an all-reduce within 1.4 µs (inside the bound); an 8 B
+all-reduce finishes in ring order, ~1 µs per GPU, GPU 7 last at +8.4 µs; from 64 KB the two CPU sockets split the
+finish times by up to 4 ms (no P2P in the container: NCCL went through host memory). 8-GPU enqueue: 46–54 µs of host time.
+0 causality violations across 67 200 GPU-pair checks.
 
 ## 2. A higher-priority stream never preempts running blocks (3 GPUs, 40 reps)
 Second kernel's first block starts when the running kernel's wave finishes: wait = block length − offset, exactly,
