@@ -34,6 +34,7 @@ __device__ __forceinline__ unsigned ldg_k(int K, const unsigned *p) {
 // One sample: returns the bracket cycle count; g0/g1 are the timer reads outside the clock reads.
 template <int K, int N>
 __device__ __forceinline__ uint64_t bracket(const unsigned *buf, unsigned *sh, unsigned *out, unsigned &idx, float &x, uint64_t &g0, uint64_t &g1) {
+    if (K == I_SHFL) __syncwarp();   // converged warp: ptxas then inlines SHFL instead of a per-shuffle CALL fallback
     g0 = gtimer();
     uint64_t c0;
     asm volatile("mov.u64 %0, %%clock64;" : "=l"(c0) :: "memory");
@@ -43,7 +44,10 @@ __device__ __forceinline__ uint64_t bracket(const unsigned *buf, unsigned *sh, u
     // the same for every N, so it lands in the fitted intercept and not in the per-instruction slope.
     unsigned seed;
     asm volatile("ld.volatile.global.u32 %0, [%1];" : "=r"(seed) : "l"(out + 4095) : "memory");
-    idx += seed;
+    // SHFL: a lane-dependent value. ptxas proved the shuffle of a warp-uniform value to be the identity and dropped
+    // the whole chain on the converged path (slope 0 on the first A100 runs); lane i starts at i+1 and each shuffle
+    // reads the next lane, so every link moves data and the chain stays dependent with no extra ALU per link.
+    idx += seed + (K == I_SHFL ? (threadIdx.x & 31) + 1 : 0);
     x = __int_as_float(__float_as_int(x) | seed);   // float chain depends on the seed without an extra FADD
     if (K <= I_LDG_NC) {
 #pragma unroll
@@ -67,7 +71,7 @@ __device__ __forceinline__ uint64_t bracket(const unsigned *buf, unsigned *sh, u
         asm volatile("st.volatile.global.u32 [%0], %1;" ::"l"(out + 4094), "r"(idx) : "memory");
     } else if (K == I_SHFL) {
 #pragma unroll
-        for (int i = 0; i < N; i++) asm volatile("shfl.sync.idx.b32 %0, %0, %1, 31, 0xffffffff;" : "+r"(idx) : "r"(idx & 31));
+        for (int i = 0; i < N; i++) asm volatile("shfl.sync.idx.b32 %0, %0, %0, 31, 0xffffffff;" : "+r"(idx));
         asm volatile("st.volatile.global.u32 [%0], %1;" ::"l"(out + 4094), "r"(idx) : "memory");
     } else if (K == I_ATOM_RET) {
 #pragma unroll

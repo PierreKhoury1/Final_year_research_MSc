@@ -477,16 +477,22 @@ def a_instr(run):
         Ns = sorted(byN)
         med = {N: float(np.median([c for c, _ in byN[N]])) for N in Ns}
         p99 = {N: float(np.percentile([c for c, _ in byN[N]], 99)) for N in Ns}
+        p10 = {N: float(np.percentile([c for c, _ in byN[N]], 10)) for N in Ns}
         if len(Ns) >= 2:
             A = np.vstack([np.ones(len(Ns)), np.array(Ns, dtype=float)]).T
             (a, b), *_ = np.linalg.lstsq(A, np.array([med[N] for N in Ns]), rcond=None)
+            # the same fit through the fast tail: under a co-tenant the medians carry the other warps' issue
+            # slots and the per-N medians scatter by +-100 cycles, so the p10 slope is the less noisy latency
+            (a10, b10), *_ = np.linalg.lstsq(A, np.array([p10[N] for N in Ns]), rcond=None)
         else:
             a, b = float("nan"), med[Ns[0]]
+            a10, b10 = float("nan"), p10[Ns[0]]
         Nmax = Ns[-1]
         ns_total = float(np.median([g for _, g in byN[Nmax]]))
         # the SM clock from one bracket is only meaningful when the bracket spans many timer ticks
         ghz = med[Nmax] / ns_total if ns_total >= 8 * max(1, run.clock["tick_ns"]) else float("nan")
         table.append(dict(kind=KINDS.get(kind, str(kind)), ws=ws, latency_cycles=float(b), bracket_overhead_cycles=float(a),
+                          latency_cycles_p10=float(b10), bracket_overhead_cycles_p10=float(a10), per_N_p10=p10,
                           single_bracket_cycles=med.get(1), per_N_median=med, per_N_p99=p99, samples=sum(len(v) for v in byN.values()),
                           ns_per_instr_at_Nmax=ns_total / Nmax, sm_ghz=ghz, Nmax=Nmax))
     return dict(cotenant=run.meta.get("cotenant"), reps=run.meta.get("reps"), table=table, bound_ns=run.clock["bound_ns"])

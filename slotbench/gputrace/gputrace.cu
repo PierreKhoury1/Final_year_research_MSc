@@ -40,10 +40,12 @@
 using namespace sb;
 using namespace sb::gt;
 
+static std::string g_stage;              // what the process was doing, for the error messages (role, strategy step)
+static const char *ck_ctx();
 #define LAUNCH_CK() do { cudaError_t e_ = cudaGetLastError(); if (e_ != cudaSuccess) { \
-    fprintf(stderr, "gputrace: kernel launch failed: %s\n", cudaGetErrorString(e_)); exit(3); } } while (0)
+    fprintf(stderr, "gputrace[%s]: kernel launch failed: %s\n", ck_ctx(), cudaGetErrorString(e_)); exit(3); } } while (0)
 #define CK(x) do { cudaError_t e_ = (x); if (e_ != cudaSuccess) { \
-    fprintf(stderr, "gputrace: %s: %s\n", #x, cudaGetErrorString(e_)); exit(1); } } while (0)
+    fprintf(stderr, "gputrace[%s]: %s: %s\n", ck_ctx(), #x, cudaGetErrorString(e_)); exit(1); } } while (0)
 
 // ------------------------------------------------------------------ kernels
 
@@ -205,6 +207,8 @@ struct Args {
 };
 
 static Args g_args;
+static std::string g_ctx_buf;
+static const char *ck_ctx() { g_ctx_buf = g_args.role + "/" + g_args.strategy + (g_stage.empty() ? "" : " " + g_stage); return g_ctx_buf.c_str(); }
 static std::vector<HostEvent> g_ev;
 static uint32_t g_kid = 0;
 
@@ -505,12 +509,14 @@ static void s_instr() {
                 CK(cudaMemcpy(buf, h.data(), lines * 128, cudaMemcpyHostToDevice));
                 // walk the whole set once so the chain's lines are in the tier the working set selects
                 uint32_t kw = ++g_kid;
+                g_stage = "warm walk ws=" + std::to_string(sizes[wi]);
                 k_chase<0><<<1, 32, 0, st>>>(g_dev.td, kw, buf, (uint32_t)(2 * lines), (uint32_t)std::max<size_t>(64, lines), 999, 0, out);
                 CK(cudaStreamSynchronize(st));
             }
             for (int N : Ns) {
                 if (N == 128 && load) continue;   // long dependent load chains add nothing the memory strategy lacks
                 uint32_t kid = ++g_kid;
+                g_stage = "K=" + std::to_string(K) + " N=" + std::to_string(N) + (load ? " ws=" + std::to_string(sizes[wi]) : "");
                 ev(EV_LAUNCH_ENTER, kid, load ? sizes[wi] : 0, (uint64_t)K);
                 launch_instr_kind(K, N, st, kid, buf, out, reps, wi);
                 ev(EV_LAUNCH_RETURN, kid); LAUNCH_CK();
