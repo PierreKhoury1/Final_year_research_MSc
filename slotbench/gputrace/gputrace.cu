@@ -15,6 +15,7 @@
 // analysis can put %globaltimer on CLOCK_MONOTONIC_RAW with a bound that needs no symmetry assumption.
 // Output: PREFIX.gpu.bin, PREFIX.host.bin, PREFIX.json, PREFIX.{pre,post}.{classic,up,down}.bin.
 #include <sys/wait.h>
+#include <csignal>
 #include <unistd.h>
 
 #include <algorithm>
@@ -195,7 +196,7 @@ struct Args {
     int gpu = 0, core = -1, clock_core = -1, iters = 2000, depth = 1, graph = 0, threads = 256, reps = 5;
     int priority = 0, sync_rounds = 3, sync_per_phase = 1000, waves = 8, nosync = 0, idle_spin = 0, spin_mode = 0, spin_param = 200, hog_mps_pct = 0;
     int cotenant = 0, hops = 65536, batch = 0, mods = 7, blocks_b = 0, cotenant_ms = 50;
-    std::string blocks_a = "0";   // memory: mods bitmask 1 .ca, 2 .cg, 4 .cs, 8 .nc
+    std::string blocks_a = "0", hog_kind = "spin";   // memory: mods bitmask 1 .ca, 2 .cg, 4 .cs, 8 .nc
     std::string ws = "4k,16k,64k,128k,192k,256k,512k,1m,2m,4m,8m,16m,24m,32m,48m,64m,128m";
     double idle_us = 0, dur_us = 200, offset_us = 500, seconds = 10, sample_us = 100, gap_us = 20, dur_b_us = 200;
     double launch_dur_us = 10, hog_dur_us = 5000;
@@ -421,6 +422,7 @@ static void s_ramp() {
     }
 }
 
+static pid_t spawn_hog(double seconds);
 static std::vector<size_t> parse_sizes(const std::string &s) {
     std::vector<size_t> out;
     for (size_t i = 0; i < s.size();) {
@@ -444,7 +446,12 @@ static void s_memory() {
     float4 *sbuf = nullptr; const size_t sbytes = (size_t)512 << 20;
     std::atomic<bool> co_run{false};
     std::thread co;
-    if (g_args.cotenant) {
+    pid_t hog = -1;
+    if (g_args.cotenant == 2) {   // another process streams (hog --hog-kind stream); MPS or time-slicing decides how it shares
+        g_args.hog_kind = "stream"; g_args.hog_dur_us = g_args.cotenant_ms * 1000.0;
+        hog = spawn_hog(g_args.seconds);
+        spin_until(now_ns() + 3000000000LL);   // its context, buffer and first kernels
+    } else if (g_args.cotenant) {
         CK(cudaMalloc(&sbuf, sbytes)); CK(cudaMemset(sbuf, 0, sbytes));
         co_run = true;
         // back-to-back streaming kernels of cotenant_ms each: their blocks retire regularly, which is what lets
@@ -484,7 +491,8 @@ static void s_memory() {
             }
         }
     }
-    if (g_args.cotenant) { co_run = false; co.join(); CK(cudaStreamSynchronize(sc)); cudaFree(sbuf); }
+    if (g_args.cotenant == 2) { int status = 0; if (hog > 0) { kill(hog, SIGTERM); waitpid(hog, &status, 0); } }
+    else if (g_args.cotenant) { co_run = false; co.join(); CK(cudaStreamSynchronize(sc)); cudaFree(sbuf); }
     cudaFree(buf); cudaFree(sink);
 }
 
@@ -537,6 +545,7 @@ static pid_t spawn_hog(double seconds) {
     execl("/proc/self/exe", "gputrace", "--role", "hog", "--seconds", sec.c_str(), "--gpu", gpu.c_str(),
           "--out", out.c_str(), "--sync-rounds", sr.c_str(), "--sync-per-phase", sp.c_str(), "--threads",
           std::to_string(g_args.threads).c_str(), "--hog-dur-us", std::to_string(g_args.hog_dur_us).c_str(), "--spin-mode", std::to_string(g_args.spin_mode).c_str(),
+          "--hog-kind", g_args.hog_kind.c_str(),
           "--spin-param", std::to_string(g_args.spin_param).c_str(), (char *)nullptr);
     _exit(127);
 }
@@ -564,10 +573,13 @@ static void s_hog() {
     cudaStream_t st = make_stream(0);
     const uint64_t dur = (uint64_t)(g_args.hog_dur_us * 1000);   // blocks longer than the time-slice quantum get interrupted
     int64_t until = now_ns() + (int64_t)(g_args.seconds * 1e9);
+    float4 *sbuf = nullptr; const size_t sbytes = (size_t)512 << 20;
+    if (g_args.hog_kind == "stream") { CK(cudaMalloc(&sbuf, sbytes)); CK(cudaMemset(sbuf, 0, sbytes)); }
     while (now_ns() < until) {
         uint32_t kid = ++g_kid;
         ev(EV_LAUNCH_ENTER, kid, (uint64_t)g_dev.sms * 2, (uint64_t)g_args.threads);
-        k_spin<<<g_dev.sms * 2, g_args.threads, 0, st>>>(g_dev.td, kid, 9, dur, nullptr);
+        if (sbuf) k_stream<<<g_dev.sms, 256, 0, st>>>(g_dev.td, kid, sbuf, sbytes / sizeof(float4), dur);
+        else k_spin<<<g_dev.sms * 2, g_args.threads, 0, st>>>(g_dev.td, kid, 9, dur, nullptr);
         ev(EV_LAUNCH_RETURN, kid);
         LAUNCH_CK();
         CK(cudaStreamSynchronize(st));
@@ -628,6 +640,7 @@ int main(int argc, char **argv) {
         else if (f == "--cotenant") a.cotenant = atoi(v.c_str());
         else if (f == "--cotenant-ms") a.cotenant_ms = std::max(1, atoi(v.c_str()));
         else if (f == "--blocks-a") a.blocks_a = v;
+        else if (f == "--hog-kind") a.hog_kind = v;
         else if (f == "--blocks-b") a.blocks_b = atoi(v.c_str());
         else if (f == "--hops") a.hops = atoi(v.c_str());
         else if (f == "--batch") a.batch = std::max(1, atoi(v.c_str()));
