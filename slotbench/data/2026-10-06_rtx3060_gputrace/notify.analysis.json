@@ -1,0 +1,69 @@
+{
+ "prefix": "/workspace/gputrace/out/notify",
+ "strategy": "notify",
+ "gpu": "NVIDIA GeForce RTX 3060",
+ "sms": 28,
+ "host": "f669bbef3b09",
+ "clock": {
+  "tick_ns": 1024,
+  "method": "edge",
+  "bound_ns": 716.7200240571983,
+  "rate_ppm": 22.06516906788636,
+  "feasible": true,
+  "windows": {
+   "pre": {
+    "edge_bound_ns": 719.6871670242399,
+    "edge_feasible": true,
+    "n_up": 3000,
+    "n_down": 3000,
+    "rate_ppm": 22.727737404970583
+   },
+   "post": {
+    "edge_bound_ns": 739.8248290207703,
+    "edge_feasible": true,
+    "n_up": 3000,
+    "n_down": 3000,
+    "rate_ppm": 22.175628472620446
+   }
+  },
+  "width_ns": 1433.4400481143966
+ },
+ "n_gpu_recs": 2000,
+ "gpu_recs_dropped": 0,
+ "n_host_events": 6668,
+ "result": {
+  "bound_ns": 716.7200240571983,
+  "flag_poll": {
+   "p50": 871.25,
+   "p90": 899.1,
+   "p99": 909.255,
+   "p100": 11824.75,
+   "n": 667,
+   "mean": 890.968515742129
+  },
+  "flag_write_after_end_ns": {
+   "p50": 0.0,
+   "p90": 0.0,
+   "p99": 0.0,
+   "p100": 0.0,
+   "n": 667,
+   "mean": 0.0
+  },
+  "event_query": {
+   "p50": 1364.25,
+   "p90": 1434.95,
+   "p99": 1460.3400000000001,
+   "p100": 24233.0,
+   "n": 667,
+   "mean": 1458.5146176911544
+  },
+  "stream_sync": {
+   "p50": 1402.0,
+   "p90": 1451.125,
+   "p99": 1493.5625,
+   "p100": 17096.5,
+   "n": 666,
+   "mean": 1435.9177927927929
+  }
+ }
+}

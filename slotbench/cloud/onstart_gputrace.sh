@@ -78,6 +78,7 @@ for rep in $(seq 1 "$REPEAT"); do
     run "notify$R"           --strategy notify --iters "$ITERS" --dur-us 20
     run "dispatch$R"         --strategy dispatch --dur-us 200 --reps 5
     run "dispatch_t64$R"     --strategy dispatch --dur-us 200 --reps 3 --threads 64 --blocks 1,sm,2sm,8sm
+    run "dispatch_timer1$R"  --strategy dispatch --dur-us 200 --reps 3 --timer-every 1 --blocks sm,2sm,8sm,32sm
     run "dispatch_smem$R"    --strategy dispatch --dur-us 200 --reps 3 --smem 32768 --blocks sm,2sm,8sm
     for d in 200 500 2000 10000; do   # how long the second stream waits, vs the first kernel's block length
         run "concurrency_a${d}$R"      --strategy concurrency --dur-us "$d" --dur-b-us 200 --offset-us 100 --reps 5

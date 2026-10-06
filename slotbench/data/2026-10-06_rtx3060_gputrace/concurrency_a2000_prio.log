@@ -1,0 +1,1 @@
+gputrace concurrency: NVIDIA GeForce RTX 3060 sms=28 recs=1260 events=42 kernels=10 in 0.08 s (sync pre ok post ok)
