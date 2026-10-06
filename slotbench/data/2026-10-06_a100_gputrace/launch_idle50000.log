@@ -1,0 +1,1 @@
+gputrace launch: NVIDIA A100-SXM4-40GB sms=108 recs=200 events=1002 kernels=200 in 10.09 s (sync pre ok post ok)

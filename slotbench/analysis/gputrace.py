@@ -137,13 +137,10 @@ def a_launch(run):
                bound_ns=run.clock["bound_ns"], exec_ns=q(g_end.astype(float) - g_begin.astype(float)),
                sm_clock_ghz=q(run.freq_ghz(recs)[np.isfinite(run.freq_ghz(recs))]))
     depth = int(run.meta.get("depth", 1))
-    if depth > 1:   # inter-kernel gap inside one submission burst
-        gaps = []
-        kids = enter["kernel_id"].astype(int)
-        for i in range(1, len(enter)):
-            if (kids[i] - 1) % depth != 0 and i < len(hb):
-                gaps.append(float(g_begin[i]) - float(g_end[i - 1]))
+    if depth > 1:   # inter-kernel gap inside one submission burst (records are in launch order on one stream)
+        gaps = [float(g_begin[i]) - float(g_end[i - 1]) for i in range(1, len(g_begin)) if i % depth != 0]
         out["inter_kernel_gap_ns"] = q(gaps)
+        out["launch_to_start_first_of_burst_ns"] = q(lat[::depth])
     sync_ret = run.events("SYNC_RETURN")
     if sync_ret.size and not graph:
         # completion -> sync return for the last kernel of each iteration

@@ -1,0 +1,1 @@
+gputrace copy: NVIDIA A100-SXM4-40GB sms=108 recs=1000 events=2405 kernels=801 in 0.10 s (sync pre ok post ok)

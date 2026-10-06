@@ -66,17 +66,24 @@ __device__ __forceinline__ void trace_end(const TraceDev &td, const BlockTrace &
     td.recs[bt.slot] = r;
 }
 
-// Spin for dur_ns of GPU time from g0, tracking the largest jump between consecutive %globaltimer reads
-// (a jump much longer than one read means the block was not running: time-sliced out or preempted).
-// All threads spin so the block keeps its SM resources busy the way a real kernel would.
-// timer_every: read %globaltimer only every timer_every iterations and clock64 (a cheap per-SM register)
-// otherwise; 1 reads the timer every iteration (heavy contention when many warps spin: see README).
+// Wait dur_ns of GPU time from g0, tracking the largest jump between consecutive %globaltimer reads
+// (a jump much longer than one iteration means the block was not running: time-sliced out or preempted).
+// All threads wait so the block keeps its SM resources the way a real kernel would.
+// mode 0 (default): read the timer, then __nanosleep(sleep_ns): the warp yields, like a kernel stalled on memory.
+// mode 1: busy spin on clock64 for timer_every iterations between timer reads (a stall-free warp; see README:
+//         it monopolises its issue slot and starves the others). mode 2: read the timer every iteration.
 __device__ __forceinline__ void spin_ns(uint64_t g0, uint64_t dur_ns, uint64_t &max_gap, uint32_t &iters,
-                                        uint32_t timer_every = 32) {
+                                        uint32_t mode = 0, uint32_t param = 200) {
     uint64_t last = gtimer(), until = g0 + dur_ns;
     max_gap = 0; iters = 0;
     while (last < until) {
-        for (uint32_t i = 1; i < timer_every; i++) { uint64_t c = clock64(); if (c == ~0ull) break; }
+        if (mode == 0) {
+#if __CUDA_ARCH__ >= 700
+            __nanosleep(param);
+#endif
+        } else if (mode == 1) {
+            for (uint32_t i = 1; i < param; i++) { uint64_t c = clock64(); if (c == ~0ull) break; }
+        }
         uint64_t t = gtimer();
         if (t - last > max_gap) max_gap = t - last;
         last = t;

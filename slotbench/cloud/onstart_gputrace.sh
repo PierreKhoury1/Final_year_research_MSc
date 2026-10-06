@@ -78,7 +78,9 @@ for rep in $(seq 1 "$REPEAT"); do
     run "notify$R"           --strategy notify --iters "$ITERS" --dur-us 20
     run "dispatch$R"         --strategy dispatch --dur-us 200 --reps 5
     run "dispatch_t64$R"     --strategy dispatch --dur-us 200 --reps 3 --threads 64 --blocks 1,sm,2sm,8sm
-    run "dispatch_timer1$R"  --strategy dispatch --dur-us 200 --reps 3 --timer-every 1 --blocks sm,2sm,8sm,32sm
+    run "dispatch_busy$R"    --strategy dispatch --dur-us 200 --reps 3 --spin-mode 1 --spin-param 32 --blocks sm,2sm,8sm,32sm
+    run "dispatch_timer$R"   --strategy dispatch --dur-us 200 --reps 3 --spin-mode 2 --blocks sm,2sm,8sm,32sm
+    run "launch_graph8$R"    --strategy launch --iters 500 --depth 8 --graph 1
     run "dispatch_smem$R"    --strategy dispatch --dur-us 200 --reps 3 --smem 32768 --blocks sm,2sm,8sm
     for d in 200 500 2000 10000; do   # how long the second stream waits, vs the first kernel's block length
         run "concurrency_a${d}$R"      --strategy concurrency --dur-us "$d" --dur-b-us 200 --offset-us 100 --reps 5
@@ -90,6 +92,19 @@ for rep in $(seq 1 "$REPEAT"); do
     done
     run "copy$R"             --strategy copy --iters 1000
     run "timeslice$R"        --strategy timeslice --seconds "$SECS" --gap-us 20 --hog-dur-us 5000
+    # the same two processes under MPS (hog limited to 50 % of the SMs): no time-slicing expected, partition visible
+    if command -v nvidia-cuda-mps-control >/dev/null 2>&1 && ! pgrep -f 'nvidia-cuda-mps-(control|server)' >/dev/null; then
+        MPS_PIPE=$W/mps-pipe; MPS_LOG=$W/mps-log; mkdir -p "$MPS_PIPE" "$MPS_LOG"
+        if timeout 20 env CUDA_MPS_PIPE_DIRECTORY="$MPS_PIPE" CUDA_MPS_LOG_DIRECTORY="$MPS_LOG" nvidia-cuda-mps-control -d > "$OUT/mps.log" 2>&1; then
+            export CUDA_MPS_PIPE_DIRECTORY="$MPS_PIPE" CUDA_MPS_LOG_DIRECTORY="$MPS_LOG"
+            run "timeslice_mps50$R" --strategy timeslice --seconds "$SECS" --gap-us 20 --hog-dur-us 5000 --hog-mps-pct 50
+            run "timeslice_mps100$R" --strategy timeslice --seconds "$SECS" --gap-us 20 --hog-dur-us 5000
+            run "launch_mps$R"      --strategy launch --iters "$ITERS"
+            echo quit | timeout 10 env CUDA_MPS_PIPE_DIRECTORY="$MPS_PIPE" nvidia-cuda-mps-control >> "$OUT/mps.log" 2>&1 || true
+            unset CUDA_MPS_PIPE_DIRECTORY CUDA_MPS_LOG_DIRECTORY
+            cp -a "$MPS_LOG" "$OUT/mps_logs" 2>/dev/null || true
+        else log "MPS daemon did not start (see mps.log)"; fi
+    else log "no MPS control binary or a daemon is already running: MPS variant skipped"; fi
 done
 # compact: keep raw bins of the long strategies only if small
 find "$OUT" -name '*.gpu.bin' -size +40M -print -delete | sed 's/^/[slotbench] dropped large raw /' || true

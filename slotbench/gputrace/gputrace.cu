@@ -44,13 +44,13 @@ using namespace sb::gt;
 
 // Every block: trace_begin, spin dur_ns of GPU time (all threads), trace_end. flag (optional, mapped host
 // memory): thread 0 of the last block to finish... no: of every block, writes its end time (notify uses 1 block).
-__constant__ uint32_t c_timer_every = 32;
+__constant__ uint32_t c_spin_mode = 0, c_spin_param = 200;
 __global__ void k_spin(TraceDev td, uint32_t kid, uint32_t tag, uint64_t dur_ns, volatile uint64_t *flag) {
     __shared__ BlockTrace bt;
     if (threadIdx.x == 0) trace_begin(td, bt);
     __syncthreads();
     uint64_t gap; uint32_t it;
-    spin_ns(bt.g0, dur_ns, gap, it, c_timer_every);
+    spin_ns(bt.g0, dur_ns, gap, it, c_spin_mode, c_spin_param);
     __syncthreads();
     if (threadIdx.x == 0) {
         trace_end(td, bt, kid, tag, gap, it, 0);
@@ -137,7 +137,7 @@ __global__ void k_pcie_read(TraceDev td, uint32_t kid, const volatile uint64_t *
 struct Args {
     std::string strategy = "launch", out = "gputrace", role = "main", blocks = "1,sm,2sm,8sm,32sm";
     int gpu = 0, core = -1, clock_core = -1, iters = 2000, depth = 1, graph = 0, threads = 256, reps = 5;
-    int priority = 0, sync_rounds = 3, sync_per_phase = 1000, waves = 8, nosync = 0, idle_spin = 0, timer_every = 32;
+    int priority = 0, sync_rounds = 3, sync_per_phase = 1000, waves = 8, nosync = 0, idle_spin = 0, spin_mode = 0, spin_param = 200, hog_mps_pct = 0;
     double idle_us = 0, dur_us = 200, offset_us = 500, seconds = 10, sample_us = 100, gap_us = 20, dur_b_us = 200;
     double launch_dur_us = 10, hog_dur_us = 5000;
     size_t smem = 0, capacity = 1u << 20;
@@ -402,11 +402,13 @@ static void s_copy() {
 static pid_t spawn_hog(double seconds) {
     pid_t pid = fork();
     if (pid != 0) return pid;
+    if (g_args.hog_mps_pct > 0) setenv("CUDA_MPS_ACTIVE_THREAD_PERCENTAGE", std::to_string(g_args.hog_mps_pct).c_str(), 1);
     std::string sec = std::to_string(seconds), gpu = std::to_string(g_args.gpu), out = g_args.out + ".hog";
     std::string sr = std::to_string(g_args.sync_rounds), sp = std::to_string(g_args.sync_per_phase);
     execl("/proc/self/exe", "gputrace", "--role", "hog", "--seconds", sec.c_str(), "--gpu", gpu.c_str(),
           "--out", out.c_str(), "--sync-rounds", sr.c_str(), "--sync-per-phase", sp.c_str(), "--threads",
-          std::to_string(g_args.threads).c_str(), "--hog-dur-us", std::to_string(g_args.hog_dur_us).c_str(), (char *)nullptr);
+          std::to_string(g_args.threads).c_str(), "--hog-dur-us", std::to_string(g_args.hog_dur_us).c_str(), "--spin-mode", std::to_string(g_args.spin_mode).c_str(),
+          "--spin-param", std::to_string(g_args.spin_param).c_str(), (char *)nullptr);
     _exit(127);
 }
 
@@ -452,7 +454,7 @@ static void usage() {
             "  [--gpu N] [--core C] [--clock-core C] [--iters N] [--idle-us X] [--idle-spin 0|1] [--depth D] [--graph 0|1]\n"
             "  [--blocks LIST e.g. 1,sm,2sm,8sm] [--threads T] [--dur-us D] [--dur-b-us D] [--smem BYTES] [--reps R]\n"
             "  [--waves W] [--offset-us X] [--priority 0|1] [--seconds S] [--sample-us X] [--gap-us X]\n"
-            "  [--timer-every N (spin reads %%globaltimer every N iterations, clock64 otherwise)] [--launch-dur-us D] [--hog-dur-us D] [--sync-rounds R] [--sync-per-phase N] [--no-sync 1] [--capacity N]\n");
+            "  [--spin-mode 0 nanosleep|1 busy clock64|2 busy timer] [--spin-param N] [--launch-dur-us D] [--hog-dur-us D] [--hog-mps-pct P] [--sync-rounds R] [--sync-per-phase N] [--no-sync 1] [--capacity N]\n");
     exit(2);
 }
 
@@ -469,7 +471,9 @@ int main(int argc, char **argv) {
         else if (f == "--iters") a.iters = atoi(v.c_str());
         else if (f == "--idle-us") a.idle_us = atof(v.c_str());
         else if (f == "--idle-spin") a.idle_spin = atoi(v.c_str());
-        else if (f == "--timer-every") a.timer_every = std::max(1, atoi(v.c_str()));
+        else if (f == "--spin-mode") a.spin_mode = atoi(v.c_str());
+        else if (f == "--spin-param") a.spin_param = std::max(1, atoi(v.c_str()));
+        else if (f == "--hog-mps-pct") a.hog_mps_pct = atoi(v.c_str());
         else if (f == "--depth") a.depth = std::max(1, atoi(v.c_str()));
         else if (f == "--graph") a.graph = atoi(v.c_str());
         else if (f == "--blocks") a.blocks = v;
@@ -497,7 +501,8 @@ int main(int argc, char **argv) {
     CK(cudaSetDeviceFlags(cudaDeviceMapHost));
     if (a.core >= 0 && !pin_thread(a.core)) fprintf(stderr, "gputrace: could not pin to core %d\n", a.core);
     g_dev.init(a.capacity);
-    { uint32_t te = (uint32_t)a.timer_every; CK(cudaMemcpyToSymbol(c_timer_every, &te, sizeof te)); }
+    { uint32_t m = (uint32_t)a.spin_mode, pr = (uint32_t)a.spin_param;
+      CK(cudaMemcpyToSymbol(c_spin_mode, &m, sizeof m)); CK(cudaMemcpyToSymbol(c_spin_param, &pr, sizeof pr)); }
     if (a.smem > 0) CK(cudaFuncSetAttribute(k_spin, cudaFuncAttributeMaxDynamicSharedMemorySize, (int)a.smem));
     g_ev.reserve((size_t)a.iters * (size_t)std::max(a.depth, 1) * 4 + 1024);
     // warm the context and the kernels so the first traced launch is not a module load
@@ -557,7 +562,7 @@ int main(int argc, char **argv) {
         .add("pci_bus", g_dev.prop.pciBusID).add("clock_khz", clock_khz).add("mem_clock_khz", mem_khz)
         .add("compute_mode", compute_mode).add("mps_pct", mps ? mps : "").add("driver", drv).add("runtime", rt)
         .add("host", hostname()).add("time", iso_utc_now()).add("core", a.core).add("clock_core", a.clock_core)
-        .add("iters", a.iters).add("idle_us", a.idle_us).add("idle_spin", a.idle_spin).add("timer_every", a.timer_every).add("depth", a.depth).add("graph", a.graph)
+        .add("iters", a.iters).add("idle_us", a.idle_us).add("idle_spin", a.idle_spin).add("spin_mode", a.spin_mode).add("spin_param", a.spin_param).add("hog_mps_pct", a.hog_mps_pct).add("depth", a.depth).add("graph", a.graph)
         .add("blocks", a.blocks).add("threads", a.threads).add("dur_us", a.dur_us).add("dur_b_us", a.dur_b_us)
         .add("smem", (long long)a.smem).add("reps", a.reps).add("waves", a.waves).add("offset_us", a.offset_us)
         .add("priority", a.priority).add("launch_dur_us", a.launch_dur_us).add("hog_dur_us", a.hog_dur_us).add("seconds", a.seconds).add("sample_us", a.sample_us).add("gap_us", a.gap_us)
