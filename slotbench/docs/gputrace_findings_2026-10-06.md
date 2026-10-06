@@ -56,16 +56,35 @@ stream starts within 6–8 µs even while a 50 ms kernel occupies half the SMs o
 turns L2 hits into DRAM misses (565–571 cy) with a 14 000-cycle p99 and triples DRAM-tier latency; MPS at 50 % keeps
 L1 at 39 cycles and the p99 within 4 % of p50, but L2-resident sets still cost 700 cycles (3.3×) because L2 is shared.
 
-## 3d. The instruction table, SASS-verified (A100, RTX 3060; `data/2026-10-06_*_instr_v3`)
+## 3d. The instruction table, SASS-verified (A100 ×2 hosts, RTX 3060; `data/2026-10-06_a100_instr_v4`, `data/2026-10-06_3060_instr`)
 Chains of N dependent instructions between two clock reads, tied to the reads by volatile accesses so ptxas cannot
-move them, fitted over N to separate the instruction's latency from the bracket's cost; `tools/sass_check.py` reads
-the compiled SASS and confirms exactly N target opcodes sit between the two clock reads of every bracket kernel.
-A100 alone: FADD/FFMA/IMAD 3.9–4.0 cy, LDS 23, LDG L1 39 / L2 233 / far-L2 249 / DRAM 402 cy (272 ns), global
-atomic with return 387 cy (288 ns), store or reduction 7.7 cy to issue + 776 cy for the fence, `__syncthreads`
-26 cy (256 threads). Same-SM streaming co-tenant: every load ~950 cy, atomic 899; under MPS 50 %: L1 load 34 cy and
-ALU/barrier unchanged, L2-tier loads ~700 cy. RTX 3060 alone: L1 32.5 / L2 213–233 / DRAM 437–480 cy, ALU 4.0,
-LDS 22.9, atomic 247, barrier 32. The SASS check caught two bracket defects before they became results (chains
-hoisted above the opening read; a shuffle measured with exited lanes).
+move them, fitted over N (1..32, 128) to separate the instruction's latency from the bracket's cost;
+`tools/sass_check.py` reads the compiled SASS and confirms exactly N target opcodes sit between the two clock reads
+of every bracket kernel (91 of 91 in the final build). Produced by `gputrace characterize --profile instr`.
+
+| cycles per instruction | A100 alone | A100, same-SM streaming co-tenant | A100, MPS 50 % | RTX 3060 alone | 3060 co-tenant | 3060 MPS |
+|---|---|---|---|---|---|---|
+| LDG L1 hit / L2 / DRAM | 39 / 211–235 / 475 | 950 / 950 / 957 | 39 / 237–707 / 720 | 39 / 213–242 / 440 | 1 306 / 1 286 / 1 285 | 39 / 723 / 725 |
+| LDS / FADD / FFMA / IMAD | 23 / 4 / 4 / 4 | 23 / 3.9 / 3.6 / 3.9 | 23 / 4 / 4 / 4 | 23 / 4 / 4 / 4 | 23 / 4 / 4 / 4 | 23 / 4 / 4 / 4 |
+| SHFL.IDX (dependent) | 26.0 | 26.4 | 26.0 | 25.9 | 26.2 | 25.9 |
+| global ATOM.ADD with return | 240 (host 3) / 388 (host 1) | 846 | 420 | 242 | 321 | 271 |
+| STG issue + fence | 7.7 + 505 | 7.8 + 1 548 | 7.8 + 794 | 7.7 + 499 | 7.9 + 536 | 7.8 + 498 |
+| `__syncthreads` (256 threads) | 36 | 34 | 35 | 37 | 37 | 37 |
+
+What sharing does, to the cycle: a streaming block on the same SM makes every global load cost ~950 (A100) /
+~1 300 (3060) cycles whatever its tier, L1 hits included, so the shared resource is the LSU/L1 path, not DRAM;
+ALU chains, shuffles, shared memory and the barrier are unchanged. MPS (the other process on other SMs) leaves L1
+and ALU exact and shows only the shared L2 (3.4× on the 3060, 3× on the A100 for the sets that miss) and the
+atomic/fence path. The fits for the co-tenant column use only the samples a co-tenant block covered on the probe's
+SM (99 % on the A100, 88 % on the 3060 once the streaming kernels were queued without gaps; the first builds had
+12 ms gaps on the 3060 and whole probe kernels ran alone in them).
+
+Three defects the tooling caught before they became results: chains hoisted above the opening read (SASS); a
+shuffle measured with exited lanes (slope −0.1); and ptxas proving a shuffle of a warp-uniform value to be the
+identity and dropping the chain on the converged path (slope 0, a CALL fallback in SASS) — fixed by a
+lane-dependent start value, each link reading the next lane. A fourth was in the harness: killing the MPS
+co-tenant process mid-kernel took the main process's context down (illegal memory access at the next sync); the
+hog now stops after its current kernel.
 
 ## 4. Launch and completion latencies (p50; p99 in the datasets)
 | | RTX 3060 | A100 (host 1 / 2) | H100 |

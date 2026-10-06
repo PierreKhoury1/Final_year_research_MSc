@@ -95,10 +95,11 @@ several hosts via PTP on the host side.
 
 ## Status
 
-2026-10-06: seven campaigns on four hosts (RTX 3060, A100 ×2 hosts, H100 PCIe, 2×A100); every host↔GPU latency
+2026-10-06: campaigns on six hosts (RTX 3060, A100 ×3 hosts, H100 PCIe, 2×A100, 8×A100); every host↔GPU latency
 carries a feasible hard bound (153 of 153 runs, 0.3–0.9 µs). Findings across GPUs: `docs/gputrace_findings_2026-10-06.md`;
 per-run detail in `data/2026-10-06_*_gputrace/`. Headlines: `%globaltimer` is per GPU (two A100s differ by 1.74 s
 and drift 0.63 µs/s); a priority stream never preempts running blocks (wait = co-tenant's block length, 3 GPUs);
 process time-slicing preempts mid-block with a 2.09 ms quantum and ≈ 170 µs per switch; MPS removes it; launch →
-first instruction 2.9–5.9 µs, consecutive kernels 1–2 µs, kernel end → host 0.9–1.1 µs by mapped flag.
+first instruction 2.9–5.9 µs, consecutive kernels 1–2 µs, kernel end → host 0.9–1.1 µs by mapped flag; the
+instruction table (SASS-verified) alone / same-SM co-tenant / MPS on A100 and RTX 3060 (`data/*_instr*`).
 Next: PTP across hosts, NCCL spans, MIG, cuPHY slots on this timeline.
