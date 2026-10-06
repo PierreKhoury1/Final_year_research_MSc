@@ -107,6 +107,9 @@ for rep in $(seq 1 "$REPEAT"); do
         run "ramp_idle${idle}$R" --strategy ramp --idle-us "$idle" --dur-us 3000 --sample-us 20 --reps 40
     done
     run "copy$R"             --strategy copy --iters 1000
+    # memory hierarchy: one warp pointer-chasing per working set and PTX modifier, alone and beside a streaming co-tenant
+    run "memory$R"           --strategy memory --reps 3 --hops 65536 --batch 64
+    run "memory_cotenant$R"  --strategy memory --reps 3 --hops 65536 --batch 64 --cotenant 1 --seconds 120
     if (( NGPU > 1 )); then
         run "gpus$R"         --strategy gpus --reps 3 --sync-rounds 3 --sync-per-phase 1000
         if [[ -x $W/gputrace_nccl ]]; then

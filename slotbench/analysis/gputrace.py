@@ -416,6 +416,45 @@ def a_nccl(run):
     return out
 
 
+MODS = {0: ".ca", 1: ".cg", 2: ".cs", 3: ".nc"}
+
+
+def a_memory(run):
+    """Pointer-chase latency per working set and PTX modifier: cycles per load (clock64), ns per load (%globaltimer)
+    and the SM clock, each from the same record; the co-tenant's streaming blocks (tag 20) are summarised too.
+    Tiers are read off the latency curve: a 'knee' is a working set whose latency is > 1.6x the previous one."""
+    sizes = {}
+    enter = run.events("LAUNCH_ENTER")
+    ws_of_kid = {int(k): int(a) for k, a in zip(enter["kernel_id"], enter["a"])}
+    r = run.recs[(run.recs["tag"] < 4) & (run.recs["n_iters"] > 0)]
+    cond = int(run.meta.get("cotenant", 0))
+    for rec in r:
+        ws = ws_of_kid.get(int(rec["kernel_id"]))
+        if ws is None:
+            continue
+        n = float(rec["n_iters"])
+        cyc = (float(rec["clk_end"]) - float(rec["clk_begin"])) / n
+        ns = (float(rec["g_end"]) - float(rec["g_begin"])) / n
+        d = sizes.setdefault((int(rec["tag"]), ws), dict(cyc=[], ns=[], ghz=[]))
+        d["cyc"].append(cyc); d["ns"].append(ns)
+        if ns > 0: d["ghz"].append(cyc / ns)
+    out = dict(cotenant=cond, batch=run.meta.get("batch"), modifiers={}, bound_ns=run.clock["bound_ns"])
+    for mod in sorted(set(m for m, _ in sizes)):
+        curve = []
+        for (m, ws) in sorted(k for k in sizes if k[0] == mod):
+            d = sizes[(m, ws)]
+            curve.append(dict(ws=ws, cycles=q(d["cyc"]), ns=q(d["ns"]), ghz=float(np.median(d["ghz"])) if d["ghz"] else None))
+        knees = [c["ws"] for i, c in enumerate(curve) if i and c["cycles"]["p50"] > 1.6 * curve[i - 1]["cycles"]["p50"]]
+        out["modifiers"][MODS.get(mod, str(mod))] = dict(curve=curve, knees=knees,
+            tiers=dict(smallest=curve[0]["cycles"]["p50"] if curve else None, largest=curve[-1]["cycles"]["p50"] if curve else None))
+    co = run.recs[run.recs["tag"] == 20]
+    if co.size:
+        out["cotenant_blocks"] = dict(n=int(co.size), sms=len(set(int(x) for x in co["smid"])),
+                                      span_ms=float((co["g_end"].max() - co["g_begin"].min()) / 1e6),
+                                      passes=q(co["n_iters"]))
+    return out
+
+
 def a_copy(run):
     """host-visible memcpy latency per size and direction; GPU-side dependent PCIe read latency."""
     out = dict(memcpy={})
@@ -504,7 +543,7 @@ def a_timeslice(run):
 
 
 STRATEGIES = dict(launch=a_launch, notify=a_notify, dispatch=a_dispatch, concurrency=a_concurrency, clocks=a_clocks,
-                  copy=a_copy, timeslice=a_timeslice, ramp=a_ramp, gpus=a_gpus, nccl=a_nccl)
+                  copy=a_copy, timeslice=a_timeslice, ramp=a_ramp, gpus=a_gpus, nccl=a_nccl, memory=a_memory)
 
 
 def analyse(prefix):
@@ -553,6 +592,15 @@ def one_line(res):
         g = lambda k: (r.get(k) or {}).get("p50")
         return (f"clocks: before {g('ghz_before')} during {g('ghz_during')} after {g('ghz_after')} GHz; "
                 f"ramp to 95% {None if r.get('ramp_to_95pct_ns') is None else r['ramp_to_95pct_ns'] / 1000:.0f} us; n={r.get('n_samples')}")
+    if s == "memory":
+        parts = []
+        for mod, m in r.get("modifiers", {}).items():
+            c = m["curve"]
+            def at(ws):
+                x = [p for p in c if p["ws"] == ws]
+                return f"{x[0]['cycles']['p50']:.0f}cy/{x[0]['ns']['p50']:.0f}ns" if x else "-"
+            parts.append(f"{mod}: 16k {at(16384)} 1m {at(1 << 20)} 16m {at(16 << 20)} 128m {at(128 << 20)} knees {[k >> 10 for k in m['knees']]}K")
+        return f"memory(cotenant={r.get('cotenant')}): " + " | ".join(parts)
     if s == "nccl":
         szs = r.get("sizes", {})
         def fmt(sz, v):

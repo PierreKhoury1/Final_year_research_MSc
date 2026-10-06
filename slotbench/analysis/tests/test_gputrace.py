@@ -262,3 +262,27 @@ def test_export_chrome_trace(tmp_path):
     true_us = (host_of(g) - (int(host_of(g)) - 5000)) / 1000.0
     assert abs((blk["ts"] - first_host) - true_us) * 1000 <= run.clock["bound_ns"] + TICK
     json.dumps(tr)
+
+
+def test_memory_curve_and_knees(tmp_path):
+    p = str(tmp_path / "m")
+    recs, evs = [], []
+    g = 20_000_000
+    kid = 0
+    ghz = 1.4
+    for mod in (0, 1):
+        for ws, cyc in ((16384, 40), (1 << 20, 220), (16 << 20, 220), (128 << 20, 540)):
+            kid += 1
+            t = int(host_of(g + kid * 1_000_000))
+            evs += [(t, gt.EV["LAUNCH_ENTER"], kid, ws, mod), (t + 2000, gt.EV["LAUNCH_RETURN"], kid, 0, 0)]
+            for b in range(5):
+                g0 = g + kid * 1_000_000 + b * 50_000
+                ns = cyc * 64 / ghz
+                recs.append((g0, g0 + int(ns), 1000, 1000 + cyc * 64, 0, 3, kid, 0, mod, 64, 0))
+    write_run(p, "memory", recs, evs, dict(cotenant=0, batch=64))
+    r = gt.analyse(p)["result"]
+    ca = r["modifiers"][".ca"]
+    assert [c["ws"] for c in ca["curve"]] == [16384, 1 << 20, 16 << 20, 128 << 20]
+    assert abs(ca["curve"][0]["cycles"]["p50"] - 40) < 1e-6 and abs(ca["curve"][0]["ghz"] - ghz) < 0.01
+    assert ca["knees"] == [1 << 20, 128 << 20]
+    assert "memory(" in gt.one_line(gt.analyse(p))

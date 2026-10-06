@@ -18,6 +18,7 @@
 #include <unistd.h>
 
 #include <algorithm>
+#include <random>
 #include <cstdint>
 #include <cstdio>
 #include <cstdlib>
@@ -132,12 +133,67 @@ __global__ void k_pcie_read(TraceDev td, uint32_t kid, const volatile uint64_t *
     }
 }
 
+// ---- memory hierarchy under real conditions: one warp pointer-chases a working set, one load per hop, with
+// the PTX cache modifier chosen at compile time; every `batch` hops it records (clock64, %globaltimer), so each
+// record gives cycles per load, ns per load and the SM clock at that moment. buf[i] = next index (units of u32).
+template <int MOD>
+__device__ __forceinline__ unsigned ld_mod(const unsigned *p) {
+    unsigned v;
+    if (MOD == 0) asm volatile("ld.global.ca.u32 %0, [%1];" : "=r"(v) : "l"(p) : "memory");
+    else if (MOD == 1) asm volatile("ld.global.cg.u32 %0, [%1];" : "=r"(v) : "l"(p) : "memory");
+    else if (MOD == 2) asm volatile("ld.global.cs.u32 %0, [%1];" : "=r"(v) : "l"(p) : "memory");
+    else asm volatile("ld.global.nc.u32 %0, [%1];" : "=r"(v) : "l"(p) : "memory");
+    return v;
+}
+template <int MOD>
+__global__ void k_chase(TraceDev td, uint32_t kid, const unsigned *buf, uint32_t hops, uint32_t batch, uint32_t ws_idx,
+                        uint32_t cond, unsigned *sink) {
+    if (threadIdx.x != 0) return;   // one lane chases; the warp's other lanes are idle (latency, not throughput)
+    unsigned idx = 0;
+    for (uint32_t h = 0; h < hops; h++) idx = ld_mod<MOD>(buf + idx);   // warm the tiers for this working set
+    for (uint32_t b = 0; b < hops / batch; b++) {
+        uint64_t g0 = gtimer();
+        uint64_t c0 = clock64();
+        for (uint32_t i = 0; i < batch; i++) idx = ld_mod<MOD>(buf + idx);
+        if (idx == 0xffffffffu) asm volatile("trap;");   // consume the chain before reading the clocks
+        uint64_t c1 = clock64();
+        uint64_t g1 = gtimer();
+        unsigned s = atomicAdd(td.count, 1u);
+        if (s < td.capacity) {
+            GpuRec r{};
+            r.g_begin = g0; r.g_end = g1; r.clk_begin = c0; r.clk_end = c1; r.smid = smid(); r.kernel_id = kid;
+            r.block = ws_idx; r.tag = (uint32_t)MOD; r.n_iters = batch; r.flags = cond;
+            td.recs[s] = r;
+        }
+    }
+    *sink = idx;
+}
+// Co-tenant: every block streams through a large buffer (read + write) for dur_ns, polluting L2 and using DRAM
+// bandwidth the way a throughput kernel does. Records one GpuRec per block (tag 20).
+__global__ void k_stream(TraceDev td, uint32_t kid, float4 *buf, size_t n, uint64_t dur_ns) {
+    __shared__ BlockTrace bt;
+    if (threadIdx.x == 0) trace_begin(td, bt);
+    __syncthreads();
+    uint64_t until = bt.g0 + dur_ns;
+    size_t i = blockIdx.x * (size_t)blockDim.x + threadIdx.x, stride = (size_t)gridDim.x * blockDim.x;
+    float4 acc = make_float4(0, 0, 0, 0);
+    uint32_t passes = 0;
+    while (gtimer() < until) {
+        for (size_t j = i; j < n; j += stride) { float4 v = buf[j]; acc.x += v.x; buf[j] = make_float4(v.y, v.z, v.w, acc.x); }
+        passes++;
+    }
+    __syncthreads();
+    if (threadIdx.x == 0) { trace_end(td, bt, kid, 20, 0, passes, 0); if (acc.x == 12345.678f) buf[0] = acc; }
+}
+
 // ------------------------------------------------------------------ host side
 
 struct Args {
     std::string strategy = "launch", out = "gputrace", role = "main", blocks = "1,sm,2sm,8sm,32sm";
     int gpu = 0, core = -1, clock_core = -1, iters = 2000, depth = 1, graph = 0, threads = 256, reps = 5;
     int priority = 0, sync_rounds = 3, sync_per_phase = 1000, waves = 8, nosync = 0, idle_spin = 0, spin_mode = 0, spin_param = 200, hog_mps_pct = 0;
+    int cotenant = 0, hops = 65536, batch = 64, mods = 7;   // memory: mods bitmask 1 .ca, 2 .cg, 4 .cs, 8 .nc
+    std::string ws = "4k,16k,64k,128k,192k,256k,512k,1m,2m,4m,8m,16m,24m,32m,48m,64m,128m";
     double idle_us = 0, dur_us = 200, offset_us = 500, seconds = 10, sample_us = 100, gap_us = 20, dur_b_us = 200;
     double launch_dur_us = 10, hog_dur_us = 5000;
     size_t smem = 0, capacity = 1u << 20;
@@ -359,6 +415,64 @@ static void s_ramp() {
     }
 }
 
+static std::vector<size_t> parse_sizes(const std::string &s) {
+    std::vector<size_t> out;
+    for (size_t i = 0; i < s.size();) {
+        size_t j = s.find(',', i); if (j == std::string::npos) j = s.size();
+        std::string t = s.substr(i, j - i); size_t mult = 1;
+        if (!t.empty() && (t.back() == 'k' || t.back() == 'K')) { mult = 1024; t.pop_back(); }
+        else if (!t.empty() && (t.back() == 'm' || t.back() == 'M')) { mult = 1024 * 1024; t.pop_back(); }
+        out.push_back((size_t)atof(t.c_str()) * mult); i = j + 1;
+    }
+    return out;
+}
+
+// memory: for each working set and modifier, one warp chases a random cyclic permutation of 128-byte lines;
+// optionally while a streaming co-tenant runs on every SM (--cotenant 1). Conditions are in GpuRec.flags.
+static void s_memory() {
+    cudaStream_t st = make_stream(0), sc = make_stream(0);
+    std::vector<size_t> sizes = parse_sizes(g_args.ws);
+    size_t max_ws = 0; for (size_t x : sizes) max_ws = std::max(max_ws, x);
+    unsigned *buf, *sink; CK(cudaMalloc(&buf, max_ws + 4096)); CK(cudaMalloc(&sink, 64));
+    std::vector<unsigned> h(max_ws / 4 + 1024);
+    float4 *sbuf = nullptr; const size_t sbytes = (size_t)512 << 20;
+    uint32_t kco = 0;
+    if (g_args.cotenant) {
+        CK(cudaMalloc(&sbuf, sbytes)); CK(cudaMemset(sbuf, 0, sbytes));
+        kco = ++g_kid;
+        ev(EV_LAUNCH_ENTER, kco, (uint64_t)g_dev.sms, 256);
+        k_stream<<<g_dev.sms, 256, 0, sc>>>(g_dev.td, kco, sbuf, sbytes / sizeof(float4), (uint64_t)(g_args.seconds * 1e9));
+        ev(EV_LAUNCH_RETURN, kco); LAUNCH_CK();
+        spin_until(now_ns() + 20000000);   // let it reach steady state
+    }
+    std::mt19937_64 rng(42);
+    for (uint32_t wi = 0; wi < sizes.size(); wi++) {
+        const size_t lines = std::max<size_t>(2, sizes[wi] / 128);
+        std::vector<unsigned> perm(lines);
+        for (size_t i = 0; i < lines; i++) perm[i] = (unsigned)i;
+        for (size_t i = lines - 1; i > 0; i--) std::swap(perm[i], perm[rng() % (i + 1)]);   // one random cycle
+        for (size_t i = 0; i < lines; i++) h[(size_t)perm[i] * 32] = perm[(i + 1) % lines] * 32;
+        CK(cudaMemcpy(buf, h.data(), lines * 128, cudaMemcpyHostToDevice));
+        for (int mod = 0; mod < 4; mod++) {
+            if (!(g_args.mods & (1 << mod))) continue;
+            for (int r = 0; r < g_args.reps; r++) {
+                uint32_t kid = ++g_kid;
+                const uint32_t hops = (uint32_t)std::max<size_t>(g_args.hops, 2 * lines);
+                ev(EV_LAUNCH_ENTER, kid, sizes[wi], (uint64_t)mod);
+                if (mod == 0) k_chase<0><<<1, 32, 0, st>>>(g_dev.td, kid, buf, hops, g_args.batch, wi, g_args.cotenant, sink);
+                else if (mod == 1) k_chase<1><<<1, 32, 0, st>>>(g_dev.td, kid, buf, hops, g_args.batch, wi, g_args.cotenant, sink);
+                else if (mod == 2) k_chase<2><<<1, 32, 0, st>>>(g_dev.td, kid, buf, hops, g_args.batch, wi, g_args.cotenant, sink);
+                else k_chase<3><<<1, 32, 0, st>>>(g_dev.td, kid, buf, hops, g_args.batch, wi, g_args.cotenant, sink);
+                ev(EV_LAUNCH_RETURN, kid); LAUNCH_CK();
+                CK(cudaStreamSynchronize(st));
+                ev(EV_SYNC_RETURN, kid);
+            }
+        }
+    }
+    if (g_args.cotenant) { CK(cudaStreamSynchronize(sc)); ev(EV_SYNC_RETURN, kco); cudaFree(sbuf); }
+    cudaFree(buf); cudaFree(sink);
+}
+
 static void s_copy() {
     cudaStream_t st = make_stream(0);
     const size_t sizes[] = {8, 4096, 65536, 1u << 20};
@@ -471,7 +585,8 @@ static int s_gpus() {
 
 static void usage() {
     fprintf(stderr,
-            "usage: gputrace --strategy launch|notify|dispatch|concurrency|clocks|ramp|copy|timeslice|gpus --out PREFIX\n"
+            "usage: gputrace --strategy launch|notify|dispatch|concurrency|clocks|ramp|copy|timeslice|gpus|memory --out PREFIX\n"
+            "  memory: [--ws 4k,64k,...,128m] [--mods MASK 1 .ca 2 .cg 4 .cs 8 .nc] [--hops N] [--batch N] [--cotenant 0|1 (+--seconds S)]\n"
             "  [--gpu N] [--core C] [--clock-core C] [--iters N] [--idle-us X] [--idle-spin 0|1] [--depth D] [--graph 0|1]\n"
             "  [--blocks LIST e.g. 1,sm,2sm,8sm] [--threads T] [--dur-us D] [--dur-b-us D] [--smem BYTES] [--reps R]\n"
             "  [--waves W] [--offset-us X] [--priority 0|1] [--seconds S] [--sample-us X] [--gap-us X]\n"
@@ -495,6 +610,11 @@ int main(int argc, char **argv) {
         else if (f == "--spin-mode") a.spin_mode = atoi(v.c_str());
         else if (f == "--spin-param") a.spin_param = std::max(1, atoi(v.c_str()));
         else if (f == "--hog-mps-pct") a.hog_mps_pct = atoi(v.c_str());
+        else if (f == "--cotenant") a.cotenant = atoi(v.c_str());
+        else if (f == "--hops") a.hops = atoi(v.c_str());
+        else if (f == "--batch") a.batch = std::max(1, atoi(v.c_str()));
+        else if (f == "--mods") a.mods = atoi(v.c_str());
+        else if (f == "--ws") a.ws = v;
         else if (f == "--depth") a.depth = std::max(1, atoi(v.c_str()));
         else if (f == "--graph") a.graph = atoi(v.c_str());
         else if (f == "--blocks") a.blocks = v;
@@ -547,6 +667,7 @@ int main(int argc, char **argv) {
     else if (a.strategy == "clocks") s_clocks();
     else if (a.strategy == "copy") s_copy();
     else if (a.strategy == "ramp") s_ramp();
+    else if (a.strategy == "memory") s_memory();
     else if (a.strategy == "gpus") n_gpus = s_gpus();
     else if (a.strategy == "timeslice") s_timeslice();
     else if (a.strategy == "hog") s_hog();
@@ -585,7 +706,7 @@ int main(int argc, char **argv) {
         .add("pci_bus", g_dev.prop.pciBusID).add("clock_khz", clock_khz).add("mem_clock_khz", mem_khz)
         .add("compute_mode", compute_mode).add("mps_pct", mps ? mps : "").add("driver", drv).add("runtime", rt)
         .add("host", hostname()).add("time", iso_utc_now()).add("core", a.core).add("clock_core", a.clock_core)
-        .add("iters", a.iters).add("idle_us", a.idle_us).add("idle_spin", a.idle_spin).add("spin_mode", a.spin_mode).add("spin_param", a.spin_param).add("hog_mps_pct", a.hog_mps_pct).add("depth", a.depth).add("graph", a.graph)
+        .add("iters", a.iters).add("idle_us", a.idle_us).add("idle_spin", a.idle_spin).add("spin_mode", a.spin_mode).add("spin_param", a.spin_param).add("hog_mps_pct", a.hog_mps_pct).add("cotenant", a.cotenant).add("hops", a.hops).add("batch", a.batch).add("mods", a.mods).add("ws", a.ws).add("depth", a.depth).add("graph", a.graph)
         .add("blocks", a.blocks).add("threads", a.threads).add("dur_us", a.dur_us).add("dur_b_us", a.dur_b_us)
         .add("smem", (long long)a.smem).add("reps", a.reps).add("waves", a.waves).add("offset_us", a.offset_us)
         .add("priority", a.priority).add("launch_dur_us", a.launch_dur_us).add("hog_dur_us", a.hog_dur_us).add("seconds", a.seconds).add("sample_us", a.sample_us).add("gap_us", a.gap_us)
