@@ -159,3 +159,28 @@ def test_one_line_does_not_crash(tmp_path):
     p = str(tmp_path / "o")
     write_run(p, "launch", [rec(20_000_000, 20_001_000)], [(int(host_of(20_000_000)) - 5000, 1, 1, 1, 32), (int(host_of(20_000_000)) - 4000, 2, 1, 0, 0)])
     assert "launch:" in gt.one_line(gt.analyse(p))
+
+
+def test_gpus_offsets(tmp_path):
+    p = str(tmp_path / "g")
+    # GPU 1's timer reads 5 ms behind GPU 0's at the same host instant, with the same rate
+    write_run(p, "gpus", [rec(20_000_000, 20_001_000)], [(int(host_of(20_000_000)) - 5000, 7, 0, 200, 0)], dict(n_gpus=2, reps=2))
+    for r in range(2):
+        write_clock(p, f"gpu0.r{r}", 10_000_000 + r * 30_000_000_000)
+        up, down, classic = [], [], []
+        for i in range(300):
+            E = 10_000_000 + r * 30_000_000_000 + i * 3000
+            E -= E % TICK
+            E1 = E - 5_000_000   # GPU1 reading at the instant GPU0 reads E
+            up.append((int(host_of(E) + rng.uniform(200, 900)), E1))
+            down.append((int(host_of(E) - rng.uniform(200, 900)), E1))
+            classic.append((int(host_of(E) - rng.uniform(300, 1200)), int(host_of(E) + rng.uniform(300, 1200)), E1))
+        for name, rows, ncol in (("up", up, 2), ("down", down, 2), ("classic", classic, 3)):
+            with open(f"{p}.gpu1.r{r}.{name}.bin", "wb") as f:
+                for row in rows:
+                    f.write(struct.pack("<" + "q" * ncol, *row))
+    res = gt.analyse(p)["result"]
+    g1 = res["gpus"][1]
+    assert g1["feasible"] and abs(g1["timer_minus_gpu0_ns"] + 5_000_000) <= g1["offset_bound_ns"] + TICK
+    assert abs(g1["rate_minus_gpu0_ppm"]) < 0.5
+    assert "gpus:" in gt.one_line(gt.analyse(p))

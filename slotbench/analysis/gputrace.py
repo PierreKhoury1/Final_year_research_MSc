@@ -299,6 +299,45 @@ def a_ramp(run):
                 curve=[(float(a), float(b)) for a, b in zip(grid_t[::max(1, n // 200)], grid_f[::max(1, n // 200)])])
 
 
+def a_gpus(run):
+    """Every GPU's %globaltimer on the host axis (edge fit per GPU over all rounds): offset and rate of each GPU
+    relative to GPU 0 at the middle of the run, with the sum of the two bounds."""
+    n = int(run.meta.get("n_gpus", 1))
+    reps = int(run.meta.get("reps", 1))
+    fits = {}
+    for d in range(n):
+        up, down, classic = [], [], []
+        for r in range(reps):
+            pre = f"{run.prefix}.gpu{d}.r{r}"
+            try:
+                classic += load_cols(pre + ".classic.bin", 3)
+                up += load_cols(pre + ".up.bin", 2)
+                down += load_cols(pre + ".down.bin", 2)
+            except FileNotFoundError:
+                continue
+        if len(up) > 10 and len(down) > 10:
+            e = edge_fit(up, down)
+            c = classic_fit(classic, run.clock["tick_ns"]) if len(classic) > 60 else None
+            fits[d] = dict(edge=e, classic=c, t_first=min(h for h, _ in up), t_last=max(h for h, _ in up))
+    if not fits:
+        return dict(error="no per-GPU samples", n_gpus=n)
+    t_mid = 0.5 * (min(f["t_first"] for f in fits.values()) + max(f["t_last"] for f in fits.values()))
+    def gpu_of(d, t):   # GPU d's timer reading at host time t under its edge model
+        E0, H0, a, mid = fits[d]["edge"]["model"]
+        return E0 + (t - H0 - mid) / a
+    out = dict(n_gpus=n, rounds=reps, t_mid=t_mid, gpus={})
+    for d, f in fits.items():
+        e = f["edge"]
+        g = dict(bound_ns=e["bound_ns"], feasible=e["feasible"], rate_ppm=e["rate_ppm"], n_up=e["n_up"], n_down=e["n_down"],
+                 classic_eps_ns=f["classic"]["eps_with_tick_ns"] if f["classic"] else None)
+        if 0 in fits:
+            g["timer_minus_gpu0_ns"] = gpu_of(d, t_mid) - gpu_of(0, t_mid)
+            g["offset_bound_ns"] = e["bound_ns"] + fits[0]["edge"]["bound_ns"]
+            g["rate_minus_gpu0_ppm"] = e["rate_ppm"] - fits[0]["edge"]["rate_ppm"]
+        out["gpus"][d] = g
+    return out
+
+
 def a_copy(run):
     """host-visible memcpy latency per size and direction; GPU-side dependent PCIe read latency."""
     out = dict(memcpy={})
@@ -367,7 +406,7 @@ def a_timeslice(run):
 
 
 STRATEGIES = dict(launch=a_launch, notify=a_notify, dispatch=a_dispatch, concurrency=a_concurrency, clocks=a_clocks,
-                  copy=a_copy, timeslice=a_timeslice, ramp=a_ramp)
+                  copy=a_copy, timeslice=a_timeslice, ramp=a_ramp, gpus=a_gpus)
 
 
 def analyse(prefix):
@@ -416,6 +455,11 @@ def one_line(res):
         g = lambda k: (r.get(k) or {}).get("p50")
         return (f"clocks: before {g('ghz_before')} during {g('ghz_during')} after {g('ghz_after')} GHz; "
                 f"ramp to 95% {None if r.get('ramp_to_95pct_ns') is None else r['ramp_to_95pct_ns'] / 1000:.0f} us; n={r.get('n_samples')}")
+    if s == "gpus":
+        gs = r.get("gpus", {})
+        return "gpus: " + " | ".join(f"gpu{d}: {g.get('timer_minus_gpu0_ns', 0) / 1000:+.2f} us vs gpu0 ±{g.get('offset_bound_ns', 0) / 1000:.2f} "
+                                     f"({g.get('rate_minus_gpu0_ppm', 0):+.2f} ppm, bound {g['bound_ns']:.0f} ns{'' if g['feasible'] else ' INFEASIBLE'})"
+                                     for d, g in gs.items())
     if s == "ramp":
         rr = r.get("ramp_to_95pct_ns")
         return (f"ramp(idle {r.get('idle_us')} us): first sample {(r.get('ghz_first_sample') or {}).get('p50', float('nan')):.2f} GHz, "

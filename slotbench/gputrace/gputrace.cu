@@ -446,11 +446,32 @@ static void s_hog() {
     }
 }
 
+// Every GPU on the host, from this one host thread: clock sync per GPU (PREFIX.gpuN.{classic,up,down}.bin),
+// interleaved over `reps` rounds so drift and offsets between the GPUs' %globaltimers are measured on one host axis.
+static int s_gpus() {
+    int n = 0;
+    CK(cudaGetDeviceCount(&n));
+    for (int r = 0; r < g_args.reps; r++) {
+        for (int d = 0; d < n; d++) {
+            CK(cudaSetDevice(d));
+            ClockSamples cs;
+            std::string err;
+            ev(EV_MARK, (uint32_t)d, 200, (uint64_t)r);
+            bool ok = clocksync(g_args.sync_rounds, g_args.sync_per_phase, g_args.clock_core, cs, &err);
+            ev(EV_MARK, (uint32_t)d, 201, ok);
+            if (!ok) { fprintf(stderr, "gputrace: gpu %d clocksync: %s\n", d, err.c_str()); continue; }
+            cs.dump(g_args.out + ".gpu" + std::to_string(d) + ".r" + std::to_string(r));
+        }
+    }
+    CK(cudaSetDevice(g_args.gpu));
+    return n;
+}
+
 // ---- main
 
 static void usage() {
     fprintf(stderr,
-            "usage: gputrace --strategy launch|notify|dispatch|concurrency|clocks|ramp|copy|timeslice --out PREFIX\n"
+            "usage: gputrace --strategy launch|notify|dispatch|concurrency|clocks|ramp|copy|timeslice|gpus --out PREFIX\n"
             "  [--gpu N] [--core C] [--clock-core C] [--iters N] [--idle-us X] [--idle-spin 0|1] [--depth D] [--graph 0|1]\n"
             "  [--blocks LIST e.g. 1,sm,2sm,8sm] [--threads T] [--dur-us D] [--dur-b-us D] [--smem BYTES] [--reps R]\n"
             "  [--waves W] [--offset-us X] [--priority 0|1] [--seconds S] [--sample-us X] [--gap-us X]\n"
@@ -517,6 +538,7 @@ int main(int argc, char **argv) {
     if (!a.nosync) pre_ok = clocksync(a.sync_rounds, a.sync_per_phase, a.clock_core, pre, &err);
     if (!pre_ok) fprintf(stderr, "gputrace: pre clocksync failed: %s\n", err.c_str());
     ev(EV_MARK, 0, 100, 0);   // strategy start
+    int n_gpus = 1;
     const int64_t t_s0 = now_ns();
     if (a.strategy == "launch") s_launch();
     else if (a.strategy == "notify") s_notify();
@@ -525,6 +547,7 @@ int main(int argc, char **argv) {
     else if (a.strategy == "clocks") s_clocks();
     else if (a.strategy == "copy") s_copy();
     else if (a.strategy == "ramp") s_ramp();
+    else if (a.strategy == "gpus") n_gpus = s_gpus();
     else if (a.strategy == "timeslice") s_timeslice();
     else if (a.strategy == "hog") s_hog();
     else usage();
@@ -567,7 +590,7 @@ int main(int argc, char **argv) {
         .add("smem", (long long)a.smem).add("reps", a.reps).add("waves", a.waves).add("offset_us", a.offset_us)
         .add("priority", a.priority).add("launch_dur_us", a.launch_dur_us).add("hog_dur_us", a.hog_dur_us).add("seconds", a.seconds).add("sample_us", a.sample_us).add("gap_us", a.gap_us)
         .add("sync_rounds", a.sync_rounds).add("sync_per_phase", a.sync_per_phase)
-        .add("n_gpu_recs", (long long)n_rec).add("gpu_recs_dropped", (long long)(count > n_rec ? count - n_rec : 0))
+        .add("n_gpus", n_gpus).add("n_gpu_recs", (long long)n_rec).add("gpu_recs_dropped", (long long)(count > n_rec ? count - n_rec : 0))
         .add("n_host_events", (long long)g_ev.size()).add("kernels", (long long)g_kid)
         .add("pre_ok", pre_ok).add("post_ok", post_ok).add("bad_classic_pre", pre.bad_classic).add("bad_classic_post", post.bad_classic)
         .add("t_start", (long long)t_start).add("t_strategy_start", (long long)t_s0).add("t_strategy_end", (long long)t_s1)

@@ -91,6 +91,9 @@ for rep in $(seq 1 "$REPEAT"); do
         run "ramp_idle${idle}$R" --strategy ramp --idle-us "$idle" --dur-us 3000 --sample-us 20 --reps 40
     done
     run "copy$R"             --strategy copy --iters 1000
+    if (( $(nvidia-smi -L | wc -l) > 1 )); then
+        run "gpus$R"         --strategy gpus --reps 3 --sync-rounds 3 --sync-per-phase 1000
+    fi
     run "timeslice$R"        --strategy timeslice --seconds "$SECS" --gap-us 20 --hog-dur-us 5000
     # the same two processes under MPS (hog limited to 50 % of the SMs): no time-slicing expected, partition visible
     if command -v nvidia-cuda-mps-control >/dev/null 2>&1 && ! pgrep -f 'nvidia-cuda-mps-(control|server)' >/dev/null; then

@@ -213,11 +213,11 @@ class Api:
 
 # ---------------------------------------------------------------- offers
 
-def build_offer_query(gpu, max_dph=None, min_rel=None, cuda=None, limit=10, verified=False, disk=40.0):
-    """Server-side search query (POST /bundles/): cheapest rentable on-demand single-GPU offers."""
+def build_offer_query(gpu, max_dph=None, min_rel=None, cuda=None, limit=10, verified=False, disk=40.0, num_gpus=1):
+    """Server-side search query (POST /bundles/): cheapest rentable on-demand offers with num_gpus GPUs (default 1)."""
     q = {
         "gpu_name": {"eq": gpu},
-        "num_gpus": {"eq": 1},
+        "num_gpus": {"eq": int(num_gpus)},
         "rentable": {"eq": True},
         "rented": {"eq": False},
         "external": {"eq": False},
@@ -237,11 +237,11 @@ def build_offer_query(gpu, max_dph=None, min_rel=None, cuda=None, limit=10, veri
     return q
 
 
-def filter_offers(offers, gpu, max_dph=None, min_rel=None, cuda=None, limit=10, verified=False):
+def filter_offers(offers, gpu, max_dph=None, min_rel=None, cuda=None, limit=10, verified=False, num_gpus=1):
     """Re-apply every filter locally (never trust the server alone) and sort by price, then reliability."""
     out = []
     for o in offers:
-        if o.get("gpu_name") != gpu or int(o.get("num_gpus") or 0) != 1:
+        if o.get("gpu_name") != gpu or int(o.get("num_gpus") or 0) != int(num_gpus):
             continue
         if o.get("rentable") is False or o.get("rented") is True:
             continue
@@ -283,10 +283,10 @@ def format_offers(offers):
 
 def find_offers(api, args):
     q = build_offer_query(args.gpu, args.max_dph, args.min_reliability, args.cuda, args.limit,
-                          args.verified, getattr(args, "disk", 40.0))
+                          args.verified, getattr(args, "disk", 40.0), getattr(args, "num_gpus", 1))
     offers = api.search_offers(q)
     return filter_offers(offers, args.gpu, args.max_dph, args.min_reliability, args.cuda, args.limit,
-                         args.verified)
+                         args.verified, getattr(args, "num_gpus", 1))
 
 
 # ---------------------------------------------------------------- launch payload
@@ -853,6 +853,7 @@ def add_offer_filters(p, gpu_required=False):
                    '"A100 SXM4", "A100 PCIE", "H100 SXM", "H100 PCIE"')
     p.add_argument("--max-dph", type=float, default=1.0, help="max total $/hour (incl. disk)")
     p.add_argument("--min-reliability", type=float, default=0.98)
+    p.add_argument("--num-gpus", type=int, default=1, help="GPUs per offer (multi-GPU hosts for gputrace gpus/NCCL runs)")
     p.add_argument("--cuda", type=float, default=12.4, help="min cuda_max_good of the host driver")
     p.add_argument("--limit", type=int, default=10)
     p.add_argument("--verified", action="store_true", help="only verified hosts")
