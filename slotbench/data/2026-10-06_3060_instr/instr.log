@@ -1,0 +1,1 @@
+gputrace instr: NVIDIA GeForce RTX 3060 sms=28 recs=40736 events=479 kernels=175 in 5.53 s (sync pre ok post ok)

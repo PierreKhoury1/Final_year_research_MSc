@@ -1,0 +1,497 @@
+<title>gputrace Timeline</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@400;500;600&display=swap">
+<style>
+/* Layout: an instrument panel. Header with run picker, a fixed time ruler, scrolling lanes (one per GPU track),
+   then the measurements the trace contains. Color = which GPU; shaded slice edges = that GPU's clock bound. */
+:root {
+  --bg: #f3f5f4; --panel: #ffffff; --ink: #14191b; --muted: #59646a; --line: #dde3e1; --grid: #e9edeb;
+  --accent: #0d7a6b; --sel: #d9480f; --host: #7b868b;
+  --c0: #2a78d6; --c1: #eb6834; --c2: #1baf7a; --c3: #eda100; --c4: #e87ba4; --c5: #008300; --c6: #4a3aa7; --c7: #e34948;
+  --display: "IBM Plex Sans Condensed", "Arial Narrow", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0e1213; --panel: #151a1c; --ink: #e6ecea; --muted: #94a19d; --line: #273033; --grid: #1d2426;
+  --accent: #3dbfa9; --sel: #ff7a45; --host: #8d989c;
+  --c0: #3987e5; --c1: #d95926; --c2: #199e70; --c3: #c98500; --c4: #d55181; --c5: #2a9d2a; --c6: #9085e9; --c7: #e66767;
+  color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #0e1213; --panel: #151a1c; --ink: #e6ecea; --muted: #94a19d; --line: #273033; --grid: #1d2426;
+  --accent: #3dbfa9; --sel: #ff7a45; --host: #8d989c;
+  --c0: #3987e5; --c1: #d95926; --c2: #199e70; --c3: #c98500; --c4: #d55181; --c5: #2a9d2a; --c6: #9085e9; --c7: #e66767;
+  color-scheme: dark }
+body { background: var(--bg); color: var(--ink); font: 14px/1.45 var(--display); }
+.wrap { padding-inline: 16px; padding-block: 18px 40px; max-width: 1400px; margin: 0 auto; display: grid; gap: 14px; }
+header { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 18px; }
+h1 { margin: 0; font-size: 22px; font-weight: 600; letter-spacing: .01em; text-wrap: balance; }
+h1 span { color: var(--accent); }
+.sub { color: var(--muted); font-size: 13.5px; max-width: 70ch; }
+.bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.tabs { display: flex; flex-wrap: wrap; gap: 6px; }
+button, .file, select { font: 500 13px var(--display); color: var(--ink); background: var(--panel); border: 1px solid var(--line);
+  border-radius: 6px; padding: 6px 10px; cursor: pointer; }
+button:hover, .file:hover, select:hover { border-color: var(--accent); }
+button:focus-visible, .file:focus-within, select:focus-visible, canvas:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.tabs button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--panel); }
+.file input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+.spacer { flex: 1 1 auto; }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; min-width: 0; }
+.note { padding: 10px 14px; color: var(--muted); font-size: 13.5px; border-bottom: 1px solid var(--line); }
+.note b { color: var(--ink); font-weight: 600; }
+#ruler { display: block; width: 100%; height: 30px; border-bottom: 1px solid var(--line); }
+#lanes { max-height: min(62vh, 640px); overflow-y: auto; overflow-x: hidden; touch-action: pan-y; }
+#body { display: block; width: 100%; cursor: grab; }
+#body.drag { cursor: grabbing; }
+.foot { display: flex; flex-wrap: wrap; gap: 6px 16px; align-items: center; padding: 8px 14px; border-top: 1px solid var(--line);
+  font-size: 12.5px; color: var(--muted); }
+.key { display: inline-flex; align-items: center; gap: 6px; }
+.sw { width: 18px; height: 10px; border-radius: 2px; display: inline-block; }
+.band { width: 18px; height: 10px; display: inline-block; background: linear-gradient(90deg, transparent 0 30%, var(--c0) 30% 70%, transparent 70%), var(--grid); opacity: .7; }
+#readout { font: 12.5px/1.5 var(--mono); padding: 10px 14px; min-height: 3.2em; font-variant-numeric: tabular-nums; }
+#readout .k { color: var(--muted); }
+#readout .hl { color: var(--sel); font-weight: 500; }
+#tip { position: fixed; pointer-events: none; z-index: 5; background: var(--panel); border: 1px solid var(--line); border-radius: 6px;
+  padding: 7px 9px; font: 12px/1.45 var(--mono); box-shadow: 0 4px 16px rgb(0 0 0 / .12); max-width: 300px; font-variant-numeric: tabular-nums; }
+.grid2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px; }
+@media (max-width: 860px) { .grid2 { grid-template-columns: minmax(0, 1fr); } }
+h2 { margin: 0; padding: 10px 14px 0; font-size: 15px; font-weight: 600; }
+.h2sub { padding: 2px 14px 8px; color: var(--muted); font-size: 12.5px; }
+.tbl { overflow-x: auto; padding: 0 14px 12px; }
+table { border-collapse: collapse; width: 100%; font: 12.5px var(--mono); font-variant-numeric: tabular-nums; }
+th { text-align: right; font: 500 11.5px var(--display); letter-spacing: .04em; text-transform: uppercase; color: var(--muted);
+  padding: 6px 8px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+th:first-child, td:first-child { text-align: left; }
+td { text-align: right; padding: 5px 8px; border-bottom: 1px solid var(--grid); white-space: nowrap; }
+td .sw { width: 10px; height: 10px; margin-right: 6px; vertical-align: -1px; }
+.ok { color: var(--accent); }
+.empty { color: var(--muted); padding: 6px 0; font: 12.5px var(--display); }
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>gputrace <span>Timeline</span></h1>
+    <div class="sub">Host calls and GPU work from real runs, all on the host clock. Each GPU's clock error has a proven bound, drawn as the shaded edge of its slices. Scroll or pinch to zoom, drag to pan, click two slices to measure between them.</div>
+  </header>
+
+  <div class="bar">
+    <div class="tabs" id="tabs" role="group" aria-label="Run"></div>
+    <div class="spacer"></div>
+    <select id="goto" aria-label="Go to"><option value="">Go to…</option></select>
+    <button id="zin" aria-label="Zoom in">+</button>
+    <button id="zout" aria-label="Zoom out">−</button>
+    <button id="fit">Fit</button>
+    <label class="file">Open a trace…<input id="file" type="file" accept=".json,application/json"></label>
+  </div>
+
+  <div class="panel">
+    <div class="note" id="note"></div>
+    <canvas id="ruler" aria-hidden="true"></canvas>
+    <div id="lanes"><canvas id="body" tabindex="0" aria-label="Timeline. Arrow keys pan, plus and minus zoom."></canvas></div>
+    <div class="foot" id="legend"></div>
+    <div id="readout"></div>
+  </div>
+
+  <div class="grid2">
+    <div class="panel">
+      <h2>Durations</h2>
+      <div class="h2sub">Every slice type in this run, from its own GPU or host timestamps.</div>
+      <div class="tbl"><table id="dur"></table></div>
+    </div>
+    <div class="panel">
+      <h2>Between GPUs</h2>
+      <div class="h2sub" id="skewsub">The same operation on different GPUs, matched by id. A difference smaller than the bound is a tie.</div>
+      <div class="tbl"><table id="skew"></table></div>
+    </div>
+  </div>
+</div>
+<div id="tip" hidden></div>
+
+<script>
+const DATASETS = [];
+
+const $ = id => document.getElementById(id);
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const PAL = ['--c0','--c1','--c2','--c3','--c4','--c5','--c6','--c7'];
+
+function fmt(us) {
+  const a = Math.abs(us);
+  if (a < 1) return (us * 1000).toFixed(0) + ' ns';
+  if (a < 1000) return us.toFixed(a < 10 ? 2 : 1) + ' µs';
+  if (a < 1e6) return (us / 1000).toFixed(a < 1e4 ? 3 : 2) + ' ms';
+  return (us / 1e6).toFixed(3) + ' s';
+}
+function fmtBytes(b) {
+  if (!b) return '';
+  const u = ['B','KB','MB','GB']; let i = 0;
+  while (b >= 1024 && i < 3) { b /= 1024; i++; }
+  return (b % 1 ? b.toFixed(1) : b) + ' ' + u[i];
+}
+function pct(arr, p) {
+  if (!arr.length) return NaN;
+  const s = [...arr].sort((a, b) => a - b);
+  return s[Math.min(s.length - 1, Math.floor(p / 100 * s.length))];
+}
+function prettyLabel(l) {
+  return l.replace(/allreduce (\d+) B/, (_, b) => 'all-reduce ' + fmtBytes(+b));
+}
+
+// ---------- convert a Chrome trace (gputrace_export.py) into the compact form
+function compactChrome(tr, name) {
+  const pname = {}, tname = {};
+  for (const e of tr.traceEvents || []) {
+    if (e.ph === 'M' && e.name === 'process_name') pname[e.pid] = e.args.name;
+    if (e.ph === 'M' && e.name === 'thread_name') tname[e.pid + ':' + e.tid] = e.args.name;
+  }
+  const lanes = [], laneOf = {}, labels = [], labelOf = {}, ev = [];
+  const xs = (tr.traceEvents || []).filter(e => e.ph === 'X' || e.ph === 'i')
+    .sort((a, b) => a.pid - b.pid || (a.tid || 0) - (b.tid || 0) || a.ts - b.ts);
+  for (const e of xs) {
+    const key = e.pid + ':' + (e.tid || 0);
+    if (!(key in laneOf)) {
+      const pn = pname[e.pid] || ('pid ' + e.pid), m = pn.match(/±(\d+) ns/);
+      laneOf[key] = lanes.length;
+      lanes.push({ p: pn.replace(/\s*\(.*\)$/, ''), t: tname[key] || String(e.tid || 0), b: m ? +m[1] : 0, pid: e.pid });
+    }
+    let lab = e.pid === 1 ? e.name.replace(/ k\d+.*$/, '') : e.name;
+    lab = lab.replace(/ b\d+$/, '').replace('hog ', 'other process ');
+    if (!(lab in labelOf)) { labelOf[lab] = labels.length; labels.push(lab); }
+    const a = e.args || {};
+    ev.push([laneOf[key], e.ts, e.dur || 0, labelOf[lab], a.kernel || 0, a.bytes || a.a || 0]);
+  }
+  return { name, note: 'Opened from ' + name + '.', lanes, labels, ev };
+}
+
+// ---------- state
+let D = null, view = { t0: 0, t1: 1 }, sel = [], laneY = [], laneH = [], totalH = 0, colorOf = null, byLane = [];
+const LABEL_W = () => (innerWidth < 560 ? 104 : 190);
+const body = $('body'), ruler = $('ruler'), lanesEl = $('lanes');
+
+function prepare(ds) {
+  D = ds; sel = [];
+  byLane = D.lanes.map(() => []);
+  D.ev.forEach((e, i) => byLane[e[0]].push(i));
+  laneY = []; laneH = []; let y = 4;
+  D.lanes.forEach((l, i) => {
+    if (i > 0 && D.lanes[i - 1].pid !== l.pid) y += 8;
+    const h = l.pid === 1 ? 18 : 22;
+    laneY.push(y); laneH.push(h); y += h + 2;
+  });
+  totalH = y + 4;
+  const gpuPids = [...new Set(D.lanes.filter(l => l.pid >= 10).map(l => l.pid))];
+  const multi = gpuPids.filter(p => p < 60).length >= 2;
+  colorOf = (e) => {
+    const lane = D.lanes[e[0]];
+    if (lane.pid === 1) return css('--host');
+    if (multi || lane.pid >= 60) return css(PAL[gpuPids.indexOf(lane.pid) % 8]);
+    const gpuLabels = [...new Set(D.ev.filter(x => D.lanes[x[0]].pid >= 10 && D.lanes[x[0]].pid < 60).map(x => x[3]))];
+    return css(PAL[Math.max(0, gpuLabels.indexOf(e[3])) % 8]);
+  };
+  // initial window: large runs open on their first dozen GPU slices, small ones fit
+  const gpuEv = D.ev.filter(e => D.lanes[e[0]].pid >= 10).sort((a, b) => a[1] - b[1]);
+  if (D.ev.length > 3000 && gpuEv.length > 24) {
+    const first = gpuEv[0], k = gpuEv.slice(0, 24), end = Math.max(...k.map(e => e[1] + e[2]));
+    const host0 = Math.min(...D.ev.filter(e => e[1] >= first[1] - 60 && e[1] <= end).map(e => e[1]));
+    const pad = (end - host0) * 0.04; view = { t0: host0 - pad, t1: end + pad };
+  } else fitAll();
+  buildGoto(); buildTables(); legend(); $('note').innerHTML = '<b>' + D.name + '.</b> ' + D.note; readout(); resize();
+}
+function fitAll() {
+  let lo = Infinity, hi = -Infinity;
+  for (const e of D.ev) { lo = Math.min(lo, e[1]); hi = Math.max(hi, e[1] + e[2]); }
+  const pad = (hi - lo) * 0.02 || 1; view = { t0: lo - pad, t1: hi + pad };
+}
+
+// ---------- drawing
+function resize() {
+  const dpr = devicePixelRatio || 1, w = lanesEl.clientWidth;
+  for (const [c, h] of [[ruler, 30], [body, totalH]]) {
+    c.width = Math.round(w * dpr); c.height = Math.round(h * dpr);
+    c.style.height = h + 'px'; c.getContext('2d').setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  draw();
+}
+const X = t => LABEL_W() + (t - view.t0) / (view.t1 - view.t0) * (lanesEl.clientWidth - LABEL_W() - 8);
+const T = x => view.t0 + (x - LABEL_W()) / (lanesEl.clientWidth - LABEL_W() - 8) * (view.t1 - view.t0);
+
+function niceStep(span, px) {
+  const raw = span / Math.max(2, px / 110), p = Math.pow(10, Math.floor(Math.log10(raw)));
+  for (const m of [1, 2, 5, 10]) if (m * p >= raw) return m * p;
+  return 10 * p;
+}
+function draw() {
+  if (!D) return;
+  const w = lanesEl.clientWidth, LW = LABEL_W();
+  const ink = css('--ink'), muted = css('--muted'), grid = css('--grid'), line = css('--line'), panel = css('--panel');
+  // ruler
+  let g = ruler.getContext('2d');
+  g.fillStyle = panel; g.fillRect(0, 0, w, 30);
+  const step = niceStep(view.t1 - view.t0, w - LW);
+  g.font = '11px ' + css('--mono'); g.fillStyle = muted; g.textBaseline = 'middle';
+  const ticks = [];
+  for (let t = Math.ceil(view.t0 / step) * step; t <= view.t1; t += step) ticks.push(t);
+  const origin = ticks.length ? ticks[0] : view.t0;
+  for (const t of ticks) {
+    const x = X(t); if (x < LW) continue;
+    g.fillStyle = line; g.fillRect(x, 20, 1, 10);
+    g.fillStyle = muted; g.fillText((t === origin ? '' : '+') + fmt(t - origin), x + 3, 12);
+  }
+  g.fillStyle = muted; g.fillText('t = ' + fmt(origin), 8, 12);
+  g.fillText('span ' + fmt(view.t1 - view.t0), 8, 24);
+  // lanes
+  g = body.getContext('2d');
+  g.fillStyle = panel; g.fillRect(0, 0, w, totalH);
+  g.fillStyle = grid; for (const t of ticks) { const x = X(t); if (x >= LW) g.fillRect(x, 0, 1, totalH); }
+  const pxPerUs = (w - LW - 8) / (view.t1 - view.t0);
+  D.lanes.forEach((l, li) => {
+    const y = laneY[li], h = laneH[li];
+    g.fillStyle = grid; g.fillRect(LW, y + h, w - LW, 1);
+    let lastX = -1, lastC = '';
+    for (const i of byLane[li]) {
+      const e = D.ev[i]; if (e[1] > view.t1 || e[1] + e[2] < view.t0) continue;
+      let x0 = X(e[1]), x1 = X(e[1] + e[2]);
+      if (e[2] === 0) { g.fillStyle = muted; g.fillRect(x0, y + 3, 1, h - 6); continue; }
+      x0 = Math.max(x0, LW); x1 = Math.min(x1, w);
+      if (x1 - x0 < 1) { if (Math.floor(x0) === lastX) continue; x1 = x0 + 1; }
+      lastX = Math.floor(x0);
+      const c = colorOf(e); g.fillStyle = c; g.globalAlpha = l.pid === 1 ? 0.75 : 0.9;
+      g.fillRect(x0, y + 2, Math.max(1, x1 - x0 - (x1 - x0 > 4 ? 1 : 0)), h - 4);
+      g.globalAlpha = 1;
+      // bound bands on both edges, drawn once they are at least 2 px wide
+      const bpx = (l.b / 1000) * pxPerUs;
+      if (l.b && bpx >= 2) {
+        g.fillStyle = c; g.globalAlpha = 0.22;
+        for (const t of [e[1], e[1] + e[2]]) { const xc = X(t); if (xc > LW - bpx && xc < w + bpx) g.fillRect(Math.max(LW, xc - bpx), y, Math.min(2 * bpx, w - LW), h); }
+        g.globalAlpha = 1;
+      }
+      if (x1 - x0 > 60) {
+        g.fillStyle = '#fff'; g.font = '500 11px ' + css('--display'); g.textBaseline = 'middle';
+        const txt = prettyLabel(D.labels[e[3]]); g.save(); g.beginPath(); g.rect(x0, y, x1 - x0 - 4, h); g.clip();
+        g.fillText(txt, x0 + 5, y + h / 2 + 0.5); g.restore();
+      }
+    }
+    // selection outline
+    for (const [k, i] of sel.entries()) {
+      const e = D.ev[i]; if (e[0] !== li) continue;
+      g.strokeStyle = css('--sel'); g.lineWidth = 2;
+      g.strokeRect(X(e[1]) - 1, y + 1, Math.max(3, X(e[1] + e[2]) - X(e[1]) + 2), h - 2);
+      g.fillStyle = css('--sel'); g.font = '600 11px ' + css('--display'); g.fillText(k ? 'B' : 'A', X(e[1]) - 11, y + h / 2);
+    }
+    // label column
+    g.fillStyle = panel; g.fillRect(0, y - 1, LW - 4, h + 2);
+    const first = li === 0 || D.lanes[li - 1].pid !== l.pid;
+    g.textBaseline = 'middle';
+    g.font = (first ? '600 ' : '400 ') + '12px ' + css('--display');
+    g.fillStyle = first ? ink : muted;
+    const short = l.p.replace(/: NVIDIA /, ' · ').replace(/-SXM4-40GB|-SXM4-80GB| PCIe/, '');
+    let txt = first ? (short + (l.t && !/^\d+$/.test(l.t) ? ' · ' + l.t : '')) : l.t;
+    const maxW = LW - 14;
+    while (g.measureText(txt).width > maxW && txt.length > 4) txt = txt.slice(0, -2) + '…';
+    g.fillText(txt, 8, y + h / 2);
+  });
+  g.fillStyle = line; g.fillRect(LW - 1, 0, 1, totalH);
+}
+
+// ---------- hit testing, tooltip, selection, measuring
+function hit(mx, my) {
+  const li = laneY.findIndex((y, i) => my >= y && my <= y + laneH[i]);
+  if (li < 0 || mx < LABEL_W()) return -1;
+  const t = T(mx), tol = 3 * (view.t1 - view.t0) / (lanesEl.clientWidth - LABEL_W());
+  let best = -1, bd = Infinity;
+  for (const i of byLane[li]) {
+    const e = D.ev[i];
+    const d = t < e[1] ? e[1] - t : (t > e[1] + e[2] ? t - e[1] - e[2] : 0);
+    if (d < bd) { bd = d; best = i; }
+  }
+  return bd <= tol ? best : -1;
+}
+function describe(i) {
+  const e = D.ev[i], l = D.lanes[e[0]];
+  const rows = [['', prettyLabel(D.labels[e[3]])], ['on', l.p.replace(/: NVIDIA.*/, '') + ' · ' + l.t], ['start', fmt(e[1])]];
+  if (e[2]) rows.push(['duration', fmt(e[2])]);
+  if (e[4]) rows.push(['id', e[4]]);
+  if (e[5] && /all-?reduce|copy|launch/.test(D.labels[e[3]])) rows.push(['bytes', fmtBytes(e[5])]);
+  rows.push(['clock', l.b ? '±' + fmt(l.b / 1000) + ' on host axis' : 'host clock (exact)']);
+  return rows;
+}
+const tip = $('tip');
+function showTip(i, cx, cy) {
+  if (i < 0) { tip.hidden = true; return; }
+  tip.innerHTML = describe(i).map(([k, v]) => k ? `<span style="color:var(--muted)">${k}</span> ${v}` : `<b>${v}</b>`).join('<br>');
+  tip.hidden = false;
+  const r = tip.getBoundingClientRect();
+  tip.style.left = Math.min(innerWidth - r.width - 8, cx + 14) + 'px';
+  tip.style.top = Math.min(innerHeight - r.height - 8, cy + 14) + 'px';
+}
+function readout() {
+  const el = $('readout');
+  if (!sel.length) { el.innerHTML = '<span class="k">Click a slice to select it as A, then another as B to measure the time between them.</span>'; return; }
+  const a = D.ev[sel[0]], la = D.lanes[a[0]];
+  let html = `<span class="hl">A</span> ${prettyLabel(D.labels[a[3]])} on ${la.p.replace(/: NVIDIA.*/, '')} · ${la.t}: start ${fmt(a[1])}, duration ${fmt(a[2])}`;
+  if (sel.length > 1) {
+    const b = D.ev[sel[1]], lb = D.lanes[b[0]];
+    const bound = ((la.pid === lb.pid ? 0 : la.b + lb.b)) / 1000;
+    const ds = b[1] - a[1], de = (b[1] + b[2]) - (a[1] + a[2]), gap = b[1] - (a[1] + a[2]);
+    const tie = v => Math.abs(v) <= bound ? ' <span class="ok">(within the bound: order not certain)</span>' : '';
+    html += `<br><span class="hl">B</span> ${prettyLabel(D.labels[b[3]])} on ${lb.p.replace(/: NVIDIA.*/, '')} · ${lb.t}: start ${fmt(b[1])}, duration ${fmt(b[2])}`;
+    html += `<br><span class="k">B start − A start</span> ${fmt(ds)}${bound ? ' ± ' + fmt(bound) : ''}${tie(ds)}`;
+    html += `<br><span class="k">B end − A end&nbsp;&nbsp;&nbsp;&nbsp;</span> ${fmt(de)}${bound ? ' ± ' + fmt(bound) : ''}${tie(de)}`;
+    html += `<br><span class="k">B start − A end&nbsp;&nbsp;</span> ${fmt(gap)}${bound ? ' ± ' + fmt(bound) : ''}` +
+            `<span class="k">${la.pid === lb.pid ? '  same clock: no mapping error between them' : '  bound = sum of both clocks’ bounds'}</span>`;
+  }
+  el.innerHTML = html;
+}
+
+// ---------- tables: the measurements in the run
+function buildTables() {
+  const groups = new Map();
+  for (const e of D.ev) {
+    if (!e[2]) continue;
+    const l = D.lanes[e[0]], key = e[3] + '|' + l.pid;
+    if (!groups.has(key)) groups.set(key, { lab: D.labels[e[3]], proc: l.p, pid: l.pid, ev: e, d: [] });
+    groups.get(key).d.push(e[2]);
+  }
+  let rows = [...groups.values()];
+  // collapse long per-kernel label lists (k1, k2 ... / other process kNNN) into one row per process
+  const many = rows.filter(r => /^(k\d+|other process k\d+)$/.test(r.lab));
+  if (many.length > 8) {
+    rows = rows.filter(r => !many.includes(r));
+    const byP = new Map();
+    for (const r of many) { const k = r.pid + (r.lab.startsWith('other') ? 'o' : ''); if (!byP.has(k)) byP.set(k, { ...r, lab: r.lab.replace(/\d+$/, '*'), d: [] }); byP.get(k).d.push(...r.d); }
+    rows.push(...byP.values());
+  }
+  rows.sort((a, b) => a.pid - b.pid || a.lab.localeCompare(b.lab, undefined, { numeric: true }));
+  $('dur').innerHTML = '<tr><th>Slice</th><th>On</th><th>n</th><th>p50</th><th>p99</th><th>max</th></tr>' +
+    rows.map(r => `<tr><td><span class="sw" style="background:${colorOf(r.ev)}"></span>${prettyLabel(r.lab)}</td>
+      <td>${r.proc.replace(/: NVIDIA.*/, '')}</td><td>${r.d.length}</td><td>${fmt(pct(r.d, 50))}</td><td>${fmt(pct(r.d, 99))}</td><td>${fmt(Math.max(...r.d))}</td></tr>`).join('');
+  // cross-GPU skew: same label and id on different GPU processes
+  const gpuP = [...new Set(D.lanes.filter(l => l.pid >= 10 && l.pid < 60).map(l => l.pid))];
+  const sk = $('skew');
+  if (gpuP.length < 2) {
+    sk.innerHTML = '<tr><td class="empty">This run has one GPU. Open a multi-GPU run (2×A100 or 8×A100) to compare GPUs.</td></tr>';
+    $('skewsub').textContent = 'Needs two or more GPUs in the run.';
+    return;
+  }
+  $('skewsub').textContent = 'The same all-reduce on each GPU, matched by id, against GPU 0. Differences inside the bound are ties.';
+  const idx = new Map();
+  for (const e of D.ev) { const l = D.lanes[e[0]]; if (l.pid < 10 || l.pid >= 60 || !e[4]) continue; idx.set(e[4] + '|' + l.pid, e); }
+  const out = [];
+  const labs = [...new Set(D.ev.filter(e => D.lanes[e[0]].pid >= 10 && e[4]).map(e => e[3]))];
+  for (const lab of labs) for (const p of gpuP.slice(1)) {
+    const ds = [], de = []; let b = 0;
+    for (const e of D.ev) {
+      if (e[3] !== lab || D.lanes[e[0]].pid !== gpuP[0]) continue;
+      const o = idx.get(e[4] + '|' + p); if (!o) continue;
+      ds.push(o[1] - e[1]); de.push((o[1] + o[2]) - (e[1] + e[2]));
+      b = (D.lanes[e[0]].b + D.lanes[o[0]].b) / 1000;
+    }
+    if (ds.length) out.push({ lab: D.labels[lab], p, ds, de, b, ev: D.ev.find(e => D.lanes[e[0]].pid === p) });
+  }
+  sk.innerHTML = '<tr><th>Operation</th><th>GPU</th><th>start Δ p50</th><th>end Δ p50</th><th>end Δ p99</th><th>bound</th></tr>' +
+    out.map(r => {
+      const e50 = pct(r.de, 50), cls = Math.abs(e50) <= r.b ? 'ok' : '';
+      return `<tr><td>${prettyLabel(r.lab)}</td><td><span class="sw" style="background:${colorOf(r.ev)}"></span>${r.p - 10}</td>
+        <td>${fmt(pct(r.ds, 50))}</td><td class="${cls}">${fmt(e50)}</td><td>${fmt(pct(r.de, 99))}</td><td>±${fmt(r.b)}</td></tr>`;
+    }).join('');
+}
+function legend() {
+  const gpuP = [...new Set(D.lanes.filter(l => l.pid >= 10).map(l => l.pid))];
+  const multi = gpuP.filter(p => p < 60).length >= 2;
+  let items = [`<span class="key"><span class="sw" style="background:var(--host)"></span>host</span>`];
+  if (multi || gpuP.some(p => p >= 60)) gpuP.forEach((p, k) => {
+    const l = D.lanes.find(x => x.pid === p);
+    items.push(`<span class="key"><span class="sw" style="background:var(${PAL[k % 8]})"></span>${l.p.replace(/: NVIDIA.*/, '')}</span>`);
+  });
+  else items.push('<span class="key">GPU colors = kernel</span>');
+  items.push('<span class="key"><span class="band"></span>shaded edge = ± clock bound (visible when zoomed in)</span>');
+  $('legend').innerHTML = items.join('');
+}
+function buildGoto() {
+  const sel_ = $('goto'); sel_.innerHTML = '<option value="">Go to…</option>';
+  const seen = new Set();
+  D.ev.filter(e => D.lanes[e[0]].pid >= 10).sort((a, b) => a[1] - b[1]).forEach(e => {
+    const lab = D.labels[e[3]]; if (seen.has(lab) || seen.size > 40) return; seen.add(lab);
+    const o = document.createElement('option'); o.value = e[3]; o.textContent = 'first ' + prettyLabel(lab); sel_.appendChild(o);
+  });
+}
+$('goto').onchange = ev => {
+  const lab = +ev.target.value; if (ev.target.value === '') return;
+  const list = D.ev.filter(e => e[3] === lab && D.lanes[e[0]].pid >= 10).sort((a, b) => a[1] - b[1]).slice(0, 6 * Math.max(1, new Set(D.lanes.filter(l => l.pid >= 10).map(l => l.pid)).size));
+  const lo = list[0][1], hi = Math.max(...list.map(e => e[1] + e[2])), pad = (hi - lo) * 0.08;
+  view = { t0: lo - pad, t1: hi + pad }; draw(); ev.target.value = '';
+};
+
+// ---------- zoom / pan (mouse, wheel, touch, keyboard)
+function zoomAt(f, x) {
+  const t = T(x), span = (view.t1 - view.t0) * f;
+  if (span < 0.01) return;
+  const r = (t - view.t0) / (view.t1 - view.t0);
+  view = { t0: t - r * span, t1: t - r * span + span }; draw();
+}
+function pan(dx) { const dt = dx * (view.t1 - view.t0) / (lanesEl.clientWidth - LABEL_W()); view.t0 -= dt; view.t1 -= dt; draw(); }
+body.addEventListener('wheel', e => {
+  if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) { e.preventDefault(); pan(-e.deltaX); return; }
+  if (!e.ctrlKey && !e.metaKey && !e.altKey && e.shiftKey) { e.preventDefault(); pan(-e.deltaY); return; }
+  e.preventDefault(); zoomAt(Math.exp(e.deltaY * 0.0022), e.offsetX);
+}, { passive: false });
+const ptrs = new Map(); let dragged = false, pinch0 = null;
+body.addEventListener('pointerdown', e => { body.setPointerCapture(e.pointerId); ptrs.set(e.pointerId, { x: e.offsetX, y: e.offsetY }); dragged = false; body.classList.add('drag');
+  if (ptrs.size === 2) { const [a, b] = [...ptrs.values()]; pinch0 = { d: Math.abs(a.x - b.x) || 1, view: { ...view }, mid: (a.x + b.x) / 2 }; } });
+body.addEventListener('pointermove', e => {
+  const p = ptrs.get(e.pointerId);
+  if (!p) { showTip(hit(e.offsetX, e.offsetY), e.clientX, e.clientY); return; }
+  if (ptrs.size === 2 && pinch0) {
+    p.x = e.offsetX; const [a, b] = [...ptrs.values()]; const d = Math.abs(a.x - b.x) || 1;
+    view = { ...pinch0.view }; zoomAt(pinch0.d / d, pinch0.mid); dragged = true; return;
+  }
+  const dx = e.offsetX - p.x; if (Math.abs(dx) > 2) dragged = true;
+  p.x = e.offsetX; p.y = e.offsetY; if (dragged) { pan(dx); tip.hidden = true; }
+});
+function up(e) {
+  const wasDrag = dragged; ptrs.delete(e.pointerId); if (ptrs.size < 2) pinch0 = null; body.classList.remove('drag');
+  if (e.type === 'pointerup' && !wasDrag && ptrs.size === 0) {
+    const i = hit(e.offsetX, e.offsetY);
+    if (i < 0) sel = []; else if (sel.length !== 1) sel = [i]; else if (sel[0] !== i) sel = [sel[0], i];
+    readout(); draw();
+  }
+}
+body.addEventListener('pointerup', up); body.addEventListener('pointercancel', up);
+body.addEventListener('pointerleave', () => { tip.hidden = true; });
+body.addEventListener('keydown', e => {
+  const w = lanesEl.clientWidth;
+  if (e.key === 'ArrowLeft') pan(w * 0.15); else if (e.key === 'ArrowRight') pan(-w * 0.15);
+  else if (e.key === '+' || e.key === '=') zoomAt(0.7, w / 2); else if (e.key === '-') zoomAt(1 / 0.7, w / 2);
+  else if (e.key === 'Escape') { sel = []; readout(); draw(); } else return;
+  e.preventDefault();
+});
+$('zin').onclick = () => zoomAt(0.6, (LABEL_W() + lanesEl.clientWidth) / 2);
+$('zout').onclick = () => zoomAt(1 / 0.6, (LABEL_W() + lanesEl.clientWidth) / 2);
+$('fit').onclick = () => { fitAll(); draw(); };
+
+// ---------- runs: embedded examples plus any trace the viewer opens
+function tabs(active) {
+  const t = $('tabs'); t.innerHTML = '';
+  DATASETS.forEach((d, i) => {
+    const b = document.createElement('button'); b.textContent = d.name; b.setAttribute('aria-pressed', i === active ? 'true' : 'false');
+    b.onclick = () => { tabs(i); prepare(DATASETS[i]); try { localStorage.setItem('gtl-tab', i); } catch (_) {} };
+    t.appendChild(b);
+  });
+}
+$('file').onchange = async ev => {
+  const f = ev.target.files[0]; if (!f) return;
+  try {
+    const j = JSON.parse(await f.text());
+    const ds = j.traceEvents ? compactChrome(j, f.name.replace(/\.trace\.json$|\.json$/, '')) : j;
+    if (!ds.ev || !ds.lanes) throw new Error('not a gputrace trace');
+    DATASETS.push(ds); tabs(DATASETS.length - 1); prepare(ds);
+  } catch (err) {
+    $('note').innerHTML = '<b>Could not open ' + f.name + '.</b> Expected a .trace.json written by analysis/gputrace_export.py (' + err.message + ').';
+  }
+  ev.target.value = '';
+};
+let start = 0; try { start = Math.min(DATASETS.length - 1, +(localStorage.getItem('gtl-tab') || 0)); } catch (_) {}
+tabs(start); prepare(DATASETS[start]);
+addEventListener('resize', () => resize());
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { buildTables(); legend(); draw(); });
+new MutationObserver(() => { buildTables(); legend(); draw(); }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+</script>

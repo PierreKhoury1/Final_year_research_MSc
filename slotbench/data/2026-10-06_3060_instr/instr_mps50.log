@@ -1,0 +1,2 @@
+gputrace hog: NVIDIA GeForce RTX 3060 sms=14 recs=2702 events=581 kernels=193 in 10.58 s (sync pre ok post ok)
+gputrace instr: NVIDIA GeForce RTX 3060 sms=28 recs=40736 events=479 kernels=175 in 10.91 s (sync pre ok post ok)
