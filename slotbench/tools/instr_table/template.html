@@ -1,0 +1,391 @@
+<title>gputrace Instruction Table</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a control strip, then a wide dot plot of every instruction, then a two-up detail row (fit, distribution) for the selected one, then the table. */
+:root {
+  --bg: #f6f6f3; --surface: #ffffff; --line: #e4e3de; --grid: #ecebe6;
+  --ink: #15161a; --ink-2: #55575f; --ink-3: #8a8c94;
+  --c-alone: #2a78d6; --c-cot: #eb6834; --c-mps: #1baf7a; --sel: #15161a;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #171818; --surface: #1f2021; --line: #33353a; --grid: #2a2c30;
+  --ink: #f2f2ef; --ink-2: #bdbeb7; --ink-3: #85878e;
+  --c-alone: #3987e5; --c-cot: #d95926; --c-mps: #199e70; --sel: #f2f2ef; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #171818; --surface: #1f2021; --line: #33353a; --grid: #2a2c30;
+  --ink: #f2f2ef; --ink-2: #bdbeb7; --ink-3: #85878e;
+  --c-alone: #3987e5; --c-cot: #d95926; --c-mps: #199e70; --sel: #f2f2ef; color-scheme: dark }
+* { box-sizing: border-box }
+body { background: var(--bg); color: var(--ink); font: 14px/1.5 var(--sans); margin: 0 }
+.wrap { max-width: 1180px; margin: 0 auto; padding-inline: 16px; padding-block: 20px 40px; display: grid; gap: 18px }
+h1 { font-size: 22px; font-weight: 600; margin: 0; letter-spacing: -0.01em; text-wrap: balance }
+h2 { font-size: 15px; font-weight: 600; margin: 0 }
+.lede { color: var(--ink-2); max-width: 68ch; margin: 4px 0 0 }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 14px 16px; min-width: 0 }
+.row { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 5px; overflow: hidden }
+.seg button { font: 500 13px var(--sans); color: var(--ink-2); background: transparent; border: 0; padding: 6px 12px; cursor: pointer }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--bg) }
+.seg button:focus-visible, .leg button:focus-visible, .tbl-toggle:focus-visible { outline: 2px solid var(--c-alone); outline-offset: 1px }
+.leg { display: flex; flex-wrap: wrap; gap: 6px 14px }
+.leg button { font: 13px var(--sans); color: var(--ink-2); background: none; border: 0; padding: 4px 2px; cursor: pointer; display: inline-flex; align-items: center; gap: 7px }
+.leg button[aria-pressed="false"] { opacity: .45; text-decoration: line-through }
+.sw { width: 12px; height: 12px; border-radius: 50%; display: inline-block }
+.sw.alone { background: var(--c-alone) } .sw.cot { background: var(--c-cot) } .sw.mps { background: var(--c-mps) }
+.meta { color: var(--ink-3); font-size: 12px }
+.two { display: grid; grid-template-columns: 1.3fr 1fr; gap: 18px }
+@media (max-width: 760px) { .two { grid-template-columns: 1fr } }
+svg { display: block; width: 100%; height: auto; font: 12px var(--sans); overflow: visible }
+.ax { fill: var(--ink-3) } .ax-mono { fill: var(--ink-3); font-family: var(--mono); font-size: 11px }
+.lab { fill: var(--ink-2); font-family: var(--mono); font-size: 12px }
+.lab.sel { fill: var(--ink); font-weight: 500 }
+.grid { stroke: var(--grid); stroke-width: 1 }
+.rowhit { fill: transparent; cursor: pointer }
+.rowhit:hover + .rowbg, .rowbg.sel { fill: var(--grid) }
+.val { fill: var(--ink-2); font-family: var(--mono); font-size: 11px }
+#tip { position: fixed; pointer-events: none; background: var(--ink); color: var(--bg); font: 12px/1.4 var(--mono); padding: 6px 9px; border-radius: 4px; max-width: 280px; z-index: 5 }
+.kv { display: grid; grid-template-columns: auto 1fr; gap: 2px 12px; font-family: var(--mono); font-size: 12px; color: var(--ink-2) }
+.kv b { color: var(--ink); font-weight: 500 }
+.fits { display: grid; gap: 8px; margin-top: 10px }
+.fit { display: grid; grid-template-columns: 14px 1fr; gap: 8px; align-items: start; font-size: 12px; color: var(--ink-2) }
+.fit .sw { margin-top: 3px }
+.fit b { color: var(--ink); font-weight: 500; font-family: var(--mono) }
+.tbl-toggle { font: 500 13px var(--sans); color: var(--ink-2); background: none; border: 1px solid var(--line); border-radius: 5px; padding: 5px 10px; cursor: pointer }
+.tblwrap { overflow-x: auto; margin-top: 10px }
+table { border-collapse: collapse; font-family: var(--mono); font-size: 12px; font-variant-numeric: tabular-nums; white-space: nowrap }
+th, td { text-align: right; padding: 4px 10px; border-bottom: 1px solid var(--line) }
+th { color: var(--ink-3); font-weight: 500 } th:first-child, td:first-child { text-align: left }
+td.sel { font-weight: 500 }
+.note { color: var(--ink-2); font-size: 13px; max-width: 78ch }
+.strip + .strip { margin-top: 6px }
+.strip-h { font-size: 12px; color: var(--ink-2); display: flex; gap: 8px; align-items: center; margin: 4px 0 2px }
+.anat { display: grid; gap: 10px; margin-top: 8px }
+.anat-row { display: grid; grid-template-columns: 14px 1fr; gap: 8px; align-items: center }
+.anat-row .sw { margin-top: 0 }
+.anat-bar { position: relative; height: 22px; width: 100%; display: flex; gap: 2px; align-items: stretch }
+.anat-bar span { height: 100%; border-radius: 0 }
+.anat-bar .ovh { background: var(--line) }
+.anat-bar .ins { opacity: .85 }
+.anat-bar .ins:last-of-type { border-radius: 0 4px 4px 0 }
+.anat-cap { font-family: var(--mono); font-size: 11px; color: var(--ink-2); margin-top: 2px }
+.anat-cap b { color: var(--ink); font-weight: 500 }
+pre.sass { font: 12px/1.45 var(--mono); background: var(--bg); border: 1px solid var(--line); border-radius: 5px; padding: 10px 12px; overflow-x: auto; margin: 8px 0 0; color: var(--ink-2) }
+pre.sass .tg { color: var(--ink); font-weight: 500; background: color-mix(in srgb, var(--c-alone) 14%, transparent); border-radius: 2px }
+pre.sass .clk { color: var(--ink); font-weight: 500 }
+.three { display: grid; grid-template-columns: 1.4fr 1fr; gap: 18px }
+@media (max-width: 860px) { .three { grid-template-columns: 1fr } }
+.note p { margin: 6px 0 }
+@media (prefers-reduced-motion: no-preference) { .rowbg { transition: fill .12s } }
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>gputrace Instruction Table</h1>
+    <p class="lede">Latency of one dependent instruction, in SM clock cycles, measured as the slope of bracket time over chain length. Every bracket was checked in the compiled SASS. Pick a GPU, click an instruction to see the fit it came from and the samples behind it.</p>
+  </header>
+
+  <div class="panel row" id="controls">
+    <div class="seg" role="group" aria-label="GPU" id="gpuseg"></div>
+    <div class="leg" id="leg">
+      <button id="leg-alone" aria-pressed="true" data-c="alone"><span class="sw alone"></span>alone</button>
+      <button id="leg-cot" aria-pressed="true" data-c="cotenant"><span class="sw cot"></span>same-SM streaming co-tenant</button>
+      <button id="leg-mps" aria-pressed="true" data-c="mps"><span class="sw mps"></span>MPS, other process on 50 % of the SMs</button>
+    </div>
+    <span class="meta" id="runmeta"></span>
+  </div>
+
+  <section class="panel">
+    <h2>Cycles per instruction</h2>
+    <p class="meta" style="margin:2px 0 8px">Log scale. Loads chase a random permutation of 128-byte lines in the working set named. Click a row.</p>
+    <div id="dots"></div>
+  </section>
+
+  <div class="two">
+    <section class="panel">
+      <h2 id="fit-title">Bracket time against chain length</h2>
+      <p class="meta" style="margin:2px 0 8px">Median of 256 brackets per N with the p10–p90 range; the line is the fit cycles = overhead + latency × N.</p>
+      <div id="fit"></div>
+      <div class="fits" id="fitlist"></div>
+    </section>
+    <section class="panel">
+      <h2 id="hist-title">Samples at the longest chain</h2>
+      <p class="meta" style="margin:2px 0 8px">Every bracket of the longest chain, log-binned. Two humps mean two populations.</p>
+      <div id="hist"></div>
+      <div class="kv" id="histkv"></div>
+    </section>
+  </div>
+
+  <section class="panel">
+    <div class="row" style="justify-content:space-between">
+      <h2 id="strip-title">Inside the kernel</h2>
+      <div class="row">
+        <div class="seg" role="group" aria-label="chain length" id="nseg"></div>
+        <span class="meta">each dot is one bracket, placed where it started inside its kernel</span>
+      </div>
+    </div>
+    <div id="strips"></div>
+  </section>
+
+  <div class="three">
+    <section class="panel">
+      <h2 id="sass-title">What ran between the two clock reads</h2>
+      <p class="meta" style="margin:2px 0 0">The compiled SASS of the bracket kernel for this architecture, from the opening <code>CS2R SR_CLOCKLO</code> to the closing one. Highlighted lines are the N instructions under test.</p>
+      <div class="row" style="margin-top:8px"><div class="seg" role="group" aria-label="chain length in SASS" id="sseg"></div></div>
+      <pre class="sass" id="sass"></pre>
+    </section>
+    <section class="panel">
+      <h2 id="anat-title">One bracket, decomposed</h2>
+      <p class="meta" style="margin:2px 0 0">From the fit: the bracket's own cost, then N instructions of the fitted latency each. The tick is the measured median of the real brackets.</p>
+      <div class="anat" id="anat"></div>
+    </section>
+  </div>
+
+  <section class="panel">
+    <div class="row" style="justify-content:space-between">
+      <h2>All numbers</h2>
+      <button class="tbl-toggle" id="tbltoggle" aria-expanded="false">Show table</button>
+    </div>
+    <div class="tblwrap" id="tblwrap" hidden></div>
+  </section>
+
+  <section class="panel note" id="method"></section>
+</div>
+<div id="tip" hidden></div>
+
+<script id="data" type="application/json">/*DATA*/</script>
+<script>
+const D = JSON.parse(document.getElementById('data').textContent);
+const CONDS = [['alone', 'alone', '--c-alone'], ['cotenant', 'same-SM co-tenant', '--c-cot'], ['mps', 'MPS 50 %', '--c-mps']];
+const st = { gpu: 0, on: new Set(['alone', 'cotenant', 'mps']), sel: null, nmax: true, sassN: '4' };
+try { const s = JSON.parse(localStorage.getItem('gt-instr') || '{}'); if (Number.isInteger(s.gpu) && s.gpu < D.gpus.length) st.gpu = s.gpu; if (typeof s.sel === 'string') st.sel = s.sel; } catch (e) {}
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const fmt = v => v >= 100 ? Math.round(v).toLocaleString() : v >= 10 ? v.toFixed(1) : v.toFixed(2);
+const wsLab = ws => ws ? (ws < 1 << 20 ? (ws >> 10) + ' KB' : (ws >> 20) + ' MB') : '';
+const keyOf = r => r.kind + (r.ws ? ' ' + wsLab(r.ws) : '');
+const tierOf = ws => ws === 16384 ? 'L1' : ws === 1048576 ? 'L2' : ws === 25165824 ? '24 MB' : ws ? 'DRAM' : '';
+const tip = document.getElementById('tip');
+function showTip(e, html) { tip.innerHTML = html; tip.hidden = false; const x = Math.min(e.clientX + 14, innerWidth - 290), y = e.clientY + 14; tip.style.left = x + 'px'; tip.style.top = y + 'px'; }
+function hideTip() { tip.hidden = true; }
+function save() { try { localStorage.setItem('gt-instr', JSON.stringify({ gpu: st.gpu, sel: st.sel })); } catch (e) {} }
+const svgEl = (n, a = {}) => { const el = document.createElementNS('http://www.w3.org/2000/svg', n); for (const k in a) el.setAttribute(k, a[k]); return el; };
+function rowsOf(g) { return g.conds.alone.rows; }
+function rowIn(g, c, r) { return g.conds[c].rows.find(x => x.kind === r.kind && x.ws === r.ws); }
+
+// ---------- controls
+const gpuseg = document.getElementById('gpuseg');
+D.gpus.forEach((g, i) => { const b = document.createElement('button'); b.textContent = g.name; b.id = 'gpu-' + i; b.setAttribute('aria-pressed', String(i === st.gpu)); b.onclick = () => { st.gpu = i; save(); render(); }; gpuseg.appendChild(b); });
+document.querySelectorAll('#leg button').forEach(b => b.onclick = () => { const c = b.dataset.c; if (st.on.has(c)) { if (st.on.size > 1) st.on.delete(c); } else st.on.add(c); render(); });
+
+// ---------- dot plot
+function drawDots(g) {
+  const rows = rowsOf(g); const host = document.getElementById('dots'); host.innerHTML = '';
+  const W = Math.max(360, host.clientWidth), L = W < 520 ? 96 : 124, R = 16, rowH = 22, top = 22, H = top + rows.length * rowH + 26;
+  const lo = 2, hi = 5000, x = v => L + (Math.log10(Math.max(lo, Math.min(hi, v))) - Math.log10(lo)) / (Math.log10(hi) - Math.log10(lo)) * (W - L - R);
+  const svg = svgEl('svg', { viewBox: `0 0 ${W} ${H}`, width: W, height: H, role: 'img', 'aria-label': 'Latency per instruction, three conditions' });
+  for (const t of [2, 5, 10, 20, 50, 100, 200, 500, 1000, 2000, 5000]) {
+    svg.appendChild(svgEl('line', { x1: x(t), x2: x(t), y1: top - 4, y2: H - 22, class: 'grid' }));
+    const tx = svgEl('text', { x: x(t), y: H - 6, 'text-anchor': 'middle', class: 'ax-mono' }); tx.textContent = t >= 1000 ? (t / 1000) + 'k' : t; svg.appendChild(tx);
+  }
+  const ax = svgEl('text', { x: W - R, y: 12, 'text-anchor': 'end', class: 'ax' }); ax.textContent = 'cycles per instruction (log)'; svg.appendChild(ax);
+  rows.forEach((r, i) => {
+    const y = top + i * rowH + rowH / 2, k = keyOf(r), sel = k === st.sel;
+    const hit = svgEl('rect', { x: 0, y: y - rowH / 2, width: W, height: rowH, class: 'rowhit' });
+    const bg = svgEl('rect', { x: 0, y: y - rowH / 2, width: W, height: rowH, rx: 3, class: 'rowbg' + (sel ? ' sel' : ''), fill: 'transparent' });
+    svg.appendChild(hit); svg.appendChild(bg);
+    const lab = svgEl('text', { x: L - 10, y: y + 4, 'text-anchor': 'end', class: 'lab' + (sel ? ' sel' : '') }); lab.textContent = r.ws ? `${r.kind} ${tierOf(r.ws)}` : r.kind; svg.appendChild(lab);
+    const pts = CONDS.filter(c => st.on.has(c[0])).map(c => ({ c, v: rowIn(g, c[0], r) })).filter(p => p.v && isFinite(p.v.latency) && p.v.latency > 0);
+    if (pts.length > 1) { const xs = pts.map(p => x(p.v.latency)); svg.appendChild(svgEl('line', { x1: Math.min(...xs), x2: Math.max(...xs), y1: y, y2: y, stroke: css('--line'), 'stroke-width': 2 })); }
+    for (const p of pts) {
+      svg.appendChild(svgEl('circle', { cx: x(p.v.latency), cy: y, r: 6, fill: css(p.c[2]), stroke: css('--surface'), 'stroke-width': 2 }));
+      if (sel) { const t = svgEl('text', { x: x(p.v.latency), y: y - 9, 'text-anchor': 'middle', class: 'val' }); t.textContent = fmt(p.v.latency); svg.appendChild(t); }
+    }
+    const html = `<b>${k}${r.ws ? ' (' + tierOf(r.ws) + ')' : ''}</b><br>` + pts.map(p => `${p.c[1]}: ${fmt(p.v.latency)} cy (p10 fit ${fmt(p.v.latency_p10)}, overhead ${fmt(p.v.overhead)})`).join('<br>');
+    hit.addEventListener('mousemove', e => showTip(e, html)); hit.addEventListener('mouseleave', hideTip);
+    hit.addEventListener('click', () => { st.sel = k; save(); render(); });
+    hit.setAttribute('tabindex', '0'); hit.setAttribute('role', 'button'); hit.setAttribute('aria-label', k);
+    hit.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); st.sel = k; save(); render(); } });
+  });
+  host.appendChild(svg);
+}
+
+// ---------- fit chart
+function drawFit(g, r) {
+  const host = document.getElementById('fit'); host.innerHTML = '';
+  document.getElementById('fit-title').textContent = `Bracket time against chain length: ${keyOf(r)}`;
+  const W = Math.max(320, host.clientWidth), H = 260, L = 58, R = 14, T = 14, B = 34;
+  const conds = CONDS.filter(c => st.on.has(c[0])).map(c => ({ c, v: rowIn(g, c[0], r) })).filter(p => p.v);
+  const Ns = [...new Set(conds.flatMap(p => Object.keys(p.v.perN).map(Number)))].sort((a, b) => a - b);
+  if (!Ns.length) return;
+  let ymax = 0; for (const p of conds) for (const N of Ns) if (p.v.perN[N]) ymax = Math.max(ymax, p.v.perN[N].p90);
+  ymax = Math.max(ymax, 1) * 1.08;
+  const x = N => L + Math.log2(N) / Math.log2(Ns[Ns.length - 1] || 1 ) * (W - L - R), y = v => T + (1 - v / ymax) * (H - T - B);
+  const svg = svgEl('svg', { viewBox: `0 0 ${W} ${H}`, width: W, height: H, role: 'img', 'aria-label': 'Bracket cycles against chain length with fits' });
+  const step = niceStep(ymax / 5);
+  for (let v = 0; v <= ymax; v += step) { svg.appendChild(svgEl('line', { x1: L, x2: W - R, y1: y(v), y2: y(v), class: 'grid' })); const t = svgEl('text', { x: L - 8, y: y(v) + 4, 'text-anchor': 'end', class: 'ax-mono' }); t.textContent = v.toLocaleString(); svg.appendChild(t); }
+  for (const N of Ns) { const t = svgEl('text', { x: x(N), y: H - 14, 'text-anchor': 'middle', class: 'ax-mono' }); t.textContent = N; svg.appendChild(t); }
+  const xl = svgEl('text', { x: W - R, y: H - 1, 'text-anchor': 'end', class: 'ax' }); xl.textContent = 'N dependent instructions (log₂)'; svg.appendChild(xl);
+  const yl = svgEl('text', { x: L, y: 10, class: 'ax' }); yl.textContent = 'bracket cycles'; svg.appendChild(yl);
+  for (const p of conds) {
+    const col = css(p.c[2]);
+    // fitted line, sampled so it stays straight in cycles while x is log2
+    const pts = []; for (let i = 0; i <= 40; i++) { const N = Math.pow(2, Math.log2(Ns[Ns.length - 1]) * i / 40); pts.push(`${x(N)},${y(Math.max(0, p.v.overhead + p.v.latency * N))}`); }
+    svg.appendChild(svgEl('polyline', { points: pts.join(' '), fill: 'none', stroke: col, 'stroke-width': 2, 'stroke-linejoin': 'round', 'stroke-linecap': 'round', opacity: .9 }));
+    for (const N of Ns) {
+      const q = p.v.perN[N]; if (!q) continue;
+      svg.appendChild(svgEl('line', { x1: x(N), x2: x(N), y1: y(q.p10), y2: y(q.p90), stroke: col, 'stroke-width': 2, 'stroke-linecap': 'round', opacity: .55 }));
+      const dot = svgEl('circle', { cx: x(N), cy: y(q.p50), r: 4.5, fill: col, stroke: css('--surface'), 'stroke-width': 2 });
+      const hit = svgEl('circle', { cx: x(N), cy: y(q.p50), r: 12, fill: 'transparent' });
+      const html = `<b>${p.c[1]}, N = ${N}</b><br>median ${fmt(q.p50)} cy<br>p10–p90 ${fmt(q.p10)}–${fmt(q.p90)}<br>p99 ${fmt(q.p99)} · ${q.n} brackets<br>fit ${fmt(p.v.overhead + p.v.latency * N)}`;
+      hit.addEventListener('mousemove', e => showTip(e, html)); hit.addEventListener('mouseleave', hideTip);
+      svg.appendChild(dot); svg.appendChild(hit);
+    }
+  }
+  host.appendChild(svg);
+  const fl = document.getElementById('fitlist'); fl.innerHTML = '';
+  for (const p of conds) {
+    const d = document.createElement('div'); d.className = 'fit';
+    const extra = p.c[0] === 'cotenant' ? ` · fit on the ${g.conds.cotenant.shared.toLocaleString()} of ${g.conds.cotenant.samples.toLocaleString()} brackets a co-tenant block covered on the same SM` : '';
+    d.innerHTML = `<span class="sw ${p.c[0] === 'alone' ? 'alone' : p.c[0] === 'cotenant' ? 'cot' : 'mps'}"></span><div>${p.c[1]}: <b>${fmt(p.v.latency)} cy</b> per instruction, bracket overhead <b>${fmt(p.v.overhead)} cy</b>; the same fit through the p10s gives <b>${fmt(p.v.latency_p10)}</b>${isFinite(p.v.ghz) && p.v.ghz ? ` · ${fmt(p.v.ns_at_nmax)} ns per instruction at ${p.v.ghz.toFixed(2)} GHz` : ''}${extra}</div>`;
+    fl.appendChild(d);
+  }
+}
+function niceStep(raw) { const p = Math.pow(10, Math.floor(Math.log10(raw))); const m = raw / p; return (m < 1.5 ? 1 : m < 3.5 ? 2 : m < 7.5 ? 5 : 10) * p; }
+
+// ---------- histogram
+function drawHist(g, r) {
+  const host = document.getElementById('hist'); host.innerHTML = '';
+  const conds = CONDS.filter(c => st.on.has(c[0])).map(c => ({ c, v: rowIn(g, c[0], r) })).filter(p => p.v);
+  const Nmax = Math.max(...conds.flatMap(p => Object.keys(p.v.perN).map(Number)));
+  document.getElementById('hist-title').textContent = `Samples at N = ${Nmax}: ${keyOf(r)}`;
+  const E = D.edges, W = Math.max(320, host.clientWidth), H = 260, L = 40, R = 14, T = 14, B = 34;
+  const lo = E[0], hi = E[E.length - 1], x = v => L + (Math.log10(v) - Math.log10(lo)) / (Math.log10(hi) - Math.log10(lo)) * (W - L - R);
+  let m = 1; for (const p of conds) { const h = (p.v.perN[Nmax] || {}).hist; if (h) m = Math.max(m, ...h); }
+  const y = c => T + (1 - c / (m * 1.08)) * (H - T - B);
+  const svg = svgEl('svg', { viewBox: `0 0 ${W} ${H}`, width: W, height: H, role: 'img', 'aria-label': 'Histogram of bracket cycles at the longest chain' });
+  for (const t of [100, 200, 500, 1000, 2000, 5000, 10000, 20000]) { svg.appendChild(svgEl('line', { x1: x(t), x2: x(t), y1: T, y2: H - B, class: 'grid' })); const tx = svgEl('text', { x: x(t), y: H - 14, 'text-anchor': 'middle', class: 'ax-mono' }); tx.textContent = t >= 1000 ? (t / 1000) + 'k' : t; svg.appendChild(tx); }
+  const xl = svgEl('text', { x: W - R, y: H - 1, 'text-anchor': 'end', class: 'ax' }); xl.textContent = 'bracket cycles (log)'; svg.appendChild(xl);
+  const yl = svgEl('text', { x: L, y: 10, class: 'ax' }); yl.textContent = 'brackets'; svg.appendChild(yl);
+  const kv = document.getElementById('histkv'); kv.innerHTML = '';
+  for (const p of conds) {
+    const q = p.v.perN[Nmax]; if (!q) continue; const col = css(p.c[2]);
+    let d = `M${x(E[0])},${y(0)}`; q.hist.forEach((c, i) => { d += ` L${x(E[i])},${y(c)} L${x(E[i + 1])},${y(c)}`; }); d += ` L${x(E[E.length - 1])},${y(0)} Z`;
+    svg.appendChild(svgEl('path', { d, fill: col, opacity: .12 }));
+    svg.appendChild(svgEl('path', { d, fill: 'none', stroke: col, 'stroke-width': 2, 'stroke-linejoin': 'round' }));
+    kv.insertAdjacentHTML('beforeend', `<span><span class="sw ${p.c[0] === 'alone' ? 'alone' : p.c[0] === 'cotenant' ? 'cot' : 'mps'}" style="vertical-align:-1px;margin-right:6px"></span>${p.c[1]}</span><span>median <b>${fmt(q.p50)}</b> · p10 ${fmt(q.p10)} · p90 ${fmt(q.p90)} · p99 ${fmt(q.p99)} · n ${q.n}</span>`);
+  }
+  const hit = svgEl('rect', { x: L, y: T, width: W - L - R, height: H - T - B, fill: 'transparent' });
+  hit.addEventListener('mousemove', e => {
+    const rect = svg.getBoundingClientRect(); const px = (e.clientX - rect.left) * W / rect.width; const v = Math.pow(10, Math.log10(lo) + (px - L) / (W - L - R) * (Math.log10(hi) - Math.log10(lo)));
+    let i = E.findIndex((ed, j) => v >= ed && v < E[j + 1]); if (i < 0) return hideTip();
+    showTip(e, `<b>${Math.round(E[i])}–${Math.round(E[i + 1])} cy</b><br>` + conds.map(p => { const q = p.v.perN[Nmax]; return q ? `${p.c[1]}: ${q.hist[i]}` : ''; }).filter(Boolean).join('<br>'));
+  }); hit.addEventListener('mouseleave', hideTip); svg.appendChild(hit);
+  host.appendChild(svg);
+}
+
+// ---------- table
+function drawTable(g) {
+  const w = document.getElementById('tblwrap'); const rows = rowsOf(g);
+  let h = '<table><thead><tr><th>instruction</th><th>working set</th>';
+  for (const c of CONDS) h += `<th>${c[1]}<br>cycles</th><th>p10 fit</th><th>overhead</th>`;
+  h += '</tr></thead><tbody>';
+  for (const r of rows) {
+    const k = keyOf(r), sel = k === st.sel;
+    h += `<tr><td class="${sel ? 'sel' : ''}">${r.kind}</td><td>${r.ws ? wsLab(r.ws) + ' (' + tierOf(r.ws) + ')' : ''}</td>`;
+    for (const c of CONDS) { const v = rowIn(g, c[0], r); h += v ? `<td class="${sel ? 'sel' : ''}">${fmt(v.latency)}</td><td>${fmt(v.latency_p10)}</td><td>${fmt(v.overhead)}</td>` : '<td>–</td><td>–</td><td>–</td>'; }
+    h += '</tr>';
+  }
+  w.innerHTML = h + '</tbody></table>';
+}
+document.getElementById('tbltoggle').onclick = e => { const w = document.getElementById('tblwrap'); w.hidden = !w.hidden; e.currentTarget.setAttribute('aria-expanded', String(!w.hidden)); e.currentTarget.textContent = w.hidden ? 'Show table' : 'Hide table'; };
+
+// ---------- method note
+function drawMethod(g) {
+  const a = g.conds.alone, c = g.conds.cotenant, m = g.conds.mps;
+  document.getElementById('runmeta').textContent = `${g.name}: ${a.sms} SMs, ${a.tick_ns} ns timer tick, clock bound ${Math.round(Math.min(a.bound_ns, c.bound_ns, m.bound_ns))}–${Math.round(Math.max(a.bound_ns, c.bound_ns, m.bound_ns))} ns`;
+  document.getElementById('method').innerHTML = `<h2>How to read it</h2>
+<p>A bracket is a chain of N dependent instructions of one kind between two <code>%clock64</code> reads, tied to the reads by a volatile seed load before and a volatile store of the result after, so the compiler cannot move the chain. Chains of N = 1, 2, 4, 8, 16, 32 (and 128 for the non-load kinds) run 256 times each; a least-squares line through the per-N medians gives the latency (slope) separated from the bracket's own cost (intercept). The compiled SASS of every one of the 91 bracket kernels holds exactly N target opcodes between the two clock reads.</p>
+<p>Alone: one block on one SM, nothing else on the GPU. Same-SM co-tenant: one streaming block of 256 threads on every SM in the same process, 50 ms kernels queued four deep; the fit uses only the brackets a co-tenant block covered on the probe's SM (${c.shared.toLocaleString()} of ${c.samples.toLocaleString()} on this GPU). MPS: a streaming process limited to 50 % of the SMs, so the probe keeps its SM and shares the L2 and the fabric; all ${m.samples.toLocaleString()} brackets count.</p>
+<p>Numbers are SM clock cycles. Nanoseconds are given only where a bracket spans at least eight timer ticks (long load chains, atomics), from the same record's <code>%globaltimer</code> span. Datasets: <code>slotbench/data/2026-10-06_a100_instr_v4</code> and <code>slotbench/data/2026-10-06_3060_instr</code>.</p>`;
+}
+
+
+// ---------- inside the kernel: every bracket over kernel time
+function drawStrips(g, r) {
+  const host = document.getElementById('strips'); host.innerHTML = '';
+  const conds = CONDS.filter(c => st.on.has(c[0])).map(c => ({ c, v: rowIn(g, c[0], r) })).filter(p => p.v && p.v.trace);
+  const nseg = document.getElementById('nseg'); nseg.innerHTML = '';
+  const Nkeys = conds.length ? Object.keys(conds[0].v.trace).map(Number).sort((a, b) => a - b) : [1];
+  const N = st.nmax ? Nkeys[Nkeys.length - 1] : Nkeys[0];
+  for (const n of Nkeys) { const b = document.createElement('button'); b.textContent = 'N = ' + n; b.id = 'n-' + n; b.setAttribute('aria-pressed', String(n === N)); b.onclick = () => { st.nmax = n === Nkeys[Nkeys.length - 1]; render(); }; nseg.appendChild(b); }
+  document.getElementById('strip-title').textContent = `Inside the kernel: ${keyOf(r)}, N = ${N}`;
+  const W = Math.max(360, host.clientWidth), H = 118, L = 48, R = 14, T = 10, B = 26;
+  let ylo = Infinity, yhi = 0; for (const p of conds) { const t = p.v.trace[N]; if (t) for (const q of t.pts) { ylo = Math.min(ylo, q[1]); yhi = Math.max(yhi, q[1]); } }
+  ylo = Math.max(1, ylo * 0.8); yhi = yhi * 1.25;
+  const y = v => T + (1 - (Math.log10(v) - Math.log10(ylo)) / (Math.log10(yhi) - Math.log10(ylo))) * (H - T - B);
+  for (const p of conds) {
+    const t = p.v.trace[N]; if (!t) continue; const col = css(p.c[2]);
+    const span = Math.max(t.span_us, 1), x = us => L + us / span * (W - L - R);
+    const div = document.createElement('div'); div.className = 'strip';
+    const shared = t.pts.filter(q => q[2]).length;
+    div.innerHTML = `<div class="strip-h"><span class="sw ${p.c[0] === 'alone' ? 'alone' : p.c[0] === 'cotenant' ? 'cot' : 'mps'}"></span>${p.c[1]} · SM ${t.sm} · ${t.pts.length} brackets in ${fmt(span)} µs${p.c[0] === 'cotenant' ? ` · ${shared} covered by a co-tenant block (shaded)` : ''}</div>`;
+    const svg = svgEl('svg', { viewBox: `0 0 ${W} ${H}`, width: W, height: H, role: 'img', 'aria-label': `brackets over kernel time, ${p.c[1]}` });
+    if (p.c[0] === 'cotenant') for (const [a, b] of t.cov) svg.appendChild(svgEl('rect', { x: x(a), y: T, width: Math.max(1, x(b) - x(a)), height: H - T - B, fill: col, opacity: .1 }));
+    for (const v of [10, 100, 1000, 10000]) if (v > ylo && v < yhi) { svg.appendChild(svgEl('line', { x1: L, x2: W - R, y1: y(v), y2: y(v), class: 'grid' })); const tx = svgEl('text', { x: L - 6, y: y(v) + 4, 'text-anchor': 'end', class: 'ax-mono' }); tx.textContent = v >= 1000 ? (v / 1000) + 'k' : v; svg.appendChild(tx); }
+    const nt = 5; for (let i = 0; i <= nt; i++) { const us = span * i / nt; const tx = svgEl('text', { x: x(us), y: H - 8, 'text-anchor': i === 0 ? 'start' : i === nt ? 'end' : 'middle', class: 'ax-mono' }); tx.textContent = (us >= 1000 ? (us / 1000).toFixed(2) + ' ms' : fmt(us) + ' µs'); svg.appendChild(tx); }
+    for (const q of t.pts) svg.appendChild(svgEl('circle', { cx: x(q[0]), cy: y(q[1]), r: 2.6, fill: q[2] ? col : 'none', stroke: col, 'stroke-width': q[2] ? 0 : 1.2 }));
+    const hit = svgEl('rect', { x: L, y: T, width: W - L - R, height: H - T - B, fill: 'transparent' });
+    hit.addEventListener('mousemove', e => { const rect = svg.getBoundingClientRect(); const px = (e.clientX - rect.left) * W / rect.width; const us = (px - L) / (W - L - R) * span; let best = null; for (const q of t.pts) if (!best || Math.abs(q[0] - us) < Math.abs(best[0] - us)) best = q; if (best) showTip(e, `<b>${p.c[1]}</b><br>bracket at ${fmt(best[0])} µs: ${best[1].toLocaleString()} cy${p.c[0] === 'cotenant' ? (best[2] ? '<br>co-tenant block on this SM' : '<br>no co-tenant block on this SM') : ''}`); });
+    hit.addEventListener('mouseleave', hideTip); svg.appendChild(hit);
+    div.appendChild(svg); host.appendChild(div);
+  }
+  const yl = document.createElement('div'); yl.className = 'meta'; yl.textContent = 'y: bracket cycles (log) · x: time since the kernel’s first bracket, from %globaltimer (1024 ns ticks)'; host.appendChild(yl);
+}
+
+// ---------- one bracket decomposed
+function drawAnat(g, r) {
+  const host = document.getElementById('anat'); host.innerHTML = '';
+  const conds = CONDS.filter(c => st.on.has(c[0])).map(c => ({ c, v: rowIn(g, c[0], r) })).filter(p => p.v);
+  const Ns = conds.length ? Object.keys(conds[0].v.perN).map(Number).sort((a, b) => a - b) : [1];
+  const N = st.nmax ? Ns[Ns.length - 1] : Ns[0];
+  document.getElementById('anat-title').textContent = `One bracket, decomposed: N = ${N}`;
+  let maxT = 1; for (const p of conds) { const q = p.v.perN[N]; maxT = Math.max(maxT, p.v.overhead + p.v.latency * N, q ? q.p50 : 0); }
+  for (const p of conds) {
+    const q = p.v.perN[N]; if (!q) continue; const col = css(p.c[2]);
+    const ovh = Math.max(0, p.v.overhead), per = Math.max(0, p.v.latency), total = ovh + per * N;
+    const row = document.createElement('div'); row.className = 'anat-row';
+    const segs = N <= 32 ? N : 32; const segW = (per * N / segs) / maxT * 100;
+    let bar = `<div class="anat-bar" title="overhead ${fmt(ovh)} + ${N} × ${fmt(per)}"><span class="ovh" style="width:${ovh / maxT * 100}%"></span>`;
+    for (let i = 0; i < segs; i++) bar += `<span class="ins" style="width:${segW}%;background:${col}"></span>`;
+    bar += `<span style="position:absolute;left:${Math.min(100, q.p50 / maxT * 100)}%;top:-3px;bottom:-3px;width:2px;background:var(--ink)"></span></div>`;
+    row.innerHTML = `<span class="sw ${p.c[0] === 'alone' ? 'alone' : p.c[0] === 'cotenant' ? 'cot' : 'mps'}"></span><div>${bar}<div class="anat-cap">${p.c[1]}: overhead <b>${fmt(ovh)}</b> + ${N} × <b>${fmt(per)}</b> = ${fmt(total)} cy · measured median <b>${fmt(q.p50)}</b></div></div>`;
+    host.appendChild(row);
+  }
+}
+
+// ---------- SASS between the clock reads
+const KIND_ID = { 'LDG.ca': 0, 'LDG.cg': 1, 'LDG.cs': 2, 'LDG.nc': 3, 'LDS': 4, 'FADD': 5, 'FFMA': 6, 'IMAD': 7, 'SHFL': 8, 'ATOM(ret)': 9, 'RED+fence': 10, 'STG+fence': 11, 'BAR': 12 };
+function drawSass(g, r) {
+  const arch = (D.sass || {})[g.name] || {}; const byN = arch[String(KIND_ID[r.kind])] || {};
+  const sseg = document.getElementById('sseg'); sseg.innerHTML = '';
+  const Ns = Object.keys(byN).map(Number).sort((a, b) => a - b); if (!Ns.includes(Number(st.sassN))) st.sassN = String(Ns[Ns.length > 1 ? 1 : 0] || '');
+  for (const n of Ns) { const b = document.createElement('button'); b.textContent = 'N = ' + n; b.id = 's-' + n; b.setAttribute('aria-pressed', String(String(n) === st.sassN)); b.onclick = () => { st.sassN = String(n); drawSass(g, r); }; sseg.appendChild(b); }
+  document.getElementById('sass-title').textContent = `What ran between the two clock reads: ${r.kind}, N = ${st.sassN}`;
+  const lines = byN[st.sassN] || [];
+  const esc = t => t.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+  document.getElementById('sass').innerHTML = lines.length ? lines.map(([a, t, tg], i) => `<span class="${tg ? 'tg' : (i === 0 || i === lines.length - 1) ? 'clk' : ''}">${a}  ${esc(t)}</span>`).join('\n') : 'no SASS listing for this kernel';
+}
+
+function render() {
+  const g = D.gpus[st.gpu];
+  document.querySelectorAll('#gpuseg button').forEach((b, i) => b.setAttribute('aria-pressed', String(i === st.gpu)));
+  document.querySelectorAll('#leg button').forEach(b => b.setAttribute('aria-pressed', String(st.on.has(b.dataset.c))));
+  const rows = rowsOf(g);
+  if (!st.sel || !rows.some(r => keyOf(r) === st.sel)) st.sel = keyOf(rows.find(r => r.kind === 'LDG.ca' && r.ws === 1048576) || rows[0]);
+  const r = rows.find(x => keyOf(x) === st.sel);
+  drawDots(g); drawFit(g, r); drawHist(g, r); drawStrips(g, r); drawAnat(g, r); drawSass(g, r); drawTable(g); drawMethod(g);
+}
+let rt; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(render, 120); });
+render();
+</script>
