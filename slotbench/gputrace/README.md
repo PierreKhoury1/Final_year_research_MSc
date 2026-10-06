@@ -30,6 +30,32 @@ them with the same layouts (`analysis/gputrace.py`, tested on synthetic runs in 
 its SM's track per GPU, the resident thread's not-running intervals, the other process of a timeslice run, and NCCL
 collectives per GPU, all on the host clock, with each GPU's bound in its process name.
 
+## Command-line tool
+
+`gputrace/gputrace` (Python, standard library + numpy; needs `nvcc` and `nvidia-smi`) characterises the GPU it
+finds from one command:
+
+```sh
+gputrace/gputrace characterize --profile quick          # ~6 min: launch, notify, dispatch, concurrency, copy, memory, instr, timeslice
+gputrace/gputrace characterize --profile full           # every angle incl. idle gaps, graphs, clocks, co-tenants (~25 min)
+gputrace/gputrace characterize --profile sharing        # memory + instruction table alone / same-SM co-tenant / other process / MPS
+gputrace/gputrace characterize --profile instr          # the instruction table only (plus its MPS variant when MPS is available)
+gputrace/gputrace run --strategy launch --iters 2000 --out run/launch       # one strategy, raw binary args
+gputrace/gputrace analyze run/launch [--json FILE]      # one run: one line + JSON
+gputrace/gputrace export run/launch                     # Chrome/Perfetto trace of one run
+gputrace/gputrace viewer out.html run/launch:A100 ...   # the interactive timeline with these runs embedded
+gputrace/gputrace sass [BINARY]                         # verify the instruction brackets in the compiled SASS
+```
+
+`characterize` detects the GPU, compiles the probes for its architecture (`bin/gputrace_smXX`, rebuilt when the
+sources change), runs the profile with a tick-edge clock sync before and after every run, analyses each run as it
+finishes, verifies that every instruction bracket holds exactly N target opcodes between its clock reads, exports
+every run to the trace format, builds `timeline.html`, and writes `report.md` (one line per run, the instruction
+table alone / co-tenant / MPS, the memory hierarchy table) and `summary.json` (every analysis). MPS variants
+(`--mps auto|on|off`) are added for the runs the profile contains when an MPS daemon can be started.
+`cloud/onstart_cli.sh` runs the same command on a rented GPU (`cloud/vast.py run --script onstart_cli.sh`,
+`SB_GT_PROFILE=...`).
+
 ## Run
 
 ```sh
