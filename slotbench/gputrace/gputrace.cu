@@ -35,6 +35,7 @@
 #include "json_writer.h"
 #include "gputrace.cuh"
 #include "clocksync.cuh"
+#include "instr.cuh"
 
 using namespace sb;
 using namespace sb::gt;
@@ -437,6 +438,90 @@ static std::vector<size_t> parse_sizes(const std::string &s) {
 
 // memory: for each working set and modifier, one warp chases a random cyclic permutation of 128-byte lines;
 // optionally while a streaming co-tenant runs on every SM (--cotenant 1). Conditions are in GpuRec.flags.
+// instr: the instruction table. For every kind and chain length N (1..32), `reps` bracketed samples; load kinds
+// are repeated for each working set in --ws (default: one per tier). Optional co-tenant as in memory.
+template <int K>
+static void launch_instr(int N, cudaStream_t st, uint32_t kid, const unsigned *buf, unsigned *out, uint32_t reps, uint32_t wi) {
+    const int T = (K == I_BAR) ? 256 : 32;
+    switch (N) {
+        case 1: k_instr<K, 1><<<1, T, 0, st>>>(g_dev.td, kid, buf, out, reps, wi); break;
+        case 2: k_instr<K, 2><<<1, T, 0, st>>>(g_dev.td, kid, buf, out, reps, wi); break;
+        case 4: k_instr<K, 4><<<1, T, 0, st>>>(g_dev.td, kid, buf, out, reps, wi); break;
+        case 8: k_instr<K, 8><<<1, T, 0, st>>>(g_dev.td, kid, buf, out, reps, wi); break;
+        case 16: k_instr<K, 16><<<1, T, 0, st>>>(g_dev.td, kid, buf, out, reps, wi); break;
+        default: k_instr<K, 32><<<1, T, 0, st>>>(g_dev.td, kid, buf, out, reps, wi); break;
+    }
+}
+static void launch_instr_kind(int K, int N, cudaStream_t st, uint32_t kid, const unsigned *buf, unsigned *out, uint32_t reps, uint32_t wi) {
+    switch (K) {
+        case I_LDG_CA: launch_instr<I_LDG_CA>(N, st, kid, buf, out, reps, wi); break;
+        case I_LDG_CG: launch_instr<I_LDG_CG>(N, st, kid, buf, out, reps, wi); break;
+        case I_LDG_CS: launch_instr<I_LDG_CS>(N, st, kid, buf, out, reps, wi); break;
+        case I_LDG_NC: launch_instr<I_LDG_NC>(N, st, kid, buf, out, reps, wi); break;
+        case I_LDS: launch_instr<I_LDS>(N, st, kid, buf, out, reps, wi); break;
+        case I_FADD: launch_instr<I_FADD>(N, st, kid, buf, out, reps, wi); break;
+        case I_FFMA: launch_instr<I_FFMA>(N, st, kid, buf, out, reps, wi); break;
+        case I_IMAD: launch_instr<I_IMAD>(N, st, kid, buf, out, reps, wi); break;
+        case I_SHFL: launch_instr<I_SHFL>(N, st, kid, buf, out, reps, wi); break;
+        case I_ATOM_RET: launch_instr<I_ATOM_RET>(N, st, kid, buf, out, reps, wi); break;
+        case I_RED: launch_instr<I_RED>(N, st, kid, buf, out, reps, wi); break;
+        case I_STG_FENCE: launch_instr<I_STG_FENCE>(N, st, kid, buf, out, reps, wi); break;
+        default: launch_instr<I_BAR>(N, st, kid, buf, out, reps, wi); break;
+    }
+}
+static void s_instr() {
+    cudaStream_t st = make_stream(0), sc = make_stream(0);
+    std::vector<size_t> sizes = parse_sizes(g_args.ws == "4k,16k,64k,128k,192k,256k,512k,1m,2m,4m,8m,16m,24m,32m,48m,64m,128m" ? "16k,1m,24m,128m" : g_args.ws);
+    size_t max_ws = 0; for (size_t x : sizes) max_ws = std::max(max_ws, x);
+    unsigned *buf, *out; CK(cudaMalloc(&buf, max_ws + 4096)); CK(cudaMalloc(&out, 4096 * 4)); CK(cudaMemset(out, 0, 4096 * 4));
+    std::vector<unsigned> h(max_ws / 4 + 1024);
+    float4 *sbuf = nullptr; const size_t sbytes = (size_t)512 << 20;
+    std::atomic<bool> co_run{false}; std::thread co; pid_t hog = -1;
+    if (g_args.cotenant == 2) {
+        g_args.hog_kind = "stream"; g_args.hog_dur_us = g_args.cotenant_ms * 1000.0;
+        hog = spawn_hog(g_args.seconds); spin_until(now_ns() + 3000000000LL);
+    } else if (g_args.cotenant) {
+        CK(cudaMalloc(&sbuf, sbytes)); CK(cudaMemset(sbuf, 0, sbytes)); co_run = true;
+        co = std::thread([&] {
+            const uint64_t dur = (uint64_t)g_args.cotenant_ms * 1000000ull;
+            while (co_run.load()) { uint32_t kco = ++g_kid; k_stream<<<g_dev.sms, 256, 0, sc>>>(g_dev.td, kco, sbuf, sbytes / sizeof(float4), dur); cudaStreamSynchronize(sc); }
+        });
+        spin_until(now_ns() + 200000000);
+    }
+    std::mt19937_64 rng(42);
+    const int Ns[] = {1, 2, 4, 8, 16, 32};
+    const uint32_t reps = (uint32_t)std::max(8, g_args.reps);
+    for (int K = 0; K < I_N_KINDS; K++) {
+        if (!(g_args.mods & (1 << K))) continue;
+        const bool load = K <= I_LDG_NC;
+        for (uint32_t wi = 0; wi < (load ? sizes.size() : 1); wi++) {
+            if (load) {
+                const size_t lines = std::max<size_t>(2, sizes[wi] / 128);
+                std::vector<unsigned> perm(lines);
+                for (size_t i = 0; i < lines; i++) perm[i] = (unsigned)i;
+                for (size_t i = lines - 1; i > 0; i--) std::swap(perm[i], perm[rng() % (i + 1)]);
+                for (size_t i = 0; i < lines; i++) h[(size_t)perm[i] * 32] = perm[(i + 1) % lines] * 32;
+                CK(cudaMemcpy(buf, h.data(), lines * 128, cudaMemcpyHostToDevice));
+                // walk the whole set once so the chain's lines are in the tier the working set selects
+                uint32_t kw = ++g_kid;
+                k_chase<0><<<1, 32, 0, st>>>(g_dev.td, kw, buf, (uint32_t)(2 * lines), (uint32_t)std::max<size_t>(64, lines), 999, 0, out);
+                CK(cudaStreamSynchronize(st));
+            }
+            for (int N : Ns) {
+                uint32_t kid = ++g_kid;
+                ev(EV_LAUNCH_ENTER, kid, load ? sizes[wi] : 0, (uint64_t)K);
+                launch_instr_kind(K, N, st, kid, buf, out, reps, wi);
+                ev(EV_LAUNCH_RETURN, kid); LAUNCH_CK();
+                CK(cudaStreamSynchronize(st));
+                ev(EV_SYNC_RETURN, kid);
+            }
+        }
+    }
+    if (g_args.cotenant == 2) { int status = 0; if (hog > 0) { kill(hog, SIGTERM); waitpid(hog, &status, 0); } }
+    else if (g_args.cotenant) { co_run = false; co.join(); CK(cudaStreamSynchronize(sc)); cudaFree(sbuf); }
+    cudaFree(buf); cudaFree(out);
+}
+
 static void s_memory() {
     cudaStream_t st = make_stream(0), sc = make_stream(0);
     std::vector<size_t> sizes = parse_sizes(g_args.ws);
@@ -612,7 +697,8 @@ static int s_gpus() {
 
 static void usage() {
     fprintf(stderr,
-            "usage: gputrace --strategy launch|notify|dispatch|concurrency|clocks|ramp|copy|timeslice|gpus|memory --out PREFIX\n"
+            "usage: gputrace --strategy launch|notify|dispatch|concurrency|clocks|ramp|copy|timeslice|gpus|memory|instr --out PREFIX\n"
+            "  instr: [--ws 16k,1m,24m,128m] [--mods kind bitmask (all)] [--reps SAMPLES] [--cotenant 0|1|2]\n"
             "  memory: [--ws 4k,64k,...,128m] [--mods MASK 1 .ca 2 .cg 4 .cs 8 .nc] [--hops N] [--batch N] [--cotenant 0|1 (+--seconds S)]\n"
             "  [--gpu N] [--core C] [--clock-core C] [--iters N] [--idle-us X] [--idle-spin 0|1] [--depth D] [--graph 0|1]\n"
             "  [--blocks LIST e.g. 1,sm,2sm,8sm] [--threads T] [--dur-us D] [--dur-b-us D] [--smem BYTES] [--reps R]\n"
@@ -699,6 +785,7 @@ int main(int argc, char **argv) {
     else if (a.strategy == "copy") s_copy();
     else if (a.strategy == "ramp") s_ramp();
     else if (a.strategy == "memory") s_memory();
+    else if (a.strategy == "instr") { if (a.mods == 7) a.mods = (1 << I_N_KINDS) - 1; s_instr(); }
     else if (a.strategy == "gpus") n_gpus = s_gpus();
     else if (a.strategy == "timeslice") s_timeslice();
     else if (a.strategy == "hog") s_hog();

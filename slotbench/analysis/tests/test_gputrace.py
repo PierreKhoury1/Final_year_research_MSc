@@ -286,3 +286,26 @@ def test_memory_curve_and_knees(tmp_path):
     assert abs(ca["curve"][0]["cycles"]["p50"] - 40) < 1e-6 and abs(ca["curve"][0]["ghz"] - ghz) < 0.01
     assert ca["knees"] == [1 << 20, 128 << 20]
     assert "memory(" in gt.one_line(gt.analyse(p))
+
+
+def test_instr_fit_separates_latency_from_overhead(tmp_path):
+    p = str(tmp_path / "i")
+    recs, evs = [], []
+    g = 20_000_000
+    kid = 0
+    for kind, lat, ws in ((5, 4, 0), (0, 40, 16384)):   # FADD 4 cy, LDG.ca at 16 KB 40 cy; bracket overhead 30 cy
+        for N in (1, 2, 4, 8, 16, 32):
+            kid += 1
+            t = int(host_of(g + kid * 1_000_000))
+            evs += [(t, gt.EV["LAUNCH_ENTER"], kid, ws, kind), (t + 2000, gt.EV["LAUNCH_RETURN"], kid, 0, 0)]
+            for r_ in range(10):
+                cyc = 30 + lat * N + (r_ % 3)
+                g0 = g + kid * 1_000_000 + r_ * 1000
+                recs.append((g0, g0 + int(cyc / 1.4), 0, cyc, 0, 3, kid, N, kind, N, 0))
+    write_run(p, "instr", recs, evs, dict(cotenant=0, reps=10))
+    r = gt.analyse(p)["result"]
+    by = {(t["kind"], t["ws"]): t for t in r["table"]}
+    assert abs(by[("FADD", 0)]["latency_cycles"] - 4) < 0.2 and abs(by[("FADD", 0)]["bracket_overhead_cycles"] - 30) < 2
+    assert abs(by[("LDG.ca", 16384)]["latency_cycles"] - 40) < 0.2
+    assert abs(by[("LDG.ca", 16384)]["sm_ghz"] - 1.4) < 0.05
+    assert "instr(" in gt.one_line(gt.analyse(p))

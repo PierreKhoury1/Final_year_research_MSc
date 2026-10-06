@@ -108,6 +108,10 @@ for rep in $(seq 1 "$REPEAT"); do
     done
     run "copy$R"             --strategy copy --iters 1000
     # memory hierarchy: one warp pointer-chasing per working set and PTX modifier, alone and beside a streaming co-tenant
+    # per-instruction brackets (SASS-verified): the instruction table, alone and beside a same-SM streaming co-tenant
+    python3 "$SB/tools/sass_check.py" "$W/gputrace" --json "$OUT/sass_check.json" --sass "$OUT/gputrace.sass" 2>&1 | sed 's/^/[slotbench]   /' || true
+    run "instr$R"            --strategy instr --reps 64
+    run "instr_cotenant$R"   --strategy instr --reps 64 --cotenant 1 --cotenant-ms 50
     run "memory$R"           --strategy memory --reps 3 --hops 65536
     run "memory_cotenant$R"  --strategy memory --reps 3 --hops 65536 --cotenant 1 --cotenant-ms 50
     run "memory_coproc$R"    --strategy memory --reps 3 --hops 65536 --cotenant 2 --cotenant-ms 50 --seconds 300
@@ -125,7 +129,7 @@ for rep in $(seq 1 "$REPEAT"); do
     fi
     run "timeslice$R"        --strategy timeslice --seconds "$SECS" --gap-us 20 --hog-dur-us 5000
     # the same two processes under MPS (hog limited to 50 % of the SMs): no time-slicing expected, partition visible
-    if [[ "timeslice_mps50$R" =~ $ONLY || "memory_mps50$R" =~ $ONLY ]] && command -v nvidia-cuda-mps-control >/dev/null 2>&1 && ! pgrep -f 'nvidia-cuda-mps-(control|server)' >/dev/null; then
+    if [[ "timeslice_mps50$R" =~ $ONLY || "memory_mps50$R" =~ $ONLY || "instr_mps50$R" =~ $ONLY ]] && command -v nvidia-cuda-mps-control >/dev/null 2>&1 && ! pgrep -f 'nvidia-cuda-mps-(control|server)' >/dev/null; then
         MPS_PIPE=$W/mps-pipe; MPS_LOG=$W/mps-log; mkdir -p "$MPS_PIPE" "$MPS_LOG"
         if timeout 20 env CUDA_MPS_PIPE_DIRECTORY="$MPS_PIPE" CUDA_MPS_LOG_DIRECTORY="$MPS_LOG" nvidia-cuda-mps-control -d > "$OUT/mps.log" 2>&1; then
             export CUDA_MPS_PIPE_DIRECTORY="$MPS_PIPE" CUDA_MPS_LOG_DIRECTORY="$MPS_LOG"
@@ -133,6 +137,7 @@ for rep in $(seq 1 "$REPEAT"); do
             run "timeslice_mps100$R" --strategy timeslice --seconds "$SECS" --gap-us 20 --hog-dur-us 5000
             run "launch_mps$R"      --strategy launch --iters "$ITERS"
             run "memory_mps50$R"    --strategy memory --reps 3 --hops 65536 --cotenant 2 --cotenant-ms 50 --seconds 300 --hog-mps-pct 50
+            run "instr_mps50$R"     --strategy instr --reps 64 --cotenant 2 --cotenant-ms 50 --seconds 300 --hog-mps-pct 50
             echo quit | timeout 10 env CUDA_MPS_PIPE_DIRECTORY="$MPS_PIPE" nvidia-cuda-mps-control >> "$OUT/mps.log" 2>&1 || true
             unset CUDA_MPS_PIPE_DIRECTORY CUDA_MPS_LOG_DIRECTORY
             cp -a "$MPS_LOG" "$OUT/mps_logs" 2>/dev/null || true

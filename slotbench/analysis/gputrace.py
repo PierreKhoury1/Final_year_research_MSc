@@ -455,6 +455,42 @@ def a_memory(run):
     return out
 
 
+KINDS = {0: "LDG.ca", 1: "LDG.cg", 2: "LDG.cs", 3: "LDG.nc", 4: "LDS", 5: "FADD", 6: "FFMA", 7: "IMAD", 8: "SHFL",
+         9: "ATOM(ret)", 10: "RED+fence", 11: "STG+fence", 12: "BAR"}
+
+
+def a_instr(run):
+    """Instruction table: per kind (and working set for loads), bracket cycles for chains of N = 1..32 dependent
+    instructions; a least-squares fit cycles = a + b*N over the per-N medians gives latency b (cycles per
+    instruction) and bracket overhead a. ns per instruction from the longest chain's %globaltimer span (tick-limited
+    for short brackets), and the SM clock from the same record."""
+    enter = run.events("LAUNCH_ENTER")
+    ws_of = {int(k): int(a) for k, a in zip(enter["kernel_id"], enter["a"])}
+    r = run.recs[(run.recs["tag"] < 13) & (run.recs["clk_begin"] == 0) & (run.recs["n_iters"] > 0)]
+    groups = {}
+    for rec in r:
+        key = (int(rec["tag"]), ws_of.get(int(rec["kernel_id"]), 0))
+        g = groups.setdefault(key, {})
+        g.setdefault(int(rec["n_iters"]), []).append((float(rec["clk_end"]), float(rec["g_end"]) - float(rec["g_begin"])))
+    table = []
+    for (kind, ws), byN in sorted(groups.items()):
+        Ns = sorted(byN)
+        med = {N: float(np.median([c for c, _ in byN[N]])) for N in Ns}
+        p99 = {N: float(np.percentile([c for c, _ in byN[N]], 99)) for N in Ns}
+        if len(Ns) >= 2:
+            A = np.vstack([np.ones(len(Ns)), np.array(Ns, dtype=float)]).T
+            (a, b), *_ = np.linalg.lstsq(A, np.array([med[N] for N in Ns]), rcond=None)
+        else:
+            a, b = float("nan"), med[Ns[0]]
+        Nmax = Ns[-1]
+        ns_total = float(np.median([g for _, g in byN[Nmax]]))
+        ghz = med[Nmax] / ns_total if ns_total > 0 else float("nan")
+        table.append(dict(kind=KINDS.get(kind, str(kind)), ws=ws, latency_cycles=float(b), bracket_overhead_cycles=float(a),
+                          single_bracket_cycles=med.get(1), per_N_median=med, per_N_p99=p99, samples=sum(len(v) for v in byN.values()),
+                          ns_per_instr_at_Nmax=ns_total / Nmax, sm_ghz=ghz, Nmax=Nmax))
+    return dict(cotenant=run.meta.get("cotenant"), reps=run.meta.get("reps"), table=table, bound_ns=run.clock["bound_ns"])
+
+
 def a_copy(run):
     """host-visible memcpy latency per size and direction; GPU-side dependent PCIe read latency."""
     out = dict(memcpy={})
@@ -543,7 +579,7 @@ def a_timeslice(run):
 
 
 STRATEGIES = dict(launch=a_launch, notify=a_notify, dispatch=a_dispatch, concurrency=a_concurrency, clocks=a_clocks,
-                  copy=a_copy, timeslice=a_timeslice, ramp=a_ramp, gpus=a_gpus, nccl=a_nccl, memory=a_memory)
+                  copy=a_copy, timeslice=a_timeslice, ramp=a_ramp, gpus=a_gpus, nccl=a_nccl, memory=a_memory, instr=a_instr)
 
 
 def analyse(prefix):
@@ -592,6 +628,12 @@ def one_line(res):
         g = lambda k: (r.get(k) or {}).get("p50")
         return (f"clocks: before {g('ghz_before')} during {g('ghz_during')} after {g('ghz_after')} GHz; "
                 f"ramp to 95% {None if r.get('ramp_to_95pct_ns') is None else r['ramp_to_95pct_ns'] / 1000:.0f} us; n={r.get('n_samples')}")
+    if s == "instr":
+        rows = []
+        for t in r.get("table", []):
+            w = f"@{t['ws'] >> 10}K" if 0 < t["ws"] < (1 << 20) else (f"@{t['ws'] >> 20}M" if t["ws"] else "")
+            rows.append(f"{t['kind']}{w} {t['latency_cycles']:.0f}cy (ovh {t['bracket_overhead_cycles']:.0f})")
+        return f"instr(cotenant={r.get('cotenant')}): " + " | ".join(rows)
     if s == "memory":
         parts = []
         for mod, m in r.get("modifiers", {}).items():
