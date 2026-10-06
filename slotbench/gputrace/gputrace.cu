@@ -489,7 +489,7 @@ static void s_instr() {
         CK(cudaMalloc(&sbuf, sbytes)); CK(cudaMemset(sbuf, 0, sbytes)); co_run = true;
         co = std::thread([&] {
             const uint64_t dur = (uint64_t)g_args.cotenant_ms * 1000000ull;
-            while (co_run.load()) { uint32_t kco = ++g_kid; k_stream<<<g_dev.sms, 256, 0, sc>>>(g_dev.td, kco, sbuf, sbytes / sizeof(float4), dur); cudaStreamSynchronize(sc); }
+            while (co_run.load()) { uint32_t kco = ++g_kid; k_stream<<<3 * g_dev.sms, 256, 0, sc>>>(g_dev.td, kco, sbuf, sbytes / sizeof(float4), dur); cudaStreamSynchronize(sc); }
         });
         spin_until(now_ns() + 200000000);
     }
@@ -553,7 +553,7 @@ static void s_memory() {
             const uint64_t dur = (uint64_t)g_args.cotenant_ms * 1000000ull;
             while (co_run.load()) {
                 uint32_t kco = ++g_kid;
-                k_stream<<<g_dev.sms, 256, 0, sc>>>(g_dev.td, kco, sbuf, sbytes / sizeof(float4), dur);
+                k_stream<<<3 * g_dev.sms, 256, 0, sc>>>(g_dev.td, kco, sbuf, sbytes / sizeof(float4), dur);
                 cudaStreamSynchronize(sc);
             }
         });
@@ -676,7 +676,7 @@ static void s_hog() {
     while (now_ns() < until && !g_hog_stop) {
         uint32_t kid = ++g_kid;
         ev(EV_LAUNCH_ENTER, kid, (uint64_t)g_dev.sms * 2, (uint64_t)g_args.threads);
-        if (sbuf) k_stream<<<g_dev.sms, 256, 0, st>>>(g_dev.td, kid, sbuf, sbytes / sizeof(float4), dur);
+        if (sbuf) k_stream<<<3 * g_dev.sms, 256, 0, st>>>(g_dev.td, kid, sbuf, sbytes / sizeof(float4), dur);
         else k_spin<<<g_dev.sms * 2, g_args.threads, 0, st>>>(g_dev.td, kid, 9, dur, nullptr);
         ev(EV_LAUNCH_RETURN, kid);
         LAUNCH_CK();
