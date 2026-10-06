@@ -369,6 +369,7 @@ def a_nccl(run):
     stamps = {}
     for r in run.recs:
         stamps[(int(r["kernel_id"]), int(r["flags"]), int(r["tag"]))] = r
+    release = {int(k): int(t) for k, t, c in zip(run.events("MARK")["kernel_id"], run.events("MARK")["t"], run.events("MARK")["a"]) if int(c) == 300}
     bsum = {d: fits[d]["bound_ns"] + fits[0]["bound_ns"] for d in fits}
     causal_bound = max(fits[d]["bound_ns"] + fits[e]["bound_ns"] for d in fits for e in fits if d != e)
     per_size = {}
@@ -390,11 +391,15 @@ def a_nccl(run):
             ps["start_skew"][d].append(hb[d] - hb[0])
             ps["end_skew"][d].append(ha[d] - ha[0])
         ps["slack"].append(slack)
+        if kid in release:
+            ps.setdefault("release_to_stamp", {d: [] for d in range(n)})
+            for d in range(n):
+                ps["release_to_stamp"][d].append(float(fits[d]["host_of"](b[d]["g_begin"])) - release[kid])
         if kid in ret:
             ps["call"].append(ret[kid] - t_enter[kid])
         if kid in sync_ret:
             ps["end_to_sync"].append(sync_ret[kid] - max(float(fits[d]["host_of"](a[d]["g_end"])) for d in range(n)))
-    out = dict(n_gpus=n, nccl_version=run.meta.get("nccl_version"),
+    out = dict(n_gpus=n, nccl_version=run.meta.get("nccl_version"), gate=run.meta.get("gate"),
                clock={d: dict(bound_ns=f["bound_ns"], feasible=f["edge"]["feasible"], rate_ppm=f["edge"]["rate_ppm"]) for d, f in fits.items()},
                skew_bound_ns={d: bsum[d] for d in range(1, n)}, causal_bound_ns=causal_bound, sizes={})
     for size, ps in sorted(per_size.items()):
@@ -406,7 +411,8 @@ def a_nccl(run):
             end_skew_ns={d: q(v) for d, v in ps["end_skew"].items()},
             causal_slack_min_ns=float(min(ps["slack"])), causal_violations=int(sum(1 for x in ps["slack"] if x < -causal_bound)),
             call_ns=q(ps["call"]), end_to_sync_ns=q(ps["end_to_sync"]),
-            algbw_GBps=algbw, busbw_GBps=(algbw * 2 * (n - 1) / n) if algbw else None)
+            algbw_GBps=algbw, busbw_GBps=(algbw * 2 * (n - 1) / n) if algbw else None,
+            release_to_stamp_ns={d: q(v) for d, v in ps.get("release_to_stamp", {}).items()})
     return out
 
 

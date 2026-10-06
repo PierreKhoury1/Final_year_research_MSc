@@ -4,6 +4,9 @@
 // completes. The analysis (analysis/gputrace.py, strategy "nccl") fits each GPU's timer to the host clock and
 // reports, per collective size: duration seen by each GPU, start skew and end skew between GPUs (with the sum
 // of the two bounds), and host launch-call → first GPU start.
+// Gate (default on): each GPU's stream holds a one-thread gate kernel ahead of the before-stamp; the host releases all
+// gates with one store to mapped memory after ncclGroupEnd() returns, so before-stamp, collective and after-stamp run
+// back to back and the span is the collective plus two inter-kernel gaps, not the host's enqueue time.
 // Output: PREFIX.gpu.bin (stamp records, flags = device, tag 1 before / 2 after, block = iteration, kernel_id =
 // collective id), PREFIX.host.bin, PREFIX.gpu{d}.r{0,1}.{classic,up,down}.bin, PREFIX.json.
 #include <cstdint>
@@ -29,6 +32,15 @@ using namespace sb::gt;
 #define NK(x) do { ncclResult_t e_ = (x); if (e_ != ncclSuccess) { \
     fprintf(stderr, "gputrace_nccl: %s: %s\n", #x, ncclGetErrorString(e_)); exit(1); } } while (0)
 
+__global__ void k_gate(const volatile uint64_t *flag, uint64_t until) {
+    if (threadIdx.x != 0) return;
+    while (ld_sys(flag) < until) {
+#if __CUDA_ARCH__ >= 700
+        __nanosleep(100);
+#endif
+    }
+}
+
 __global__ void k_stamp(TraceDev td, uint32_t kid, uint32_t tag, uint32_t dev, uint32_t iter) {
     if (threadIdx.x != 0) return;
     BlockTrace bt;
@@ -47,7 +59,7 @@ static inline void ev(uint32_t type, uint32_t kid, uint64_t a = 0, uint64_t b = 
 }
 
 int main(int argc, char **argv) {
-    int iters = 200, sync_rounds = 3, sync_per_phase = 1000, clock_core = -1, core = -1;
+    int iters = 200, sync_rounds = 3, sync_per_phase = 1000, clock_core = -1, core = -1, gate = 1;
     std::string out = "gputrace_nccl", sizes_s = "8,65536,1048576,67108864";
     for (int i = 1; i + 1 < argc; i += 2) {
         std::string f = argv[i], v = argv[i + 1];
@@ -58,6 +70,7 @@ int main(int argc, char **argv) {
         else if (f == "--clock-core") clock_core = atoi(v.c_str());
         else if (f == "--sync-rounds") sync_rounds = atoi(v.c_str());
         else if (f == "--sync-per-phase") sync_per_phase = atoi(v.c_str());
+        else if (f == "--gate") gate = atoi(v.c_str());
         else { fprintf(stderr, "usage: gputrace_nccl [--iters N] [--sizes B,B,..] [--out PREFIX] [--core C] [--clock-core C]\n"); return 2; }
     }
     std::vector<size_t> sizes;
@@ -92,6 +105,11 @@ int main(int argc, char **argv) {
         CK(cudaMemset(td[d].count, 0, sizeof(unsigned)));
     }
     NK(ncclCommInitAll(comm.data(), n, devs.data()));
+    volatile uint64_t *gflag = nullptr;   // mapped, portable: every GPU's gate reads it
+    std::vector<uint64_t *> gflag_d(n);
+    CK(cudaHostAlloc((void **)&gflag, 64, cudaHostAllocMapped | cudaHostAllocPortable));
+    *gflag = 0;
+    for (int d = 0; d < n; d++) { CK(cudaSetDevice(d)); CK(cudaHostGetDevicePointer((void **)&gflag_d[d], (void *)gflag, 0)); }
     // one warm collective (NCCL lazily sets up channels on the first call)
     NK(ncclGroupStart());
     for (int d = 0; d < n; d++) { CK(cudaSetDevice(d)); NK(ncclAllReduce(sbuf[d], rbuf[d], 16, ncclFloat, ncclSum, comm[d], st[d])); }
@@ -117,13 +135,18 @@ int main(int argc, char **argv) {
         const size_t count = std::max<size_t>(1, s / sizeof(float));
         for (int i = 0; i < iters; i++) {
             ++kid;
-            for (int d = 0; d < n; d++) { CK(cudaSetDevice(d)); k_stamp<<<1, 32, 0, st[d]>>>(td[d], kid, 1, (uint32_t)d, (uint32_t)i); }
+            for (int d = 0; d < n; d++) {
+                CK(cudaSetDevice(d));
+                if (gate) k_gate<<<1, 32, 0, st[d]>>>(gflag_d[d], kid);
+                k_stamp<<<1, 32, 0, st[d]>>>(td[d], kid, 1, (uint32_t)d, (uint32_t)i);
+            }
             ev(EV_LAUNCH_ENTER, kid, (uint64_t)s, (uint64_t)n);
             NK(ncclGroupStart());
             for (int d = 0; d < n; d++) { CK(cudaSetDevice(d)); NK(ncclAllReduce(sbuf[d], rbuf[d], count, ncclFloat, ncclSum, comm[d], st[d])); }
             NK(ncclGroupEnd());
             ev(EV_LAUNCH_RETURN, kid, (uint64_t)s, (uint64_t)n);
             for (int d = 0; d < n; d++) { CK(cudaSetDevice(d)); k_stamp<<<1, 32, 0, st[d]>>>(td[d], kid, 2, (uint32_t)d, (uint32_t)i); }
+            if (gate) { ev(EV_MARK, kid, 300, 0); *gflag = kid; }   // release every GPU's gate at once
             ev(EV_SYNC_ENTER, kid);
             for (int d = 0; d < n; d++) { CK(cudaSetDevice(d)); CK(cudaStreamSynchronize(st[d])); }
             ev(EV_SYNC_RETURN, kid);
@@ -150,7 +173,7 @@ int main(int argc, char **argv) {
     int ncclv = 0; ncclGetVersion(&ncclv);
     Json j;
     j.add("strategy", "nccl").add("gpu", prop.name).add("sms", prop.multiProcessorCount).add("n_gpus", n).add("reps", 2)
-        .add("iters", iters).add("sizes", sizes_s).add("nccl_version", ncclv).add("host", hostname()).add("time", iso_utc_now())
+        .add("iters", iters).add("gate", gate).add("sizes", sizes_s).add("nccl_version", ncclv).add("host", hostname()).add("time", iso_utc_now())
         .add("n_gpu_recs", (long long)all.size()).add("n_host_events", (long long)g_ev.size()).add("kernels", (long long)kid)
         .add("sync_rounds", sync_rounds).add("sync_per_phase", sync_per_phase).add("seconds_total", (t_end - t_start) * 1e-9)
         .add("t_start", (long long)t_start).add("t_end", (long long)t_end);

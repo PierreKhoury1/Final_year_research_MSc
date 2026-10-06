@@ -112,12 +112,13 @@ for rep in $(seq 1 "$REPEAT"); do
         if [[ -x $W/gputrace_nccl ]]; then
             NCCL_DEBUG=INFO NCCL_DEBUG_SUBSYS=INIT,GRAPH run_bin "$W/gputrace_nccl" "nccl$R" --iters 200 \
                 --sizes 8,4096,65536,1048576,16777216,134217728
+            run_bin "$W/gputrace_nccl" "nccl_nogate$R" --iters 200 --gate 0 --sizes 8,4096,65536,1048576
             grep -hE "via (P2P|SHM|NET)|Channel 00" "$OUT/nccl$R.log" 2>/dev/null | head -3 | sed 's/^/[slotbench]   nccl transport: /' || true
         fi
     fi
     run "timeslice$R"        --strategy timeslice --seconds "$SECS" --gap-us 20 --hog-dur-us 5000
     # the same two processes under MPS (hog limited to 50 % of the SMs): no time-slicing expected, partition visible
-    if command -v nvidia-cuda-mps-control >/dev/null 2>&1 && ! pgrep -f 'nvidia-cuda-mps-(control|server)' >/dev/null; then
+    if [[ "timeslice_mps50$R" =~ $ONLY ]] && command -v nvidia-cuda-mps-control >/dev/null 2>&1 && ! pgrep -f 'nvidia-cuda-mps-(control|server)' >/dev/null; then
         MPS_PIPE=$W/mps-pipe; MPS_LOG=$W/mps-log; mkdir -p "$MPS_PIPE" "$MPS_LOG"
         if timeout 20 env CUDA_MPS_PIPE_DIRECTORY="$MPS_PIPE" CUDA_MPS_LOG_DIRECTORY="$MPS_LOG" nvidia-cuda-mps-control -d > "$OUT/mps.log" 2>&1; then
             export CUDA_MPS_PIPE_DIRECTORY="$MPS_PIPE" CUDA_MPS_LOG_DIRECTORY="$MPS_LOG"

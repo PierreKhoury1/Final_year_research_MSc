@@ -1,0 +1,71 @@
+4650a069a043:5488:5488 [1] NCCL INFO cudaDriverVersion 13000
+4650a069a043:5488:5488 [0] NCCL INFO NCCL version 2.23.4+cuda12.6
+4650a069a043:5488:5493 [0] NCCL INFO NET/Plugin: Could not find: libnccl-net.so. Using internal network plugin.
+4650a069a043:5488:5493 [0] NCCL INFO Failed to open libibverbs.so[.1]
+4650a069a043:5488:5493 [0] NCCL INFO NET/Socket : Using [0]eth0:172.17.0.2<0>
+4650a069a043:5488:5493 [0] NCCL INFO Using network Socket
+4650a069a043:5488:5494 [1] NCCL INFO Using network Socket
+4650a069a043:5488:5494 [1] NCCL INFO ncclCommInitAll comm 0x60ab43120250 rank 1 nranks 2 cudaDev 1 nvmlDev 1 busId e1000 commId 0xf5c6d78681bd9c13 - Init START
+4650a069a043:5488:5493 [0] NCCL INFO ncclCommInitAll comm 0x60ab430dd900 rank 0 nranks 2 cudaDev 0 nvmlDev 0 busId c3000 commId 0xf5c6d78681bd9c13 - Init START
+4650a069a043:5488:5494 [1] NCCL INFO === System : maxBw 6.0 totalBw 24.0 ===
+4650a069a043:5488:5494 [1] NCCL INFO CPU/0-1 (1/2/-1)
+4650a069a043:5488:5494 [1] NCCL INFO + PCI[5000.0] - NIC/0-0
+4650a069a043:5488:5494 [1] NCCL INFO + PCI[24.0] - GPU/0-e1000 (1)
+4650a069a043:5488:5494 [1] NCCL INFO + PCI[6.0] - GPU/0-c3000 (0)
+4650a069a043:5488:5494 [1] NCCL INFO ==========================================
+4650a069a043:5488:5494 [1] NCCL INFO GPU/0-c3000 :GPU/0-c3000 (0/5000.0/LOC) GPU/0-e1000 (2/6.0/PHB) CPU/0-1 (1/6.0/PHB) 
+4650a069a043:5488:5494 [1] NCCL INFO GPU/0-e1000 :GPU/0-c3000 (2/6.0/PHB) GPU/0-e1000 (0/5000.0/LOC) CPU/0-1 (1/24.0/PHB) 
+4650a069a043:5488:5494 [1] NCCL INFO Pattern 4, crossNic 0, nChannels 1, bw 6.000000/6.000000, type PHB/PIX, sameChannels 1
+4650a069a043:5488:5494 [1] NCCL INFO  0 : GPU/0 GPU/1
+4650a069a043:5488:5494 [1] NCCL INFO Pattern 1, crossNic 0, nChannels 1, bw 6.000000/6.000000, type PHB/PIX, sameChannels 1
+4650a069a043:5488:5494 [1] NCCL INFO  0 : GPU/0 GPU/1
+4650a069a043:5488:5493 [0] NCCL INFO === System : maxBw 6.0 totalBw 24.0 ===
+4650a069a043:5488:5493 [0] NCCL INFO CPU/0-1 (1/2/-1)
+4650a069a043:5488:5493 [0] NCCL INFO + PCI[5000.0] - NIC/0-0
+4650a069a043:5488:5493 [0] NCCL INFO + PCI[24.0] - GPU/0-e1000 (1)
+4650a069a043:5488:5493 [0] NCCL INFO + PCI[6.0] - GPU/0-c3000 (0)
+4650a069a043:5488:5493 [0] NCCL INFO ==========================================
+4650a069a043:5488:5493 [0] NCCL INFO GPU/0-c3000 :GPU/0-c3000 (0/5000.0/LOC) GPU/0-e1000 (2/6.0/PHB) CPU/0-1 (1/6.0/PHB) 
+4650a069a043:5488:5493 [0] NCCL INFO GPU/0-e1000 :GPU/0-c3000 (2/6.0/PHB) GPU/0-e1000 (0/5000.0/LOC) CPU/0-1 (1/24.0/PHB) 
+4650a069a043:5488:5493 [0] NCCL INFO Pattern 4, crossNic 0, nChannels 1, bw 6.000000/6.000000, type PHB/PIX, sameChannels 1
+4650a069a043:5488:5493 [0] NCCL INFO  0 : GPU/0 GPU/1
+4650a069a043:5488:5493 [0] NCCL INFO Pattern 1, crossNic 0, nChannels 1, bw 6.000000/6.000000, type PHB/PIX, sameChannels 1
+4650a069a043:5488:5493 [0] NCCL INFO  0 : GPU/0 GPU/1
+4650a069a043:5488:5494 [1] NCCL INFO comm 0x60ab43120250 rank 1 nRanks 2 nNodes 1 localRanks 2 localRank 1 MNNVL 0
+4650a069a043:5488:5494 [1] NCCL INFO Tree 0 : 0 -> 1 -> -1/-1/-1
+4650a069a043:5488:5494 [1] NCCL INFO Tree 1 : 0 -> 1 -> -1/-1/-1
+4650a069a043:5488:5493 [0] NCCL INFO comm 0x60ab430dd900 rank 0 nRanks 2 nNodes 1 localRanks 2 localRank 0 MNNVL 0
+4650a069a043:5488:5493 [0] NCCL INFO Tree 0 : -1 -> 0 -> 1/-1/-1
+4650a069a043:5488:5493 [0] NCCL INFO Tree 1 : -1 -> 0 -> 1/-1/-1
+4650a069a043:5488:5493 [0] NCCL INFO Channel 00/02 : 0 1
+4650a069a043:5488:5493 [0] NCCL INFO Channel 01/02 : 0 1
+4650a069a043:5488:5493 [0] NCCL INFO Ring 00 : 1 -> 0 -> 1
+4650a069a043:5488:5493 [0] NCCL INFO Ring 01 : 1 -> 0 -> 1
+4650a069a043:5488:5493 [0] NCCL INFO Trees [0] 1/-1/-1->0->-1 [1] 1/-1/-1->0->-1
+4650a069a043:5488:5493 [0] NCCL INFO P2P Chunksize set to 131072
+4650a069a043:5488:5493 [0] NCCL INFO threadThresholds 8/8/64 | 16/8/64 | 512 | 512
+4650a069a043:5488:5493 [0] NCCL INFO 2 coll channels, 2 collnet channels, 0 nvls channels, 2 p2p channels, 2 p2p channels per peer
+4650a069a043:5488:5494 [1] NCCL INFO Ring 00 : 0 -> 1 -> 0
+4650a069a043:5488:5494 [1] NCCL INFO Ring 01 : 0 -> 1 -> 0
+4650a069a043:5488:5494 [1] NCCL INFO Trees [0] -1/-1/-1->1->0 [1] -1/-1/-1->1->0
+4650a069a043:5488:5494 [1] NCCL INFO P2P Chunksize set to 131072
+4650a069a043:5488:5495 [0] NCCL INFO [Proxy Service] Device 0 CPU core 2
+4650a069a043:5488:5496 [0] NCCL INFO [Proxy Service UDS] Device 0 CPU core 2
+4650a069a043:5488:5497 [1] NCCL INFO [Proxy Service] Device 1 CPU core 2
+4650a069a043:5488:5498 [1] NCCL INFO [Proxy Service UDS] Device 1 CPU core 2
+4650a069a043:5488:5493 [0] NCCL INFO CC Off, Multi-GPU CC Off, workFifoBytes 1048576
+4650a069a043:5488:5494 [1] NCCL INFO threadThresholds 8/8/64 | 16/8/64 | 512 | 512
+4650a069a043:5488:5494 [1] NCCL INFO 2 coll channels, 2 collnet channels, 0 nvls channels, 2 p2p channels, 2 p2p channels per peer
+4650a069a043:5488:5494 [1] NCCL INFO ncclCommInitAll comm 0x60ab43120250 rank 1 nranks 2 cudaDev 1 nvmlDev 1 busId e1000 commId 0xf5c6d78681bd9c13 - Init COMPLETE
+4650a069a043:5488:5494 [1] NCCL INFO Init timings - ncclCommInitAll: rank 1 nranks 2 total 0.45 (kernels 0.36, alloc 0.03, bootstrap 0.01, allgathers 0.01, topo 0.03, graphs 0.00, connections 0.01, rest 0.00)
+4650a069a043:5488:5493 [0] NCCL INFO ncclCommInitAll comm 0x60ab430dd900 rank 0 nranks 2 cudaDev 0 nvmlDev 0 busId c3000 commId 0xf5c6d78681bd9c13 - Init COMPLETE
+4650a069a043:5488:5493 [0] NCCL INFO Init timings - ncclCommInitAll: rank 0 nranks 2 total 0.45 (kernels 0.35, alloc 0.04, bootstrap 0.01, allgathers 0.01, topo 0.03, graphs 0.00, connections 0.00, rest 0.01)
+4650a069a043:5488:5499 [1] NCCL INFO Channel 00/0 : 1[1] -> 0[0] via P2P/direct pointer
+4650a069a043:5488:5499 [1] NCCL INFO Channel 01/0 : 1[1] -> 0[0] via P2P/direct pointer
+4650a069a043:5488:5500 [0] NCCL INFO Channel 00/0 : 0[0] -> 1[1] via P2P/direct pointer
+4650a069a043:5488:5500 [0] NCCL INFO Channel 01/0 : 0[0] -> 1[1] via P2P/direct pointer
+4650a069a043:5488:5499 [1] NCCL INFO Connected all rings
+4650a069a043:5488:5500 [0] NCCL INFO Connected all rings
+gputrace_nccl: 2 x NVIDIA A100-SXM4-40GB, 1200 collectives, 4800 stamps in 5.7 s
+4650a069a043:5488:5488 [0] NCCL INFO comm 0x60ab430dd900 rank 0 nranks 2 cudaDev 0 busId c3000 - Destroy COMPLETE
+4650a069a043:5488:5488 [1] NCCL INFO comm 0x60ab43120250 rank 1 nranks 2 cudaDev 1 busId e1000 - Destroy COMPLETE
