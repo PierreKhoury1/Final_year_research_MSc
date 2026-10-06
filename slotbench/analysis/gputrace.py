@@ -613,8 +613,14 @@ def a_timeslice(run):
     return out
 
 
+def a_ktrace(run):
+    from analysis.ktrace import a_ktrace as _a
+    return _a(run)
+
+
 STRATEGIES = dict(launch=a_launch, notify=a_notify, dispatch=a_dispatch, concurrency=a_concurrency, clocks=a_clocks,
-                  copy=a_copy, timeslice=a_timeslice, ramp=a_ramp, gpus=a_gpus, nccl=a_nccl, memory=a_memory, instr=a_instr)
+                  copy=a_copy, timeslice=a_timeslice, ramp=a_ramp, gpus=a_gpus, nccl=a_nccl, memory=a_memory, instr=a_instr,
+                  ktrace=a_ktrace)
 
 
 def analyse(prefix):
@@ -637,6 +643,9 @@ def one_line(res):
     bs = f"±{b:.0f} ns ({c.get('method')})" if b is not None else "no clock"
     def P(d, k="p50"):
         return "-" if not d or d.get(k) is None else f"{d[k] / 1000:.1f}"
+    if s == "ktrace":
+        from analysis.ktrace import one_line_ktrace
+        return one_line_ktrace(r, bs)
     if s == "launch":
         return (f"launch: start {P(r.get('launch_to_start_ns'))}/{P(r.get('launch_to_start_ns'), 'p99')} us p50/p99 {bs}; "
                 f"call {P(r.get('call_ns'))} us; end->sync {P(r.get('end_to_sync_return_ns'))} us; "

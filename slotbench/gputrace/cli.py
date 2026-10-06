@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """gputrace: characterise a GPU and the flow of execution on it, from one command.
 
-  gputrace characterize [--profile quick|full|sharing|instr|multi] [--out DIR] [--gpu N] [--mps auto|on|off]
+  gputrace characterize [--profile quick|full|sharing|instr|ktrace|multi] [--out DIR] [--gpu N] [--mps auto|on|off]
       detect GPUs, build the probes for this architecture, run the profile, analyse, verify brackets in SASS,
       export every run to the trace format, build the timeline viewer, write report.md and summary.json
   gputrace run --strategy S [args...] [--out PREFIX]      one strategy (passes through to the binary)
@@ -83,6 +83,11 @@ PROFILES = {
     "instr": [
         ("instr", "--strategy instr --reps 256"),
         ("instr_cotenant", "--strategy instr --reps 256 --cotenant 1 --cotenant-ms 50"),
+    ],
+    "ktrace": [
+        ("ktrace", "--strategy ktrace --blocks sm,4sm --reps 5 --ffma 256"),
+        ("ktrace_long", "--strategy ktrace --blocks 4sm --reps 3 --ffma 4096"),
+        ("ktrace_idle", "--strategy ktrace --blocks sm --reps 5 --ffma 256 --idle-us 50000"),
     ],
 }
 # runs that need the MPS daemon: the MPS variant of a run is added when the profile has the base run (name before

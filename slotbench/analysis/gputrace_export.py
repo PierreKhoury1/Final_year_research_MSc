@@ -25,6 +25,43 @@ EV_NAME = {v: k for k, v in EV.items()}
 HOST_PID, GPU_PID0 = 1, 10
 
 
+def export_ktrace(run, max_kernels):
+    """Kernel timeline: one track per (block, warp), one slice per phase between consecutive checkpoints, placed on
+    the host axis through the SM's fitted line and the run's clock fit; host events as in the other strategies."""
+    from analysis.ktrace import kernel_timeline, KT_NAMES
+    if run.host_of is None:
+        raise SystemExit("no clock model for this run")
+    kids = sorted(set(int(k) for k in run.recs["kernel_id"]))[:max_kernels]
+    out = []
+    ev = run.ev
+    t0 = float(ev["t"].min())
+    us = lambda t: (t - t0) / 1000.0
+    out.append(dict(ph="M", pid=HOST_PID, name="process_name", args=dict(name="host")))
+    out.append(dict(ph="M", pid=HOST_PID, tid=1, name="thread_name", args=dict(name="launch calls")))
+    pid = 1
+    out.append(dict(ph="M", pid=pid, name="process_name", args=dict(name=f"GPU 0 (±{run.clock['bound_ns']:.0f} ns host bound; SM lines bounded per launch)")))
+    seen = set()
+    for kid in kids:
+        T = kernel_timeline(run, kid)
+        h = T["host"]
+        for a, b, name in ((h["launch_enter"], h["launch_return"], "launch"), (h["sync_enter"], h["sync_return"], "sync")):
+            if a and b:
+                out.append(dict(ph="X", pid=HOST_PID, tid=1, name=f"{name} k{kid}", ts=us(a), dur=(b - a) / 1000.0, args=dict(kernel=kid)))
+        if h["flag_seen"]:
+            out.append(dict(ph="i", pid=HOST_PID, tid=1, name=f"flag seen k{kid}", ts=us(h["flag_seen"]), s="t", args=dict(kernel=kid)))
+        for r in T["rows"]:
+            tid = 1000 * r["sm"] + 8 * (r["block"] % 125) + r["warp"]
+            if tid not in seen:
+                out.append(dict(ph="M", pid=pid, tid=tid, name="thread_name", args=dict(name=f"SM {r['sm']} · block {r['block']} · warp {r['warp']}")))
+                seen.add(tid)
+            th = r["t_host"]
+            for i in range(len(KT_NAMES) - 1):
+                out.append(dict(ph="X", pid=pid, tid=tid, name=f"{KT_NAMES[i]} → {KT_NAMES[i + 1]}", ts=us(th[i]), dur=max(0.001, (th[i + 1] - th[i]) / 1000.0),
+                                args=dict(kernel=kid, block=r["block"], warp=r["warp"], sm=r["sm"], cycles=float(r["c"][i + 1] - r["c"][i]),
+                                          sm_line_bound_ns=round(r["bound_ns"]), host_bound_ns=round(run.clock["bound_ns"]))))
+    return dict(traceEvents=out, displayTimeUnit="ns", otherData=dict(strategy="ktrace", gpu=run.meta.get("gpu"), host=run.meta.get("host")))
+
+
 def export(prefix, max_kernels=200, start_ms=None, window_ms=None, max_events=400_000):
     run = Run(prefix)
     strategy = run.meta.get("strategy")
@@ -37,6 +74,8 @@ def export(prefix, max_kernels=200, start_ms=None, window_ms=None, max_events=40
             raise SystemExit("no clock model for this run")
         mappers = {0: (run.host_of, run.clock["bound_ns"])}
 
+    if strategy == "ktrace":
+        return export_ktrace(run, max_kernels)
     ev = run.ev
     kids = sorted(set(int(k) for k in run.recs["kernel_id"]))
     keep_kids = set(kids[:max_kernels]) if max_kernels else set(kids)

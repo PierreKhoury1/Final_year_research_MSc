@@ -49,8 +49,10 @@ def classic_fit(br, tick, keep_frac=0.01, min_keep=50):
                 model=(g0, t0, a, b))
 
 
-def edge_fit(up, down, iters=200, trim=0):
-    """trim: ignore the `trim` most extreme constraints on each side (reported separately from the strict fit)."""
+def edge_fit(up, down, iters=200, trim=0, rate_range=500e-6):
+    """trim: ignore the `trim` most extreme constraints on each side (reported separately from the strict fit).
+    rate_range: half-width of the rate search around 1 (500 ppm for host vs GPU timer; wider when the two clocks
+    are only roughly pre-scaled, e.g. an SM cycle counter against %globaltimer)."""
     E0 = min(e for _, e in up + down)
     H0 = min(h for h, _ in up)
     U = [(h - H0, e - E0) for h, e in up]
@@ -65,7 +67,7 @@ def edge_fit(up, down, iters=200, trim=0):
         lo, hi = bounds(a)
         return hi - lo
 
-    lo_a, hi_a = 1 - 500e-6, 1 + 500e-6   # width(a) is concave (min of lines minus max of lines): ternary max
+    lo_a, hi_a = 1 - rate_range, 1 + rate_range   # width(a) is concave (min of lines minus max of lines): ternary max
     for _ in range(iters):
         m1, m2 = lo_a + (hi_a - lo_a) / 3, hi_a - (hi_a - lo_a) / 3
         if width(m1) < width(m2):

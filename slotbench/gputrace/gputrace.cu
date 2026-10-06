@@ -36,6 +36,7 @@
 #include "gputrace.cuh"
 #include "clocksync.cuh"
 #include "instr.cuh"
+#include "ktrace.cuh"
 
 using namespace sb;
 using namespace sb::gt;
@@ -198,7 +199,7 @@ struct Args {
     std::string strategy = "launch", out = "gputrace", role = "main", blocks = "1,sm,2sm,8sm,32sm";
     int gpu = 0, core = -1, clock_core = -1, iters = 2000, depth = 1, graph = 0, threads = 256, reps = 5;
     int priority = 0, sync_rounds = 3, sync_per_phase = 1000, waves = 8, nosync = 0, idle_spin = 0, spin_mode = 0, spin_param = 200, hog_mps_pct = 0;
-    int cotenant = 0, hops = 65536, batch = 0, mods = 7, blocks_b = 0, cotenant_ms = 50;
+    int cotenant = 0, hops = 65536, batch = 0, mods = 7, blocks_b = 0, cotenant_ms = 50, ffma = 256;
     std::string blocks_a = "0", hog_kind = "spin";   // memory: mods bitmask 1 .ca, 2 .cg, 4 .cs, 8 .nc
     std::string ws = "4k,16k,64k,128k,192k,256k,512k,1m,2m,4m,8m,16m,24m,32m,48m,64m,128m";
     double idle_us = 0, dur_us = 200, offset_us = 500, seconds = 10, sample_us = 100, gap_us = 20, dur_b_us = 200;
@@ -675,6 +676,46 @@ static void s_timeslice() {
 // clients' contexts down with it (seen as an illegal memory access in the main process at the next sync).
 static volatile sig_atomic_t g_hog_stop = 0;
 static void hog_sigterm(int) { g_hog_stop = 1; }
+
+// Kernel timeline: k_ktrace (every warp stamps its checkpoints) per block count and rep; the last block writes a
+// mapped flag the host polls, then the stream is synchronised, so the host side of the picture is recorded too.
+static void s_ktrace() {
+    cudaStream_t st = make_stream(0);
+    const int T = 256;
+    volatile uint64_t *flag; uint64_t *flag_d;
+    CK(cudaHostAlloc((void **)&flag, 64, cudaHostAllocMapped));
+    *flag = 0;
+    CK(cudaHostGetDevicePointer((void **)&flag_d, (void *)flag, 0));
+    std::vector<int> Bs = parse_blocks(g_args.blocks == "1,sm,2sm,8sm,32sm" ? "sm,4sm" : g_args.blocks, g_dev.sms);
+    int maxB = 1; for (int B : Bs) maxB = std::max(maxB, B);
+    float4 *in, *out; unsigned *ticket;
+    CK(cudaMalloc(&in, sizeof(float4) * ((size_t)maxB * T + 1024))); CK(cudaMalloc(&out, sizeof(float4) * (size_t)maxB * T));
+    CK(cudaMalloc(&ticket, 64));
+    CK(cudaMemset(in, 0, sizeof(float4) * ((size_t)maxB * T + 1024)));
+    uint64_t seen = 0;
+    for (int B : Bs) {
+        for (int r = 0; r < g_args.reps; r++) {
+            uint32_t kid = ++g_kid;
+            g_stage = "B=" + std::to_string(B) + " rep=" + std::to_string(r);
+            CK(cudaMemsetAsync(ticket, 0, 64, st));
+            CK(cudaStreamSynchronize(st));
+            idle(g_args.idle_us);
+            ev(EV_LAUNCH_ENTER, kid, (uint64_t)B, (uint64_t)T);
+            k_ktrace<<<B, T, 0, st>>>(g_dev.td, kid, in, out, ticket, flag_d, (uint32_t)g_args.ffma, (uint32_t)B);
+            ev(EV_LAUNCH_RETURN, kid);
+            LAUNCH_CK();
+            uint64_t v, polls = 0;
+            const int64_t deadline = now_ns() + 5000000000LL;
+            while ((v = *flag) == seen) { polls++; if (now_ns() > deadline) break; }
+            if (v != seen) { ev(EV_FLAG_SEEN, kid, v, polls); seen = v; }
+            ev(EV_SYNC_ENTER, kid);
+            CK(cudaStreamSynchronize(st));
+            ev(EV_SYNC_RETURN, kid);
+        }
+    }
+    cudaFree(in); cudaFree(out); cudaFree(ticket); cudaFreeHost((void *)flag);
+}
+
 static void s_hog() {
     signal(SIGTERM, hog_sigterm);
     cudaStream_t st = make_stream(0);
@@ -719,7 +760,7 @@ static int s_gpus() {
 
 static void usage() {
     fprintf(stderr,
-            "usage: gputrace --strategy launch|notify|dispatch|concurrency|clocks|ramp|copy|timeslice|gpus|memory|instr --out PREFIX\n"
+            "usage: gputrace --strategy launch|notify|dispatch|concurrency|clocks|ramp|copy|timeslice|gpus|memory|instr|ktrace --out PREFIX\n"
             "  instr: [--ws 16k,1m,24m,128m] [--mods kind bitmask (all)] [--reps SAMPLES] [--cotenant 0|1|2]\n"
             "  memory: [--ws 4k,64k,...,128m] [--mods MASK 1 .ca 2 .cg 4 .cs 8 .nc] [--hops N] [--batch N] [--cotenant 0|1 (+--seconds S)]\n"
             "  [--gpu N] [--core C] [--clock-core C] [--iters N] [--idle-us X] [--idle-spin 0|1] [--depth D] [--graph 0|1]\n"
@@ -764,6 +805,7 @@ int main(int argc, char **argv) {
         else if (f == "--hog-dur-us") a.hog_dur_us = atof(v.c_str());
         else if (f == "--smem") a.smem = (size_t)atol(v.c_str());
         else if (f == "--reps") a.reps = atoi(v.c_str());
+        else if (f == "--ffma") a.ffma = std::max(1, atoi(v.c_str()));
         else if (f == "--waves") a.waves = atoi(v.c_str());
         else if (f == "--offset-us") a.offset_us = atof(v.c_str());
         else if (f == "--priority") a.priority = atoi(v.c_str());
@@ -810,6 +852,7 @@ int main(int argc, char **argv) {
     else if (a.strategy == "instr") { if (a.mods == 7) a.mods = (1 << I_N_KINDS) - 1; s_instr(); }
     else if (a.strategy == "gpus") n_gpus = s_gpus();
     else if (a.strategy == "timeslice") s_timeslice();
+    else if (a.strategy == "ktrace") s_ktrace();
     else if (a.strategy == "hog") s_hog();
     else usage();
     CK(cudaDeviceSynchronize());
@@ -847,7 +890,7 @@ int main(int argc, char **argv) {
         .add("compute_mode", compute_mode).add("mps_pct", mps ? mps : "").add("driver", drv).add("runtime", rt)
         .add("host", hostname()).add("time", iso_utc_now()).add("core", a.core).add("clock_core", a.clock_core)
         .add("iters", a.iters).add("idle_us", a.idle_us).add("idle_spin", a.idle_spin).add("spin_mode", a.spin_mode).add("spin_param", a.spin_param).add("hog_mps_pct", a.hog_mps_pct).add("cotenant", a.cotenant).add("cotenant_ms", a.cotenant_ms).add("blocks_a", a.blocks_a).add("blocks_b", a.blocks_b).add("hops", a.hops).add("batch", a.batch).add("mods", a.mods).add("ws", a.ws).add("depth", a.depth).add("graph", a.graph)
-        .add("blocks", a.blocks).add("threads", a.threads).add("dur_us", a.dur_us).add("dur_b_us", a.dur_b_us)
+        .add("ffma", a.ffma).add("blocks", a.blocks).add("threads", a.threads).add("dur_us", a.dur_us).add("dur_b_us", a.dur_b_us)
         .add("smem", (long long)a.smem).add("reps", a.reps).add("waves", a.waves).add("offset_us", a.offset_us)
         .add("priority", a.priority).add("launch_dur_us", a.launch_dur_us).add("hog_dur_us", a.hog_dur_us).add("seconds", a.seconds).add("sample_us", a.sample_us).add("gap_us", a.gap_us)
         .add("sync_rounds", a.sync_rounds).add("sync_per_phase", a.sync_per_phase)

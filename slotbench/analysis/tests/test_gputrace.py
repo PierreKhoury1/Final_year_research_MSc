@@ -309,3 +309,75 @@ def test_instr_fit_separates_latency_from_overhead(tmp_path):
     assert abs(by[("LDG.ca", 16384)]["latency_cycles"] - 40) < 0.2
     assert abs(by[("LDG.ca", 16384)]["sm_ghz"] - 1.4) < 0.05
     assert "instr(" in gt.one_line(gt.analyse(p))
+
+
+def test_ktrace_places_warps_and_checks_order(tmp_path):
+    """Synthetic k_ktrace run: 4 SMs with unrelated cycle counters and clocks of 1.41-1.50 GHz, 2 blocks per SM,
+    8 warps each, realistic phase lengths, %globaltimer floor-quantised to the tick. The per-SM line fit must
+    recover each SM's clock within its bound, every stamp must land inside its [g, g+tick) window, barrier
+    releases must follow the last arrival, and the grid-wide ticket order must match the time order."""
+    from analysis import ktrace as kt
+    p = str(tmp_path / "k")
+    rng = np.random.default_rng(3)
+    recs, evs = [], []
+    kid = 1; B = 8; ffma = 256
+    launch_t = int(host_of(20_000_000)) - 6_000
+    evs.append((launch_t, 1, kid, B, 256)); evs.append((launch_t + 1800, 2, kid, 0, 0))
+    sm_ghz = {0: 1.41, 1: 1.455, 2: 1.47, 3: 1.50}
+    sm_c0 = {s: int(rng.integers(1_000_000, 9_000_000_000)) for s in sm_ghz}
+    all_stamps = {}
+    for b in range(B):
+        sm = b % 4; ghz = sm_ghz[sm]
+        tb = 20_000_000 + 300 * b + rng.integers(0, 50)
+        cyc = lambda ns: int(round(ns * ghz))
+        stamps = {}
+        for w in range(8):
+            c = np.zeros(11)
+            c[0] = cyc(tb - 20_000_000) + 40 * w; c[1] = c[0] + 30
+            c[2] = c[1] + 30 + rng.integers(900, 1200); c[3] = c[2] + 30
+            stamps[w] = c
+        last1 = max(stamps[w][3] for w in range(8))
+        for w in range(8):
+            c = stamps[w]; c[4] = last1 + 56; c[5] = c[4] + 30 + 4 * ffma + 40; c[6] = c[5] + 30
+        last2 = max(stamps[w][6] for w in range(8))
+        for w in range(8):
+            c = stamps[w]; c[7] = last2 + 56; c[8] = c[7] + 830; c[9] = c[8] + 30 + (400 if w == 0 else 0); c[10] = c[9] + 90
+        all_stamps[b] = (sm, ghz, stamps)
+    tk = sorted((20_000_000 + st[0][9] / ghz, b) for b, (sm, ghz, st) in all_stamps.items())
+    ticket_of = {b: i for i, (_, b) in enumerate(tk)}
+    last_exit = 0
+    for b, (sm, ghz, st) in all_stamps.items():
+        for w in range(8):
+            for k in range(11):
+                c_abs = sm_c0[sm] + int(st[w][k])
+                t_true = 20_000_000 + st[w][k] / ghz
+                g = int(t_true // TICK) * TICK
+                recs.append((g, g, c_abs, c_abs, 0, sm, kid, b, 100 + k, ticket_of[b] if (k == 9 and w == 0) else ffma, w))
+                last_exit = max(last_exit, t_true)
+    evs.append((int(host_of(last_exit)) + 900, 6, kid, int(last_exit), 10))
+    evs.append((int(host_of(last_exit)) + 1500, 3, kid, 0, 0)); evs.append((int(host_of(last_exit)) + 3000, 4, kid, 0, 0))
+    write_run(p, "ktrace", recs, evs, dict(ffma=ffma))
+    run = gt.Run(p)
+    T = kt.kernel_timeline(run, kid)
+    assert T["n_warps"] == 64 and T["n_sms"] == 4 and T["sm_fit"]["n"] == 4 and T["sm_fit"]["infeasible"] == 0
+    # each SM's clock recovered; bound well below the tick
+    assert abs(T["sm_fit"]["ghz_p50"] - 1.46) < 0.05
+    assert T["sm_fit"]["bound_ns_max"] < TICK / 2
+    # every stamp inside its window on the fitted line
+    for r in T["rows"]:
+        assert np.all(r["t_gpu"] >= r["g"] - r["bound_ns"] - 1e-6) and np.all(r["t_gpu"] < r["g"] + TICK + r["bound_ns"] + 1e-6)
+        assert abs(r["phases"]["compute"] - (4 * ffma + 40)) < 1 and abs(r["phases"]["store_fence"] - 800) < 1
+    assert all(b["release_before_last_arrival"] == 0 for b in T["barriers"])
+    assert all(abs(x - 26) < 1 for b in T["barriers"] for x in b["latency_per_warp"])
+    assert T["ticket"]["n"] == B and T["ticket"]["violations"] == 0
+    # block starts recovered to within the SM line bounds (dispatch ~300 ns apart)
+    starts = {r["block"]: r["t_gpu"][0] for r in T["rows"] if r["warp"] == 0}
+    for b in range(B):
+        tb = 20_000_000 + 300 * b   # +[0,50) jitter in the generator
+        assert abs(starts[b] - tb) < T["sm_fit"]["bound_ns_max"] + 60
+    res = gt.analyse(p)
+    assert res["result"]["by_blocks"][B]["ticket"]["violations"] == 0
+    assert "ktrace" in gt.one_line(res)
+    from analysis.gputrace_export import export
+    tr = export(p)
+    assert sum(1 for e in tr["traceEvents"] if e.get("ph") == "X" and "→" in e.get("name", "")) == 64 * 10
