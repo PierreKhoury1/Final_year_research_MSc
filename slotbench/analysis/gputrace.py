@@ -474,6 +474,26 @@ def a_timeslice(run):
                           max_gap_ns=q(hr["max_gap_ns"]), blocks_with_gap_gt_5us=int((hr["max_gap_ns"] > 5000).sum()),
                           hog_dur_us=hog.meta.get("hog_dur_us"),
                           mps_pct=hog.meta.get("mps_pct"))
+        # Cross-process validation: the other process can only finish a kernel while it holds the GPU, so every hog
+        # kernel's end (its last block, on the hog's own clock fit) must fall inside one of our not-running intervals
+        # (on ours), within the sum of the two bounds. A miss would falsify one of the two mappings.
+        if gaps.size and hog.host_of is not None and hr.size:
+            order = np.argsort(run.host_of(gaps["g_begin"]))
+            gs, ge = run.host_of(gaps["g_begin"])[order], run.host_of(gaps["g_end"])[order]
+            ends = {}
+            for k, e in zip(hr["kernel_id"], hog.host_of(hr["g_end"])):
+                ends[int(k)] = max(ends.get(int(k), -1e30), float(e))
+            E = np.array(sorted(ends.values()))
+            E = E[(E > gs[0]) & (E < ge[-1])]
+            bsum = run.clock["bound_ns"] + hog.clock["bound_ns"]
+            idx = np.maximum(np.searchsorted(gs, E) - 1, 0)
+            inside = (E >= gs[idx] - bsum) & (E <= ge[idx] + bsum)
+            L = ge - gs
+            out["hog"]["kernel_ends_checked"] = int(E.size)
+            out["hog"]["kernel_ends_inside_our_gaps"] = int(inside.sum())
+            out["hog"]["cross_check_bound_ns"] = float(bsum)
+            out["gap_short_lt_1500us"] = q(L[L < 1.5e6])
+            out["gap_long_ge_1500us"] = q(L[L >= 1.5e6])
     return out
 
 

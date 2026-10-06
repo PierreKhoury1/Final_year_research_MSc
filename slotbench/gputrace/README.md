@@ -23,6 +23,13 @@ strategy tag, the largest timer gap seen while spinning. Host events are 32 byte
 enter/return, flag/event seen, copy enter/return/done, idle end, marks). Formats: `gputrace.h`; the analysis reads
 them with the same layouts (`analysis/gputrace.py`, tested on synthetic runs in `analysis/tests/test_gputrace.py`).
 
+## View
+
+`python3 analysis/gputrace_export.py PREFIX [--max-kernels N] [--start-ms X --window-ms Y]` writes
+`PREFIX.trace.json` in the Chrome trace-event format; open it in https://ui.perfetto.dev. Host calls, every block on
+its SM's track per GPU, the resident thread's not-running intervals, the other process of a timeslice run, and NCCL
+collectives per GPU, all on the host clock, with each GPU's bound in its process name.
+
 ## Run
 
 ```sh

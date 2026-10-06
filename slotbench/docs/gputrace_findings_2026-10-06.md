@@ -23,6 +23,14 @@ cost: ≈ 170 µs per context switch on A100 and H100, ≈ 90 µs on the RTX 306
 0.0 % of its time (11 gaps of 0.35–0.44 ms in 7.5 s instead of ≈ 1 700 gaps of 2.4 ms) and the co-tenant's SM set
 was exactly its percentage (54 of 108, 56 of 114).
 
+## 3b. Cross-process validation of the clock mappings (A100, H100)
+In each time-slicing run, our process and the other process map the same GPU's timer to the host clock
+independently (each with its own tick-edge fit). The other process can only finish a kernel while it holds the GPU,
+so each of its kernel ends must fall inside one of our not-running intervals. It does, every time: **801 of 801**
+(A100) and **800 of 800** (H100), within the summed bounds of 1.05 / 1.14 µs. The trace also shows the turn pattern
+the summary statistics hid: our not-running intervals alternate between ≈ 0.79 ms (the other process's 5 ms
+kernel finishes about 80 % into its turn and it yields) and ≈ 2.44 ms (a full turn ending in mid-block preemption).
+
 ## 4. Launch and completion latencies (p50; p99 in the datasets)
 | | RTX 3060 | A100 (host 1 / 2) | H100 |
 |---|---|---|---|

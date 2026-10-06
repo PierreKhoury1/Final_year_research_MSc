@@ -237,3 +237,28 @@ def test_nccl_spans_skew_and_causality(tmp_path):
     assert abs(s1m["algbw_GBps"] - (1 << 20) / 61_000) < 1
     assert abs(s1m["call_ns"]["p50"] - 4000) < 1
     assert "nccl x2" in gt.one_line(res)
+
+
+def test_export_chrome_trace(tmp_path):
+    from analysis.gputrace_export import export
+    p = str(tmp_path / "e")
+    g = 20_000_000
+    recs = [rec(g + 1000 * i, g + 1000 * i + 200_000, smid=i % 4, kid=1 + i // 4, block=i % 4) for i in range(8)]
+    evs = []
+    for k in (1, 2):
+        t = int(host_of(g)) - 5000 + (k - 1) * 4000
+        evs += [(t, gt.EV["LAUNCH_ENTER"], k, 4, 256), (t + 2000, gt.EV["LAUNCH_RETURN"], k, 0, 0),
+                (t + 2500, gt.EV["SYNC_ENTER"], k, 0, 0), (int(host_of(g + 210_000)), gt.EV["SYNC_RETURN"], k, 0, 0)]
+    write_run(p, "dispatch", recs, evs)
+    tr = export(p)
+    xs = [e for e in tr["traceEvents"] if e["ph"] == "X"]
+    gpu_x = [e for e in xs if e["pid"] >= 10]
+    host_x = [e for e in xs if e["pid"] == 1]
+    assert len(gpu_x) == 8 and len(host_x) == 4
+    # a block's drawn start is within the bound of its true host time
+    run = gt.Run(p)
+    first_host = min(e["ts"] for e in xs)
+    blk = min(gpu_x, key=lambda e: e["ts"])
+    true_us = (host_of(g) - (int(host_of(g)) - 5000)) / 1000.0
+    assert abs((blk["ts"] - first_host) - true_us) * 1000 <= run.clock["bound_ns"] + TICK
+    json.dumps(tr)
