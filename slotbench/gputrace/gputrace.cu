@@ -662,13 +662,18 @@ static void s_timeslice() {
 }
 
 // role hog: keep the GPU busy with wide spinning kernels for `seconds`, tracing its own blocks.
+// The hog stops on SIGTERM after its current kernel: under MPS a client killed mid-kernel takes the other
+// clients' contexts down with it (seen as an illegal memory access in the main process at the next sync).
+static volatile sig_atomic_t g_hog_stop = 0;
+static void hog_sigterm(int) { g_hog_stop = 1; }
 static void s_hog() {
+    signal(SIGTERM, hog_sigterm);
     cudaStream_t st = make_stream(0);
     const uint64_t dur = (uint64_t)(g_args.hog_dur_us * 1000);   // blocks longer than the time-slice quantum get interrupted
     int64_t until = now_ns() + (int64_t)(g_args.seconds * 1e9);
     float4 *sbuf = nullptr; const size_t sbytes = (size_t)512 << 20;
     if (g_args.hog_kind == "stream") { CK(cudaMalloc(&sbuf, sbytes)); CK(cudaMemset(sbuf, 0, sbytes)); }
-    while (now_ns() < until) {
+    while (now_ns() < until && !g_hog_stop) {
         uint32_t kid = ++g_kid;
         ev(EV_LAUNCH_ENTER, kid, (uint64_t)g_dev.sms * 2, (uint64_t)g_args.threads);
         if (sbuf) k_stream<<<g_dev.sms, 256, 0, st>>>(g_dev.td, kid, sbuf, sbytes / sizeof(float4), dur);

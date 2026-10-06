@@ -467,8 +467,32 @@ def a_instr(run):
     enter = run.events("LAUNCH_ENTER")
     ws_of = {int(k): int(a) for k, a in zip(enter["kernel_id"], enter["a"])}
     r = run.recs[(run.recs["tag"] < 13) & (run.recs["clk_begin"] == 0) & (run.recs["n_iters"] > 0)]
-    groups = {}
+    # Co-tenant blocks (k_stream, tag 20, in this process or in the hog process's own file; the hog's k_spin, tag 9):
+    # a sample is "shared" when such a block was on the same SM for the whole bracket. With a co-tenant the two
+    # populations differ by ~700 cycles of bracket overhead and the per-N medians flip between them, so the fit is
+    # done on the shared samples alone (the unshared ones give the alone table again).
+    co = run.recs[run.recs["tag"] == 20]
+    hog_prefix = run.prefix + ".hog"
+    if os.path.exists(hog_prefix + ".gpu.bin"):
+        hr = np.fromfile(hog_prefix + ".gpu.bin", dtype=GPU_DT)
+        co = np.concatenate([co, hr[(hr["tag"] == 20) | (hr["tag"] == 9)]])
+    co_by_sm = {}
+    for c in co:
+        co_by_sm.setdefault(int(c["smid"]), []).append((int(c["g_begin"]), int(c["g_end"])))
+    def shared(rec):
+        iv = co_by_sm.get(int(rec["smid"]))
+        if not iv:
+            return False
+        b, e = int(rec["g_begin"]), int(rec["g_end"])
+        return any(cb <= b and e <= ce for cb, ce in iv)
+    use_shared = bool(run.meta.get("cotenant")) and co.size > 0
+    groups, n_shared, n_all = {}, 0, 0
     for rec in r:
+        n_all += 1
+        sh = shared(rec) if use_shared else False
+        n_shared += sh
+        if use_shared and not sh:
+            continue
         key = (int(rec["tag"]), ws_of.get(int(rec["kernel_id"]), 0))
         g = groups.setdefault(key, {})
         g.setdefault(int(rec["n_iters"]), []).append((float(rec["clk_end"]), float(rec["g_end"]) - float(rec["g_begin"])))
@@ -495,7 +519,9 @@ def a_instr(run):
                           latency_cycles_p10=float(b10), bracket_overhead_cycles_p10=float(a10), per_N_p10=p10,
                           single_bracket_cycles=med.get(1), per_N_median=med, per_N_p99=p99, samples=sum(len(v) for v in byN.values()),
                           ns_per_instr_at_Nmax=ns_total / Nmax, sm_ghz=ghz, Nmax=Nmax))
-    return dict(cotenant=run.meta.get("cotenant"), reps=run.meta.get("reps"), table=table, bound_ns=run.clock["bound_ns"])
+    return dict(cotenant=run.meta.get("cotenant"), reps=run.meta.get("reps"), table=table, bound_ns=run.clock["bound_ns"],
+                samples=n_all, samples_shared=n_shared, fit_on="shared samples" if use_shared else "all samples",
+                cotenant_blocks=int(co.size))
 
 
 def a_copy(run):
