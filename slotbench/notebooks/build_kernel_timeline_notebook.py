@@ -106,7 +106,58 @@ for gname, run in runs.items():
     plt.show()
     hv = Ts[gname]['host_view']
     print(f"{gname}: launch -> first warp {hv['launch_to_first_entry_ns'] / 1e3:.2f} µs; block starts spread {Ts[gname]['block_start_spread_ns'] / 1e3:.2f} µs; "
-          f"kernel span {Ts[gname]['span_gpu_ns'] / 1e3:.2f} µs; last exit -> flag seen {hv['last_exit_to_flag_seen_ns'] / 1e3:.2f} µs -> sync returns {hv['last_exit_to_sync_return_ns'] / 1e3:.2f} µs")
+          f"kernel span {Ts[gname]['span_gpu_ns'] / 1e3:.2f} µs; flag write -> host sees it {hv['flag_write_to_flag_seen_ns'] / 1e3:.2f} µs; last exit -> sync returns {hv['last_exit_to_sync_return_ns'] / 1e3:.2f} µs")
+""")
+
+md(r"""
+## 1b. What the GPU is doing at each instant: loading, waiting, computing, storing
+
+The same launch as a stacked count: at every instant, how many of the launch's warps are between the checkpoints of
+each phase (two dependent global loads in flight, waiting at a barrier for the rest of the block, running the FFMA
+chain, in the global store and fence, in the atomic ticket, or in the tail). The host events are the vertical
+lines, so the whole operation, from the launch call to the stream synchronisation returning, is on this one axis.
+Phases are assigned from each warp's own checkpoints on the host axis (through the SM's bounded line and the run's
+clock bound).
+""")
+
+code(r"""
+def fig_occupancy(T, gname, ax):
+    h = T['host']; t0 = h['launch_enter']; rows = T['rows']
+    us = lambda t: (t - t0) / 1e3
+    # phase intervals on the host axis; the barrier phases are split into waiting (arrival .. last arrival of the block)
+    # and release (last arrival .. release stamp)
+    blocks = {}
+    for r in rows: blocks.setdefault(r['block'], []).append(r)
+    last_arr = {}
+    for b, rs in blocks.items():
+        for bar, ia in (('barrier1', 3), ('barrier2', 6)):
+            w0 = max(rs, key=lambda r: r['c'][ia]); last_arr[(b, bar)] = w0['t_host'][ia]
+    ivs = {k: [] for k in ('load', 'barrier wait', 'barrier release', 'compute', 'store+fence', 'ticket', 'tail')}
+    for r in rows:
+        th = r['t_host']; b = r['block']
+        ivs['load'].append((th[1], th[2]))
+        ivs['barrier wait'].append((th[3], last_arr[(b, 'barrier1')])); ivs['barrier release'].append((last_arr[(b, 'barrier1')], th[4]))
+        ivs['compute'].append((th[4], th[5]))
+        ivs['barrier wait'].append((th[6], last_arr[(b, 'barrier2')])); ivs['barrier release'].append((last_arr[(b, 'barrier2')], th[7]))
+        ivs['store+fence'].append((th[7], th[8])); ivs['ticket'].append((th[8], th[9])); ivs['tail'].append((th[9], th[10]))
+    tmin = min(r['t_host'][0] for r in rows); tmax = max(r['t_host'][10] for r in rows)
+    grid = np.linspace(tmin - 200, tmax + 200, 1500)
+    cols = {'load': PHASE_COL['load'], 'barrier wait': '#f6c3ad', 'barrier release': PHASE_COL['barrier1'], 'compute': PHASE_COL['compute'],
+            'store+fence': PHASE_COL['store_fence'], 'ticket': PHASE_COL['ticket'], 'tail': PHASE_COL['tail']}
+    counts = []
+    for k in cols:
+        iv = np.array(ivs[k]) if ivs[k] else np.zeros((0, 2))
+        a = np.sort(iv[:, 0]); e = np.sort(np.maximum(iv[:, 1], iv[:, 0]))
+        counts.append(np.searchsorted(a, grid, side='right') - np.searchsorted(e, grid, side='right'))
+    ax.stackplot(us(grid), counts, labels=list(cols), colors=list(cols.values()), lw=0)
+    for key, lab in (('launch_enter', 'launch call'), ('launch_return', 'call returns'), ('flag_seen', 'host sees the flag'), ('sync_enter', 'sync call'), ('sync_return', 'sync returns')):
+        if h.get(key): ax.axvline(us(h[key]), color=C['ink2'], lw=0.8, ls=':'); ax.text(us(h[key]) + 0.05, len(rows) * 0.98, lab, rotation=90, fontsize=8, va='top', ha='left', color=C['ink2'])
+    ax.set_xlabel('µs after the launch call (host clock)'); ax.set_ylabel('warps in the phase'); ax.set_ylim(0, len(rows) * 1.02)
+    ax.set_title(f'{gname}: {len(rows)} warps of launch {T["kid"]} by phase, with the host-side sync events')
+    ax.legend(loc='upper right', fontsize=8, ncol=2)
+
+for gname, T in Ts.items():
+    fig, ax = plt.subplots(figsize=(11, 4)); fig_occupancy(T, gname, ax); plt.show()
 """)
 
 md(r"""
@@ -114,8 +165,8 @@ md(r"""
 
 Cycles since the block's first stamp, exact (one SM, one counter). Each warp's row shows its phases; the barrier
 segments are split into the time the warp *waited* for the last warp to arrive (lighter) and the release
-latency after the last arrival (darker). The checkpoint's own cost (checkpoint 0 → 1) has been subtracted from
-every phase.
+latency after the last arrival (darker). The checkpoint's own cost (checkpoint 0 → 1) has been subtracted from every phase, and the shared load + store
+chain that makes the release stamp wait for the barrier (checkpoint 2 → 3) from the barrier phases.
 """)
 
 code(r"""
@@ -124,11 +175,11 @@ def fig_block(T, gname, b, ax):
     c0 = min(r['c'][0] for r in rs); ghz = None
     last1 = max(r['c'][3] for r in rs); last2 = max(r['c'][6] for r in rs)
     for r in rs:
-        y = r['warp']; c = r['c'] - c0; cal = r['cal']
+        y = r['warp']; c = r['c'] - c0; cal = r['cal']; touch = r['touch']
         segs = [('entry→loaded', c[1], c[2] - cal, PHASE_COL['load']),
-                ('wait', c[3], last1 - c0, '#f6c3ad'), ('release', last1 - c0, c[4] - cal, PHASE_COL['barrier1']),
+                ('wait', c[3], last1 - c0, '#f6c3ad'), ('release', last1 - c0, c[4] - touch, PHASE_COL['barrier1']),
                 ('compute', c[4], c[5] - cal, PHASE_COL['compute']),
-                ('wait', c[6], last2 - c0, '#f6c3ad'), ('release', last2 - c0, c[7] - cal, PHASE_COL['barrier2']),
+                ('wait', c[6], last2 - c0, '#f6c3ad'), ('release', last2 - c0, c[7] - touch, PHASE_COL['barrier2']),
                 ('store+fence', c[7], c[8] - cal, PHASE_COL['store_fence']), ('ticket', c[8], c[9] - cal, PHASE_COL['ticket']), ('tail', c[9], c[10] - cal, PHASE_COL['tail'])]
         for name, a, bb, col in segs:
             if bb > a: ax.barh(y, bb - a, left=a, height=0.7, color=col, lw=0)
