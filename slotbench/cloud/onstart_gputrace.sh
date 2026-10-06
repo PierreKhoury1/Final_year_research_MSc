@@ -108,8 +108,11 @@ for rep in $(seq 1 "$REPEAT"); do
     done
     run "copy$R"             --strategy copy --iters 1000
     # memory hierarchy: one warp pointer-chasing per working set and PTX modifier, alone and beside a streaming co-tenant
-    run "memory$R"           --strategy memory --reps 3 --hops 65536 --batch 64
-    run "memory_cotenant$R"  --strategy memory --reps 3 --hops 65536 --batch 64 --cotenant 1 --seconds 120
+    run "memory$R"           --strategy memory --reps 3 --hops 65536
+    run "memory_cotenant$R"  --strategy memory --reps 3 --hops 65536 --cotenant 1 --cotenant-ms 50
+    # can a 1-block kernel from another stream start while a long kernel holds (a) half the SMs, (b) one block per SM?
+    run "coexist_half$R"     --strategy concurrency --blocks-a hsm --dur-us 50000 --dur-b-us 100 --offset-us 1000 --reps 3 --blocks-b 1 --threads 256
+    run "coexist_1persm$R"   --strategy concurrency --blocks-a sm --dur-us 50000 --dur-b-us 100 --offset-us 1000 --reps 3 --blocks-b 1 --threads 32
     if (( NGPU > 1 )); then
         run "gpus$R"         --strategy gpus --reps 3 --sync-rounds 3 --sync-per-phase 1000
         if [[ -x $W/gputrace_nccl ]]; then

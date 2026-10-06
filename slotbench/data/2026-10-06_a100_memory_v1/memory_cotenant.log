@@ -1,0 +1,1 @@
+gputrace memory: NVIDIA A100-SXM4-40GB sms=108 recs=829548 events=464 kernels=154 in 154.64 s (sync pre ok post ok)

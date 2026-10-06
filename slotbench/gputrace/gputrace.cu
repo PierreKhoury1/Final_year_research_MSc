@@ -19,6 +19,8 @@
 
 #include <algorithm>
 #include <random>
+#include <atomic>
+#include <thread>
 #include <cstdint>
 #include <cstdio>
 #include <cstdlib>
@@ -192,7 +194,8 @@ struct Args {
     std::string strategy = "launch", out = "gputrace", role = "main", blocks = "1,sm,2sm,8sm,32sm";
     int gpu = 0, core = -1, clock_core = -1, iters = 2000, depth = 1, graph = 0, threads = 256, reps = 5;
     int priority = 0, sync_rounds = 3, sync_per_phase = 1000, waves = 8, nosync = 0, idle_spin = 0, spin_mode = 0, spin_param = 200, hog_mps_pct = 0;
-    int cotenant = 0, hops = 65536, batch = 64, mods = 7;   // memory: mods bitmask 1 .ca, 2 .cg, 4 .cs, 8 .nc
+    int cotenant = 0, hops = 65536, batch = 0, mods = 7, blocks_b = 0, cotenant_ms = 50;
+    std::string blocks_a = "0";   // memory: mods bitmask 1 .ca, 2 .cg, 4 .cs, 8 .nc
     std::string ws = "4k,16k,64k,128k,192k,256k,512k,1m,2m,4m,8m,16m,24m,32m,48m,64m,128m";
     double idle_us = 0, dur_us = 200, offset_us = 500, seconds = 10, sample_us = 100, gap_us = 20, dur_b_us = 200;
     double launch_dur_us = 10, hog_dur_us = 5000;
@@ -231,6 +234,7 @@ static std::vector<int> parse_blocks(const std::string &s, int sms) {
         if (j == std::string::npos) j = s.size();
         std::string tok = s.substr(i, j - i);
         int mult = 1;
+        if (tok.size() >= 3 && tok.compare(tok.size() - 3, 3, "hsm") == 0) { out.push_back(std::max(1, sms / 2)); i = j + 1; continue; }   // half the SMs
         if (tok.size() >= 2 && tok.compare(tok.size() - 2, 2, "sm") == 0) { mult = sms; tok = tok.substr(0, tok.size() - 2); if (tok.empty()) tok = "1"; }
         out.push_back(std::max(1, atoi(tok.c_str()) * mult));
         i = j + 1;
@@ -353,7 +357,9 @@ static void s_dispatch() {
 static void s_concurrency() {
     cudaStream_t s0 = make_stream(g_args.priority ? -1 : 0), s1 = make_stream(g_args.priority ? +1 : 0);
     const uint64_t dur_a = (uint64_t)(g_args.dur_us * 1000), dur_b = (uint64_t)(g_args.dur_b_us * 1000);
-    const int B_a = g_dev.sms * g_args.waves, B_b = g_dev.sms;
+    const int ba = parse_blocks(g_args.blocks_a, g_dev.sms)[0];
+    const int B_a = g_args.blocks_a != "0" ? ba : g_dev.sms * g_args.waves;
+    const int B_b = g_args.blocks_b > 0 ? g_args.blocks_b : g_dev.sms;
     for (int r = 0; r < g_args.reps; r++) {
         uint32_t ka = ++g_kid;
         idle(g_args.idle_us);
@@ -436,14 +442,22 @@ static void s_memory() {
     unsigned *buf, *sink; CK(cudaMalloc(&buf, max_ws + 4096)); CK(cudaMalloc(&sink, 64));
     std::vector<unsigned> h(max_ws / 4 + 1024);
     float4 *sbuf = nullptr; const size_t sbytes = (size_t)512 << 20;
-    uint32_t kco = 0;
+    std::atomic<bool> co_run{false};
+    std::thread co;
     if (g_args.cotenant) {
         CK(cudaMalloc(&sbuf, sbytes)); CK(cudaMemset(sbuf, 0, sbytes));
-        kco = ++g_kid;
-        ev(EV_LAUNCH_ENTER, kco, (uint64_t)g_dev.sms, 256);
-        k_stream<<<g_dev.sms, 256, 0, sc>>>(g_dev.td, kco, sbuf, sbytes / sizeof(float4), (uint64_t)(g_args.seconds * 1e9));
-        ev(EV_LAUNCH_RETURN, kco); LAUNCH_CK();
-        spin_until(now_ns() + 20000000);   // let it reach steady state
+        co_run = true;
+        // back-to-back streaming kernels of cotenant_ms each: their blocks retire regularly, which is what lets
+        // another stream's kernel be placed (a never-ending kernel kept the chase kernel waiting: see README)
+        co = std::thread([&] {
+            const uint64_t dur = (uint64_t)g_args.cotenant_ms * 1000000ull;
+            while (co_run.load()) {
+                uint32_t kco = ++g_kid;
+                k_stream<<<g_dev.sms, 256, 0, sc>>>(g_dev.td, kco, sbuf, sbytes / sizeof(float4), dur);
+                cudaStreamSynchronize(sc);
+            }
+        });
+        spin_until(now_ns() + 200000000);   // 0.2 s of steady state before measuring
     }
     std::mt19937_64 rng(42);
     for (uint32_t wi = 0; wi < sizes.size(); wi++) {
@@ -458,18 +472,19 @@ static void s_memory() {
             for (int r = 0; r < g_args.reps; r++) {
                 uint32_t kid = ++g_kid;
                 const uint32_t hops = (uint32_t)std::max<size_t>(g_args.hops, 2 * lines);
+                const uint32_t batch = g_args.batch > 0 ? (uint32_t)g_args.batch : std::max<uint32_t>(64, hops / 256);
                 ev(EV_LAUNCH_ENTER, kid, sizes[wi], (uint64_t)mod);
-                if (mod == 0) k_chase<0><<<1, 32, 0, st>>>(g_dev.td, kid, buf, hops, g_args.batch, wi, g_args.cotenant, sink);
-                else if (mod == 1) k_chase<1><<<1, 32, 0, st>>>(g_dev.td, kid, buf, hops, g_args.batch, wi, g_args.cotenant, sink);
-                else if (mod == 2) k_chase<2><<<1, 32, 0, st>>>(g_dev.td, kid, buf, hops, g_args.batch, wi, g_args.cotenant, sink);
-                else k_chase<3><<<1, 32, 0, st>>>(g_dev.td, kid, buf, hops, g_args.batch, wi, g_args.cotenant, sink);
+                if (mod == 0) k_chase<0><<<1, 32, 0, st>>>(g_dev.td, kid, buf, hops, batch, wi, g_args.cotenant, sink);
+                else if (mod == 1) k_chase<1><<<1, 32, 0, st>>>(g_dev.td, kid, buf, hops, batch, wi, g_args.cotenant, sink);
+                else if (mod == 2) k_chase<2><<<1, 32, 0, st>>>(g_dev.td, kid, buf, hops, batch, wi, g_args.cotenant, sink);
+                else k_chase<3><<<1, 32, 0, st>>>(g_dev.td, kid, buf, hops, batch, wi, g_args.cotenant, sink);
                 ev(EV_LAUNCH_RETURN, kid); LAUNCH_CK();
                 CK(cudaStreamSynchronize(st));
                 ev(EV_SYNC_RETURN, kid);
             }
         }
     }
-    if (g_args.cotenant) { CK(cudaStreamSynchronize(sc)); ev(EV_SYNC_RETURN, kco); cudaFree(sbuf); }
+    if (g_args.cotenant) { co_run = false; co.join(); CK(cudaStreamSynchronize(sc)); cudaFree(sbuf); }
     cudaFree(buf); cudaFree(sink);
 }
 
@@ -611,6 +626,9 @@ int main(int argc, char **argv) {
         else if (f == "--spin-param") a.spin_param = std::max(1, atoi(v.c_str()));
         else if (f == "--hog-mps-pct") a.hog_mps_pct = atoi(v.c_str());
         else if (f == "--cotenant") a.cotenant = atoi(v.c_str());
+        else if (f == "--cotenant-ms") a.cotenant_ms = std::max(1, atoi(v.c_str()));
+        else if (f == "--blocks-a") a.blocks_a = v;
+        else if (f == "--blocks-b") a.blocks_b = atoi(v.c_str());
         else if (f == "--hops") a.hops = atoi(v.c_str());
         else if (f == "--batch") a.batch = std::max(1, atoi(v.c_str()));
         else if (f == "--mods") a.mods = atoi(v.c_str());
@@ -706,7 +724,7 @@ int main(int argc, char **argv) {
         .add("pci_bus", g_dev.prop.pciBusID).add("clock_khz", clock_khz).add("mem_clock_khz", mem_khz)
         .add("compute_mode", compute_mode).add("mps_pct", mps ? mps : "").add("driver", drv).add("runtime", rt)
         .add("host", hostname()).add("time", iso_utc_now()).add("core", a.core).add("clock_core", a.clock_core)
-        .add("iters", a.iters).add("idle_us", a.idle_us).add("idle_spin", a.idle_spin).add("spin_mode", a.spin_mode).add("spin_param", a.spin_param).add("hog_mps_pct", a.hog_mps_pct).add("cotenant", a.cotenant).add("hops", a.hops).add("batch", a.batch).add("mods", a.mods).add("ws", a.ws).add("depth", a.depth).add("graph", a.graph)
+        .add("iters", a.iters).add("idle_us", a.idle_us).add("idle_spin", a.idle_spin).add("spin_mode", a.spin_mode).add("spin_param", a.spin_param).add("hog_mps_pct", a.hog_mps_pct).add("cotenant", a.cotenant).add("cotenant_ms", a.cotenant_ms).add("blocks_a", a.blocks_a).add("blocks_b", a.blocks_b).add("hops", a.hops).add("batch", a.batch).add("mods", a.mods).add("ws", a.ws).add("depth", a.depth).add("graph", a.graph)
         .add("blocks", a.blocks).add("threads", a.threads).add("dur_us", a.dur_us).add("dur_b_us", a.dur_b_us)
         .add("smem", (long long)a.smem).add("reps", a.reps).add("waves", a.waves).add("offset_us", a.offset_us)
         .add("priority", a.priority).add("launch_dur_us", a.launch_dur_us).add("hog_dur_us", a.hog_dur_us).add("seconds", a.seconds).add("sample_us", a.sample_us).add("gap_us", a.gap_us)
