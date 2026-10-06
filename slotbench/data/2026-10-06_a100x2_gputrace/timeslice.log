@@ -1,0 +1,2 @@
+gputrace hog: NVIDIA A100-SXM4-40GB sms=108 recs=168696 events=2345 kernels=781 in 6.61 s (sync pre ok post ok)
+gputrace timeslice: NVIDIA A100-SXM4-40GB sms=108 recs=840 events=7 kernels=1 in 11.76 s (sync pre ok post ok)

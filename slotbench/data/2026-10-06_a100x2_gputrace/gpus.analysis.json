@@ -1,0 +1,63 @@
+{
+ "prefix": "/workspace/gputrace/out/gpus",
+ "strategy": "gpus",
+ "gpu": "NVIDIA A100-SXM4-40GB",
+ "sms": 108,
+ "host": "8d135494574e",
+ "clock": {
+  "tick_ns": 1024,
+  "method": "edge",
+  "bound_ns": 807.804030045867,
+  "rate_ppm": -3.292506275176521,
+  "feasible": true,
+  "windows": {
+   "pre": {
+    "edge_bound_ns": 808.9112823873293,
+    "edge_feasible": true,
+    "n_up": 3000,
+    "n_down": 2931,
+    "rate_ppm": -3.523183830900223
+   },
+   "post": {
+    "edge_bound_ns": 821.0413726128172,
+    "edge_feasible": true,
+    "n_up": 3000,
+    "n_down": 2930,
+    "rate_ppm": -3.42280230203329
+   }
+  },
+  "width_ns": 1615.608060091734
+ },
+ "n_gpu_recs": 0,
+ "gpu_recs_dropped": 0,
+ "n_host_events": 14,
+ "result": {
+  "n_gpus": 2,
+  "rounds": 3,
+  "t_mid": 2394496577968637.5,
+  "gpus": {
+   "0": {
+    "bound_ns": 773.168818116188,
+    "feasible": true,
+    "rate_ppm": -3.2375195544442903,
+    "n_up": 9000,
+    "n_down": 8792,
+    "classic_eps_ns": 2564.2243528028484,
+    "timer_minus_gpu0_ns": 0.0,
+    "offset_bound_ns": 1546.337636232376,
+    "rate_minus_gpu0_ppm": 0.0
+   },
+   "1": {
+    "bound_ns": 831.4152694838122,
+    "feasible": true,
+    "rate_ppm": -2.6072602967719405,
+    "n_up": 9000,
+    "n_down": 8786,
+    "classic_eps_ns": 2260.649545535445,
+    "timer_minus_gpu0_ns": -1742487040.0,
+    "offset_bound_ns": 1604.5840876000002,
+    "rate_minus_gpu0_ppm": 0.6302592576723498
+   }
+  }
+ }
+}

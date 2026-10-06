@@ -1,0 +1,79 @@
+{
+ "prefix": "/workspace/gputrace/out/launch_idle100",
+ "strategy": "launch",
+ "gpu": "NVIDIA A100-SXM4-40GB",
+ "sms": 108,
+ "host": "8d135494574e",
+ "clock": {
+  "tick_ns": 1024,
+  "method": "edge",
+  "bound_ns": 832.0897169425152,
+  "rate_ppm": -3.618147840667163,
+  "feasible": true,
+  "windows": {
+   "pre": {
+    "edge_bound_ns": 832.6528159822337,
+    "edge_feasible": true,
+    "n_up": 3000,
+    "n_down": 2931,
+    "rate_ppm": -3.5346840163708038
+   },
+   "post": {
+    "edge_bound_ns": 885.7252794485539,
+    "edge_feasible": true,
+    "n_up": 3000,
+    "n_down": 2931,
+    "rate_ppm": 6.297694533863307
+   }
+  },
+  "width_ns": 1664.1794338850304
+ },
+ "n_gpu_recs": 2000,
+ "gpu_recs_dropped": 0,
+ "n_host_events": 10002,
+ "result": {
+  "graph": false,
+  "n": 2000,
+  "launch_to_start_ns": {
+   "p50": 5587.25,
+   "p90": 6314.1,
+   "p99": 8349.03,
+   "p100": 16002.0,
+   "n": 2000,
+   "mean": 5756.4275
+  },
+  "call_ns": {
+   "p50": 2770.0,
+   "p90": 3080.0,
+   "p99": 5610.1,
+   "p100": 10810.0,
+   "n": 2000,
+   "mean": 2871.1375
+  },
+  "bound_ns": 832.0897169425152,
+  "exec_ns": {
+   "p50": 10240.0,
+   "p90": 10240.0,
+   "p99": 10240.0,
+   "p100": 10240.0,
+   "n": 2000,
+   "mean": 10240.0
+  },
+  "sm_clock_ghz": {
+   "p50": 1.04228515625,
+   "p90": 1.092392578125,
+   "p99": 1.10078125,
+   "p100": 1.1017578125,
+   "n": 2000,
+   "mean": 1.0444341796875
+  },
+  "end_to_sync_return_ns": {
+   "p50": 3256.75,
+   "p90": 3565.05,
+   "p99": 4148.08,
+   "p100": 166297.5,
+   "n": 2000,
+   "mean": 3385.9165
+  }
+ }
+}
