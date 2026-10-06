@@ -9,22 +9,32 @@ W=/workspace/gputrace; OUT=$W/out; mkdir -p "$OUT"; cd "$W"
 BRANCH=${2:-${SB_BRANCH:-main}}; REPO=${3:-${SB_REPO:-https://github.com/PierreKhoury1/Final_year_research_MSc}}
 ITERS=${SB_GT_ITERS:-2000}; SECS=${SB_GT_SECONDS:-8}; SKIP=${SB_GT_SKIP:-^$}; REPEAT=${SB_GT_REPEAT:-1}
 
-emit() {
-    local status=$1 archive=$W/results.tar.gz sha n i=0 part
-    tar --warning=no-file-changed -czf "$archive" -C "$W" out || true
+emit_archive() {   # emit_archive NAME TARARGS... : archive, print as (multi-part) base64 blocks
+    local name=$1; shift
+    local archive=$W/$name.tar.gz sha n i=0 part
+    tar --warning=no-file-changed -czf "$archive" "$@" || true
     sha=$(sha256sum "$archive" | cut -d' ' -f1)
     rm -rf "$W/parts"; mkdir -p "$W/parts"
     split -b 800k -d -a 2 --additional-suffix=.bin "$archive" "$W/parts/p"
     n=$(ls "$W/parts" | wc -l)
-    echo "=====SLOTBENCH-PARTS gputrace/results $n $sha====="
+    echo "=====SLOTBENCH-PARTS gputrace/$name $n $sha====="
     for part in "$W"/parts/p*.bin; do
         i=$((i + 1))
-        echo "=====SLOTBENCH-BEGIN gputrace/results.part$(printf %02d "$i") $(sha256sum "$part" | cut -d' ' -f1)====="
+        echo "=====SLOTBENCH-BEGIN gputrace/$name.part$(printf %02d "$i") $(sha256sum "$part" | cut -d' ' -f1)====="
         base64 -w 76 "$part"
-        echo "=====SLOTBENCH-END gputrace/results.part$(printf %02d "$i")====="
+        echo "=====SLOTBENCH-END gputrace/$name.part$(printf %02d "$i")====="
         if (( i < n )); then sleep "${SB_PART_GAP_S:-50}"; fi
     done
-    echo "=====SLOTBENCH-PARTS gputrace/results $n $sha====="
+    echo "=====SLOTBENCH-PARTS gputrace/$name $n $sha====="
+}
+emit() {   # small summary block first (analysis JSON, logs, meta), then the raw data; then DONE and self-stop
+    local status=$1
+    mkdir -p "$W/summary"; rm -rf "$W/summary"/*
+    cp "$OUT"/*.json "$OUT"/*.log "$OUT"/*.err "$OUT"/*.txt "$W/summary/" 2>/dev/null || true
+    rm -f "$W/summary"/*.gpu.bin
+    emit_archive summary -C "$W" summary
+    sleep "${SB_PART_GAP_S:-50}"
+    emit_archive results -C "$W" out
     echo "=====SLOTBENCH-DONE status=$status====="
     sleep "${SB_POST_DONE_GRACE_S:-900}"; echo "=====SLOTBENCH-SELF-STOP====="; kill -TERM 1; sleep 10; kill -KILL 1
 }
