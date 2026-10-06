@@ -474,6 +474,25 @@ static void launch_instr_kind(int K, int N, cudaStream_t st, uint32_t kid, const
         default: launch_instr<I_BAR>(N, st, kid, buf, out, reps, wi); break;
     }
 }
+// In-process streaming co-tenant: one k_stream block per SM, cotenant_ms long, with QUEUE kernels enqueued ahead
+// so the GPU never sees a gap between them (a launch-after-sync loop left 0.4 ms (A100) to 12 ms (RTX 3060) of
+// no co-tenant between kernels, and a probe kernel launched in that gap ran alone).
+static void co_stream_loop(std::atomic<bool> &co_run, cudaStream_t sc, float4 *sbuf, size_t n, uint64_t dur) {
+    const int QUEUE = 4;
+    cudaEvent_t evs[QUEUE];
+    for (int i = 0; i < QUEUE; i++) CK(cudaEventCreateWithFlags(&evs[i], cudaEventDisableTiming));
+    int q = 0;
+    while (co_run.load()) {
+        uint32_t kco = ++g_kid;
+        k_stream<<<g_dev.sms, 256, 0, sc>>>(g_dev.td, kco, sbuf, n, dur);
+        CK(cudaEventRecord(evs[q % QUEUE], sc));
+        q++;
+        if (q >= QUEUE) CK(cudaEventSynchronize(evs[(q - QUEUE) % QUEUE]));
+    }
+    CK(cudaStreamSynchronize(sc));
+    for (int i = 0; i < QUEUE; i++) cudaEventDestroy(evs[i]);
+}
+
 static void s_instr() {
     cudaStream_t st = make_stream(0), sc = make_stream(0);
     std::vector<size_t> sizes = parse_sizes(g_args.ws == "4k,16k,64k,128k,192k,256k,512k,1m,2m,4m,8m,16m,24m,32m,48m,64m,128m" ? "16k,1m,24m,128m" : g_args.ws);
@@ -487,10 +506,7 @@ static void s_instr() {
         hog = spawn_hog(g_args.seconds); spin_until(now_ns() + 3000000000LL);
     } else if (g_args.cotenant) {
         CK(cudaMalloc(&sbuf, sbytes)); CK(cudaMemset(sbuf, 0, sbytes)); co_run = true;
-        co = std::thread([&] {
-            const uint64_t dur = (uint64_t)g_args.cotenant_ms * 1000000ull;
-            while (co_run.load()) { uint32_t kco = ++g_kid; k_stream<<<3 * g_dev.sms, 256, 0, sc>>>(g_dev.td, kco, sbuf, sbytes / sizeof(float4), dur); cudaStreamSynchronize(sc); }
-        });
+        co = std::thread([&] { co_stream_loop(co_run, sc, sbuf, sbytes / sizeof(float4), (uint64_t)g_args.cotenant_ms * 1000000ull); });
         spin_until(now_ns() + 200000000);
     }
     std::mt19937_64 rng(42);
@@ -549,14 +565,7 @@ static void s_memory() {
         co_run = true;
         // back-to-back streaming kernels of cotenant_ms each: their blocks retire regularly, which is what lets
         // another stream's kernel be placed (a never-ending kernel kept the chase kernel waiting: see README)
-        co = std::thread([&] {
-            const uint64_t dur = (uint64_t)g_args.cotenant_ms * 1000000ull;
-            while (co_run.load()) {
-                uint32_t kco = ++g_kid;
-                k_stream<<<3 * g_dev.sms, 256, 0, sc>>>(g_dev.td, kco, sbuf, sbytes / sizeof(float4), dur);
-                cudaStreamSynchronize(sc);
-            }
-        });
+        co = std::thread([&] { co_stream_loop(co_run, sc, sbuf, sbytes / sizeof(float4), (uint64_t)g_args.cotenant_ms * 1000000ull); });
         spin_until(now_ns() + 200000000);   // 0.2 s of steady state before measuring
     }
     std::mt19937_64 rng(42);
@@ -676,7 +685,7 @@ static void s_hog() {
     while (now_ns() < until && !g_hog_stop) {
         uint32_t kid = ++g_kid;
         ev(EV_LAUNCH_ENTER, kid, (uint64_t)g_dev.sms * 2, (uint64_t)g_args.threads);
-        if (sbuf) k_stream<<<3 * g_dev.sms, 256, 0, st>>>(g_dev.td, kid, sbuf, sbytes / sizeof(float4), dur);
+        if (sbuf) k_stream<<<g_dev.sms, 256, 0, st>>>(g_dev.td, kid, sbuf, sbytes / sizeof(float4), dur);
         else k_spin<<<g_dev.sms * 2, g_args.threads, 0, st>>>(g_dev.td, kid, 9, dur, nullptr);
         ev(EV_LAUNCH_RETURN, kid);
         LAUNCH_CK();
