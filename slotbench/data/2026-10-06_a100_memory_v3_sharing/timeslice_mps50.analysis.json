@@ -1,0 +1,116 @@
+{
+ "prefix": "/workspace/gputrace/out/timeslice_mps50",
+ "strategy": "timeslice",
+ "gpu": "NVIDIA A100-SXM4-40GB",
+ "sms": 108,
+ "host": "8d2b692851fc",
+ "clock": {
+  "tick_ns": 1024,
+  "method": "edge",
+  "bound_ns": 507.76575013046386,
+  "rate_ppm": -1.5312014953750008,
+  "feasible": true,
+  "windows": {
+   "pre": {
+    "edge_bound_ns": 515.3534867472481,
+    "edge_feasible": true,
+    "n_up": 3000,
+    "n_down": 2931,
+    "rate_ppm": 1.2126974269222046
+   },
+   "post": {
+    "edge_bound_ns": 602.0622941814363,
+    "edge_feasible": true,
+    "n_up": 3000,
+    "n_down": 2931,
+    "rate_ppm": -1.250628888449512
+   }
+  },
+  "width_ns": 1015.5315002609277
+ },
+ "n_gpu_recs": 12,
+ "gpu_recs_dropped": 0,
+ "n_host_events": 7,
+ "result": {
+  "gap_threshold_us": 20,
+  "n_gaps": 11,
+  "gap_ns": {
+   "p50": 346112.0,
+   "p90": 452608.0,
+   "p99": 453529.6,
+   "p100": 453632.0,
+   "n": 11,
+   "mean": 338478.54545454547
+  },
+  "gaps_alone": {
+   "p50": null,
+   "p90": null,
+   "p99": null,
+   "p100": null,
+   "n": 0
+  },
+  "gaps_with_hog": {
+   "p50": 346112.0,
+   "p90": 452608.0,
+   "p99": 453529.6,
+   "p100": 453632.0,
+   "n": 11,
+   "mean": 338478.54545454547
+  },
+  "hog_window_s": 7.49999114421875,
+  "fraction_not_running_with_hog": 0.000496435786176897,
+  "switches_per_s_with_hog": 1.4666683984659337,
+  "our_quantum_ns": {
+   "p50": 4199936.0,
+   "p90": 663567871.9999977,
+   "p99": 5764619724.800001,
+   "p100": 6331403264.0,
+   "n": 10,
+   "mean": 640853708.8
+  },
+  "resident_window_ns": 8000000000.0,
+  "resident_iters": 153930658,
+  "hog": {
+   "blocks": 107460,
+   "sms_used": 54,
+   "sms": 54,
+   "block_dur_ns": {
+    "p50": 5000192.0,
+    "p90": 5000192.0,
+    "p99": 5000192.0,
+    "p100": 5000192.0,
+    "n": 107460,
+    "mean": 5000192.0
+   },
+   "max_gap_ns": {
+    "p50": 1024.0,
+    "p90": 2048.0,
+    "p99": 2048.0,
+    "p100": 2048.0,
+    "n": 107460,
+    "mean": 1302.8984924623117
+   },
+   "blocks_with_gap_gt_5us": 0,
+   "hog_dur_us": 5000,
+   "mps_pct": "50",
+   "kernel_ends_checked": 995,
+   "kernel_ends_inside_our_gaps": 0,
+   "cross_check_bound_ns": 1402.3196695193765
+  },
+  "gap_short_lt_1500us": {
+   "p50": 346111.46875,
+   "p90": 452607.3125,
+   "p99": 453528.884375,
+   "p100": 453631.28125,
+   "n": 11,
+   "mean": 338478.0255681818
+  },
+  "gap_long_ge_1500us": {
+   "p50": null,
+   "p90": null,
+   "p99": null,
+   "p100": null,
+   "n": 0
+  }
+ }
+}

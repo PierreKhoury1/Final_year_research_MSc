@@ -52,6 +52,9 @@ L1 39 cy (≤ 128 KB), L2 211 cy, far L2 half 428 cy (24–32 MB), DRAM 571 cy (
 with knees at 128 KB and 4 MB. **Beside a streaming co-tenant block on the same SM, every load costs ~945 cycles at
 every tier, L1-resident sets included** (4.5× at L2, 24× at L1), with the SM clock unchanged. A kernel from another
 stream starts within 6–8 µs even while a 50 ms kernel occupies half the SMs or one block per SM (`coexist_*`).
+**Sharing modes** (`data/2026-10-06_a100_memory_v3_sharing`): with the co-tenant as a separate process, time-slicing
+turns L2 hits into DRAM misses (565–571 cy) with a 14 000-cycle p99 and triples DRAM-tier latency; MPS at 50 % keeps
+L1 at 39 cycles and the p99 within 4 % of p50, but L2-resident sets still cost 700 cycles (3.3×) because L2 is shared.
 
 ## 4. Launch and completion latencies (p50; p99 in the datasets)
 | | RTX 3060 | A100 (host 1 / 2) | H100 |
