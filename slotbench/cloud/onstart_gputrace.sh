@@ -2,12 +2,14 @@
 # Rented-GPU campaign for gputrace: every strategy once (plus launch after idle gaps and with a graph), analysis
 # one-liners in the log, results archived. Usage: onstart_gputrace.sh [CONFIG [BRANCH [REPO]]] (CONFIG ignored)
 # Env: SB_GT_ITERS (default 2000), SB_GT_SECONDS (timeslice/clocks window, default 8), SB_GT_SKIP (regex of
-# strategies to skip), SB_GT_REPEAT (campaign repeats, default 1).
+# strategies to skip), SB_GT_ONLY (regex: run only the matching names, e.g. '^(gpus|nccl)'), SB_GT_REPEAT
+# (campaign repeats, default 1). On a host with more than one GPU it also runs gpus (per-GPU timer mapping) and
+# nccl (gputrace_nccl: all-reduce spans on every GPU on one bounded axis).
 set -Eeuo pipefail
 log() { echo "[slotbench $(date -u +%H:%M:%S)] $*"; }
 W=/workspace/gputrace; OUT=$W/out; mkdir -p "$OUT"; cd "$W"
 BRANCH=${2:-${SB_BRANCH:-main}}; REPO=${3:-${SB_REPO:-https://github.com/PierreKhoury1/Final_year_research_MSc}}
-ITERS=${SB_GT_ITERS:-2000}; SECS=${SB_GT_SECONDS:-8}; SKIP=${SB_GT_SKIP:-^$}; REPEAT=${SB_GT_REPEAT:-1}
+ITERS=${SB_GT_ITERS:-2000}; SECS=${SB_GT_SECONDS:-8}; SKIP=${SB_GT_SKIP:-^$}; ONLY=${SB_GT_ONLY:-.}; REPEAT=${SB_GT_REPEAT:-1}
 
 emit_archive() {   # emit_archive NAME TARARGS... : archive, print as (multi-part) base64 blocks
     local name=$1; shift
@@ -53,12 +55,12 @@ log "build sm_$cc"
 nvcc -O2 -lineinfo -std=c++17 -arch=sm_$cc -I"$SB/common" -I"$SB/gputrace" -o "$W/gputrace" "$SB/gputrace/gputrace.cu" -lpthread > "$OUT/build.log" 2>&1
 NP=$(nproc); CORE=$(( NP > 4 ? 2 : 0 )); CCORE=$(( NP > 4 ? 3 : 1 ))
 # the raw files of long strategies are large; keep only what the analysis needs plus the json/log
-run() {   # run NAME strategy args...
-    local name=$1; shift
-    if [[ "$name" =~ $SKIP ]]; then log "skip $name"; return 0; fi
+run_bin() {   # run_bin BINARY NAME args...
+    local bin=$1 name=$2; shift 2
+    if [[ "$name" =~ $SKIP || ! "$name" =~ $ONLY ]]; then return 0; fi
     log "run $name: $*"
     local p="$OUT/$name"
-    if ! "$W/gputrace" --out "$p" --core "$CORE" --clock-core "$CCORE" "$@" > "$p.log" 2>&1; then
+    if ! "$bin" --out "$p" --core "$CORE" --clock-core "$CCORE" "$@" > "$p.log" 2>&1; then
         log "$name FAILED (see $name.log)"; tail -3 "$p.log" | sed 's/^/[slotbench]   /'; return 0
     fi
     tail -1 "$p.log" | sed 's/^/[slotbench]   /'
@@ -66,6 +68,20 @@ run() {   # run NAME strategy args...
         || { log "analysis $name failed"; tail -2 "$p.analysis.err" | sed 's/^/[slotbench]   /'; }
     sleep 3
 }
+run() { run_bin "$W/gputrace" "$@"; }
+NGPU=$(nvidia-smi -L | wc -l)
+if (( NGPU > 1 )); then   # NCCL for the multi-GPU tracer: the CUDA devel images normally ship it; install if not
+    if [[ ! -e /usr/include/nccl.h ]]; then
+        log "installing NCCL"
+        apt-get install -y -qq --no-install-recommends libnccl2 libnccl-dev >> "$OUT/apt.log" 2>&1 || log "NCCL install failed"
+    fi
+    if [[ -e /usr/include/nccl.h ]]; then
+        nvcc -O2 -lineinfo -std=c++17 -arch=sm_$cc -I"$SB/common" -I"$SB/gputrace" -o "$W/gputrace_nccl" \
+            "$SB/gputrace/gputrace_nccl.cu" -lnccl -lpthread >> "$OUT/build.log" 2>&1 || log "gputrace_nccl build failed"
+    fi
+    nvidia-smi topo -m > "$OUT/topo.txt" 2>&1 || true
+    sed 's/^/[slotbench] topo /' "$OUT/topo.txt" | head -6
+fi
 for rep in $(seq 1 "$REPEAT"); do
     R=""; (( REPEAT > 1 )) && R="_r$rep"
     run "launch$R"           --strategy launch --iters "$ITERS"
@@ -91,8 +107,13 @@ for rep in $(seq 1 "$REPEAT"); do
         run "ramp_idle${idle}$R" --strategy ramp --idle-us "$idle" --dur-us 3000 --sample-us 20 --reps 40
     done
     run "copy$R"             --strategy copy --iters 1000
-    if (( $(nvidia-smi -L | wc -l) > 1 )); then
+    if (( NGPU > 1 )); then
         run "gpus$R"         --strategy gpus --reps 3 --sync-rounds 3 --sync-per-phase 1000
+        if [[ -x $W/gputrace_nccl ]]; then
+            NCCL_DEBUG=INFO NCCL_DEBUG_SUBSYS=INIT,GRAPH run_bin "$W/gputrace_nccl" "nccl$R" --iters 200 \
+                --sizes 8,4096,65536,1048576,16777216,134217728
+            grep -hE "via (P2P|SHM|NET)|Channel 00" "$OUT/nccl$R.log" 2>/dev/null | head -3 | sed 's/^/[slotbench]   nccl transport: /' || true
+        fi
     fi
     run "timeslice$R"        --strategy timeslice --seconds "$SECS" --gap-us 20 --hog-dur-us 5000
     # the same two processes under MPS (hog limited to 50 % of the SMs): no time-slicing expected, partition visible

@@ -299,11 +299,9 @@ def a_ramp(run):
                 curve=[(float(a), float(b)) for a, b in zip(grid_t[::max(1, n // 200)], grid_f[::max(1, n // 200)])])
 
 
-def a_gpus(run):
-    """Every GPU's %globaltimer on the host axis (edge fit per GPU over all rounds): offset and rate of each GPU
-    relative to GPU 0 at the middle of the run, with the sum of the two bounds."""
-    n = int(run.meta.get("n_gpus", 1))
-    reps = int(run.meta.get("reps", 1))
+def per_gpu_fits(run, n, reps):
+    """Edge fit of each GPU's %globaltimer to the host clock from PREFIX.gpu{d}.r{r}.* (all rounds pooled).
+    Returns {d: dict(edge, classic, t_first, t_last, host_of, gpu_of, bound_ns)}."""
     fits = {}
     for d in range(n):
         up, down, classic = [], [], []
@@ -318,23 +316,97 @@ def a_gpus(run):
         if len(up) > 10 and len(down) > 10:
             e = edge_fit(up, down)
             c = classic_fit(classic, run.clock["tick_ns"]) if len(classic) > 60 else None
-            fits[d] = dict(edge=e, classic=c, t_first=min(h for h, _ in up), t_last=max(h for h, _ in up))
+            E0, H0, a, mid = e["model"]
+            fits[d] = dict(edge=e, classic=c, t_first=min(h for h, _ in up), t_last=max(h for h, _ in up),
+                           bound_ns=e["bound_ns"],
+                           host_of=lambda g, E0=E0, H0=H0, a=a, mid=mid: H0 + mid + a * (np.asarray(g, dtype=float) - E0),
+                           gpu_of=lambda t, E0=E0, H0=H0, a=a, mid=mid: E0 + (np.asarray(t, dtype=float) - H0 - mid) / a)
+    return fits
+
+
+def a_gpus(run):
+    """Every GPU's %globaltimer on the host axis (edge fit per GPU over all rounds): offset and rate of each GPU
+    relative to GPU 0 at the middle of the run, with the sum of the two bounds."""
+    n = int(run.meta.get("n_gpus", 1))
+    reps = int(run.meta.get("reps", 1))
+    fits = per_gpu_fits(run, n, reps)
     if not fits:
         return dict(error="no per-GPU samples", n_gpus=n)
     t_mid = 0.5 * (min(f["t_first"] for f in fits.values()) + max(f["t_last"] for f in fits.values()))
-    def gpu_of(d, t):   # GPU d's timer reading at host time t under its edge model
-        E0, H0, a, mid = fits[d]["edge"]["model"]
-        return E0 + (t - H0 - mid) / a
     out = dict(n_gpus=n, rounds=reps, t_mid=t_mid, gpus={})
     for d, f in fits.items():
         e = f["edge"]
         g = dict(bound_ns=e["bound_ns"], feasible=e["feasible"], rate_ppm=e["rate_ppm"], n_up=e["n_up"], n_down=e["n_down"],
                  classic_eps_ns=f["classic"]["eps_with_tick_ns"] if f["classic"] else None)
         if 0 in fits:
-            g["timer_minus_gpu0_ns"] = gpu_of(d, t_mid) - gpu_of(0, t_mid)
+            g["timer_minus_gpu0_ns"] = float(f["gpu_of"](t_mid) - fits[0]["gpu_of"](t_mid))
             g["offset_bound_ns"] = e["bound_ns"] + fits[0]["edge"]["bound_ns"]
             g["rate_minus_gpu0_ppm"] = e["rate_ppm"] - fits[0]["edge"]["rate_ppm"]
         out["gpus"][d] = g
+    return out
+
+
+def a_nccl(run):
+    """ncclAllReduce across the GPUs of one host. Stamps: tag 1 just before the collective on each GPU's stream,
+    tag 2 just after (flags = device, kernel_id = collective id, block = iteration). Per collective size:
+      span      after.g_begin - before.g_end on each GPU: the collective plus two inter-kernel gaps (GPU-local ns)
+      start skew  GPU d's before-stamp end minus GPU 0's, on the host axis (bound = sum of the two GPU bounds);
+                  includes the host's sequential enqueue over devices
+      end skew    the same for the after-stamp start: when each GPU finished the collective
+      causality   no GPU can finish an all-reduce before every other GPU has started it, so
+                  host(after_d.g_begin) >= host(before_e.g_end) for all d != e. A violation larger than the two bounds
+                  would falsify the per-GPU clock mappings; the smallest slack is reported.
+      algbw/busbw size / span, busbw = algbw * 2 (n-1) / n (NCCL's convention)."""
+    n = int(run.meta.get("n_gpus", 1))
+    fits = per_gpu_fits(run, n, int(run.meta.get("reps", 2)))
+    if len(fits) < n:
+        return dict(error=f"clock fits for {len(fits)} of {n} GPUs")
+    enter = run.events("LAUNCH_ENTER")
+    size_of = {int(k): int(a) for k, a in zip(enter["kernel_id"], enter["a"])}
+    t_enter = {int(k): int(t) for k, t in zip(enter["kernel_id"], enter["t"])}
+    ret = {int(k): int(t) for k, t in zip(run.events("LAUNCH_RETURN")["kernel_id"], run.events("LAUNCH_RETURN")["t"])}
+    sync_ret = {int(k): int(t) for k, t in zip(run.events("SYNC_RETURN")["kernel_id"], run.events("SYNC_RETURN")["t"])}
+    stamps = {}
+    for r in run.recs:
+        stamps[(int(r["kernel_id"]), int(r["flags"]), int(r["tag"]))] = r
+    bsum = {d: fits[d]["bound_ns"] + fits[0]["bound_ns"] for d in fits}
+    causal_bound = max(fits[d]["bound_ns"] + fits[e]["bound_ns"] for d in fits for e in fits if d != e)
+    per_size = {}
+    for kid, size in sorted(size_of.items()):
+        try:
+            b = {d: stamps[(kid, d, 1)] for d in range(n)}
+            a = {d: stamps[(kid, d, 2)] for d in range(n)}
+        except KeyError:
+            continue
+        hb = {d: float(fits[d]["host_of"](b[d]["g_end"])) for d in range(n)}
+        ha = {d: float(fits[d]["host_of"](a[d]["g_begin"])) for d in range(n)}
+        span = {d: float(a[d]["g_begin"]) - float(b[d]["g_end"]) for d in range(n)}
+        slack = min(ha[d] - hb[e] for d in range(n) for e in range(n) if d != e)
+        ps = per_size.setdefault(size, dict(span={d: [] for d in range(n)}, start_skew={d: [] for d in range(1, n)},
+                                            end_skew={d: [] for d in range(1, n)}, slack=[], call=[], end_to_sync=[]))
+        for d in range(n):
+            ps["span"][d].append(span[d])
+        for d in range(1, n):
+            ps["start_skew"][d].append(hb[d] - hb[0])
+            ps["end_skew"][d].append(ha[d] - ha[0])
+        ps["slack"].append(slack)
+        if kid in ret:
+            ps["call"].append(ret[kid] - t_enter[kid])
+        if kid in sync_ret:
+            ps["end_to_sync"].append(sync_ret[kid] - max(float(fits[d]["host_of"](a[d]["g_end"])) for d in range(n)))
+    out = dict(n_gpus=n, nccl_version=run.meta.get("nccl_version"),
+               clock={d: dict(bound_ns=f["bound_ns"], feasible=f["edge"]["feasible"], rate_ppm=f["edge"]["rate_ppm"]) for d, f in fits.items()},
+               skew_bound_ns={d: bsum[d] for d in range(1, n)}, causal_bound_ns=causal_bound, sizes={})
+    for size, ps in sorted(per_size.items()):
+        med_span = float(np.median([np.median(v) for v in ps["span"].values()]))
+        algbw = size / med_span if med_span > 0 else None   # bytes per ns = GB/s
+        out["sizes"][size] = dict(
+            n=len(ps["slack"]), span_ns={d: q(v) for d, v in ps["span"].items()},
+            start_skew_ns={d: q(v) for d, v in ps["start_skew"].items()},
+            end_skew_ns={d: q(v) for d, v in ps["end_skew"].items()},
+            causal_slack_min_ns=float(min(ps["slack"])), causal_violations=int(sum(1 for x in ps["slack"] if x < -causal_bound)),
+            call_ns=q(ps["call"]), end_to_sync_ns=q(ps["end_to_sync"]),
+            algbw_GBps=algbw, busbw_GBps=(algbw * 2 * (n - 1) / n) if algbw else None)
     return out
 
 
@@ -406,7 +478,7 @@ def a_timeslice(run):
 
 
 STRATEGIES = dict(launch=a_launch, notify=a_notify, dispatch=a_dispatch, concurrency=a_concurrency, clocks=a_clocks,
-                  copy=a_copy, timeslice=a_timeslice, ramp=a_ramp, gpus=a_gpus)
+                  copy=a_copy, timeslice=a_timeslice, ramp=a_ramp, gpus=a_gpus, nccl=a_nccl)
 
 
 def analyse(prefix):
@@ -415,7 +487,7 @@ def analyse(prefix):
     res = dict(prefix=prefix, strategy=s, gpu=run.meta.get("gpu"), sms=run.meta.get("sms"), host=run.meta.get("host"),
                clock=run.clock, n_gpu_recs=int(run.recs.size), gpu_recs_dropped=run.meta.get("gpu_recs_dropped"),
                n_host_events=int(run.ev.size))
-    if run.host_of is None:
+    if run.host_of is None and s not in ("gpus", "nccl"):   # multi-GPU strategies fit each GPU themselves
         res["error"] = "no clock model"
         return res
     fn = STRATEGIES.get(s)
@@ -455,6 +527,14 @@ def one_line(res):
         g = lambda k: (r.get(k) or {}).get("p50")
         return (f"clocks: before {g('ghz_before')} during {g('ghz_during')} after {g('ghz_after')} GHz; "
                 f"ramp to 95% {None if r.get('ramp_to_95pct_ns') is None else r['ramp_to_95pct_ns'] / 1000:.0f} us; n={r.get('n_samples')}")
+    if s == "nccl":
+        szs = r.get("sizes", {})
+        def fmt(sz, v):
+            sk = v["end_skew_ns"].get(1) or v["end_skew_ns"].get("1") or {}
+            return (f"{sz}B: {v['span_ns'][next(iter(v['span_ns']))]['p50'] / 1000:.1f} us, end skew {(sk.get('p50') or 0) / 1000:+.2f} us, "
+                    f"busbw {v['busbw_GBps'] or 0:.1f} GB/s, causal viol {v['causal_violations']}/{v['n']}")
+        return (f"nccl x{r.get('n_gpus')}: " + " | ".join(fmt(k, v) for k, v in szs.items()) +
+                f" (skew bound ±{max((r.get('skew_bound_ns') or {0: 0}).values()) / 1000:.2f} us)")
     if s == "gpus":
         gs = r.get("gpus", {})
         return "gpus: " + " | ".join(f"gpu{d}: {g.get('timer_minus_gpu0_ns', 0) / 1000:+.2f} us vs gpu0 ±{g.get('offset_bound_ns', 0) / 1000:.2f} "

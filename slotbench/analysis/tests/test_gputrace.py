@@ -184,3 +184,56 @@ def test_gpus_offsets(tmp_path):
     assert g1["feasible"] and abs(g1["timer_minus_gpu0_ns"] + 5_000_000) <= g1["offset_bound_ns"] + TICK
     assert abs(g1["rate_minus_gpu0_ppm"]) < 0.5
     assert "gpus:" in gt.one_line(gt.analyse(p))
+
+
+def test_nccl_spans_skew_and_causality(tmp_path):
+    p = str(tmp_path / "n")
+    off1 = -5_000_000   # GPU 1's timer reads 5 ms behind GPU 0's at the same host instant
+    recs, evs = [], []
+    g0 = 20_000_000
+    kid = 0
+    for size, dur in ((8, 20_000), (1 << 20, 60_000)):
+        for i in range(20):
+            kid += 1
+            base = g0 + kid * 1_000_000
+            t_enter = int(host_of(base))
+            # GPU 0: stamp ends at base, collective dur, after-stamp begins base+dur+2000
+            # GPU 1 starts 3 us later (host enqueue order) and finishes 1 us after GPU 0
+            for d, start_off, end_off in ((0, 0, 0), (1, 3_000, 1_000)):
+                o = 0 if d == 0 else off1
+                b_end = base + start_off + o
+                a_beg = base + dur + 2_000 + end_off + o
+                recs.append((b_end - 1000, b_end, 0, 0, 0, 0, kid, i, 1, 0, d))
+                recs.append((a_beg, a_beg + 1000, 0, 0, 0, 0, kid, i, 2, 0, d))
+            evs += [(t_enter, gt.EV["LAUNCH_ENTER"], kid, size, 2), (t_enter + 4000, gt.EV["LAUNCH_RETURN"], kid, size, 2),
+                    (int(host_of(base + dur + 4000)) + 3000, gt.EV["SYNC_RETURN"], kid, 0, 0)]
+    np.asarray(recs, dtype=gt.GPU_DT).tofile(p + ".gpu.bin")
+    np.asarray(evs, dtype=gt.HOST_DT).tofile(p + ".host.bin")
+    json.dump(dict(strategy="nccl", gpu="synthetic", sms=4, n_gpus=2, reps=2, gpu_recs_dropped=0), open(p + ".json", "w"))
+    for r in range(2):
+        start = 10_000_000 + r * 60_000_000_000
+        write_clock(p, f"gpu0.r{r}", start)
+        up, down, classic = [], [], []
+        for i in range(300):
+            E = start + i * 3000
+            E -= E % TICK
+            up.append((int(host_of(E) + rng.uniform(200, 900)), E + off1))
+            down.append((int(host_of(E) - rng.uniform(200, 900)), E + off1))
+            classic.append((int(host_of(E) - rng.uniform(300, 1200)), int(host_of(E) + rng.uniform(300, 1200)), E + off1))
+        for name, rows, ncol in (("up", up, 2), ("down", down, 2), ("classic", classic, 3)):
+            with open(f"{p}.gpu1.r{r}.{name}.bin", "wb") as f:
+                for row in rows:
+                    f.write(struct.pack("<" + "q" * ncol, *row))
+    res = gt.analyse(p)
+    r = res["result"]
+    assert "error" not in r, r
+    b = r["skew_bound_ns"][1]
+    s8, s1m = r["sizes"][8], r["sizes"][1 << 20]
+    assert s8["n"] == 20 and s1m["n"] == 20
+    assert abs(s8["span_ns"][0]["p50"] - 22_000) < 1 and abs(s8["span_ns"][1]["p50"] - 20_000) < 1
+    assert abs(s8["start_skew_ns"][1]["p50"] - 3_000) <= b + TICK
+    assert abs(s1m["end_skew_ns"][1]["p50"] - 1_000) <= b + TICK
+    assert s8["causal_violations"] == 0 and s8["causal_slack_min_ns"] > 0
+    assert abs(s1m["algbw_GBps"] - (1 << 20) / 61_000) < 1
+    assert abs(s1m["call_ns"]["p50"] - 4000) < 1
+    assert "nccl x2" in gt.one_line(res)
