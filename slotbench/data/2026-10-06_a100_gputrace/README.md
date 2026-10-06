@@ -5,6 +5,8 @@ records are summarised in `timeslice.analysis.json` only). Host: vast.ai verifie
 580.173, persistence mode on. GPU: A100-SXM4-40GB, 108 SMs, %globaltimer tick 1024 ns. Clock mapping: edge method
 feasible in all 28 runs, bound 0.52–0.79 µs. RTX 3060 numbers from `../2026-10-06_rtx3060_gputrace` in brackets.
 
+Superseded for dispatch/concurrency gap figures by `../2026-10-06_a100_gputrace_v3` (yielding wait loop).
+
 ## Findings (p50 unless stated; host-vs-GPU numbers carry the run's clock bound)
 
 **Launch call → first instruction**: 4.4 µs p50, 5.6 µs p99 [3060: 2.9 / 3.9]; graph launch 3.9 µs; after the host

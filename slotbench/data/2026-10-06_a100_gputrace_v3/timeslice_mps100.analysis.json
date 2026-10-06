@@ -1,0 +1,98 @@
+{
+ "prefix": "/workspace/gputrace/out/timeslice_mps100",
+ "strategy": "timeslice",
+ "gpu": "NVIDIA A100-SXM4-40GB",
+ "sms": 108,
+ "host": "97675e4f3631",
+ "clock": {
+  "tick_ns": 1024,
+  "method": "edge",
+  "bound_ns": 525.4032192230225,
+  "rate_ppm": -10.414698907057485,
+  "feasible": true,
+  "windows": {
+   "pre": {
+    "edge_bound_ns": 798.3796082248446,
+    "edge_feasible": true,
+    "n_up": 3000,
+    "n_down": 2931,
+    "rate_ppm": -8.554872855670581
+   },
+   "post": {
+    "edge_bound_ns": 525.9654873097315,
+    "edge_feasible": true,
+    "n_up": 3000,
+    "n_down": 3000,
+    "rate_ppm": -10.171685128623764
+   }
+  },
+  "width_ns": 1050.806438446045
+ },
+ "n_gpu_recs": 12,
+ "gpu_recs_dropped": 0,
+ "n_host_events": 7,
+ "result": {
+  "gap_threshold_us": 20,
+  "n_gaps": 11,
+  "gap_ns": {
+   "p50": 348160.0,
+   "p90": 452608.0,
+   "p99": 464588.8,
+   "p100": 465920.0,
+   "n": 11,
+   "mean": 342760.7272727273
+  },
+  "gaps_alone": {
+   "p50": null,
+   "p90": null,
+   "p99": null,
+   "p100": null,
+   "n": 0
+  },
+  "gaps_with_hog": {
+   "p50": 348160.0,
+   "p90": 452608.0,
+   "p99": 464588.8,
+   "p100": 465920.0,
+   "n": 11,
+   "mean": 342760.7272727273
+  },
+  "hog_window_s": 7.499919701734376,
+  "fraction_not_running_with_hog": 0.000502721115684491,
+  "switches_per_s_with_hog": 1.4666823696067335,
+  "our_quantum_ns": {
+   "p50": 4336640.0,
+   "p90": 660513791.9999977,
+   "p99": 5789820518.400001,
+   "p100": 6359743488.0,
+   "n": 10,
+   "mean": 643053568.0
+  },
+  "resident_window_ns": 8000000000.0,
+  "resident_iters": 151382488,
+  "hog": {
+   "blocks": 215136,
+   "sms_used": 108,
+   "sms": 108,
+   "block_dur_ns": {
+    "p50": 5000192.0,
+    "p90": 5000192.0,
+    "p99": 5000192.0,
+    "p100": 5000192.0,
+    "n": 215136,
+    "mean": 5000192.0
+   },
+   "max_gap_ns": {
+    "p50": 1024.0,
+    "p90": 2048.0,
+    "p99": 2048.0,
+    "p100": 2048.0,
+    "n": 215136,
+    "mean": 1312.057117358322
+   },
+   "blocks_with_gap_gt_5us": 0,
+   "hog_dur_us": 5000,
+   "mps_pct": ""
+  }
+ }
+}

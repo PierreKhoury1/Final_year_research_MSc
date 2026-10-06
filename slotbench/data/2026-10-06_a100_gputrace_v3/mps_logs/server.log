@@ -1,0 +1,73 @@
+[2026-10-06 04:21:49.213 Other  5757] Startup
+[2026-10-06 04:21:49.213 Other  5757] Connecting to control daemon on socket: /workspace/gputrace/mps-pipe/control
+[2026-10-06 04:21:49.213 Other  5757] Initializing server process
+[2026-10-06 04:21:49.303 Server  5757] Creating server context on device 0 (NVIDIA A100-SXM4-40GB)
+[2026-10-06 04:21:49.374 Server  5757] Created anonymous shared memory region mps.shm.0.5757
+[2026-10-06 04:21:49.374 Server  5757] CUDA MPS Server for Linux/Unix. Binary version: 13000
+[2026-10-06 04:21:49.374 Server  5757] Display Driver version: 580
+[2026-10-06 04:21:49.374 Server  5757] Active Threads Percentage set to 100.0
+[2026-10-06 04:21:49.374 Server  5757] Server Priority set to 0
+[2026-10-06 04:21:49.374 Server  5757] Server has started
+[2026-10-06 04:21:49.374 Server  5757] Received new client request for {PID: -1333654781, Context ID: 0}
+[2026-10-06 04:21:49.374 Server  5757] Client {PID: 5755, Context ID: 0} connected
+[2026-10-06 04:21:49.374 Server  5757] Creating worker thread for client {PID: 5755, Context ID: 0}
+[2026-10-06 04:21:49.411 Server  5757] Received new client request for {PID: 5755, Context ID: 0}
+[2026-10-06 04:21:49.411 Server  5757] Client {PID: 5755, Context ID: 1} connected
+[2026-10-06 04:21:49.411 Server  5757] Creating worker thread for client {PID: 5755, Context ID: 1}
+[2026-10-06 04:21:49.411 Server  5757] Device NVIDIA A100-SXM4-40GB (uuid GPU-605db1af-bd4e-40db-a6ba-15eb7c23c8b8) is associated
+[2026-10-06 04:21:49.411 Server  5757] Status of client {PID: 5755, Context ID: 1} is ACTIVE
+[2026-10-06 04:21:50.048 Server  5757] Received new client request for {PID: 5755, Context ID: 1}
+[2026-10-06 04:21:50.048 Server  5757] Client {PID: 5764, Context ID: 0} connected
+[2026-10-06 04:21:50.048 Server  5757] Creating worker thread for client {PID: 5764, Context ID: 0}
+[2026-10-06 04:21:50.089 Server  5757] Received new client request for {PID: 5764, Context ID: 0}
+[2026-10-06 04:21:50.095 Server  5757] Client {PID: 5764, Context ID: 1} connected
+[2026-10-06 04:21:50.095 Server  5757] Creating worker thread for client {PID: 5764, Context ID: 1}
+[2026-10-06 04:21:50.095 Server  5757] Device NVIDIA A100-SXM4-40GB (uuid GPU-605db1af-bd4e-40db-a6ba-15eb7c23c8b8) is associated
+[2026-10-06 04:21:50.095 Server  5757] Status of client {PID: 5764, Context ID: 1} is ACTIVE
+[2026-10-06 04:21:56.456 Server  5757] Server failed to recevie command with status 806, assuming client {PID: 5764, Context ID: 1} exit
+[2026-10-06 04:21:56.456 Server  5757] Client {PID: 5764, Context ID: 1} exiting. Number of active client contexts is 1.
+[2026-10-06 04:21:56.491 Server  5757] Server failed to recevie command with status 806, assuming client {PID: 5764, Context ID: 0} exit
+[2026-10-06 04:21:56.491 Server  5757] Client process 5764 disconnected
+[2026-10-06 04:21:57.572 Server  5757] Server failed to recevie command with status 806, assuming client {PID: 5755, Context ID: 1} exit
+[2026-10-06 04:21:57.572 Server  5757] Client {PID: 5755, Context ID: 1} exiting. Number of active client contexts is 0.
+[2026-10-06 04:21:57.594 Server  5757] Server failed to recevie command with status 806, assuming client {PID: 5755, Context ID: 0} exit
+[2026-10-06 04:21:57.594 Server  5757] Client process 5755 disconnected
+[2026-10-06 04:22:03.000 Server  5757] Received new client request for {PID: 5764, Context ID: 1}
+[2026-10-06 04:22:03.000 Server  5757] Client {PID: 5779, Context ID: 0} connected
+[2026-10-06 04:22:03.000 Server  5757] Creating worker thread for client {PID: 5779, Context ID: 0}
+[2026-10-06 04:22:03.031 Server  5757] Received new client request for {PID: 5779, Context ID: 0}
+[2026-10-06 04:22:03.031 Server  5757] Client {PID: 5779, Context ID: 1} connected
+[2026-10-06 04:22:03.031 Server  5757] Creating worker thread for client {PID: 5779, Context ID: 1}
+[2026-10-06 04:22:03.031 Server  5757] Device NVIDIA A100-SXM4-40GB (uuid GPU-605db1af-bd4e-40db-a6ba-15eb7c23c8b8) is associated
+[2026-10-06 04:22:03.031 Server  5757] Status of client {PID: 5779, Context ID: 1} is ACTIVE
+[2026-10-06 04:22:03.672 Server  5757] Received new client request for {PID: 5779, Context ID: 1}
+[2026-10-06 04:22:03.672 Server  5757] Client {PID: 5785, Context ID: 0} connected
+[2026-10-06 04:22:03.672 Server  5757] Creating worker thread for client {PID: 5785, Context ID: 0}
+[2026-10-06 04:22:03.713 Server  5757] Received new client request for {PID: 5785, Context ID: 0}
+[2026-10-06 04:22:03.713 Server  5757] Client {PID: 5785, Context ID: 1} connected
+[2026-10-06 04:22:03.713 Server  5757] Creating worker thread for client {PID: 5785, Context ID: 1}
+[2026-10-06 04:22:03.713 Server  5757] Device NVIDIA A100-SXM4-40GB (uuid GPU-605db1af-bd4e-40db-a6ba-15eb7c23c8b8) is associated
+[2026-10-06 04:22:03.713 Server  5757] Status of client {PID: 5785, Context ID: 1} is ACTIVE
+[2026-10-06 04:22:10.102 Server  5757] Server failed to recevie command with status 806, assuming client {PID: 5785, Context ID: 1} exit
+[2026-10-06 04:22:10.102 Server  5757] Client {PID: 5785, Context ID: 1} exiting. Number of active client contexts is 1.
+[2026-10-06 04:22:10.135 Server  5757] Server failed to recevie command with status 806, assuming client {PID: 5785, Context ID: 0} exit
+[2026-10-06 04:22:10.135 Server  5757] Client process 5785 disconnected
+[2026-10-06 04:22:11.196 Server  5757] Server failed to recevie command with status 806, assuming client {PID: 5779, Context ID: 1} exit
+[2026-10-06 04:22:11.196 Server  5757] Client {PID: 5779, Context ID: 1} exiting. Number of active client contexts is 0.
+[2026-10-06 04:22:11.215 Server  5757] Server failed to recevie command with status 806, assuming client {PID: 5779, Context ID: 0} exit
+[2026-10-06 04:22:11.215 Server  5757] Client process 5779 disconnected
+[2026-10-06 04:22:16.628 Server  5757] Received new client request for {PID: 5785, Context ID: 1}
+[2026-10-06 04:22:16.628 Server  5757] Client {PID: 5800, Context ID: 0} connected
+[2026-10-06 04:22:16.628 Server  5757] Creating worker thread for client {PID: 5800, Context ID: 0}
+[2026-10-06 04:22:16.661 Server  5757] Received new client request for {PID: 5800, Context ID: 0}
+[2026-10-06 04:22:16.661 Server  5757] Client {PID: 5800, Context ID: 1} connected
+[2026-10-06 04:22:16.661 Server  5757] Creating worker thread for client {PID: 5800, Context ID: 1}
+[2026-10-06 04:22:16.661 Server  5757] Device NVIDIA A100-SXM4-40GB (uuid GPU-605db1af-bd4e-40db-a6ba-15eb7c23c8b8) is associated
+[2026-10-06 04:22:16.661 Server  5757] Status of client {PID: 5800, Context ID: 1} is ACTIVE
+[2026-10-06 04:22:16.867 Server  5757] Server failed to recevie command with status 806, assuming client {PID: 5800, Context ID: 1} exit
+[2026-10-06 04:22:16.867 Server  5757] Client {PID: 5800, Context ID: 1} exiting. Number of active client contexts is 0.
+[2026-10-06 04:22:16.886 Server  5757] Server failed to recevie command with status 806, assuming client {PID: 5800, Context ID: 0} exit
+[2026-10-06 04:22:16.886 Server  5757] Client process 5800 disconnected
+[2026-10-06 04:22:21.184 Server  5757] Server has been notified to shutdown
+[2026-10-06 04:22:21.184 Server  5757] Waiting for current clients to finish
+[2026-10-06 04:22:21.184 Server  5757] Exiting

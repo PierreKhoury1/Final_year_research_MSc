@@ -1,0 +1,1 @@
+gputrace clocks: NVIDIA A100-SXM4-40GB sms=108 recs=40433 events=9 kernels=2 in 4.07 s (sync pre ok post ok)

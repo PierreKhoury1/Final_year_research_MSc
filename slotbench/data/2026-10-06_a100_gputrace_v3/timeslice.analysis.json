@@ -1,0 +1,98 @@
+{
+ "prefix": "/workspace/gputrace/out/timeslice",
+ "strategy": "timeslice",
+ "gpu": "NVIDIA A100-SXM4-40GB",
+ "sms": 108,
+ "host": "97675e4f3631",
+ "clock": {
+  "tick_ns": 1024,
+  "method": "edge",
+  "bound_ns": 518.4069409370422,
+  "rate_ppm": -10.010530356208136,
+  "feasible": true,
+  "windows": {
+   "pre": {
+    "edge_bound_ns": 836.9557954251068,
+    "edge_feasible": true,
+    "n_up": 3000,
+    "n_down": 2931,
+    "rate_ppm": -7.111095048584204
+   },
+   "post": {
+    "edge_bound_ns": 519.7318643210456,
+    "edge_feasible": true,
+    "n_up": 3000,
+    "n_down": 3000,
+    "rate_ppm": -10.316084840145123
+   }
+  },
+  "width_ns": 1036.8138818740845
+ },
+ "n_gpu_recs": 1708,
+ "gpu_recs_dropped": 0,
+ "n_host_events": 7,
+ "result": {
+  "gap_threshold_us": 20,
+  "n_gaps": 1707,
+  "gap_ns": {
+   "p50": 2430976.0,
+   "p90": 2449408.0,
+   "p99": 2450432.0,
+   "p100": 2452480.0,
+   "n": 1707,
+   "mean": 1624393.3356766256
+  },
+  "gaps_alone": {
+   "p50": null,
+   "p90": null,
+   "p99": null,
+   "p100": null,
+   "n": 0
+  },
+  "gaps_with_hog": {
+   "p50": 2430976.0,
+   "p90": 2449408.0,
+   "p99": 2450432.0,
+   "p100": 2452480.0,
+   "n": 1707,
+   "mean": 1624393.3356766256
+  },
+  "hog_window_s": 7.4999233573125,
+  "fraction_not_running_with_hog": 0.36971570133399484,
+  "switches_per_s_with_hog": 227.60232587385815,
+  "our_quantum_ns": {
+   "p50": 2088960.0,
+   "p90": 2373632.0,
+   "p99": 3334092.8000000194,
+   "p100": 53005312.0,
+   "n": 1706,
+   "mean": 2175812.7268464244
+  },
+  "resident_window_ns": 8000000000.0,
+  "resident_iters": 100029792,
+  "hog": {
+   "blocks": 173016,
+   "sms_used": 108,
+   "sms": 108,
+   "block_dur_ns": {
+    "p50": 5000192.0,
+    "p90": 5000192.0,
+    "p99": 5000192.0,
+    "p100": 5000192.0,
+    "n": 173016,
+    "mean": 5000192.0
+   },
+   "max_gap_ns": {
+    "p50": 2467840.0,
+    "p90": 2469888.0,
+    "p99": 2472960.0,
+    "p100": 2483200.0,
+    "n": 173016,
+    "mean": 2467825.3042955566
+   },
+   "blocks_with_gap_gt_5us": 173016,
+   "hog_dur_us": 5000,
+   "mps_pct": ""
+  }
+ }
+}

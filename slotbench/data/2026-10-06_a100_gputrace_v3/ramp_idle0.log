@@ -1,0 +1,1 @@
+gputrace ramp: NVIDIA A100-SXM4-40GB sms=108 recs=6040 events=162 kernels=40 in 0.19 s (sync pre ok post ok)
