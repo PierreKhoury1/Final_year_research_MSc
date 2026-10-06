@@ -46,7 +46,13 @@ def check(funcs):
         best = None
         for a, b in zip(clk, clk[1:]):
             body = ops[a + 1:b]
+            # a bracket opens with the volatile seed load (LDG.E.STRONG.SYS) and closes with the volatile result
+            # store; the pair (closing read, next opening read) holds the record store instead and is skipped
+            if not any(op.startswith("LDG.E.STRONG.SYS") for op in body[:4]) and K != 12:
+                continue
             n_target = sum(1 for op in body if is_target(op, expect, exact))
+            if expect == "STG":   # the consumer store (STG.E.STRONG.SYS) is not part of the chain
+                n_target = sum(1 for op in body if op == "STG.E" or op.startswith("STG.E.") and "STRONG.SYS" not in op)
             if best is None or n_target > best[0]:
                 best = (n_target, body)
         if best:

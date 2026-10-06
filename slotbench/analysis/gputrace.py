@@ -484,7 +484,8 @@ def a_instr(run):
             a, b = float("nan"), med[Ns[0]]
         Nmax = Ns[-1]
         ns_total = float(np.median([g for _, g in byN[Nmax]]))
-        ghz = med[Nmax] / ns_total if ns_total > 0 else float("nan")
+        # the SM clock from one bracket is only meaningful when the bracket spans many timer ticks
+        ghz = med[Nmax] / ns_total if ns_total >= 8 * max(1, run.clock["tick_ns"]) else float("nan")
         table.append(dict(kind=KINDS.get(kind, str(kind)), ws=ws, latency_cycles=float(b), bracket_overhead_cycles=float(a),
                           single_bracket_cycles=med.get(1), per_N_median=med, per_N_p99=p99, samples=sum(len(v) for v in byN.values()),
                           ns_per_instr_at_Nmax=ns_total / Nmax, sm_ghz=ghz, Nmax=Nmax))

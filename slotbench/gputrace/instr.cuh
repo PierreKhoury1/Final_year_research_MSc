@@ -43,35 +43,36 @@ __device__ __forceinline__ uint64_t bracket(const unsigned *buf, unsigned *sh, u
     // the same for every N, so it lands in the fitted intercept and not in the per-instruction slope.
     unsigned seed;
     asm volatile("ld.volatile.global.u32 %0, [%1];" : "=r"(seed) : "l"(out + 4095) : "memory");
-    idx += seed; x += (float)seed;
+    idx += seed;
+    x = __int_as_float(__float_as_int(x) | seed);   // float chain depends on the seed without an extra FADD
     if (K <= I_LDG_NC) {
 #pragma unroll
         for (int i = 0; i < N; i++) idx = ldg_k(K, buf + idx);
-        if (idx == 0xffffffffu) asm volatile("trap;");
+        asm volatile("st.volatile.global.u32 [%0], %1;" ::"l"(out + 4094), "r"(idx) : "memory");
     } else if (K == I_LDS) {
 #pragma unroll
         for (int i = 0; i < N; i++) asm volatile("ld.shared.u32 %0, [%1];" : "=r"(idx) : "r"((unsigned)__cvta_generic_to_shared(sh) + idx) : "memory");
-        if (idx == 0xffffffffu) asm volatile("trap;");
+        asm volatile("st.volatile.global.u32 [%0], %1;" ::"l"(out + 4094), "r"(idx) : "memory");
     } else if (K == I_FADD) {
 #pragma unroll
         for (int i = 0; i < N; i++) asm volatile("add.f32 %0, %0, %1;" : "+f"(x) : "f"(1.0f));
-        if (x == -12345.f) asm volatile("trap;");
+        asm volatile("st.volatile.global.f32 [%0], %1;" ::"l"(out + 4094), "f"(x) : "memory");
     } else if (K == I_FFMA) {
 #pragma unroll
         for (int i = 0; i < N; i++) asm volatile("fma.rn.f32 %0, %0, %1, %2;" : "+f"(x) : "f"(1.0001f), "f"(0.5f));
-        if (x == -12345.f) asm volatile("trap;");
+        asm volatile("st.volatile.global.f32 [%0], %1;" ::"l"(out + 4094), "f"(x) : "memory");
     } else if (K == I_IMAD) {
 #pragma unroll
         for (int i = 0; i < N; i++) asm volatile("mad.lo.u32 %0, %0, %1, %2;" : "+r"(idx) : "r"(3u), "r"(7u));
-        if (idx == 0xffffffffu) asm volatile("trap;");
+        asm volatile("st.volatile.global.u32 [%0], %1;" ::"l"(out + 4094), "r"(idx) : "memory");
     } else if (K == I_SHFL) {
 #pragma unroll
         for (int i = 0; i < N; i++) asm volatile("shfl.sync.idx.b32 %0, %0, %1, 31, 0xffffffff;" : "+r"(idx) : "r"(idx & 31));
-        if (idx == 0xffffffffu) asm volatile("trap;");
+        asm volatile("st.volatile.global.u32 [%0], %1;" ::"l"(out + 4094), "r"(idx) : "memory");
     } else if (K == I_ATOM_RET) {
 #pragma unroll
         for (int i = 0; i < N; i++) asm volatile("atom.global.add.u32 %0, [%1], 1;" : "=r"(idx) : "l"(out + (idx & 1023)) : "memory");
-        if (idx == 0xffffffffu) asm volatile("trap;");
+        asm volatile("st.volatile.global.u32 [%0], %1;" ::"l"(out + 4094), "r"(idx) : "memory");
     } else if (K == I_RED) {
 #pragma unroll
         for (int i = 0; i < N; i++) asm volatile("red.global.add.u32 [%0], 1;" ::"l"(out + ((idx + i) & 1023)) : "memory");
