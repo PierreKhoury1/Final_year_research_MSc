@@ -24,16 +24,18 @@ from analysis.pcieclock import edge_fit
 KT_NAMES = ["entry", "cal", "loaded", "bar1_arrive", "bar1_release", "computed", "bar2_arrive", "bar2_release", "stored",
             "ticket", "exit"]
 KT_N = len(KT_NAMES)
-# phase = (name, from checkpoint, to checkpoint); its cycles are c[to] - c[from] - cal (one checkpoint's own cost)
-KT_PHASES = [("load", 1, 2), ("barrier1", 3, 4), ("compute", 4, 5), ("barrier2", 6, 7), ("store_fence", 7, 8),
-             ("ticket", 8, 9), ("tail", 9, 10)]
+# phase = (name, from checkpoint, to checkpoint, calibration); cycles are c[to] - c[from] minus the calibration:
+# "cal" = one checkpoint's own cost (1 - 0); "touch" = shared load + volatile shared store + checkpoint (3 - 2),
+# the chain that follows each barrier so that the release stamp waits for the barrier (deferred blocking).
+KT_PHASES = [("load", 1, 2, "cal"), ("barrier1", 3, 4, "touch"), ("compute", 4, 5, "cal"), ("barrier2", 6, 7, "touch"),
+             ("store_fence", 7, 8, "cal"), ("ticket", 8, 9, "cal"), ("tail", 9, 10, "cal")]
 
 
 def kt_stamps(run):
     r = run.recs[(run.recs["tag"] >= 100) & (run.recs["tag"] < 100 + KT_N)]
     S = dict(kid=r["kernel_id"].astype(int), block=r["block"].astype(int), warp=r["flags"].astype(int),
              ck=(r["tag"] - 100).astype(int), sm=r["smid"].astype(int), g=r["g_begin"].astype(float),
-             c=r["clk_begin"].astype(float), n=r["n_iters"].astype(int))
+             g1=r["g_end"].astype(float), c=r["clk_begin"].astype(float), n=r["n_iters"].astype(int))
     return S
 
 
@@ -41,21 +43,21 @@ def warp_table(S, kid):
     """(block, warp) -> dict(sm, c[KT_N], g[KT_N], n[KT_N]) for one kernel; warps with a missing checkpoint are dropped."""
     m = S["kid"] == kid
     out = {}
-    for b, w, ck, sm, g, c, n in zip(S["block"][m], S["warp"][m], S["ck"][m], S["sm"][m], S["g"][m], S["c"][m], S["n"][m]):
-        d = out.setdefault((int(b), int(w)), dict(sm=int(sm), c=np.full(KT_N, np.nan), g=np.full(KT_N, np.nan), n=np.zeros(KT_N, int)))
-        d["c"][ck] = c; d["g"][ck] = g; d["n"][ck] = n
+    for b, w, ck, sm, g, g1, c, n in zip(S["block"][m], S["warp"][m], S["ck"][m], S["sm"][m], S["g"][m], S["g1"][m], S["c"][m], S["n"][m]):
+        d = out.setdefault((int(b), int(w)), dict(sm=int(sm), c=np.full(KT_N, np.nan), g=np.full(KT_N, np.nan), g1=np.full(KT_N, np.nan), n=np.zeros(KT_N, int)))
+        d["c"][ck] = c; d["g"][ck] = g; d["g1"][ck] = g1; d["n"][ck] = n
     return {k: v for k, v in out.items() if not np.isnan(v["c"]).any()}
 
 
 def fit_sm_lines(W, tick):
-    """Per SM: the cycle->ns line bounded by every stamp's [g, g + tick) window (edge_fit), for one kernel.
+    """Per SM: the cycle->ns line bounded by every stamp's [g0, g1 + tick) window (edge_fit), for one kernel.
     Returns {sm: dict(t_of (callable cycles -> GPU ns), ghz, bound_ns, width_ns, n, feasible, span_ns)}."""
     by_sm = {}
     for (b, w), d in W.items():
         by_sm.setdefault(d["sm"], []).append(d)
     fits = {}
     for sm, ds in by_sm.items():
-        c = np.concatenate([d["c"] for d in ds]); g = np.concatenate([d["g"] for d in ds])
+        c = np.concatenate([d["c"] for d in ds]); g = np.concatenate([d["g"] for d in ds]); g1 = np.concatenate([d["g1"] for d in ds])
         if c.size < 4 or np.ptp(c) <= 0:
             continue
         # least squares first (for the scale), then the exact feasible region around it
@@ -64,8 +66,8 @@ def fit_sm_lines(W, tick):
         if not (0.1 < 1 / b0 < 10):   # cycles per ns outside any SM clock: the stamps are not a line
             continue
         E = (b0 * c).tolist()
-        up = [(float(gi) + tick, ei) for gi, ei in zip(g, E)]      # true time < g + tick
-        down = [(float(gi), ei) for gi, ei in zip(g, E)]           # true time >= g
+        up = [(float(gi) + tick, ei) for gi, ei in zip(g1, E)]     # true time of the cycle read < g1 + tick
+        down = [(float(gi), ei) for gi, ei in zip(g, E)]           # true time of the cycle read >= g0
         e = edge_fit(up, down, iters=160, rate_range=0.05)   # the lstsq scale can be off by ~1 % over a short kernel
         E0, H0, a, mid = e["model"]
         fits[sm] = dict(t_of=lambda cyc, E0=E0, H0=H0, a=a, mid=mid, b0=b0: H0 + mid + a * (b0 * np.asarray(cyc, dtype=float) - E0),
@@ -88,10 +90,12 @@ def kernel_timeline(run, kid, tick=None):
         if f is None:
             continue
         cal = d["c"][1] - d["c"][0]
+        touch = d["c"][3] - d["c"][2]
+        calib = dict(cal=cal, touch=touch)
         t = f["t_of"](d["c"])
-        row = dict(block=b, warp=w, sm=d["sm"], c=d["c"].copy(), g=d["g"].copy(), t_gpu=t, bound_ns=f["bound_ns"], cal=cal,
+        row = dict(block=b, warp=w, sm=d["sm"], c=d["c"].copy(), g=d["g"].copy(), g1=d["g1"].copy(), t_gpu=t, bound_ns=f["bound_ns"], cal=cal, touch=touch,
                    ticket=int(d["n"][9]) if w == 0 else None, ffma=int(d["n"][5]),
-                   phases={name: float(d["c"][j] - d["c"][i] - cal) for name, i, j in KT_PHASES})
+                   phases={name: float(d["c"][j] - d["c"][i] - calib[k]) for name, i, j, k in KT_PHASES})
         if run.host_of is not None:
             row["t_host"] = run.host_of(t)
         rows.append(row)
@@ -102,11 +106,14 @@ def kernel_timeline(run, kid, tick=None):
     bars = []
     for b, rs in sorted(blocks.items()):
         for name, ia, ir in (("barrier1", 3, 4), ("barrier2", 6, 7)):
-            arr = np.array([r["c"][ia] for r in rs]); rel = np.array([r["c"][ir] for r in rs]); cal = np.array([r["cal"] for r in rs])
+            arr = np.array([r["c"][ia] for r in rs]); rel = np.array([r["c"][ir] for r in rs]); touch = np.array([r["touch"] for r in rs])
             last = arr.max()
+            # the release stamp follows the touch chain (shared load + store + checkpoint), whose cost is calibrated
+            # per warp by checkpoint 2 -> 3; a release earlier than the last arrival plus that chain would be a
+            # warp leaving the barrier before every warp arrived
             bars.append(dict(block=b, barrier=name, sm=rs[0]["sm"], n_warps=len(rs), arrival_spread=float(last - arr.min()),
-                             wait_per_warp=(last - arr).tolist(), latency_per_warp=(rel - last - cal).tolist(),
-                             release_before_last_arrival=int((rel < last).sum())))
+                             wait_per_warp=(last - arr).tolist(), latency_per_warp=(rel - last - touch).tolist(),
+                             release_before_last_arrival=int((rel - touch < last).sum())))
     # ticket order across SMs: time order of the warp-0 ticket stamps must match the ticket numbers
     tk = sorted([(r["ticket"], r["t_gpu"][9], r["bound_ns"], r["block"], r["sm"]) for r in rows if r["warp"] == 0 and r["ticket"] is not None])
     viol, slack = 0, []
@@ -129,7 +136,7 @@ def kernel_timeline(run, kid, tick=None):
                ticket=dict(n=len(tk), violations=viol, slack_min_ns=float(min(slack)) if slack else None,
                            slack_p50_ns=float(np.median(slack)) if slack else None),
                barriers=bars, rows=rows)
-    # host side
+    # host side (flag: the last block writes its %globaltimer into the mapped word; the host records when it saw it)
     ev = run.ev
     def one(t, k):
         m = (ev["type"] == t) & (ev["kernel_id"] == kid)
@@ -141,8 +148,10 @@ def kernel_timeline(run, kid, tick=None):
     if run.host_of is not None and rows:
         hb = run.clock["bound_ns"]
         first_entry = min(r["t_host"][0] for r in rows); last_exit = max(r["t_host"][10] for r in rows)
+        flag_write_host = float(run.host_of(h["flag_value_gpu_ns"])) if h.get("flag_value_gpu_ns") else None
         out["host_view"] = dict(launch_to_first_entry_ns=first_entry - h["launch_enter"] if h["launch_enter"] else None,
                                 call_ns=(h["launch_return"] - h["launch_enter"]) if h["launch_return"] else None,
+                                flag_write_to_flag_seen_ns=(h["flag_seen"] - flag_write_host) if (h["flag_seen"] and flag_write_host) else None,
                                 last_exit_to_flag_seen_ns=(h["flag_seen"] - last_exit) if h["flag_seen"] else None,
                                 last_exit_to_sync_return_ns=(h["sync_return"] - last_exit) if h["sync_return"] else None,
                                 bound_ns=hb)
@@ -163,13 +172,13 @@ def a_ktrace(run):
         if not T["rows"]:
             continue
         B = B_of.get(kid, T["n_blocks"])
-        acc = per_B.setdefault(B, dict(phases={n: [] for n, _, _ in KT_PHASES}, cal=[], bar_wait=[], bar_latency=[], bar_spread=[],
+        acc = per_B.setdefault(B, dict(phases={n: [] for n, _, _, _ in KT_PHASES}, cal=[], bar_wait=[], bar_latency=[], bar_spread=[],
                                        span=[], start_spread=[], launch_to_first=[], exit_to_flag=[], exit_to_sync=[], ghz=[],
                                        sm_bound=[], ticket_viol=0, ticket_n=0, bar_release_early=0, kernels=0))
         for r in T["rows"]:
             for n in acc["phases"]:
                 acc["phases"][n].append(r["phases"][n])
-            acc["cal"].append(r["cal"])
+            acc["cal"].append(r["cal"]); acc.setdefault("touch", []).append(r["touch"])
         for b in T["barriers"]:
             acc["bar_wait"] += b["wait_per_warp"]; acc["bar_latency"] += b["latency_per_warp"]; acc["bar_spread"].append(b["arrival_spread"])
             acc["bar_release_early"] += b["release_before_last_arrival"]
@@ -178,21 +187,21 @@ def a_ktrace(run):
         acc["ticket_viol"] += T["ticket"]["violations"]; acc["ticket_n"] += T["ticket"]["n"]; acc["kernels"] += 1
         hv = T.get("host_view")
         if hv:
-            for k, dst in (("launch_to_first_entry_ns", "launch_to_first"), ("last_exit_to_flag_seen_ns", "exit_to_flag"), ("last_exit_to_sync_return_ns", "exit_to_sync")):
+            for k, dst in (("launch_to_first_entry_ns", "launch_to_first"), ("flag_write_to_flag_seen_ns", "exit_to_flag"), ("last_exit_to_sync_return_ns", "exit_to_sync")):
                 if hv.get(k) is not None:
                     acc[dst].append(hv[k])
         kernels.append(dict(kid=kid, blocks=B, span_gpu_ns=T["span_gpu_ns"], block_start_spread_ns=T["block_start_spread_ns"],
                             sm_fit=T["sm_fit"], ticket=T["ticket"], host_view=hv))
     out = dict(ffma=run.meta.get("ffma"), tick_ns=run.clock.get("tick_ns"), bound_ns=run.clock.get("bound_ns"), by_blocks={}, kernels=kernels)
     for B, acc in sorted(per_B.items()):
-        out["by_blocks"][B] = dict(kernels=acc["kernels"], checkpoint_cost_cycles=q(acc["cal"]),
+        out["by_blocks"][B] = dict(kernels=acc["kernels"], checkpoint_cost_cycles=q(acc["cal"]), touch_chain_cycles=q(acc.get("touch", [])),
                                    phases_cycles={n: q(v) for n, v in acc["phases"].items()},
                                    barrier_wait_cycles=q(acc["bar_wait"]), barrier_latency_cycles=q(acc["bar_latency"]),
                                    barrier_arrival_spread_cycles=q(acc["bar_spread"]), barrier_release_before_last_arrival=acc["bar_release_early"],
                                    kernel_span_ns=q(acc["span"]), block_start_spread_ns=q(acc["start_spread"]),
                                    sm_ghz=q(acc["ghz"]), sm_line_bound_ns=q(acc["sm_bound"]),
                                    ticket=dict(n=acc["ticket_n"], violations=acc["ticket_viol"]),
-                                   launch_to_first_entry_ns=q(acc["launch_to_first"]), last_exit_to_flag_seen_ns=q(acc["exit_to_flag"]),
+                                   launch_to_first_entry_ns=q(acc["launch_to_first"]), flag_write_to_flag_seen_ns=q(acc["exit_to_flag"]),
                                    last_exit_to_sync_return_ns=q(acc["exit_to_sync"]))
     return out
 
@@ -205,5 +214,5 @@ def one_line_ktrace(res, bs):
                      f"lat {d['barrier_latency_cycles']['p50']:.0f} | compute {ph['compute']['p50']:.0f} | store+fence {ph['store_fence']['p50']:.0f} "
                      f"| ticket {ph['ticket']['p50']:.0f} cy; span {d['kernel_span_ns']['p50'] / 1e3:.1f} us, starts spread {d['block_start_spread_ns']['p50'] / 1e3:.1f} us, "
                      f"SM lines ±{d['sm_line_bound_ns']['p50']:.0f} ns, ticket order {d['ticket']['violations']}/{d['ticket']['n']} viol, "
-                     f"launch->first {d['launch_to_first_entry_ns'].get('p50') or float('nan'):.0f} ns, exit->flag {d['last_exit_to_flag_seen_ns'].get('p50') or float('nan'):.0f} ns")
+                     f"launch->first {d['launch_to_first_entry_ns'].get('p50') or float('nan'):.0f} ns, flag write->seen {d['flag_write_to_flag_seen_ns'].get('p50') or float('nan'):.0f} ns")
     return f"ktrace {bs}: " + " || ".join(parts)

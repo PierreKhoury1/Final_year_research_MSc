@@ -334,14 +334,14 @@ def test_ktrace_places_warps_and_checks_order(tmp_path):
         for w in range(8):
             c = np.zeros(11)
             c[0] = cyc(tb - 20_000_000) + 40 * w; c[1] = c[0] + 30
-            c[2] = c[1] + 30 + rng.integers(900, 1200); c[3] = c[2] + 30
+            c[2] = c[1] + 30 + rng.integers(900, 1200); c[3] = c[2] + 60     # touch chain (shared load + store + stamp) = 60
             stamps[w] = c
         last1 = max(stamps[w][3] for w in range(8))
         for w in range(8):
-            c = stamps[w]; c[4] = last1 + 56; c[5] = c[4] + 30 + 4 * ffma + 40; c[6] = c[5] + 30
+            c = stamps[w]; c[4] = last1 + 26 + 60; c[5] = c[4] + 30 + 4 * ffma + 40; c[6] = c[5] + 60
         last2 = max(stamps[w][6] for w in range(8))
         for w in range(8):
-            c = stamps[w]; c[7] = last2 + 56; c[8] = c[7] + 830; c[9] = c[8] + 30 + (400 if w == 0 else 0); c[10] = c[9] + 90
+            c = stamps[w]; c[7] = last2 + 26 + 60; c[8] = c[7] + 830; c[9] = c[8] + 30 + (400 if w == 0 else 0); c[10] = c[9] + 90
         all_stamps[b] = (sm, ghz, stamps)
     tk = sorted((20_000_000 + st[0][9] / ghz, b) for b, (sm, ghz, st) in all_stamps.items())
     ticket_of = {b: i for i, (_, b) in enumerate(tk)}
@@ -351,8 +351,9 @@ def test_ktrace_places_warps_and_checks_order(tmp_path):
             for k in range(11):
                 c_abs = sm_c0[sm] + int(st[w][k])
                 t_true = 20_000_000 + st[w][k] / ghz
-                g = int(t_true // TICK) * TICK
-                recs.append((g, g, c_abs, c_abs, 0, sm, kid, b, 100 + k, ticket_of[b] if (k == 9 and w == 0) else ffma, w))
+                g = int((t_true - 6 / ghz) // TICK) * TICK          # opening timer read 6 cycles before the cycle read
+                g1 = int((t_true + 6 / ghz) // TICK) * TICK         # closing timer read 6 cycles after
+                recs.append((g, g1, c_abs, c_abs, 0, sm, kid, b, 100 + k, ticket_of[b] if (k == 9 and w == 0) else ffma, w))
                 last_exit = max(last_exit, t_true)
     evs.append((int(host_of(last_exit)) + 900, 6, kid, int(last_exit), 10))
     evs.append((int(host_of(last_exit)) + 1500, 3, kid, 0, 0)); evs.append((int(host_of(last_exit)) + 3000, 4, kid, 0, 0))
@@ -365,7 +366,7 @@ def test_ktrace_places_warps_and_checks_order(tmp_path):
     assert T["sm_fit"]["bound_ns_max"] < TICK / 2
     # every stamp inside its window on the fitted line
     for r in T["rows"]:
-        assert np.all(r["t_gpu"] >= r["g"] - r["bound_ns"] - 1e-6) and np.all(r["t_gpu"] < r["g"] + TICK + r["bound_ns"] + 1e-6)
+        assert np.all(r["t_gpu"] >= r["g"] - r["bound_ns"] - 1e-6) and np.all(r["t_gpu"] < r["g1"] + TICK + r["bound_ns"] + 1e-6)
         assert abs(r["phases"]["compute"] - (4 * ffma + 40)) < 1 and abs(r["phases"]["store_fence"] - 800) < 1
     assert all(b["release_before_last_arrival"] == 0 for b in T["barriers"])
     assert all(abs(x - 26) < 1 for b in T["barriers"] for x in b["latency_per_warp"])

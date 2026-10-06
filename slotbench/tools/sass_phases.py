@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""The SASS between consecutive checkpoints of k_ktrace: every checkpoint is a `CS2R SR_GLOBALTIMERLO` followed by a
-`CS2R SR_CLOCKLO`; the instructions between checkpoint k's clock read and checkpoint k+1's timer read are what
-phase k measured. Usage: sass_phases.py BINARY_OR_SASS [--json OUT]  (cuobjdump + nvdisasm on PATH for a binary)."""
+"""The SASS between consecutive checkpoints of k_ktrace: every checkpoint is `CS2R SR_GLOBALTIMERLO`, `CS2R SR_CLOCKLO`,
+`CS2R SR_GLOBALTIMERLO`; the instructions between checkpoint k's closing timer read and checkpoint k+1's opening
+timer read are what phase k measured. Usage: sass_phases.py BINARY_OR_SASS [--json OUT]  (cuobjdump + nvdisasm on PATH for a binary)."""
 import json, os, re, subprocess, sys
 
 NAMES = ["entry", "cal", "loaded", "bar1_arrive", "bar1_release", "computed", "bar2_arrive", "bar2_release", "stored", "ticket", "exit"]
@@ -29,13 +29,13 @@ def phases(sass, kernel="k_ktrace"):
             ins.append((m.group(1), re.sub(r"\s+", " ", m.group(2)).strip()))
     if not (cur and kernel in cur):
         return None
-    # checkpoint k = index of its GLOBALTIMER read; the clock read is the next instruction
-    ck = [i for i, (_, t) in enumerate(ins) if "SR_GLOBALTIMERLO" in t and t.startswith("CS2R")]
+    # checkpoint k = index of its CLOCK read; the timer reads sit one before and one after it
+    ck = [i for i, (_, t) in enumerate(ins) if "SR_CLOCKLO" in t and t.startswith("CS2R")]
     out = {}
     for k in range(len(ck) - 1):
         if k >= len(NAMES) - 1:
             break
-        body = ins[ck[k] + 2:ck[k + 1]]
+        body = ins[ck[k] + 2:ck[k + 1] - 1]
         hist = {}
         for _, t in body:
             op = re.sub(r"^@!?P\d\s+", "", t).split(" ")[0]

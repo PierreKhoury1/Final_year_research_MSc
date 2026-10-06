@@ -87,7 +87,7 @@ def fig_launch(run, gname, kid, ax):
         for r in blocks[b]:
             th = r['t_host']
             if r['warp'] == 0:
-                for name, i, j in KT_PHASES:
+                for name, i, j, _ in KT_PHASES:
                     ax.barh(y, us(th[j]) - us(th[i]), left=us(th[i]), height=0.8, color=PHASE_COL[name], lw=0)
             else:
                 ax.plot([us(th[0]), us(th[10])], [y, y], color=C['gray'], lw=0.5, alpha=.5, zorder=0)
