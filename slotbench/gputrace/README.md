@@ -62,4 +62,20 @@ several hosts via PTP on the host side.
 
 ## Status
 
-2026-10-06: compiles (CUDA 13.3), host-only tests and synthetic-analysis tests pass; no GPU run yet.
+2026-10-06: three campaigns done, raw data and findings in `data/2026-10-06_rtx3060_gputrace` and
+`data/2026-10-06_a100_gputrace` (README in each). Established so far, on both an RTX 3060 and an A100 SXM4:
+
+- The host↔GPU mapping bound is 0.3–0.8 µs on every run (edge method feasible 55 of 55 times, 1024 ns tick on both).
+- Launch call → first instruction: 2.9 µs (3060) / 4.4 µs (A100) p50; graph launch 2.9 / 3.9 µs; a sleeping host CPU
+  adds 7–22 µs (spinning instead of sleeping removes it); the GPU clock does not drop after 50 ms idle on either card.
+- Back-to-back kernels in one stream: 1.0 µs (3060) / 3.1 µs (A100) from one kernel's end to the next one's start.
+- Kernel end → host: flag poll 0.9 / 1.6 µs, cudaEventQuery 1.4 / 3.5 µs, cudaStreamSynchronize 1.4 / 3.4 µs.
+- A higher-priority stream never preempts running blocks: its first block starts when the running kernel's blocks
+  finish (wait = block length − offset, exactly, 0.1–10 ms). Priority only orders pending blocks.
+- Cross-process time-slicing does preempt mid-block: quanta 2.09 ms (us) / 2.25 ms (3060) and 2.43 ms (A100)
+  (them); about 90 µs (3060) and 170 µs (A100) per context switch.
+- A stall-free busy-waiting warp monopolises its issue slot: at 8 blocks/SM other warps wait up to a whole 200 µs
+  block. The tracer's wait therefore yields with `__nanosleep` by default; the busy modes stay as experiments.
+
+Added since: `ramp` (clock after idle), `--idle-spin`, `--spin-mode`, MPS variant of `timeslice`, graph bursts.
+Next: H100 (64 ns tick: dispatch rate resolvable), two-GPU `%globaltimer` offset, NCCL spans.
