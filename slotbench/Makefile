@@ -18,8 +18,8 @@ CUDA_LIBS := -lcublas -lcufft -lpthread -ldl
 COMMON_H  := $(wildcard common/*.h)
 PHY_H     := $(wildcard phy/*.h phy/*.cuh)
 
-BINS  := bin/slot_driver bin/lockstep_driver bin/adversary bin/clockcal bin/phc_offset
-TESTS := bin/test_ldpc bin/test_phy_ops bin/test_ring bin/test_clock_fit
+BINS  := bin/slot_driver bin/lockstep_driver bin/adversary bin/clockcal bin/phc_offset bin/gputrace
+TESTS := bin/test_ldpc bin/test_phy_ops bin/test_ring bin/test_clock_fit bin/test_gputrace_format
 
 .PHONY: all gpu host test pytest tables clean
 all: $(BINS) $(TESTS)
@@ -56,6 +56,9 @@ bin/adversary: adversary/adversary.cu $(COMMON_H) | bin
 bin/clockcal: clock/clockcal.cu $(COMMON_H) | bin
 	$(NVCC) $(NVFLAGS) -o $@ $< $(CUDA_LIBS)
 
+bin/gputrace: gputrace/gputrace.cu gputrace/gputrace.h gputrace/gputrace.cuh gputrace/clocksync.cuh $(COMMON_H) | bin
+	$(NVCC) $(NVFLAGS) -Igputrace -o $@ $< -lpthread
+
 # ---- host-only ----
 bin/mock_slots: trace/mock_slots.cpp trace/slottrace.h $(COMMON_H) | bin
 	$(CXX) $(CXXFLAGS) -o $@ $< -lpthread
@@ -71,6 +74,8 @@ bin/test_ring: tests/test_ring.cpp $(COMMON_H) | bin
 	$(CXX) $(CXXFLAGS) -o $@ $< -lpthread
 bin/test_clock_fit: tests/test_clock_fit.cpp $(COMMON_H) | bin
 	$(CXX) $(CXXFLAGS) -o $@ $<
+bin/test_gputrace_format: gputrace/tests/test_format.cpp gputrace/gputrace.h | bin
+	$(CXX) $(CXXFLAGS) -Igputrace -o $@ $<
 
 test: $(TESTS)
 	@set -e; for t in $(TESTS); do echo "== $$t"; ./$$t; done
