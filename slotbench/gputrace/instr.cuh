@@ -35,14 +35,22 @@ __device__ __forceinline__ unsigned ldg_k(int K, const unsigned *p) {
 template <int K, int N>
 __device__ __forceinline__ uint64_t bracket(const unsigned *buf, unsigned *sh, unsigned *out, unsigned &idx, float &x, uint64_t &g0, uint64_t &g1) {
     g0 = gtimer();
-    uint64_t c0 = clock64();
+    uint64_t c0;
+    asm volatile("mov.u64 %0, %%clock64;" : "=l"(c0) :: "memory");
+    // Tie the chain to the opening clock read: ptxas keeps volatile loads in order with the clock read and the
+    // chain depends on the loaded value (0 in memory, unknown to the compiler). Without this, ptxas hoisted the
+    // SHFL and short STG chains above the clock read (seen in SASS on the first A100 run). Costs one L1 hit,
+    // the same for every N, so it lands in the fitted intercept and not in the per-instruction slope.
+    unsigned seed;
+    asm volatile("ld.volatile.global.u32 %0, [%1];" : "=r"(seed) : "l"(out + 4095) : "memory");
+    idx += seed; x += (float)seed;
     if (K <= I_LDG_NC) {
 #pragma unroll
         for (int i = 0; i < N; i++) idx = ldg_k(K, buf + idx);
         if (idx == 0xffffffffu) asm volatile("trap;");
     } else if (K == I_LDS) {
 #pragma unroll
-        for (int i = 0; i < N; i++) asm volatile("ld.shared.u32 %0, [%1];" : "=r"(idx) : "r"((unsigned)(uintptr_t)(sh + idx)) : "memory");
+        for (int i = 0; i < N; i++) asm volatile("ld.shared.u32 %0, [%1];" : "=r"(idx) : "r"((unsigned)__cvta_generic_to_shared(sh) + idx) : "memory");
         if (idx == 0xffffffffu) asm volatile("trap;");
     } else if (K == I_FADD) {
 #pragma unroll
@@ -76,7 +84,8 @@ __device__ __forceinline__ uint64_t bracket(const unsigned *buf, unsigned *sh, u
 #pragma unroll
         for (int i = 0; i < N; i++) __syncthreads();
     }
-    uint64_t c1 = clock64();
+    uint64_t c1;
+    asm volatile("mov.u64 %0, %%clock64;" : "=l"(c1) :: "memory");
     g1 = gtimer();
     return c1 - c0;
 }

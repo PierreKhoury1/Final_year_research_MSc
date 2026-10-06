@@ -4,9 +4,15 @@ two clock reads (CS2R / S2R SR_CLOCK*) and count the opcodes between them. The e
 appear exactly N times. Usage: sass_check.py BINARY [--json OUT] (needs cuobjdump on PATH or CUDA_HOME)."""
 import json, os, re, subprocess, sys
 
-KINDS = {0: ("LDG_CA", "LDG"), 1: ("LDG_CG", "LDG"), 2: ("LDG_CS", "LDG"), 3: ("LDG_NC", "LDG"), 4: ("LDS", "LDS"),
-         5: ("FADD", "FADD"), 6: ("FFMA", "FFMA"), 7: ("IMAD", "IMAD"), 8: ("SHFL", "SHFL"), 9: ("ATOM_RET", "ATOM"),
-         10: ("RED", "RED"), 11: ("STG_FENCE", "STG"), 12: ("BAR", "BAR")}
+# kind -> (name, target opcode, exact match?) ; exact: the chain's IMAD has no suffix, the compiler's moves are IMAD.MOV etc.
+KINDS = {0: ("LDG_CA", "LDG", False), 1: ("LDG_CG", "LDG", False), 2: ("LDG_CS", "LDG", False), 3: ("LDG_NC", "LDG", False),
+         4: ("LDS", "LDS", False), 5: ("FADD", "FADD", False), 6: ("FFMA", "FFMA", False), 7: ("IMAD", "IMAD", True),
+         8: ("SHFL", "SHFL", False), 9: ("ATOM_RET", "ATOMG", False), 10: ("RED", "RED", False), 11: ("STG_FENCE", "STG", False),
+         12: ("BAR", "BAR", False)}
+
+
+def is_target(op, expect, exact):
+    return op == expect if exact else (op == expect or op.startswith(expect + "."))
 
 
 def parse(sass):
@@ -22,31 +28,34 @@ def parse(sass):
 
 
 def check(funcs):
+    """Each k_instr<K,N> has two brackets (warm, measured) with identical bodies. The clock reads are CS2R on
+    sm_70+ (S2R SR_CLOCKLO/HI pairs on older parts). For every consecutive pair of clock reads, count the target
+    opcode between them; the bracket is the pair with the largest count. Verified when that count == N. Everything
+    else found inside (the compiler may schedule independent instructions across a clock read) is listed."""
     out = {}
     for name, ops in funcs.items():
         m = re.search(r"k_instrILi(\d+)ELi(\d+)E", name)
         if not m:
             continue
         K, N = int(m.group(1)), int(m.group(2))
-        clk = [i for i, op in enumerate(ops) if op.startswith("CS2R") or (op.startswith("S2R") and False)]
-        # S2R SR_CLOCKLO/HI pairs on older parts: treat any S2R as a clock read candidate
+        clk = [i for i, op in enumerate(ops) if op.startswith("CS2R")]
         if len(clk) < 2:
-            clk = [i for i, op in enumerate(ops) if op.startswith("S2R") or op.startswith("CS2R")]
-        kind, expect = KINDS.get(K, (str(K), "?"))
-        entry = dict(kind=kind, N=N, clock_reads=len(clk), verified=False, between=None)
-        # the measured bracket is the LAST pair of clock reads before the record store... there are two brackets
-        # (warm and measured) per sample loop; both have the same body. Take the first pair with the expected opcode.
+            clk = [i for i, op in enumerate(ops) if op.startswith("S2R")]
+        kind, expect, exact = KINDS.get(K, (str(K), "?", False))
+        entry = dict(kind=kind, N=N, clock_reads=len(clk), verified=False, target_count=0, between=None, other_inside=None)
+        best = None
         for a, b in zip(clk, clk[1:]):
             body = ops[a + 1:b]
-            n_target = sum(1 for op in body if op.split(".")[0] == expect)
-            if n_target:
-                entry["between"] = {}
-                for op in body:
-                    entry["between"][op.split(".")[0]] = entry["between"].get(op.split(".")[0], 0) + 1
-                entry["target_count"] = n_target
-                entry["verified"] = (n_target == N)
-                entry["bracket_opcodes"] = sorted(set(op for op in body))[:40]
-                break
+            n_target = sum(1 for op in body if is_target(op, expect, exact))
+            if best is None or n_target > best[0]:
+                best = (n_target, body)
+        if best:
+            n_target, body = best
+            hist = {}
+            for op in body:
+                hist[op] = hist.get(op, 0) + 1
+            entry.update(target_count=n_target, verified=(n_target == N), between=hist,
+                         other_inside=sorted(op for op in hist if not is_target(op, expect, exact)))
         out[name] = entry
     return out
 
