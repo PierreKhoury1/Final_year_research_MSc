@@ -1,5 +1,5 @@
 {
- "prefix": "/tmp/claude-0/-home-user/c22b0607-07f1-5108-a24d-4caf6e85f472/scratchpad/gt/kt_3060d/out/out/ktrace",
+ "prefix": "data/2026-10-06_3060_ktrace/ktrace",
  "strategy": "ktrace",
  "gpu": "NVIDIA GeForce RTX 3060",
  "sms": 28,
@@ -171,8 +171,8 @@
     },
     "ticket": {
      "n": 140,
-     "violations": 2,
-     "cross_sm_guard_ns_max": 57.81647493659648
+     "violations": 0,
+     "cross_sm_guard_ns_max": 0.0
     },
     "timer_guard_ns": {
      "p50": 0.0,
@@ -342,8 +342,8 @@
     },
     "ticket": {
      "n": 560,
-     "violations": 1,
-     "cross_sm_guard_ns_max": 25.142807027936215
+     "violations": 0,
+     "cross_sm_guard_ns_max": 0.0
     },
     "timer_guard_ns": {
      "p50": 20.691650390625,
@@ -397,11 +397,11 @@
     },
     "ticket": {
      "n": 28,
-     "violations": 1,
-     "slack_min_ns": -213.33007018786202,
-     "slack_p50_ns": -0.08836154760683712,
-     "worst_margin_ns": -57.81647493659648,
-     "cross_sm_guard_ns": 57.81647493659648
+     "violations": 0,
+     "slack_min_ns": -30.557488239052418,
+     "slack_p50_ns": 127.56236023911242,
+     "worst_margin_ns": 118.78499264133916,
+     "cross_sm_guard_ns": 0.0
     },
     "host_view": {
      "launch_to_first_entry_ns": 30821.5,
@@ -429,11 +429,11 @@
     },
     "ticket": {
      "n": 28,
-     "violations": 1,
-     "slack_min_ns": -304.1062747476826,
-     "slack_p50_ns": 13.189911736648355,
-     "worst_margin_ns": -13.478780195306172,
-     "cross_sm_guard_ns": 13.478780195306172
+     "violations": 0,
+     "slack_min_ns": -86.50879812680432,
+     "slack_p50_ns": 202.8398276233529,
+     "worst_margin_ns": 193.23882259452876,
+     "cross_sm_guard_ns": 0.0
     },
     "host_view": {
      "launch_to_first_entry_ns": 4101.5,
@@ -462,9 +462,9 @@
     "ticket": {
      "n": 28,
      "violations": 0,
-     "slack_min_ns": -90.57523313626734,
-     "slack_p50_ns": -1.9098344962876581,
-     "worst_margin_ns": 26.580180005021248,
+     "slack_min_ns": 67.12217191529271,
+     "slack_p50_ns": 173.19960664385144,
+     "worst_margin_ns": 185.22169415342796,
      "cross_sm_guard_ns": 0.0
     },
     "host_view": {
@@ -494,9 +494,9 @@
     "ticket": {
      "n": 28,
      "violations": 0,
-     "slack_min_ns": -147.47485534854786,
-     "slack_p50_ns": 2.771396702097263,
-     "worst_margin_ns": 36.00249364037154,
+     "slack_min_ns": 35.41822216560104,
+     "slack_p50_ns": 191.29526028253895,
+     "worst_margin_ns": 215.1630593685186,
      "cross_sm_guard_ns": 0.0
     },
     "host_view": {
@@ -526,9 +526,9 @@
     "ticket": {
      "n": 28,
      "violations": 0,
-     "slack_min_ns": -24.06379812068917,
-     "slack_p50_ns": 2.7705707853019703,
-     "worst_margin_ns": 513.779385008369,
+     "slack_min_ns": 100.27463966164942,
+     "slack_p50_ns": 127.82589145764359,
+     "worst_margin_ns": 640.6931589913365,
      "cross_sm_guard_ns": 0.0
     },
     "host_view": {
@@ -557,11 +557,11 @@
     },
     "ticket": {
      "n": 112,
-     "violations": 1,
-     "slack_min_ns": -260.3545069461834,
-     "slack_p50_ns": 12.514868181664497,
-     "worst_margin_ns": -25.142807027936215,
-     "cross_sm_guard_ns": 25.142807027936215
+     "violations": 0,
+     "slack_min_ns": 33.33292571108905,
+     "slack_p50_ns": 201.91681746038375,
+     "worst_margin_ns": 216.61051212949678,
+     "cross_sm_guard_ns": 0.0
     },
     "host_view": {
      "launch_to_first_entry_ns": 3703.5,
@@ -590,9 +590,9 @@
     "ticket": {
      "n": 112,
      "violations": 0,
-     "slack_min_ns": -163.4981498697307,
-     "slack_p50_ns": 7.384472365665715,
-     "worst_margin_ns": 104.13633557842695,
+     "slack_min_ns": -39.718499606111436,
+     "slack_p50_ns": 192.9283937318687,
+     "worst_margin_ns": 274.28095565848344,
      "cross_sm_guard_ns": 0.0
     },
     "host_view": {
@@ -622,9 +622,9 @@
     "ticket": {
      "n": 112,
      "violations": 0,
-     "slack_min_ns": -245.42936132235627,
-     "slack_p50_ns": 6.557406512816669,
-     "worst_margin_ns": 70.00815733423224,
+     "slack_min_ns": -51.64085404344951,
+     "slack_p50_ns": 182.67057541341637,
+     "worst_margin_ns": 231.09923561278265,
      "cross_sm_guard_ns": 0.0
     },
     "host_view": {
@@ -654,9 +654,9 @@
     "ticket": {
      "n": 112,
      "violations": 0,
-     "slack_min_ns": -165.24759766976058,
-     "slack_p50_ns": 7.967419986278401,
-     "worst_margin_ns": 17.9109427309304,
+     "slack_min_ns": 37.4080950558855,
+     "slack_p50_ns": 203.4601238612522,
+     "worst_margin_ns": 246.9027481548983,
      "cross_sm_guard_ns": 0.0
     },
     "host_view": {
@@ -686,9 +686,9 @@
     "ticket": {
      "n": 112,
      "violations": 0,
-     "slack_min_ns": -188.77825646550627,
-     "slack_p50_ns": 7.118760105979163,
-     "worst_margin_ns": 19.830811057821847,
+     "slack_min_ns": 4.379672757873777,
+     "slack_p50_ns": 222.90961753178271,
+     "worst_margin_ns": 201.51541536170407,
      "cross_sm_guard_ns": 0.0
     },
     "host_view": {

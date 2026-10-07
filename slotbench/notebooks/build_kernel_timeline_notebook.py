@@ -25,18 +25,27 @@ execution time". This notebook goes one step further with the same two hardware 
 gputrace's `ktrace` strategy runs a staged kernel in which **every warp** stamps both timers at eleven
 checkpoints (entry, a calibration stamp, two dependent global loads landed, barrier arrival, barrier release, a
 256-FFMA dependent chain done, a second barrier, a global store plus `__threadfence`, a grid-wide atomic ticket,
-exit). The stamps stay in registers and are written at the end of the warp, so a checkpoint costs one read of each
-timer and nothing else. Per SM and per launch, every stamp says that the true time of cycle *c* lies in
-*[g, g + tick)*; the set of these windows bounds the SM's cycle-to-ns line exactly as the tick-edge method bounds
-the host-GPU mapping, with a half-width far below the tick because consecutive checkpoints are tens of cycles
-apart. Within an SM nothing is fitted: warps and blocks compare in cycles. Across SMs the fitted lines place
-blocks on the GPU axis with a stated bound, and the run's own clock bound carries them to the host axis, where the
-launch call, the mapped flag the last block writes, and the stream synchronisation sit.
+exit). The stamps stay in registers and are written at the end of the warp, so a checkpoint costs three timer
+reads and nothing else: the cycle read sits between two timer reads, so the true time of cycle *c* lies in
+*[g₀, g₁ + tick)* whatever happens between the reads. Within a block nothing is fitted: its warps share the SM's
+cycle counter, so they compare in cycles. Across blocks, each block's 88 windows bound its own cycle-to-ns line
+(the convex set of consistent rate/offset pairs, projected at every stamp), and the run's own clock bound carries
+the GPU axis to the host axis, where the launch call, the mapped flag the last block writes, and the stream
+synchronisation sit.
+
+Four things the data forced, all visible in the analysis and stated with the numbers: `__syncthreads` is
+`BAR.SYNC.DEFER_BLOCKING`, so a release stamp must follow a memory instruction that waits for the barrier (the
+first build's release stamps sat 13 cycles after each warp's own arrival); an SM's clock is not one rate over tens
+of µs or across launches, so the unit of the fit is a block, not an SM; the `%globaltimer` readings of different
+warps on one SM disagree by up to ~80 ns, so every window carries a guard measured per launch as the smallest
+widening that makes every block consistent; and a host whose `%globaltimer` reads 1.8 × 10¹⁸ ns needs integer
+arithmetic before any float, or every difference is quantised to 256 ns.
 
 Three checks have to hold if the placement is right, and they are evaluated on every launch: a warp's barrier
-release never precedes the last arrival in its block (cycles); the grid-wide ticket order equals the time order of
-the ticket stamps across SMs (fitted lines); the host sees the flag after the last block's exit (host axis).
-Every number below is computed from the raw records with numpy; the figures are matplotlib.
+release stamp never precedes the last arrival stamp in its block (cycles, raw); the grid-wide ticket order is
+consistent with the stamps across SMs (ticket k−1's atomic was issued before ticket k's returned, within the
+projected bounds); the host sees the flag after the last block wrote it. Every number below is computed from the
+raw records with numpy; the figures are matplotlib.
 """)
 
 code(r"""
@@ -91,17 +100,18 @@ def fig_launch(run, gname, kid, ax):
                     ax.barh(y, us(th[j]) - us(th[i]), left=us(th[i]), height=0.8, color=PHASE_COL[name], lw=0)
             else:
                 ax.plot([us(th[0]), us(th[10])], [y, y], color=C['gray'], lw=0.5, alpha=.5, zorder=0)
-    for key, lab in (('launch_enter', 'launch call'), ('launch_return', 'call returns'), ('flag_seen', 'host sees flag'), ('sync_return', 'sync returns')):
-        if h.get(key): ax.axvline(us(h[key]), color=C['ink2'], lw=0.8, ls=':'); ax.text(us(h[key]), len(order) + 1.5, lab, rotation=90, fontsize=8, va='bottom', ha='center', color=C['ink2'])
-    ax.set_ylim(-1, len(order) + 9); ax.set_xlabel('µs after the launch call (host clock)'); ax.set_ylabel('block (ordered by start)')
-    ax.set_title(f"{gname}: launch {kid}, {len(order)} blocks on {T['n_sms']} SMs; host bound ±{T['host_view']['bound_ns']:.0f} ns, SM lines ±{T['sm_fit']['bound_ns_max']:.0f} ns max")
-    ax.legend(handles=[Patch(color=PHASE_COL[n], label=n) for n in ('load', 'barrier1', 'compute', 'store_fence', 'ticket', 'tail')], loc='lower right', ncol=3, fontsize=8)
+    for i, (key, lab) in enumerate((('launch_enter', 'launch call'), ('launch_return', 'call returns'), ('flag_seen', 'host sees the flag'), ('sync_return', 'sync returns'))):
+        if h.get(key): ax.axvline(us(h[key]), color=C['ink2'], lw=0.8, ls=':'); ax.text(us(h[key]) + 0.08, len(order) * (0.97 - 0.12 * (i % 2)), lab, fontsize=8, va='top', ha='left', color=C['ink2'])
+    ax.set_ylim(-1, len(order) + 1); ax.set_xlabel('µs after the launch call (host clock)'); ax.set_ylabel('block (ordered by start)')
+    ax.set_title(f"{gname}: launch {kid}, {len(order)} blocks on {T['n_sms']} SMs; host bound ±{T['host_view']['bound_ns']:.0f} ns, block lines ±{T['sm_fit']['bound_ns_p50']:.0f} ns median (guard {T['timer_guard_ns']:.0f} ns)")
+    ax.legend(handles=[Patch(color=PHASE_COL[n], label={'load': 'two dependent loads', 'barrier1': 'barrier', 'compute': '256 FFMA', 'store_fence': 'store + fence', 'ticket': 'atomic ticket', 'tail': 'third barrier, flag (last block: system fence), exit'}[n]) for n in ('load', 'barrier1', 'compute', 'store_fence', 'ticket', 'tail')],
+              loc='upper left', bbox_to_anchor=(0, -0.16), ncol=3, fontsize=8)
     return T
 
 Ts = {}
 for gname, run in runs.items():
     B = run.meta['sms']; kid = launches(run, B)[-1]
-    fig, ax = plt.subplots(figsize=(11, 4.2))
+    fig, ax = plt.subplots(figsize=(11, 4.6))
     Ts[gname] = fig_launch(run, gname, kid, ax)
     plt.show()
     hv = Ts[gname]['host_view']
@@ -150,14 +160,14 @@ def fig_occupancy(T, gname, ax):
         a = np.sort(iv[:, 0]); e = np.sort(np.maximum(iv[:, 1], iv[:, 0]))
         counts.append(np.searchsorted(a, grid, side='right') - np.searchsorted(e, grid, side='right'))
     ax.stackplot(us(grid), counts, labels=list(cols), colors=list(cols.values()), lw=0)
-    for key, lab in (('launch_enter', 'launch call'), ('launch_return', 'call returns'), ('flag_seen', 'host sees the flag'), ('sync_enter', 'sync call'), ('sync_return', 'sync returns')):
-        if h.get(key): ax.axvline(us(h[key]), color=C['ink2'], lw=0.8, ls=':'); ax.text(us(h[key]) + 0.05, len(rows) * 0.98, lab, rotation=90, fontsize=8, va='top', ha='left', color=C['ink2'])
+    for i, (key, lab) in enumerate((('launch_enter', 'launch call'), ('launch_return', 'call returns'), ('flag_seen', 'host sees the flag'), ('sync_enter', 'sync call'), ('sync_return', 'sync returns'))):
+        if h.get(key): ax.axvline(us(h[key]), color=C['ink2'], lw=0.8, ls=':'); ax.text(us(h[key]) + 0.08, len(rows) * (0.98 - 0.09 * (i % 3)), lab, fontsize=8, va='top', ha='left', color=C['ink2'])
     ax.set_xlabel('µs after the launch call (host clock)'); ax.set_ylabel('warps in the phase'); ax.set_ylim(0, len(rows) * 1.02)
     ax.set_title(f'{gname}: {len(rows)} warps of launch {T["kid"]} by phase, with the host-side sync events')
-    ax.legend(loc='upper right', fontsize=8, ncol=2)
+    ax.legend(loc='upper left', bbox_to_anchor=(0, -0.16), fontsize=8, ncol=4)
 
 for gname, T in Ts.items():
-    fig, ax = plt.subplots(figsize=(11, 4)); fig_occupancy(T, gname, ax); plt.show()
+    fig, ax = plt.subplots(figsize=(11, 4.4)); fig_occupancy(T, gname, ax); plt.show()
 """)
 
 md(r"""
@@ -190,11 +200,11 @@ def fig_block(T, gname, b, ax):
     ax.legend(handles=[Patch(color=PHASE_COL['load'], label='two dependent loads'), Patch(color='#f6c3ad', label='waiting at the barrier for the last warp'),
                        Patch(color=PHASE_COL['barrier1'], label='barrier release after the last arrival'), Patch(color=PHASE_COL['compute'], label='256 dependent FFMA'),
                        Patch(color=PHASE_COL['store_fence'], label='store + __threadfence'), Patch(color=PHASE_COL['ticket'], label='atomic ticket (warp 0)'), Patch(color=PHASE_COL['tail'], label='third barrier, flag, exit')],
-              loc='lower right', ncol=2, fontsize=8)
+              loc='upper left', bbox_to_anchor=(0, -0.2), ncol=4, fontsize=8)
 
 for gname, T in Ts.items():
     b = max({r['block'] for r in T['rows']} , key=lambda b: max(x['arrival_spread'] for x in T['barriers'] if x['block'] == b))
-    fig, ax = plt.subplots(figsize=(11, 3.6)); fig_block(T, gname, b, ax); plt.show()
+    fig, ax = plt.subplots(figsize=(11, 4)); fig_block(T, gname, b, ax); plt.show()
 """)
 
 md(r"""
@@ -256,32 +266,34 @@ plt.show()
 md(r"""
 ## 5. How precise is the placement, and does it pass its checks
 
-Per SM and launch, the half-width of the feasible cycle-to-ns line (the bound on any cross-SM time), against the
-timer tick; the SM clocks the lines imply; and the grid-wide ticket check: the ticket stamp of ticket *k* must not
-precede ticket *k−1*'s by more than the two SMs' half-widths.
+Per block, the half-width of the projected feasible region at its stamps (the bound on any cross-block time) against
+the timer tick, including the per-launch timer guard; the SM clocks the lines allow; and the ticket check: ticket
+*k*'s atomic cannot have returned before ticket *k−1*'s was issued, within the two blocks' bounds.
 """)
 
 code(r"""
-fig, axes = plt.subplots(1, 3, figsize=(13, 3.4), gridspec_kw=dict(wspace=0.35))
+fig, axes = plt.subplots(1, 3, figsize=(13, 3.6), gridspec_kw=dict(wspace=0.4))
 for gname, run in runs.items():
     col = C['blue'] if gname.startswith('A100') else C['orange']
-    bounds, ghz, slack = [], [], []
+    bounds, ghz, slack, rng = [], [], [], []
     for kid in sorted(set(kt_stamps(run)['kid'].tolist())):
         T = kernel_timeline(run, kid)
         bounds += [r['bound_ns'] for r in T['rows'] if r['warp'] == 0]
-        ghz += [T['sm_fit']['ghz_p50']]
-        tk = sorted([(r['ticket'], r['t_gpu'][9]) for r in T['rows'] if r['warp'] == 0 and r['ticket'] is not None])
-        slack += [t1 - t0 for (_, t0), (_, t1) in zip(tk, tk[1:])]
+        ghz += [T['sm_fit']['ghz_p50']]; rng.append((T['sm_fit']['ghz_min'], T['sm_fit']['ghz_max'], T['span_gpu_ns'] / 1e3))
+        tk = sorted([(r['ticket'], r['t_gpu'][8], r['t_gpu'][9]) for r in T['rows'] if r['warp'] == 0 and r['ticket'] is not None])
+        slack += [t9 - t8 for (_, t8, _), (_, _, t9) in zip(tk, tk[1:])]
         if T['ticket']['violations']: print(f'{gname} launch {kid}: {T["ticket"]["violations"]} ticket-order violations')
     tick = run.clock['tick_ns']
     axes[0].hist(bounds, bins=40, color=col, alpha=.75, label=f'{gname} (tick {tick} ns)', lw=0)
-    axes[1].hist(ghz, bins=20, color=col, alpha=.75, label=gname, lw=0)
+    for i, (lo, hi, span) in enumerate(rng):
+        y = i + (0.2 if gname.startswith('RTX') else -0.2)
+        axes[1].plot([lo, hi], [y, y], color=col, lw=3, solid_capstyle='butt', label=gname if i == 0 else None)
     axes[2].hist(np.clip(slack, -200, 2000), bins=60, color=col, alpha=.75, label=gname, lw=0)
-    print(f"{gname}: SM-line half-width p50 {np.median(bounds):.0f} ns, max {max(bounds):.0f} ns (tick {tick} ns); SM clock {np.median(ghz):.3f} GHz; "
+    print(f"{gname}: block-line half-width p50 {np.median(bounds):.0f} ns, max {max(bounds):.0f} ns (tick {tick} ns); SM clock {np.median(ghz):.3f} GHz; "
           f"ticket slack min {min(slack):.0f} ns over {len(slack)} consecutive tickets")
-axes[0].set_xlabel('half-width of the SM cycle→ns line (ns)'); axes[0].set_ylabel('blocks'); axes[0].set_title('Cross-SM placement bound'); axes[0].legend(fontsize=8)
-axes[1].set_xlabel('SM clock from the fitted line (GHz)'); axes[1].set_title('Implied SM clock per launch'); axes[1].legend(fontsize=8)
-axes[2].set_xlabel('ticket k stamp − ticket k−1 stamp (ns, clipped)'); axes[2].set_title('Ticket order against time order (must be ≥ −bounds)'); axes[2].axvline(0, color=C['ink2'], lw=0.8); axes[2].legend(fontsize=8)
+axes[0].set_xlabel('block-line half-width at its stamps (ns)'); axes[0].set_ylabel('blocks'); axes[0].set_title('Cross-SM placement bound'); axes[0].legend(fontsize=8)
+axes[1].set_xlabel('SM clock the block lines allow (GHz)'); axes[1].set_ylabel('launch'); axes[1].set_title('Feasible SM clock per launch'); axes[1].legend(fontsize=8)
+axes[2].set_xlabel('return of ticket k − issue of ticket k−1 (ns, clipped)'); axes[2].set_title('Ticket order against time (≥ −bounds)'); axes[2].axvline(0, color=C['ink2'], lw=0.8); axes[2].legend(fontsize=8)
 plt.show()
 """)
 
@@ -308,11 +320,12 @@ md(r"""
 ## What this establishes
 
 Every warp of a running kernel can be placed on one time axis from entry to exit, with its loads, barriers,
-compute, store, fence and atomic as measured segments: exact cycles within an SM, and across SMs a bound from the
-timer tick that is tens of ns rather than the tick itself, carried to the host axis by the run's clock bound. The
-barrier check (release after the last arrival, every block), the ticket check (atomic order equals time order
-across SMs) and the flag check (host after GPU) hold on every launch, so the placement is tested rather than
-assumed. The next step on this axis is a second GPU (the per-GPU half is already in `gpus`/`nccl`), then a second
+compute, store, fence and atomic as measured segments: exact cycles within a block, and across blocks a bound of
+about a hundred to a few hundred ns from a 1024 ns tick (median half-width in the printouts above), carried to
+the host axis by the run's clock bound. The barrier check (0 early releases on every launch), the ticket check
+(0 violations) and the flag check hold on every launch, so the placement is tested rather than assumed; the
+checks also caught the deferred barrier, the per-SM clock modulation and the timer read skew that would otherwise
+have been reported as results. The next step on this axis is a second GPU (the per-GPU half is already in `gpus`/`nccl`), then a second
 host.
 """)
 

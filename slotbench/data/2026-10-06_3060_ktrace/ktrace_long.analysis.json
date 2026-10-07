@@ -1,5 +1,5 @@
 {
- "prefix": "/tmp/claude-0/-home-user/c22b0607-07f1-5108-a24d-4caf6e85f472/scratchpad/gt/kt_3060d/out/out/ktrace_long",
+ "prefix": "data/2026-10-06_3060_ktrace/ktrace_long",
  "strategy": "ktrace",
  "gpu": "NVIDIA GeForce RTX 3060",
  "sms": 28,
@@ -227,9 +227,9 @@
     "ticket": {
      "n": 112,
      "violations": 0,
-     "slack_min_ns": -128.01031274902198,
-     "slack_p50_ns": 3.064665789483115,
-     "worst_margin_ns": 10.584241248787293,
+     "slack_min_ns": 44.215383575778105,
+     "slack_p50_ns": 173.73665476768656,
+     "worst_margin_ns": 183.58352834692778,
      "cross_sm_guard_ns": 0.0
     },
     "host_view": {
@@ -259,9 +259,9 @@
     "ticket": {
      "n": 112,
      "violations": 0,
-     "slack_min_ns": -136.6780728720114,
-     "slack_p50_ns": 4.735654928372242,
-     "worst_margin_ns": 8.22015224747156,
+     "slack_min_ns": 30.041515359203913,
+     "slack_p50_ns": 174.46084868386242,
+     "worst_margin_ns": 174.17722067076102,
      "cross_sm_guard_ns": 0.0
     },
     "host_view": {
@@ -291,9 +291,9 @@
     "ticket": {
      "n": 112,
      "violations": 0,
-     "slack_min_ns": -105.1719458931475,
-     "slack_p50_ns": 4.173831456122571,
-     "worst_margin_ns": 7.676503201917512,
+     "slack_min_ns": 59.57976750363014,
+     "slack_p50_ns": 175.21358359532314,
+     "worst_margin_ns": 175.33330715581542,
      "cross_sm_guard_ns": 0.0
     },
     "host_view": {

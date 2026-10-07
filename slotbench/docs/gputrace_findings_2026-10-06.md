@@ -86,6 +86,26 @@ lane-dependent start value, each link reading the next lane. A fourth was in the
 co-tenant process mid-kernel took the main process's context down (illegal memory access at the next sync); the
 hog now stops after its current kernel.
 
+## 3e. The flow of execution inside a kernel (A100, RTX 3060; `data/2026-10-06_*_ktrace`, `notebooks/kernel_timeline.ipynb`)
+`ktrace`: every warp of a staged kernel (two dependent loads, barrier, 256 FFMA, barrier, store + fence, grid-wide
+atomic ticket) stamps %globaltimer, clock64, %globaltimer at eleven checkpoints. Within a block, cycles are exact;
+across blocks, each block's 88 windows [g0, g1 + tick) bound its own cycle-to-ns line (feasible region projected
+at every stamp): half-width 198 ns median / 560 ns max on the A100 and 178 / 362 ns on the 3060 from a 1024 ns
+tick, then the run's host bound. Per warp (A100, 1 block per SM → 4 per SM): loads 479 → 742 cy, barrier wait
+for the last warp 21 → 55 (p99 174 → 1 972), release 34 → 60, 256 FFMA 1 238 → 1 846, store + fence 644 → 873,
+ticket 33. Launch to first warp 5.9 µs (A100) / 4.0 µs (3060); with 4 blocks per SM only 3 are resident
+(80 registers × 256 threads) and the 4th starts when one finishes (starts spread 6.2 µs); the last block's
+system-scope fence for the flag costs ~2.5 µs; flag write to the host seeing it 1.2–1.3 µs.
+
+Checks on every launch: 0 warps released before the last arrival (raw stamps), 0 ticket-order violations
+(ticket k−1 issued before ticket k returned, within bounds). What the checks caught before it became a result:
+`__syncthreads` is `BAR.SYNC.DEFER_BLOCKING`, so a stamp right after it reads 13 cycles after the warp's own
+arrival whatever the others did (first build, both GPUs; release stamps now follow a shared load that waits for
+the barrier); an SM's clock is not one rate across launches or over tens of µs (~20 ns over 28 µs), so the fit
+unit is a block; the %globaltimer readings of different warps on one SM disagree by up to ~80 ns (a guard,
+measured per launch, widens every window); a host whose %globaltimer reads 1.8 × 10¹⁸ ns loses 256 ns per
+float64 subtraction (all timer arithmetic is now integer before any cast; older results unchanged to 0.1 µs).
+
 ## 4. Launch and completion latencies (p50; p99 in the datasets)
 | | RTX 3060 | A100 (host 1 / 2) | H100 |
 |---|---|---|---|

@@ -182,13 +182,17 @@ def kernel_timeline(run, kid, tick=None):
             bars.append(dict(block=b, barrier=name, sm=rs[0]["sm"], n_warps=len(rs), arrival_spread=float(last - arr.min()),
                              wait_per_warp=(last - arr).tolist(), latency_per_warp=(rel - last - touch_cal).tolist(),
                              raw_margin_min=float((rel - last).min()), release_before_last_arrival=int((rel < last).sum())))
-    # ticket order across blocks: time order of the warp-0 ticket stamps must match the ticket numbers, within the
-    # projected bounds of the two blocks' lines at those stamps
-    tk = sorted([(r["ticket"], r["t_gpu"][9], r["t_lo"][9], r["t_hi"][9], r["block"], r["sm"]) for r in rows if r["warp"] == 0 and r["ticket"] is not None])
+    # ticket order across blocks. The ticket is the order in which the L2 processed the blocks' atomics; a block's
+    # atomic was issued after its stamp 8 and had returned by its stamp 9, so for consecutive tickets k-1 and k:
+    # issue(k-1) <= processed(k-1) < processed(k) <= return(k), i.e. t8(k-1) <= t9(k). (Comparing the two return
+    # stamps is not valid: the return trip takes 400-900 cycles under contention and can reorder them.) The check
+    # uses the projected bounds of the two blocks' lines at those stamps; the smallest widening that makes every
+    # pair consistent is the residual cross-SM timer skew this launch exhibits.
+    tk = sorted([(r["ticket"], r["t_gpu"][8], r["t_lo"][8], r["t_gpu"][9], r["t_hi"][9], r["block"], r["sm"]) for r in rows if r["warp"] == 0 and r["ticket"] is not None])
     viol, slack, slack_b = 0, [], []
-    for (k0, t0, lo0, hi0, _, _), (k1, t1, lo1, hi1, _, _) in zip(tk, tk[1:]):
-        slack.append(t1 - t0); slack_b.append(hi1 - lo0)   # the latest ticket k could be minus the earliest k-1 could be
-        if hi1 < lo0:
+    for (k0, t8_0, lo8_0, _, _, _, _), (k1, _, _, t9_1, hi9_1, _, _) in zip(tk, tk[1:]):
+        slack.append(t9_1 - t8_0); slack_b.append(hi9_1 - lo8_0)
+        if hi9_1 < lo8_0:
             viol += 1
     entry = np.array([r["t_gpu"][0] for r in rows]); exit_ = np.array([r["t_gpu"][10] for r in rows])
     fl = [f for f in lines.values() if f]

@@ -1,0 +1,20 @@
+# gputrace characterisation: NVIDIA A100-SXM4-40GB (4b120aeb7c62, 2026-10-06 23:22)
+
+GPU 0: NVIDIA A100-SXM4-40GB, sm_80, driver 580.159.03, persistence Enabled; 1 GPU(s) on the host; profile `ktrace`; MPS not used; 0.6 min of runs.
+
+Host<->GPU clock bound (tick-edge sync before and after every run): 757-944 ns, feasible in 3 of 3 runs.
+
+## Results, one line per run
+
+- `ktrace`: ktrace ±757 ns (edge): B=108: load 479 | bar1 wait 21/174 lat 26 | compute 1238 | store+fence 644 | ticket 33 cy; span 5.9 us, starts spread 0.8 us, SM lines ±208 ns, ticket order 80/540 viol, launch->first 6760 ns, flag write->seen 1334 ns || B=432: load 742 | bar1 wait 55/1972 lat 29 | compute 1846 | store+fence 873 | ticket 34 cy; span 14.8 us, starts spread 6.1 us, SM lines ±69 ns, ticket order 426/2160 viol, launch->first 6068 ns, flag write->seen 1744 ns
+- `ktrace_long`: ktrace ±852 ns (edge): B=432: load 772 | bar1 wait 114/7413 lat 26 | compute 36342 | store+fence 690 | ticket 33 cy; span 58.6 us, starts spread 19.7 us, SM lines ±39 ns, ticket order 617/1296 viol, launch->first 6661 ns, flag write->seen 1411 ns
+- `ktrace_idle`: ktrace ±944 ns (edge): B=108: load 480 | bar1 wait 21/166 lat 25 | compute 1238 | store+fence 710 | ticket 33 cy; span 5.9 us, starts spread 0.8 us, SM lines ±228 ns, ticket order 58/540 viol, launch->first 19285 ns, flag write->seen 1584 ns
+
+SASS verification of the instruction brackets: 91/91 kernels have exactly N target opcodes between the clock reads.
+
+## Files
+
+- `summary.json`: every run's analysis
+- `timeline.html`: interactive timeline (open in a browser)
+- `*.trace.json`: per-run Chrome trace format (https://ui.perfetto.dev)
+- `*.gpu.bin`, `*.host.bin`, `*.json`: raw records

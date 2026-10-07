@@ -75,7 +75,7 @@
     "LOP3.LUT": 1,
     "ISETP.GE.U32.AND": 1,
     "FFMA": 17,
-    "MOV": 1
+    "HFMA2.MMA": 1
    },
    "listing": [
     "0240 ISETP.NE.AND P0, PT, RZ, c[0x0][0x1a0], PT",
@@ -109,7 +109,7 @@
     "0400 FFMA R44, R44, R3, 0.5",
     "0410 @P1 BRA 0x2f0",
     "0420 @!P0 BRA 0x480",
-    "0430 MOV R3, 0x3f800347",
+    "0430 HFMA2.MMA R3, -RZ, RZ, 1.875, 5.0008296966552734375e-05",
     "0440 IADD3 R2, R2, -0x1, RZ",
     "0450 FFMA R44, R44, R3, 0.5",
     "0460 ISETP.NE.AND P0, PT, R2, RZ, PT",

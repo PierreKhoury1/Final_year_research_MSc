@@ -1,5 +1,5 @@
 {
- "prefix": "/tmp/claude-0/-home-user/c22b0607-07f1-5108-a24d-4caf6e85f472/scratchpad/gt/kt_3060d/out/out/ktrace_idle",
+ "prefix": "data/2026-10-06_3060_ktrace/ktrace_idle",
  "strategy": "ktrace",
  "gpu": "NVIDIA GeForce RTX 3060",
  "sms": 28,
@@ -171,8 +171,8 @@
     },
     "ticket": {
      "n": 140,
-     "violations": 2,
-     "cross_sm_guard_ns_max": 61.1112115085125
+     "violations": 0,
+     "cross_sm_guard_ns_max": 0.0
     },
     "timer_guard_ns": {
      "p50": 0.0,
@@ -227,9 +227,9 @@
     "ticket": {
      "n": 28,
      "violations": 0,
-     "slack_min_ns": -232.42234065072898,
-     "slack_p50_ns": 6.21507803649547,
-     "worst_margin_ns": 4.515224947138449,
+     "slack_min_ns": -19.42805363204934,
+     "slack_p50_ns": 211.08922911335867,
+     "worst_margin_ns": 182.53184008189828,
      "cross_sm_guard_ns": 0.0
     },
     "host_view": {
@@ -259,9 +259,9 @@
     "ticket": {
      "n": 28,
      "violations": 0,
-     "slack_min_ns": -138.09727712720633,
-     "slack_p50_ns": 8.310484424233437,
-     "worst_margin_ns": 14.855451822280884,
+     "slack_min_ns": 51.66368217021227,
+     "slack_p50_ns": 178.02269414067268,
+     "worst_margin_ns": 196.60184463858604,
      "cross_sm_guard_ns": 0.0
     },
     "host_view": {
@@ -290,11 +290,11 @@
     },
     "ticket": {
      "n": 28,
-     "violations": 2,
-     "slack_min_ns": -190.90049143135548,
-     "slack_p50_ns": 2.244398683309555,
-     "worst_margin_ns": -61.1112115085125,
-     "cross_sm_guard_ns": 61.1112115085125
+     "violations": 0,
+     "slack_min_ns": -2.9331664741039276,
+     "slack_p50_ns": 179.21881487965584,
+     "worst_margin_ns": 121.36415500938892,
+     "cross_sm_guard_ns": 0.0
     },
     "host_view": {
      "launch_to_first_entry_ns": 55274.0,
@@ -323,9 +323,9 @@
     "ticket": {
      "n": 28,
      "violations": 0,
-     "slack_min_ns": -13.267322152853012,
-     "slack_p50_ns": 1.307791829109192,
-     "worst_margin_ns": 519.4983300566673,
+     "slack_min_ns": 113.69022017717361,
+     "slack_p50_ns": 123.91266947984695,
+     "worst_margin_ns": 643.5558381378651,
      "cross_sm_guard_ns": 0.0
     },
     "host_view": {
@@ -355,9 +355,9 @@
     "ticket": {
      "n": 28,
      "violations": 0,
-     "slack_min_ns": -201.47835496068,
-     "slack_p50_ns": 3.266978532075882,
-     "worst_margin_ns": 33.12839472293854,
+     "slack_min_ns": 25.6397784948349,
+     "slack_p50_ns": 210.27347239851952,
+     "worst_margin_ns": 207.07274574041367,
      "cross_sm_guard_ns": 0.0
     },
     "host_view": {
