@@ -28,24 +28,31 @@ checkpoints (entry, a calibration stamp, two dependent global loads landed, barr
 exit). The stamps stay in registers and are written at the end of the warp, so a checkpoint costs three timer
 reads and nothing else: the cycle read sits between two timer reads, so the true time of cycle *c* lies in
 *[g₀, g₁ + tick)* whatever happens between the reads. Within a block nothing is fitted: its warps share the SM's
-cycle counter, so they compare in cycles. Across blocks, each block's 88 windows bound its own cycle-to-ns line
-(the convex set of consistent rate/offset pairs, projected at every stamp), and the run's own clock bound carries
-the GPU axis to the host axis, where the launch call, the mapped flag the last block writes, and the stream
+cycle counter, so they compare in cycles. Across blocks, each block's 88 windows bound its cycle-to-ns line
+exactly (the feasible set of rate/offset pairs is convex; its rate interval is found by ternary search over the
+physical range 0.5–2.5 GHz, with no prior, and projected at every stamp). All SMs run from one clock, so within one
+launch every block must admit the same rate: the launch's rate interval is the intersection of the blocks'
+intervals (widened by 10⁻³ for the clock's modulation), and if that intersection is empty the smallest window
+widening that restores it is reported as a *rate inconsistency* rather than hidden. The run's own clock bound then
+carries the GPU axis to the host axis, where the launch call, the mapped flag the last block writes, and the stream
 synchronisation sit.
 
-Four things the data forced, all visible in the analysis and stated with the numbers: `__syncthreads` is
-`BAR.SYNC.DEFER_BLOCKING`, so a release stamp must follow a memory instruction that waits for the barrier (the
-first build's release stamps sat 13 cycles after each warp's own arrival); an SM's clock is not one rate over tens
-of µs or across launches, so the unit of the fit is a block, not an SM; the `%globaltimer` readings of different
-warps on one SM disagree by up to ~80 ns, so every window carries a guard measured per launch as the smallest
-widening that makes every block consistent; and a host whose `%globaltimer` reads 1.8 × 10¹⁸ ns needs integer
-arithmetic before any float, or every difference is quantised to 256 ns.
+Three things the data forced, all visible in the analysis and stated with the numbers: on these GPUs `__syncthreads`
+compiles to `BAR.SYNC.DEFER_BLOCKING` and a timer read after it does not wait for the barrier, so a release stamp
+must follow a memory instruction that does (the first build's release stamps sat 13 cycles after each warp's own
+arrival); a least-squares slope through a 1024 ns staircase is wrong by far more than the windows allow, so the rate
+must come from the windows themselves (an earlier version clipped the rate to ±5 % of such a slope and then needed a
+spurious "timer guard" of ~80 ns to make the data fit; with the exact fit the guard is 0 on all but the longest
+launches, and never above 50 ns); and a host whose `%globaltimer` reads 1.8 × 10¹⁸ ns needs integer arithmetic
+before any float, or every difference is quantised to 256 ns.
 
 Three checks have to hold if the placement is right, and they are evaluated on every launch: a warp's barrier
 release stamp never precedes the last arrival stamp in its block (cycles, raw); the grid-wide ticket order is
-consistent with the stamps across SMs (ticket k−1's atomic was issued before ticket k's returned, within the
-projected bounds); the host sees the flag after the last block wrote it. Every number below is computed from the
-raw records with numpy; the figures are matplotlib.
+consistent with the stamps across SMs (ticket k's atomic cannot have returned before ticket k−1's was issued, and
+not less than one SM→L2→SM round trip after it, within the projected bounds); the host sees the flag after the last
+block wrote it. The ticket check is the only cross-SM check, and its resolving power is limited: a cross-SM timer
+offset smaller than its worst margin (about 170–290 ns here) would not be caught by it. Every number below is
+computed from the raw records with numpy; the figures are matplotlib.
 """)
 
 code(r"""
@@ -103,7 +110,7 @@ def fig_launch(run, gname, kid, ax):
     for i, (key, lab) in enumerate((('launch_enter', 'launch call'), ('launch_return', 'call returns'), ('flag_seen', 'host sees the flag'), ('sync_return', 'sync returns'))):
         if h.get(key): ax.axvline(us(h[key]), color=C['ink2'], lw=0.8, ls=':'); ax.text(us(h[key]) + 0.08, len(order) * (0.97 - 0.12 * (i % 2)), lab, fontsize=8, va='top', ha='left', color=C['ink2'])
     ax.set_ylim(-1, len(order) + 1); ax.set_xlabel('µs after the launch call (host clock)'); ax.set_ylabel('block (ordered by start)')
-    ax.set_title(f"{gname}: launch {kid}, {len(order)} blocks on {T['n_sms']} SMs; host bound ±{T['host_view']['bound_ns']:.0f} ns, block lines ±{T['sm_fit']['bound_ns_p50']:.0f} ns median (guard {T['timer_guard_ns']:.0f} ns)")
+    ax.set_title(f"{gname}: launch {kid}, {len(order)} blocks on {T['n_sms']} SMs; host bound ±{T['host_view']['bound_ns']:.0f} ns, block lines ±{T['sm_fit']['bound_ns_p50']:.0f} ns median, rate inconsistency {T['sm_fit']['rate_inconsistency_ns'] or 0:.0f} ns")
     ax.legend(handles=[Patch(color=PHASE_COL[n], label={'load': 'two dependent loads', 'barrier1': 'barrier', 'compute': '256 FFMA', 'store_fence': 'store + fence', 'ticket': 'atomic ticket', 'tail': 'third barrier, flag (last block: system fence), exit'}[n]) for n in ('load', 'barrier1', 'compute', 'store_fence', 'ticket', 'tail')],
               loc='upper left', bbox_to_anchor=(0, -0.16), ncol=3, fontsize=8)
     return T
@@ -112,11 +119,14 @@ Ts = {}
 for gname, run in runs.items():
     B = run.meta['sms']; kid = launches(run, B)[-1]
     fig, ax = plt.subplots(figsize=(11, 4.6))
-    Ts[gname] = fig_launch(run, gname, kid, ax)
+    Ts[gname] = fig_launch(run, gname, kid, ax); Ts[gname]['cold'] = (kid == launches(run, B)[0])
     plt.show()
     hv = Ts[gname]['host_view']
+    fw = hv.get('flag_write_to_flag_seen_ns')
+    fws = f"{hv['flag_write_to_flag_seen_min_ns'] / 1e3:.2f}–{hv['flag_write_to_flag_seen_max_ns'] / 1e3:.2f} µs (window) ± {hv['bound_ns'] / 1e3:.2f} µs" if fw is not None else 'n/a'
     print(f"{gname}: launch -> first warp {hv['launch_to_first_entry_ns'] / 1e3:.2f} µs; block starts spread {Ts[gname]['block_start_spread_ns'] / 1e3:.2f} µs; "
-          f"kernel span {Ts[gname]['span_gpu_ns'] / 1e3:.2f} µs; flag write -> host sees it {hv['flag_write_to_flag_seen_ns'] / 1e3:.2f} µs; last exit -> sync returns {hv['last_exit_to_sync_return_ns'] / 1e3:.2f} µs")
+          f"kernel span {Ts[gname]['span_gpu_ns'] / 1e3:.2f} µs; flag write -> host sees it {fws}; last exit -> sync returns {hv['last_exit_to_sync_return_ns'] / 1e3:.2f} µs "
+          f"(host-axis numbers carry the run's ±{hv['bound_ns'] / 1e3:.2f} µs bound; this launch is {'cold' if Ts[gname].get('cold') else 'warm'})")
 """)
 
 md(r"""
@@ -211,8 +221,14 @@ md(r"""
 ## 3. Phase costs across all launches: one block per SM against four
 
 Cycles per phase over every warp of every launch, for B = SMs (each block alone on its SM) and B = 4 × SMs
-(four blocks, 32 warps, share each SM). The barrier is split into wait and release; the compute chain is the
-same 256 dependent FFMA either way, so what moves is contention for the SM.
+(four blocks, 32 warps, share each SM). The first barrier is split into wait (excluding the last arriver, whose
+wait is 0 by construction) and release; the compute chain is the same 256 dependent FFMA either way, so what
+moves is contention for the SM. What each phase contains, from the SASS in section 6: *load* is two S2R reads,
+address arithmetic, a 4 B `.nc` load and a dependent 16 B `.nc` load, and the shared store that consumes it
+(L2-resident input, so these are L2 hit latencies); *compute* is the 256 dependent FFMA in a 16× unrolled loop,
+so about 16 taken branches of loop control (~200 cycles) are inside it; *ticket* is warp 0's atomic with return
+only (the other warps branch around it in ~33 cycles). Every phase subtracts the entry checkpoint's cost
+(14–16 cycles), which overstates the in-phase checkpoint cost by about 3 cycles, so phases read ~3 cycles short.
 """)
 
 code(r"""
@@ -225,7 +241,7 @@ for ax, (gname, R) in zip(axes[0], res.items()):
     w = 0.38
     for k, B in enumerate(Bs[:2]):
         d = R['by_blocks'][B]
-        vals = [d['phases_cycles']['load'], d['barrier_wait_cycles'], d['barrier_latency_cycles'], d['phases_cycles']['compute'], d['phases_cycles']['store_fence'], d['phases_cycles']['ticket']]
+        vals = [d['phases_cycles']['load'], d['barrier1']['wait_cycles'], d['barrier1']['release_cycles'], d['phases_cycles']['compute'], d['phases_cycles']['store_fence'], d['phases_cycles']['ticket']]
         x = np.arange(len(order)) + (k - 0.5) * w
         med = np.array([v['p50'] for v in vals]); p90 = np.array([v['p90'] for v in vals])
         ax.bar(x, med, width=w - 0.04, color=[C['blue'], C['orange']][k], label=f'B = {B} ({B // runs[gname].meta["sms"]} block/SM)', lw=0)
@@ -236,9 +252,11 @@ plt.show()
 for gname, R in res.items():
     for B, d in sorted(R['by_blocks'].items()):
         ph = d['phases_cycles']
-        print(f"{gname} B={B}: checkpoint cost {d['checkpoint_cost_cycles']['p50']:.0f} cy | load {ph['load']['p50']:.0f} | barrier wait {d['barrier_wait_cycles']['p50']:.0f} (p99 {d['barrier_wait_cycles']['p99']:.0f}) "
-              f"release {d['barrier_latency_cycles']['p50']:.0f} | compute {ph['compute']['p50']:.0f} | store+fence {ph['store_fence']['p50']:.0f} | ticket {ph['ticket']['p50']:.0f} cy; "
-              f"SM clock {d['sm_ghz']['p50']:.3f} GHz; span {d['kernel_span_ns']['p50'] / 1e3:.1f} µs")
+        b1, b2 = d['barrier1'], d['barrier2']
+        print(f"{gname} B={B}: checkpoint cost {d['checkpoint_cost_cycles']['p50']:.0f} cy | load {ph['load']['p50']:.0f} | barrier 1 wait {b1['wait_cycles']['p50']:.0f} (p99 {b1['wait_cycles']['p99']:.0f}) "
+              f"release {b1['release_cycles']['p50']:.0f} | compute {ph['compute']['p50']:.0f} | barrier 2 wait {b2['wait_cycles']['p50']:.0f} release {b2['release_cycles']['p50']:.0f} | "
+              f"store+fence {ph['store_fence']['p50']:.0f} | atomic (warp 0) {ph['ticket']['p50']:.0f} (p90 {ph['ticket']['p90']:.0f}) cy; "
+              f"SM clock {d['sm_ghz_lo']['p50']:.3f}–{d['sm_ghz_hi']['p50']:.3f} GHz (launch median); span {d['kernel_span_ns']['p50'] / 1e3:.1f} µs")
 """)
 
 md(r"""
@@ -266,20 +284,23 @@ plt.show()
 md(r"""
 ## 5. How precise is the placement, and does it pass its checks
 
-Per block, the half-width of the projected feasible region at its stamps (the bound on any cross-block time) against
-the timer tick, including the per-launch timer guard; the SM clocks the lines allow; and the ticket check: ticket
-*k*'s atomic cannot have returned before ticket *k−1*'s was issued, within the two blocks' bounds.
+Per block, the largest half-width of the projected feasible region at its stamps (the bound on any cross-block
+time) against the timer tick; the launch-wide SM clock interval the blocks jointly allow (the clock is one per
+GPU, so one interval per launch, exact up to the 10⁻³ modulation allowance); and the ticket check: ticket *k*'s
+atomic cannot have returned before ticket *k−1*'s was issued, within the two blocks' bounds. The slack histogram
+shows how much room that check has; its smallest value over the bounds (the printed floor) is the cross-SM
+timer offset the check cannot exclude.
 """)
 
 code(r"""
 fig, axes = plt.subplots(1, 3, figsize=(13, 3.6), gridspec_kw=dict(wspace=0.4))
 for gname, run in runs.items():
     col = C['blue'] if gname.startswith('A100') else C['orange']
-    bounds, ghz, slack, rng = [], [], [], []
+    bounds, ghz, slack, rng, floors, eps = [], [], [], [], [], []
     for kid in sorted(set(kt_stamps(run)['kid'].tolist())):
         T = kernel_timeline(run, kid)
         bounds += [r['bound_ns'] for r in T['rows'] if r['warp'] == 0]
-        ghz += [T['sm_fit']['ghz_p50']]; rng.append((T['sm_fit']['ghz_min'], T['sm_fit']['ghz_max'], T['span_gpu_ns'] / 1e3))
+        ghz += [T['sm_fit']['ghz_p50']]; rng.append((T['sm_fit']['ghz_lo'], T['sm_fit']['ghz_hi'], T['span_gpu_ns'] / 1e3)); floors.append(T['ticket']['cross_sm_floor_ns']); eps.append(T['sm_fit']['rate_inconsistency_ns'] or 0)
         tk = sorted([(r['ticket'], r['t_gpu'][8], r['t_gpu'][9]) for r in T['rows'] if r['warp'] == 0 and r['ticket'] is not None])
         slack += [t9 - t8 for (_, t8, _), (_, _, t9) in zip(tk, tk[1:])]
         if T['ticket']['violations']: print(f'{gname} launch {kid}: {T["ticket"]["violations"]} ticket-order violations')
@@ -289,10 +310,11 @@ for gname, run in runs.items():
         y = i + (0.2 if gname.startswith('RTX') else -0.2)
         axes[1].plot([lo, hi], [y, y], color=col, lw=3, solid_capstyle='butt', label=gname if i == 0 else None)
     axes[2].hist(np.clip(slack, -200, 2000), bins=60, color=col, alpha=.75, label=gname, lw=0)
-    print(f"{gname}: block-line half-width p50 {np.median(bounds):.0f} ns, max {max(bounds):.0f} ns (tick {tick} ns); SM clock {np.median(ghz):.3f} GHz; "
-          f"ticket slack min {min(slack):.0f} ns over {len(slack)} consecutive tickets")
+    print(f"{gname}: block bound (max over a block's stamps) p50 {np.median(bounds):.0f} ns, max {max(bounds):.0f} ns (tick {tick} ns); "
+          f"launch clock intervals {min(l for l, _, _ in rng):.3f}–{max(h for _, h, _ in rng):.3f} GHz; rate inconsistency max {max(eps):.0f} ns; "
+          f"ticket slack min {min(slack):.0f} ns over {len(slack)} consecutive tickets; cross-SM floor (worst over launches) {max(floors):.0f} ns")
 axes[0].set_xlabel('block-line half-width at its stamps (ns)'); axes[0].set_ylabel('blocks'); axes[0].set_title('Cross-SM placement bound'); axes[0].legend(fontsize=8)
-axes[1].set_xlabel('SM clock the block lines allow (GHz)'); axes[1].set_ylabel('launch'); axes[1].set_title('Feasible SM clock per launch'); axes[1].legend(fontsize=8)
+axes[1].set_xlabel('GPU clock the launch\'s blocks jointly allow (GHz)'); axes[1].set_ylabel('launch'); axes[1].set_title('Common-rate interval per launch'); axes[1].legend(fontsize=8)
 axes[2].set_xlabel('return of ticket k − issue of ticket k−1 (ns, clipped)'); axes[2].set_title('Ticket order against time (≥ −bounds)'); axes[2].axvline(0, color=C['ink2'], lw=0.8); axes[2].legend(fontsize=8)
 plt.show()
 """)
@@ -320,12 +342,15 @@ md(r"""
 ## What this establishes
 
 Every warp of a running kernel can be placed on one time axis from entry to exit, with its loads, barriers,
-compute, store, fence and atomic as measured segments: exact cycles within a block, and across blocks a bound of
-about a hundred to a few hundred ns from a 1024 ns tick (median half-width in the printouts above), carried to
-the host axis by the run's clock bound. The barrier check (0 early releases on every launch), the ticket check
-(0 violations) and the flag check hold on every launch, so the placement is tested rather than assumed; the
-checks also caught the deferred barrier, the per-SM clock modulation and the timer read skew that would otherwise
-have been reported as results. The next step on this axis is a second GPU (the per-GPU half is already in `gpus`/`nccl`), then a second
+compute, store, fence and atomic as measured segments: exact cycles within a block, and across blocks a bound
+from a 1024 ns tick of some tens of ns for most blocks (the medians printed above) and up to about 250–450 ns for
+the worst block of a launch, carried to the host axis by the run's clock bound. The barrier check (0 early
+releases on every launch), the ticket check (0 violations, plain and round-trip) and the flag check hold on every
+launch, so the placement is tested rather than assumed; the checks also caught the deferred barrier and the
+least-squares rate error that an earlier version had papered over with a "timer guard". What the checks cannot
+do is stated too: the only cross-SM check has a floor of about 170–290 ns, so a cross-SM `%globaltimer` offset
+below that would pass; and the SASS-level semantics relied on (the deferred barrier, the fence) are observed on
+these two GPUs, not documented guarantees. The next step on this axis is a second GPU (the per-GPU half is already in `gpus`/`nccl`), then a second
 host.
 """)
 

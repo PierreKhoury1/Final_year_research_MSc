@@ -88,23 +88,44 @@ hog now stops after its current kernel.
 
 ## 3e. The flow of execution inside a kernel (A100, RTX 3060; `data/2026-10-06_*_ktrace`, `notebooks/kernel_timeline.ipynb`)
 `ktrace`: every warp of a staged kernel (two dependent loads, barrier, 256 FFMA, barrier, store + fence, grid-wide
-atomic ticket) stamps %globaltimer, clock64, %globaltimer at eleven checkpoints. Within a block, cycles are exact;
-across blocks, each block's 88 windows [g0, g1 + tick) bound its own cycle-to-ns line (feasible region projected
-at every stamp): half-width 198 ns median / 560 ns max on the A100 and 178 / 362 ns on the 3060 from a 1024 ns
-tick, then the run's host bound. Per warp (A100, 1 block per SM → 4 per SM): loads 479 → 742 cy, barrier wait
-for the last warp 21 → 55 (p99 174 → 1 972), release 34 → 60, 256 FFMA 1 238 → 1 846, store + fence 644 → 873,
-ticket 33. Launch to first warp 5.9 µs (A100) / 4.0 µs (3060); with 4 blocks per SM only 3 are resident
-(80 registers × 256 threads) and the 4th starts when one finishes (starts spread 6.2 µs); the last block's
-system-scope fence for the flag costs ~2.5 µs; flag write to the host seeing it 1.2–1.3 µs.
+atomic ticket) stamps %globaltimer, clock64, %globaltimer at eleven checkpoints. Within a block, cycles are exact.
+Across blocks, each block's 88 windows [g0, g1 + tick) bound its cycle-to-ns line exactly (convex feasible set,
+rate interval by ternary search over 0.5–2.5 GHz, no prior); all SMs run from one clock, so the launch's rate is
+the intersection of its blocks' intervals (widened 1e-3 for the clock's modulation), and an empty intersection is
+reported as the smallest window widening that restores it (0 ns on the 5 µs launches, ≤ 14 ns at 15 µs, 22–47 ns
+on the 28–59 µs launches). Block bound (largest half-width over a block's stamps, median over blocks, warm
+launches): 38–53 ns on the A100 and 54–160 ns on the 3060 from a 1024 ns tick, worst block of a launch
+200–450 ns; then the run's host bound (±0.76 µs A100, ±0.33 µs 3060) on top for host-axis numbers.
 
-Checks on every launch: 0 warps released before the last arrival (raw stamps), 0 ticket-order violations
-(ticket k−1 issued before ticket k returned, within bounds). What the checks caught before it became a result:
-`__syncthreads` is `BAR.SYNC.DEFER_BLOCKING`, so a stamp right after it reads 13 cycles after the warp's own
-arrival whatever the others did (first build, both GPUs; release stamps now follow a shared load that waits for
-the barrier); an SM's clock is not one rate across launches or over tens of µs (~20 ns over 28 µs), so the fit
-unit is a block; the %globaltimer readings of different warps on one SM disagree by up to ~80 ns (a guard,
-measured per launch, widens every window); a host whose %globaltimer reads 1.8 × 10¹⁸ ns loses 256 ns per
-float64 subtraction (all timer arithmetic is now integer before any cast; older results unchanged to 0.1 µs).
+Per warp (A100, 1 block per SM → 4 per SM, medians): loads 479 → 742 cy (S2R ×2, address arithmetic, a 4 B
+and a dependent 16 B `.nc` load, L2-resident, and the consuming shared store); first barrier wait for the last
+warp 39 → 138 (p99 212 → 2 564; the last arriver, whose wait is 0, excluded), release after the last arrival
+33 → 82; 256 dependent FFMA 1 238 → 1 846 (a 16×-unrolled loop, ~200 cy of loop control inside); store +
+`__threadfence` 644 → 873; the atomic with return, warp 0 only, 298 → 434 (p90 432 → 1 094); the other warps
+branch around it in ~33 cy. RTX 3060: loads 512 → 821, barrier wait 56 → 158, release 34 → 64, FFMA 1 237 →
+1 488, store + fence 569 → 559, atomic 282 → 310. Every phase subtracts the entry checkpoint's cost (14–16 cy),
+which is ~3 cy more than the in-phase cost, so phases read ~3 cy short. Launch call to first warp, warm launches:
+6.1–6.6 µs (A100) / 3.7–3.9 µs (3060), the first launch of a run 31–36 µs; with 4 blocks per SM only 3 are
+resident (80 registers × 256 threads) and the 4th starts when one finishes (starts spread 6.2 µs A100, 4.1 µs
+3060); last exit to `cudaStreamSynchronize` returning 4.0–4.4 µs (A100) / 1.5 µs (3060). Flag write to the host
+seeing it: the write lies in a GPU window (last block's stamps 9–10 ∩ the truncated value's tick) and the host
+event carries the run's bound, so 0.4–1.4 µs on the A100 (±0.76 µs) and at most ~0.5 µs on the 3060, where it
+is not resolved below the ±0.33 µs bound.
+
+Checks on every launch: 0 warps released before the last arrival (raw stamps); 0 ticket-order violations, both
+as "ticket k−1 issued before ticket k returned" and as "not less than one SM→L2→SM round trip after it" (the
+shortest warp-0 atomic of the launch at the highest feasible clock, 125–175 ns), within the projected bounds.
+The ticket check is the only cross-SM check and its worst margin over the bounds is 170–290 ns (640 ns on the
+3 µs 3060 launches): a cross-SM %globaltimer offset below that would not be caught, and nothing in this data
+measures one. What the checks caught before it became a result: `__syncthreads` compiles to
+`BAR.SYNC.DEFER_BLOCKING` and a stamp right after it reads 13 cycles after the warp's own arrival whatever the
+others did (first build, both GPUs; release stamps now follow a shared load that waits for the barrier; that
+this blocks the warp is observed on these two GPUs, not documented); a least-squares slope through a 1024 ns
+staircase is wrong by far more than the windows allow, and an earlier version that clipped the rate to ±5 % of
+it had to add a ~80 ns "timer guard" to make the data fit, which was then reported as warp-to-warp timer skew
+(retracted: with the exact fit the guard is 0 on the short launches and ≤ 47 ns on the longest); a host whose
+%globaltimer reads 1.8 × 10¹⁸ ns loses 256 ns per float64 subtraction (all timer arithmetic is integer before
+any cast; older results unchanged to 0.1 µs).
 
 ## 4. Launch and completion latencies (p50; p99 in the datasets)
 | | RTX 3060 | A100 (host 1 / 2) | H100 |

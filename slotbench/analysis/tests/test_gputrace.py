@@ -311,19 +311,14 @@ def test_instr_fit_separates_latency_from_overhead(tmp_path):
     assert "instr(" in gt.one_line(gt.analyse(p))
 
 
-def test_ktrace_places_warps_and_checks_order(tmp_path):
-    """Synthetic k_ktrace run: 4 SMs with unrelated cycle counters and clocks of 1.41-1.50 GHz, 2 blocks per SM,
-    8 warps each, realistic phase lengths, %globaltimer floor-quantised to the tick. The per-SM line fit must
-    recover each SM's clock within its bound, every stamp must land inside its [g, g+tick) window, barrier
-    releases must follow the last arrival, and the grid-wide ticket order must match the time order."""
-    from analysis import ktrace as kt
-    p = str(tmp_path / "k")
-    rng = np.random.default_rng(3)
+def _synth_ktrace(p, sm_ghz, seed=3):
+    """Synthetic k_ktrace run: 4 SMs with unrelated cycle counters, 2 blocks per SM, 8 warps each, realistic phase
+    lengths, %globaltimer floor-quantised to the tick. sm_ghz gives each SM's clock (one GPU clock in reality)."""
+    rng = np.random.default_rng(seed)
     recs, evs = [], []
     kid = 1; B = 8; ffma = 256
     launch_t = int(host_of(20_000_000)) - 6_000
     evs.append((launch_t, 1, kid, B, 256)); evs.append((launch_t + 1800, 2, kid, 0, 0))
-    sm_ghz = {0: 1.41, 1: 1.455, 2: 1.47, 3: 1.50}
     sm_c0 = {s: int(rng.integers(1_000_000, 9_000_000_000)) for s in sm_ghz}
     all_stamps = {}
     for b in range(B):
@@ -358,13 +353,25 @@ def test_ktrace_places_warps_and_checks_order(tmp_path):
     evs.append((int(host_of(last_exit)) + 900, 6, kid, int(last_exit), 10))
     evs.append((int(host_of(last_exit)) + 1500, 3, kid, 0, 0)); evs.append((int(host_of(last_exit)) + 3000, 4, kid, 0, 0))
     write_run(p, "ktrace", recs, evs, dict(ffma=ffma))
+    return kid, B, ffma
+
+
+def test_ktrace_places_warps_and_checks_order(tmp_path):
+    """One GPU clock (1.455 GHz) for all SMs, unrelated per-SM counters: the launch-wide common-rate fit must
+    recover the clock with no window widening, every stamp must land inside its [g, g+tick) window, barrier
+    releases must follow the last arrival, and the grid-wide ticket order must match the time order."""
+    from analysis import ktrace as kt
+    p = str(tmp_path / "k")
+    sm_ghz = {0: 1.455, 1: 1.455, 2: 1.455, 3: 1.455}
+    kid, B, ffma = _synth_ktrace(p, sm_ghz)
     run = gt.Run(p)
     T = kt.kernel_timeline(run, kid)
     assert T["n_warps"] == 64 and T["n_sms"] == 4 and T["sm_fit"]["n"] == B and T["sm_fit"]["infeasible"] == 0
     # every block's feasible clock interval contains its SM's true clock; bounds below the tick
     from analysis.ktrace import fit_block_lines, warp_table as wt
-    lines, guard = fit_block_lines(wt(kt.kt_stamps(run), kid), TICK)
-    assert guard == 0.0
+    lines, info = fit_block_lines(wt(kt.kt_stamps(run), kid), TICK)
+    assert info["common_rate"] and info["eps_ns"] == 0.0
+    assert info["ghz_lo"] - 1e-6 <= 1.455 <= info["ghz_hi"] + 1e-6
     for b, f in lines.items():
         assert f["ghz_lo"] - 1e-6 <= sm_ghz[b % 4] <= f["ghz_hi"] + 1e-6
     assert T["sm_fit"]["bound_ns_max"] < TICK
@@ -386,3 +393,20 @@ def test_ktrace_places_warps_and_checks_order(tmp_path):
     from analysis.gputrace_export import export
     tr = export(p)
     assert sum(1 for e in tr["traceEvents"] if e.get("ph") == "X" and "→" in e.get("name", "")) == 64 * 10
+
+
+def test_ktrace_reports_rate_inconsistency(tmp_path):
+    """SMs that do NOT share a clock (1.41-1.50 GHz, impossible on one GPU) have no common rate: the fit must report
+    a non-zero window widening rather than silently fitting, and every block alone must still contain its clock."""
+    from analysis import ktrace as kt
+    from analysis.ktrace import fit_block_lines, warp_table as wt
+    p = str(tmp_path / "k")
+    sm_ghz = {0: 1.41, 1: 1.455, 2: 1.47, 3: 1.50}
+    kid, B, ffma = _synth_ktrace(p, sm_ghz)
+    run = gt.Run(p)
+    lines, info = fit_block_lines(wt(kt.kt_stamps(run), kid), TICK)
+    assert info["eps_ns"] is None or info["eps_ns"] > 1.0
+    for b, f in lines.items():
+        assert f["block_ghz_lo"] - 1e-6 <= sm_ghz[b % 4] <= f["block_ghz_hi"] + 1e-6
+    T = kt.kernel_timeline(run, kid)
+    assert T["sm_fit"]["rate_inconsistency_ns"] is None or T["sm_fit"]["rate_inconsistency_ns"] > 1.0

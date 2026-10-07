@@ -8,16 +8,22 @@
 // GPU time of the cycle lies in [g0, g1 + tick) whatever happens between the reads (a warp descheduled between
 // two reads, with 32 warps on the SM, would otherwise put the pair outside its window). Per SM, clock64 is one
 // counter shared by every warp on that SM (checked on the data: no per-warp or per-sub-partition offset), so
-// stamps of different warps and blocks on the same SM compare at cycle resolution; the analysis bounds each SM's
-// cycle-to-ns line by all of that SM's windows, which places every checkpoint on the GPU's common axis with a
-// resolution far below the timer tick, and then on the host axis through the run's clock bound.
+// stamps of different warps and blocks on the same SM compare at cycle resolution; the analysis bounds each block's
+// cycle-to-ns line by its windows (one GPU clock shared by all blocks of a launch), which places every checkpoint
+// on the GPU's common axis with a resolution far below the timer tick, and then on the host axis through the
+// run's clock bound. The only cross-SM consistency check is the atomic ticket order (floor ~170-290 ns).
+// Known limits of this build, for a future run: the flag stamp (10) is taken after st_sys + the system fence, so
+// the write's window is stamps 9..10 (~0.5 us); the load index is computed after KT_CAL, so "load" includes S2R
+// and address arithmetic; the FFMA loop is 16x unrolled, so ~16 taken branches sit inside "compute".
 //
 // Two things the SASS forced (both checked with cuobjdump, tools/sass_phases.py):
 //  - the "loaded" stamp follows a volatile shared store of the loaded value: the hardware wait for load data
 //    attaches to the first instruction that reads the register, and an empty asm consumer emits nothing;
 //  - __syncthreads is BAR.SYNC.DEFER_BLOCKING: the warp keeps issuing non-memory instructions (a clock read
 //    included) until it reaches a memory instruction, so a stamp right after the barrier reads 13 cycles after
-//    the warp's own arrival whether or not the other warps have arrived (first RTX 3060 run). The release stamps
+//    the warp's own arrival whether or not the other warps have arrived (first RTX 3060 run). That a shared
+//    load after the barrier does block is observed on the A100 and the RTX 3060 (0 early releases over every
+//    launch), not a documented guarantee. The release stamps
 //    therefore follow a shared load issued after the barrier, consumed by a volatile shared store; the same
 //    load + store + stamp sequence without a barrier (checkpoint 2 -> 3) calibrates its cost.
 #pragma once
