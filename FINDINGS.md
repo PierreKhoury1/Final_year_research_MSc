@@ -69,8 +69,10 @@ All runs: `tickbound_data/strict_bounds_2026-10-09.json`. For kernel-timing runs
 reported one (A100 ±0.79-1.03 µs, H100 ±0.55-0.73 µs). Runs with a long or lopsided gap between the sync windows
 (the 8 Oct instr / MPS runs, the 9 Oct A100 load-use runs) widen up to 2.6x (worst ±1.40 µs).
 
-Inside one GPU, between SMs, a checkpoint is placed far more tightly: ±20-26 ns on H100 (64 ns timer steps) and
-±80-330 ns on A100 (1024 ns timer steps), per block, from the SM's own cycle counter.
+Inside one GPU, between SMs, a checkpoint is placed far more tightly, per block, from the SM's own cycle counter:
+on H100 (64 ns timer steps) ±17-21 ns median and ±18-26 ns for the worst block in kernels up to ~10 µs (±31-55 /
+±50-96 ns in ~29 µs kernels); on A100 (1024 ns timer steps) ±13-246 ns median and ±32-374 ns for the worst block,
+depending on the run (per-run values in each `*.analysis.json`).
 
 ## 3. Kernel shapes
 
@@ -143,11 +145,16 @@ Measured (cycles unless stated; CUDA 12.6; full one-line results per run in `tic
 
 - **E1 load to use:** latency L1 / L2 / DRAM: A100 50 / 353 / 614, H100 49 / 370 / 771. Independent FFMA hide a load
   up to the predicted break-even N* = (L - d) / 4 (A100 L2: 73 measured vs 81 predicted; H100 L2: 84.8 vs 84.7);
-  the largest saving from hoisting a DRAM load: 595 (A100), 634 (H100).
+  the largest saving from hoisting a DRAM load: 595 (A100), 634 (H100). Open: on H100 the two estimates of L
+  disagree (L2 370 vs 428, DRAM 771 vs 692 cycles), and the A100 L2 saving (198 at most) is below the model's
+  L - d = 323.
 - **E2 write-after-read:** reusing a just-stored register instead of a fresh one costs 0-10 cycles in most cases;
   STG.128 with 32 warps: +8 (A100), +46 (H100); one A100 case (STG.32, 32 warps) measured -28, not yet explained.
-- **E3 barrier:** moving work that touches shared memory to after the barrier costs about its full length (+296 at
-  M = 64, +1066 at M = 256, against 4M = 256 / 1024), the same on A100 and H100.
+- **E3 barrier:** M register-only FFMA placed after `__syncthreads()` (`BAR.SYNC.DEFER_BLOCKING`) cost +0 cycles:
+  they run while the warp waits (the clock read after the barrier issued during the wait in 100% of samples). Work
+  that touches shared memory after the barrier costs about its full length (+296 at M = 64, +1066 at M = 256,
+  against 4M = 256 / 1024). Moving the late warp's M FFMA past the barrier releases it earlier by about 4M (A100
+  +254 / +1025, H100 +224 / +1030 at M = 64 / 256). Same on A100 and H100.
 - **E4 fence cost:** GPU scope / system scope / acq_rel: A100 410 / 2277 / 413, H100 682 / 1252 / 684. Giving the
   preceding store up to 1024 FFMA to drain before the fence saves ≤ 8 cycles: the fence's cost does not shrink.
 - **E5 FFMA throughput:** cycles per FFMA per warp follow max(4 / ILP, p x warps per sub-partition) with p = 2 on
@@ -206,6 +213,15 @@ stall counts below the latency), and probes of rules the checker applies conserv
 - Some broken edits fail rarely: a cleared scoreboard wait gave a wrong result in 1 of 200 launches, stall counts
   below the IADD3 latency in 8 of 200 (FFMA: 200 of 200). A short test would call them safe.
 - Legal slides of a load: cycles stay flat while the load hides under the FFMA chain, then rise by 4 cycles per slot.
+
+**What sections 4 and 5 mean for optimisation.** The rules and the latency-hiding law hold on hardware, and the
+checker is safe (0 broken edits approved). No reordering made a kernel faster than ptxas's own schedule: in the
+kernels tested, ptxas had already issued each load as early as possible, so the legal moves (sliding it later) could
+only be equal or slower, and E1's large savings are against a deliberately bad order. Fences cannot be hidden (E4),
+and a full FP32 pipe leaves no latency to hide (E5). Two levers have a measured effect but no whole-kernel gain yet:
+moving the late warp's register-only work past a barrier (E3) and a fresh register instead of reusing one a store
+has not read (E2, up to 46 cycles). The open question is whether checker-approved moves speed up real kernels where
+ptxas leaves latency exposed.
 
 ## 6. H100 `%globaltimer` steps are not uniform
 
