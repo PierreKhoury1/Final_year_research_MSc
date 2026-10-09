@@ -223,10 +223,12 @@ moving the late warp's register-only work past a barrier (E3) and a fresh regist
 has not read (E2, up to 46 cycles). The open question is whether checker-approved moves speed up real kernels where
 ptxas leaves latency exposed.
 
-## 6. H100 `%globaltimer` steps are not uniform
+## 6. H100 `%globaltimer`: observed steps
 
-The GPU timer does not always advance in 64 ns steps on H100: at the sync edges it stepped by 64, 96 and occasionally
-128 ns, on a second, different H100 host as well (A100: always 1024 ns).
+At the sync edges the H100 timer was seen to advance by 64 ns most of the time, and by 96 or 128 ns otherwise, on two
+different H100 hosts (A100: always 1024 ns). The timer's values lie on a 32 ns grid, so a step seen by a polling
+reader depends on how fast it polls: these are observed steps, not a measured update interval, which is not settled
+(correction of 10 Oct: the first version called the steps non-uniform).
 
 | GPU, host | runs | %globaltimer step sizes seen at sync edges (count) |
 |---|---|---|
@@ -236,8 +238,8 @@ The GPU timer does not always advance in 64 ns steps on H100: at the sync edges 
 | 2026-10-09_a100x8_pcie_cuda12.6+12.2 | 21 | 1024 ns x1323 (100.0%) |
 | 2026-10-09_h100_cuda12.6+12.2 | 15 | 64 ns x890 (94.2%), 96 ns x54 (5.7%), 128 ns x1 (0.1%) |
 
-Any error model for GPU-side timestamps on H100 (including a software clock-correlation fallback) should take the
-96 / 128 ns steps into account.
+An error model for GPU-side timestamps on H100 (including a software clock-correlation fallback) should not assume a
+fixed 64 ns step: the values lie on a 32 ns grid, and the step a reader sees depends on its read rate.
 
 ## 7. Relation to TempoTrace
 
@@ -257,7 +259,7 @@ Where this work sits:
   hardware (no special NIC, no PTP);
 - the strict per-GPU bound (±0.55-1.03 µs on the host clock) is below TempoTrace's 2.1 µs software baseline and
   2.5-5x wider than its 0.218 µs hardware target; it is one host's clock (`CLOCK_MONOTONIC_RAW`), not TAI;
-- two results bear directly on its design: the H100 timer's non-uniform steps (section 6), and the measured limit
+- two results bear directly on its design: the H100 timer's 32 ns value grid and read-rate-dependent steps (section 6), and the measured limit
   of ordering GPUs through the host clock (~2 µs, section 1), in the sub-20 µs regime where its ablation finds
   hardware timestamps matter.
 

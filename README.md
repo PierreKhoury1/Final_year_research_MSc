@@ -24,7 +24,6 @@ vast.ai machines on 8 and 9 October 2026 ($2.66 in total).
    load's latency behaves exactly as the model predicts, but the compiler already does it. Fences cannot be hidden
    at all. Section 5 gives the full answer.
 4. **Some observations we have not found published.** These are listed in section 6. Examples:
-   - H100's GPU timer steps by 64, 96 or 128 ns, not a fixed 64 ns.
    - Illegal SASS edits can pass output tests in 199 of 200 runs.
    - `__syncthreads()` lets arithmetic that touches only registers run while the warp waits.
 
@@ -82,8 +81,8 @@ tickbound keeps the exact cycle counter and adds the layers his method does not 
 
 - **Three clocks.**
   - `clock64` counts cycles exactly on each SM, but each SM's count starts from a different value.
-  - `%globaltimer` is one nanosecond timer per GPU, but it only moves in steps: 1,024 ns on A100, and 64, 96 or
-    128 ns on H100.
+  - `%globaltimer` is one nanosecond timer per GPU, but it only moves in steps: 1,024 ns on A100. On H100 its
+    values lie on a 32 ns grid, and our reads saw it advance by 64 ns (sometimes 96 or 128).
   - The host clock, `CLOCK_MONOTONIC_RAW`, is where the CPU stamps launches, polls and syncs.
 - **Every checkpoint is a bracket.** It reads the timer, then the cycle counter, then the timer again, so the cycle
   value is known to lie inside a window of the timer. Each timed phase ends with an instruction that uses the
@@ -274,19 +273,17 @@ microbenchmark papers on Volta, Turing and Ampere, and TempoTrace. A full litera
 
 1. Instruction-phase timelines of every warp on every SM of several GPUs on one host clock, with a proven bound on
    every point. Also the measured limit of ordering GPUs through the host clock: about 2 µs.
-2. H100's `%globaltimer` steps by 64, 96 and occasionally 128 ns, not a uniform 64 ns. This was seen on two hosts,
-   with CUDA 12.2 and 12.6.
-3. A fence's cost does not shrink when the store before it has time to drain: it changes by ≤ 8 cycles with up to
+2. A fence's cost does not shrink when the store before it has time to drain: it changes by ≤ 8 cycles with up to
    1,024 FFMA in between.
-4. On the barrier:
+3. On the barrier:
    - `__syncthreads()` compiled by CUDA 12.6 (`BAR.SYNC.DEFER_BLOCKING`) lets arithmetic that touches only
      registers run during the wait at zero cost. CUDA 12.2 compiles the same source to plain `BAR.SYNC`.
    - Moving such work across the barrier is correct on hardware (200 of 200 runs), and it shortens the wait by
      about the moved work. CuAsmRL never moves instructions across a barrier.
-5. Illegal SASS edits can pass output tests. A removed scoreboard wait gave wrong results in 1 of 200 runs, and
+4. Illegal SASS edits can pass output tests. A removed scoreboard wait gave wrong results in 1 of 200 runs, and
    IADD3 stall violations in 8 of 200. A stall table derived by lowering stall counts until the output breaks (the
    method CuAsmRL uses) could call these edits safe.
-6. A dependent IMAD.WIDE step costs 3–4 cycles more than the stall the compiler encodes: 13 vs 10 on A100, 12 vs 8
+5. A dependent IMAD.WIDE step costs 3–4 cycles more than the stall the compiler encodes: 13 vs 10 on A100, 12 vs 8
    on H100.
 
 **Confirms known results, now measured precisely:**
@@ -311,6 +308,8 @@ microbenchmark papers on Volta, Turing and Ampere, and TempoTrace. A full litera
   - The A100 acq_rel fence measured 413 cycles with CUDA 12.6 and 565 with 12.2, with identical SASS.
   - The two E1 latency estimates differ by up to 80 cycles on H100.
   - The A100 L2 saving falls short of the model.
+  - The H100 timer's update interval. Its values lie on a 32 ns grid, and the steps we saw (64, 96, 128 ns) depend
+    on how fast the reader polls, so the real update interval is not settled.
 
 ## 8. Next steps
 
