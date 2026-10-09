@@ -1,0 +1,197 @@
+
+===== 01:44:40 machine
+Thu Oct  8 01:44:40 2026       
++---------------------------------------------------------------------------------------+
+| NVIDIA-SMI 535.309.01             Driver Version: 535.309.01   CUDA Version: 12.2     |
+|-----------------------------------------+----------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |         Memory-Usage | GPU-Util  Compute M. |
+|                                         |                      |               MIG M. |
+|=========================================+======================+======================|
+|   0  NVIDIA H100 80GB HBM3          On  | 00000000:E3:00.0 Off |                    0 |
+| N/A   25C    P0              67W / 700W |     14MiB / 81559MiB |      0%      Default |
+|                                         |                      |             Disabled |
++-----------------------------------------+----------------------+----------------------+
+                                                                                         
++---------------------------------------------------------------------------------------+
+| Processes:                                                                            |
+|  GPU   GI   CI        PID   Type   Process name                            GPU Memory |
+|        ID   ID                                                             Usage      |
+|=======================================================================================|
++---------------------------------------------------------------------------------------+
+Driver Version                            : 535.309.01
+CUDA Version                              : 12.2
+    Product Name                          : NVIDIA H100 80GB HBM3
+    Persistence Mode                      : Enabled
+    Clocks Event Reasons
+        Applications Clocks Setting       : Not Active
+    Compute Mode                          : Default
+    Clocks
+    Applications Clocks
+    Default Applications Clocks
+    Deferred Clocks
+    Max Clocks
+    Max Customer Boost Clocks
+nvcc: NVIDIA (R) Cuda compiler driver
+Copyright (c) 2005-2023 NVIDIA Corporation
+Built on Tue_Aug_15_22:02:13_PDT_2023
+Cuda compilation tools, release 12.2, V12.2.140
+Build cuda_12.2.r12.2/compiler.33191640_0
+256
+Linux 82fbfcd49b63 6.8.0-107-generic #107~22.04.1-Ubuntu SMP PREEMPT_DYNAMIC Wed Mar 18 23:40:43 UTC  x86_64 x86_64 x86_64 GNU/Linux
+model name	: AMD EPYC 9554 64-Core Processor
+
+===== 01:44:40 python + tickbound
+debconf: delaying package configuration, since apt-utils is not installed
+Python 3.10.12
+tickbound 0.1.0
+tickbound 0.1.0
+  python     3.10.12  (/root/venv/bin/python3)
+  numpy      2.2.6
+  os         Linux-6.8.0-107-generic-x86_64-with-glibc2.35
+  nvidia-smi /usr/bin/nvidia-smi
+    GPU 0: NVIDIA H100 80GB HBM3, sm_90, driver 535.309.01, persistence Enabled
+  nvcc       /usr/local/cuda/bin/nvcc  Build cuda_12.2.r12.2/compiler.33191640_0
+  cuobjdump  /usr/local/cuda/bin/cuobjdump  (for `tickbound sass` on a binary)
+  MPS        /usr/bin/nvidia-cuda-mps-control  (for the MPS variants)
+  NCCL       /usr/include  (for multi-GPU NCCL runs)
+  cache      /root/.cache/tickbound  (0 probe build(s))
+
+  analyse / export / view: yes
+  measure:                 yes
+
+===== 01:44:54 ktrace profile (builds the probes with nvcc)
+building the probes for sm_90 (once per GPU architecture) ...
+GPU 0: NVIDIA H100 80GB HBM3 (sm_90), 1 GPU(s), profile ktrace, output /root/res/ktrace/
+  ktrace (1 s): ktrace ±654 ns (edge): B=132: load 382 | bar1 wait 40/292 rel 21 | compute 1026 | store+fence 1496 | atomic 501 cy; span 2.3 us, block bound 21/26 ns p50/max, SM 1.948-2.002 GHz, rate incons 0 ns, ticket 0+0/660 viol (floor 223 ns), launch->first 5.1 us warm, flag->seen 0.73 us, flag store 8 cy, writer fence 3166 cy, 4.01 cy/FFMA || B=528: load 588 | bar1 wait 144/2349 rel 50 | compute 1070 | store+fence 1354 | atomic 594 cy; span 9.3 us, block bound 18/26 ns p50/max, SM 1.961-1.979 GHz, rate incons 0 ns, ticket 0+0/2640 viol (floor 221 ns), launch->first 5.0 us warm, flag->seen 0.76 us, flag store 16 cy, writer fence 3466 cy, 4.18 cy/FFMA
+  ktrace_long (1 s): ktrace ±653 ns (edge): B=528: load 540 | bar1 wait 150/16450 rel 40 | compute 16824 | store+fence 1312 | atomic 508 cy; span 28.7 us, block bound 43/96 ns p50/max, SM 1.962-1.966 GHz, rate incons 76 ns, ticket 0+0/1584 viol (floor 212 ns), launch->first 5.2 us warm, flag->seen 0.74 us, flag store 16 cy, writer fence 3268 cy, 4.11 cy/FFMA
+  ktrace_idle (1 s): ktrace ±714 ns (edge): B=132: load 384 | bar1 wait 44/304 rel 21 | compute 1026 | store+fence 1470 | atomic 478 cy; span 2.3 us, block bound 21/26 ns p50/max, SM 1.946-2.001 GHz, rate incons 0 ns, ticket 0+0/660 viol (floor 223 ns), launch->first 31.7 us warm, flag->seen 0.73 us, flag store 8 cy, writer fence 3172 cy, 4.01 cy/FFMA
+ktrace SASS check: FAIL (8 of 28 checks): this build breaks the layout-2 promises (exact phases, no spill); the ktrace phase notes do not hold for it
+    FAIL k_ktrace<64>: load: 2 LDG + 1 STS + address arithmetic (LDG=2 STS=1 not allowed: ['02c0 DEPBAR.LE SB0, 0x0'])
+    FAIL k_ktrace<64>: flag -> exit: one STG (+ ISETP/PLOP3) only (STG=1 ISETP/PLOP3=0 other={'DEPBAR.LE': 1})
+    FAIL k_ktrace<256>: load: 2 LDG + 1 STS + address arithmetic (LDG=2 STS=1 not allowed: ['02c0 DEPBAR.LE SB0, 0x0'])
+    FAIL k_ktrace<256>: flag -> exit: one STG (+ ISETP/PLOP3) only (STG=1 ISETP/PLOP3=0 other={'DEPBAR.LE': 1})
+    FAIL k_ktrace<1024>: load: 2 LDG + 1 STS + address arithmetic (LDG=2 STS=1 not allowed: ['02c0 DEPBAR.LE SB0, 0x0'])
+    FAIL k_ktrace<1024>: flag -> exit: one STG (+ ISETP/PLOP3) only (STG=1 ISETP/PLOP3=0 other={'DEPBAR.LE': 1})
+    FAIL k_ktrace<4096>: load: 2 LDG + 1 STS + address arithmetic (LDG=2 STS=1 not allowed: ['02c0 DEPBAR.LE SB0, 0x0'])
+    FAIL k_ktrace<4096>: flag -> exit: one STG (+ ISETP/PLOP3) only (STG=1 ISETP/PLOP3=0 other={'DEPBAR.LE': 1})
+
+/root/res/ktrace/report.md written; 3/3 runs analysed in 1.8 min
+timeline: /root/res/ktrace/timeline.html
+ktrace SASS check: FAIL (8 of 28 checks): this build breaks the layout-2 promises (exact phases, no spill); the ktrace phase notes do not hold for it
+binary: /root/.cache/tickbound/bin/tickbound_probe_sm90_c9d82b082b8c
+
+===== 01:48:52 real-nvcc SASS of k_ktrace
+-rw-r--r-- 1 root root 10514442 Oct  8 01:48 /root/res/probe.sass
+8 ktrace SASS check(s) failed
+_ZN2sb2gt8k_ktraceILj64EEEvNS0_8TraceDevEjPK6float4PS3_PjPVmj: 12 checkpoints, layout 2, FFMA_N=64
+  entry -> cal                    0 instr  {}
+  cal -> loaded                   7 instr  {'LDG.E.CONSTANT': 1, 'LOP3.LUT': 1, 'LEA': 1, 'LEA.HI.X': 1, 'LDG.E.128.CONSTANT': 1, 'STS.128': 1, 'DEPBAR.LE': 1}
+  loaded -> bar1_arrive           3 instr  {'LDS.128': 1, 'STS.128': 1, 'DEPBAR.LE': 1}
+  bar1_arrive -> bar1_release     3 instr  {'BAR.SYNC': 1, 'LDS.128': 1, 'STS.128': 1}
+  bar1_release -> computed       65 instr  {'FFMA': 64, 'FADD': 1}
+  computed -> bar2_arrive         2 instr  {'LDS.128': 1, 'STS.128': 1}
+  bar2_arrive -> bar2_release     4 instr  {'BAR.SYNC': 1, 'LDS.128': 1, 'STS.128': 1, 'DEPBAR.LE': 1}
+  bar2_release -> stored          7 instr  {'MOV': 1, 'STG.E.128': 1, 'MEMBAR.ALL.CTA': 1, 'MEMBAR.SC.GPU': 1, 'ERRBAR': 1, 'CGAERRBAR': 1, 'CCTL.IVALL': 1}
+  stored -> ticket                9 instr  {'BSSY': 1, 'BRA': 1, 'LDC.64': 1, 'HFMA2.MMA': 1, 'ATOMG.E.ADD.STRONG.GPU': 1, 'UIADD3': 1, 'UPRMT': 1, 'STS': 1, 'BSYNC': 1}
+  ticket -> flag                  5 instr  {'UIADD3': 1, 'BAR.SYNC': 1, 'UPRMT': 1, 'LDS.128': 1, 'ISETP.NE.AND': 1}
+  flag -> exit                    2 instr  {'STG.E.64.STRONG.SYS': 1, 'DEPBAR.LE': 1}
+  exit -> writer fence clock     13 instr  {'MOV': 2, 'S2R': 1, 'LOP3.LUT': 1, 'EXIT': 1, 'BSSY': 1, 'CS2R': 1, 'BRA': 1, 'MEMBAR.ALL.CTA': 1, 'MEMBAR.SC.SYS': 1, 'ERRBAR': 1, 'CGAERRBAR': 1, 'CCTL.IVALL': 1}
+  check ok   checkpoints == 12                            found 12
+  check ok   no STL/LDL in the function                   none
+  check FAIL load: 2 LDG + 1 STS + address arithmetic     LDG=2 STS=1 not allowed: ['02c0 DEPBAR.LE SB0, 0x0']
+  check ok   compute: exactly FADD x1 + FFMA x64          found {'FFMA': 64, 'FADD': 1}
+  check FAIL flag -> exit: one STG (+ ISETP/PLOP3) only   STG=1 ISETP/PLOP3=0 other={'DEPBAR.LE': 1}
+  check ok   writer fence: MEMBAR.SYS then clock read     13 instr, fence MEMBAR.SC.SYS
+  check ok   no other clock read                          none
+_ZN2sb2gt8k_ktraceILj256EEEvNS0_8TraceDevEjPK6float4PS3_PjPVmj: 12 checkpoints, layout 2, FFMA_N=256
+  entry -> cal                    0 instr  {}
+  cal -> loaded                   7 instr  {'LDG.E.CONSTANT': 1, 'LOP3.LUT': 1, 'LEA': 1, 'LEA.HI.X': 1, 'LDG.E.128.CONSTANT': 1, 'STS.128': 1, 'DEPBAR.LE': 1}
+  loaded -> bar1_arrive           3 instr  {'LDS.128': 1, 'STS.128': 1, 'DEPBAR.LE': 1}
+  bar1_arrive -> bar1_release     3 instr  {'BAR.SYNC': 1, 'LDS.128': 1, 'STS.128': 1}
+  bar1_release -> computed      257 instr  {'FFMA': 256, 'FADD': 1}
+  computed -> bar2_arrive         2 instr  {'LDS.128': 1, 'STS.128': 1}
+  bar2_arrive -> bar2_release     4 instr  {'BAR.SYNC': 1, 'LDS.128': 1, 'STS.128': 1, 'DEPBAR.LE': 1}
+  bar2_release -> stored          7 instr  {'MOV': 1, 'STG.E.128': 1, 'MEMBAR.ALL.CTA': 1, 'MEMBAR.SC.GPU': 1, 'ERRBAR': 1, 'CGAERRBAR': 1, 'CCTL.IVALL': 1}
+  stored -> ticket                9 instr  {'BSSY': 1, 'BRA': 1, 'LDC.64': 1, 'HFMA2.MMA': 1, 'ATOMG.E.ADD.STRONG.GPU': 1, 'UIADD3': 1, 'UPRMT': 1, 'STS': 1, 'BSYNC': 1}
+  ticket -> flag                  5 instr  {'UIADD3': 1, 'BAR.SYNC': 1, 'UPRMT': 1, 'LDS.128': 1, 'ISETP.NE.AND': 1}
+  flag -> exit                    2 instr  {'STG.E.64.STRONG.SYS': 1, 'DEPBAR.LE': 1}
+  exit -> writer fence clock     13 instr  {'MOV': 2, 'S2R': 1, 'LOP3.LUT': 1, 'EXIT': 1, 'BSSY': 1, 'CS2R': 1, 'BRA': 1, 'MEMBAR.ALL.CTA': 1, 'MEMBAR.SC.SYS': 1, 'ERRBAR': 1, 'CGAERRBAR': 1, 'CCTL.IVALL': 1}
+  check ok   checkpoints == 12                            found 12
+  check ok   no STL/LDL in the function                   none
+  check FAIL load: 2 LDG + 1 STS + address arithmetic     LDG=2 STS=1 not allowed: ['02c0 DEPBAR.LE SB0, 0x0']
+  check ok   compute: exactly FADD x1 + FFMA x256         found {'FFMA': 256, 'FADD': 1}
+  check FAIL flag -> exit: one STG (+ ISETP/PLOP3) only   STG=1 ISETP/PLOP3=0 other={'DEPBAR.LE': 1}
+  check ok   writer fence: MEMBAR.SYS then clock read     13 instr, fence MEMBAR.SC.SYS
+  check ok   no other clock read                          none
+_ZN2sb2gt8k_ktraceILj1024EEEvNS0_8TraceDevEjPK6float4PS3_PjPVmj: 12 checkpoints, layout 2, FFMA_N=1024
+  entry -> cal                    0 instr  {}
+  cal -> loaded                   7 instr  {'LDG.E.CONSTANT': 1, 'LOP3.LUT': 1, 'LEA': 1, 'LEA.HI.X': 1, 'LDG.E.128.CONSTANT': 1, 'STS.128': 1, 'DEPBAR.LE': 1}
+  loaded -> bar1_arrive           3 instr  {'LDS.128': 1, 'STS.128': 1, 'DEPBAR.LE': 1}
+  bar1_arrive -> bar1_release     3 instr  {'BAR.SYNC': 1, 'LDS.128': 1, 'STS.128': 1}
+  bar1_release -> computed     1025 instr  {'FFMA': 1024, 'FADD': 1}
+  computed -> bar2_arrive         2 instr  {'LDS.128': 1, 'STS.128': 1}
+  bar2_arrive -> bar2_release     4 instr  {'BAR.SYNC': 1, 'LDS.128': 1, 'STS.128': 1, 'DEPBAR.LE': 1}
+  bar2_release -> stored          7 instr  {'MOV': 1, 'STG.E.128': 1, 'MEMBAR.ALL.CTA': 1, 'MEMBAR.SC.GPU': 1, 'ERRBAR': 1, 'CGAERRBAR': 1, 'CCTL.IVALL': 1}
+  stored -> ticket                9 instr  {'BSSY': 1, 'BRA': 1, 'LDC.64': 1, 'HFMA2.MMA': 1, 'ATOMG.E.ADD.STRONG.GPU': 1, 'UIADD3': 1, 'UPRMT': 1, 'STS': 1, 'BSYNC': 1}
+  ticket -> flag                  5 instr  {'UIADD3': 1, 'BAR.SYNC': 1, 'UPRMT': 1, 'LDS.128': 1, 'ISETP.NE.AND': 1}
+  flag -> exit                    2 instr  {'STG.E.64.STRONG.SYS': 1, 'DEPBAR.LE': 1}
+  exit -> writer fence clock     13 instr  {'MOV': 2, 'S2R': 1, 'LOP3.LUT': 1, 'EXIT': 1, 'BSSY': 1, 'CS2R': 1, 'BRA': 1, 'MEMBAR.ALL.CTA': 1, 'MEMBAR.SC.SYS': 1, 'ERRBAR': 1, 'CGAERRBAR': 1, 'CCTL.IVALL': 1}
+  check ok   checkpoints == 12                            found 12
+  check ok   no STL/LDL in the function                   none
+  check FAIL load: 2 LDG + 1 STS + address arithmetic     LDG=2 STS=1 not allowed: ['02c0 DEPBAR.LE SB0, 0x0']
+  check ok   compute: exactly FADD x1 + FFMA x1024        found {'FFMA': 1024, 'FADD': 1}
+  check FAIL flag -> exit: one STG (+ ISETP/PLOP3) only   STG=1 ISETP/PLOP3=0 other={'DEPBAR.LE': 1}
+  check ok   writer fence: MEMBAR.SYS then clock read     13 instr, fence MEMBAR.SC.SYS
+  check ok   no other clock read                          none
+_ZN2sb2gt8k_ktraceILj4096EEEvNS0_8TraceDevEjPK6float4PS3_PjPVmj: 12 checkpoints, layout 2, FFMA_N=4096
+  entry -> cal                    0 instr  {}
+  cal -> loaded                   7 instr  {'LDG.E.CONSTANT': 1, 'LOP3.LUT': 1, 'LEA': 1, 'LEA.HI.X': 1, 'LDG.E.128.CONSTANT': 1, 'STS.128': 1, 'DEPBAR.LE': 1}
+  loaded -> bar1_arrive           3 instr  {'LDS.128': 1, 'STS.128': 1, 'DEPBAR.LE': 1}
+  bar1_arrive -> bar1_release     3 instr  {'BAR.SYNC': 1, 'LDS.128': 1, 'STS.128': 1}
+  bar1_release -> computed     4097 instr  {'FFMA': 4096, 'FADD': 1}
+  computed -> bar2_arrive         2 instr  {'LDS.128': 1, 'STS.128': 1}
+  bar2_arrive -> bar2_release     4 instr  {'BAR.SYNC': 1, 'LDS.128': 1, 'STS.128': 1, 'DEPBAR.LE': 1}
+  bar2_release -> stored          7 instr  {'MOV': 1, 'STG.E.128': 1, 'MEMBAR.ALL.CTA': 1, 'MEMBAR.SC.GPU': 1, 'ERRBAR': 1, 'CGAERRBAR': 1, 'CCTL.IVALL': 1}
+  stored -> ticket                9 instr  {'BSSY': 1, 'BRA': 1, 'LDC.64': 1, 'HFMA2.MMA': 1, 'ATOMG.E.ADD.STRONG.GPU': 1, 'UIADD3': 1, 'UPRMT': 1, 'STS': 1, 'BSYNC': 1}
+  ticket -> flag                  5 instr  {'UIADD3': 1, 'BAR.SYNC': 1, 'UPRMT': 1, 'LDS.128': 1, 'ISETP.NE.AND': 1}
+  flag -> exit                    2 instr  {'STG.E.64.STRONG.SYS': 1, 'DEPBAR.LE': 1}
+  exit -> writer fence clock     13 instr  {'MOV': 2, 'S2R': 1, 'LOP3.LUT': 1, 'EXIT': 1, 'BSSY': 1, 'CS2R': 1, 'BRA': 1, 'MEMBAR.ALL.CTA': 1, 'MEMBAR.SC.SYS': 1, 'ERRBAR': 1, 'CGAERRBAR': 1, 'CCTL.IVALL': 1}
+  check ok   checkpoints == 12                            found 12
+  check ok   no STL/LDL in the function                   none
+  check FAIL load: 2 LDG + 1 STS + address arithmetic     LDG=2 STS=1 not allowed: ['02c0 DEPBAR.LE SB0, 0x0']
+  check ok   compute: exactly FADD x1 + FFMA x4096        found {'FFMA': 4096, 'FADD': 1}
+  check FAIL flag -> exit: one STG (+ ISETP/PLOP3) only   STG=1 ISETP/PLOP3=0 other={'DEPBAR.LE': 1}
+  check ok   writer fence: MEMBAR.SYS then clock read     13 instr, fence MEMBAR.SC.SYS
+  check ok   no other clock read                          none
+sass --phases exit 1
+  NOT verified: RED N=4 found 0 between={'LDG.E.STRONG.SYS': 1, 'VOTEU.ANY': 1, 'UFLO.U32': 1, 'POPC': 1, 'ISETP.EQ.U32.AND': 1, 'IADD3': 8, 'IMAD.IADD': 1, 'IMAD.SHL.U32': 1, 'LOP3.LUT': 5, 'IMAD.X': 4, 'REDG.E.ADD.STRONG.GPU': 4, 'ISETP.NE.AND': 1, 'MEMBAR.ALL.CTA': 1, 'MEMBAR.SC.GPU': 1, 'ERRBAR': 1, 'CGAERRBAR': 1, 'CCTL.IVALL': 1}
+  NOT verified: RED N=8 found 0 between={'LDG.E.STRONG.SYS': 1, 'VOTEU.ANY': 1, 'UFLO.U32': 1, 'POPC': 1, 'ISETP.EQ.U32.AND': 1, 'IADD3': 16, 'IMAD.IADD': 1, 'IMAD.SHL.U32': 1, 'LOP3.LUT': 9, 'IMAD.X': 8, 'REDG.E.ADD.STRONG.GPU': 8, 'ISETP.NE.AND': 1, 'MEMBAR.ALL.CTA': 1, 'MEMBAR.SC.GPU': 1, 'ERRBAR': 1, 'CGAERRBAR': 1, 'CCTL.IVALL': 1}
+  NOT verified: RED N=16 found 0 between={'LDG.E.STRONG.SYS': 1, 'VOTEU.ANY': 1, 'UFLO.U32': 1, 'S2R': 1, 'POPC': 1, 'ISETP.EQ.U32.AND': 1, 'UIADD3': 1, 'IMAD.IADD': 1, 'IMAD.SHL.U32': 1, 'LOP3.LUT': 17, 'IADD3': 31, 'IMAD.X': 16, 'REDG.E.ADD.STRONG.GPU': 16, 'ISETP.LE.U32.AND': 1, 'MEMBAR.ALL.CTA': 1, 'MEMBAR.SC.GPU': 1, 'ERRBAR': 1, 'CGAERRBAR': 1, 'CCTL.IVALL': 1, 'IMAD.MOV.U32': 1}
+  NOT verified: RED N=32 found 0 between={'LDG.E.STRONG.SYS': 1, 'VOTEU.ANY': 1, 'UFLO.U32': 1, 'S2R': 1, 'POPC': 1, 'ISETP.EQ.U32.AND': 1, 'UIADD3': 1, 'IMAD.IADD': 1, 'IMAD.SHL.U32': 1, 'IADD3': 63, 'LOP3.LUT': 33, 'IMAD.X': 32, 'REDG.E.ADD.STRONG.GPU': 32, 'ISETP.LE.U32.AND': 1, 'MEMBAR.ALL.CTA': 1, 'MEMBAR.SC.GPU': 1, 'ERRBAR': 1, 'CGAERRBAR': 1, 'CCTL.IVALL': 1, 'IMAD.MOV.U32': 1}
+  NOT verified: RED N=128 found 0 between={'LDG.E.STRONG.SYS': 1, 'VOTEU.ANY': 1, 'UFLO.U32': 1, 'S2R': 1, 'POPC': 1, 'ISETP.EQ.U32.AND': 1, 'IMAD.IADD': 1, 'IMAD.SHL.U32': 1, 'LOP3.LUT': 129, 'IADD3': 255, 'IMAD.X': 128, 'REDG.E.ADD.STRONG.GPU': 128, 'UIADD3': 1, 'ISETP.LE.U32.AND': 1, 'MEMBAR.ALL.CTA': 1, 'MEMBAR.SC.GPU': 1, 'ERRBAR': 1, 'CGAERRBAR': 1, 'CCTL.IVALL': 1, 'IMAD.MOV.U32': 1}
+
+===== 01:48:55 FFMA_N sweep (B = 1, sm, 4sm)
+ffma 64 exit 0
+ktrace ±654 ns (edge): B=1: load 373 | bar1 wait 20/51 rel 16 | compute 260 | store+fence 1232 | atomic 518 cy; span 1.5 us, block bound 21/24 ns p50/max, SM 1.924-2.037 GHz, rate incons 0 ns, ticket 0+0/5 viol (floor nan ns), launch->first 5.0 us warm, flag->seen 0.71 us, flag store 10 cy, writer fence 2798 cy, 4.06 cy/FFMA || B=132: load 384 | bar1 wait 40/292 rel 21 | compute 258 | store+fence 1504 | atomic 502 cy; span 1.9 us, block bound 21/26 ns p50/max, SM 1.942-2.012 GHz, rate incons 0 ns, ticket 0+0/660 viol (floor 216 ns), launch->first 4.9 us warm, flag->seen 0.71 us, flag store 8 cy, writer fence 3142 cy, 4.03 cy/FFMA || B=528: load 600 | bar1 wait 148/2106 rel 45 | compute 290 | store+fence 1562 | atomic 564 cy; span 8.9 us, block bound 18/25 ns p50/max, SM 1.963-1.982 GHz, rate incons 0 ns, ticket 0+0/2640 viol (floor 217 ns), launch->first 4.7 us warm, flag->seen 0.75 us, flag store 18 cy, writer fence 3580 cy, 4.53 cy/FFMA
+ffma 256 exit 0
+ktrace ±657 ns (edge): B=1: load 374 | bar1 wait 24/55 rel 16 | compute 1026 | store+fence 1225 | atomic 514 cy; span 1.9 us, block bound 23/23 ns p50/max, SM 1.936-2.029 GHz, rate incons 0 ns, ticket 0+0/5 viol (floor nan ns), launch->first 5.0 us warm, flag->seen 0.71 us, flag store 8 cy, writer fence 2770 cy, 4.01 cy/FFMA || B=132: load 384 | bar1 wait 40/288 rel 21 | compute 1028 | store+fence 1498 | atomic 502 cy; span 2.3 us, block bound 21/26 ns p50/max, SM 1.948-2.001 GHz, rate incons 0 ns, ticket 0+0/660 viol (floor 220 ns), launch->first 5.0 us warm, flag->seen 0.75 us, flag store 8 cy, writer fence 3196 cy, 4.02 cy/FFMA || B=528: load 592 | bar1 wait 150/2434 rel 50 | compute 1070 | store+fence 1362 | atomic 592 cy; span 9.3 us, block bound 18/25 ns p50/max, SM 1.962-1.979 GHz, rate incons 0 ns, ticket 0+0/2640 viol (floor 218 ns), launch->first 4.6 us warm, flag->seen 0.74 us, flag store 18 cy, writer fence 3600 cy, 4.18 cy/FFMA
+ffma 1024 exit 0
+ktrace ±655 ns (edge): B=1: load 378 | bar1 wait 22/49 rel 14 | compute 4098 | store+fence 1224 | atomic 518 cy; span 3.4 us, block bound 21/23 ns p50/max, SM 1.955-2.006 GHz, rate incons 0 ns, ticket 0+0/5 viol (floor nan ns), launch->first 5.0 us warm, flag->seen 0.71 us, flag store 9 cy, writer fence 2780 cy, 4.00 cy/FFMA || B=132: load 382 | bar1 wait 40/284 rel 21 | compute 4098 | store+fence 1506 | atomic 501 cy; span 3.9 us, block bound 18/24 ns p50/max, SM 1.959-1.980 GHz, rate incons 0 ns, ticket 0+0/660 viol (floor 217 ns), launch->first 4.9 us warm, flag->seen 0.71 us, flag store 8 cy, writer fence 3202 cy, 4.00 cy/FFMA || B=528: load 584 | bar1 wait 138/4184 rel 44 | compute 4212 | store+fence 1458 | atomic 530 cy; span 12.0 us, block bound 18/30 ns p50/max, SM 1.963-1.967 GHz, rate incons 10 ns, ticket 0+0/2640 viol (floor 211 ns), launch->first 4.7 us warm, flag->seen 0.79 us, flag store 16 cy, writer fence 3258 cy, 4.11 cy/FFMA
+ffma 4096 exit 0
+ktrace ±645 ns (edge): B=1: load 373 | bar1 wait 22/49 rel 16 | compute 16392 | store+fence 1227 | atomic 514 cy; span 9.6 us, block bound 20/22 ns p50/max, SM 1.969-1.989 GHz, rate incons 0 ns, ticket 0+0/5 viol (floor nan ns), launch->first 5.2 us warm, flag->seen 0.72 us, flag store 10 cy, writer fence 2782 cy, 4.00 cy/FFMA || B=132: load 380 | bar1 wait 50/310 rel 21 | compute 16390 | store+fence 1484 | atomic 507 cy; span 10.2 us, block bound 14/32 ns p50/max, SM 1.967-1.971 GHz, rate incons 13 ns, ticket 0+0/660 viol (floor 197 ns), launch->first 4.8 us warm, flag->seen 0.70 us, flag store 8 cy, writer fence 3416 cy, 4.00 cy/FFMA || B=528: load 556 | bar1 wait 148/16466 rel 42 | compute 16482 | store+fence 1338 | atomic 510 cy; span 28.7 us, block bound 41/70 ns p50/max, SM 1.963-1.967 GHz, rate incons 51 ns, ticket 0+0/2640 viol (floor 208 ns), launch->first 4.7 us warm, flag->seen 0.71 us, flag store 16 cy, writer fence 3186 cy, 4.02 cy/FFMA
+unsupported --ffma exit 2 (want non-zero)
+    FAIL k_ktrace<4096>: load: 2 LDG + 1 STS + address arithmetic (LDG=2 STS=1 not allowed: ['02c0 DEPBAR.LE SB0, 0x0'])
+    FAIL k_ktrace<4096>: flag -> exit: one STG (+ ISETP/PLOP3) only (STG=1 ISETP/PLOP3=0 other={'DEPBAR.LE': 1})
+
+===== 01:55:01 instr profile (isolated FFMA latency etc.)
+GPU 0: NVIDIA H100 80GB HBM3 (sm_90), 1 GPU(s), profile instr, output /root/res/instr/
+  instr (8 s): instr(cotenant=0): LDG.ca@16K 39cy (ovh 290) | LDG.ca@1M 310cy (ovh 263) | LDG.ca@24M 327cy (ovh 182) | LDG.ca@128M 558cy (ovh 189) | LDG.cg@16K 283cy (ovh 286) | LDG.cg@1M 283cy (ovh 289) | LDG.cg@24M 289cy (ovh 275) | LDG.cg@128M 550cy (ovh 218) | LDG.cs@16K 39cy (ovh 290) | LDG.cs@1M 285cy (ovh 283) | LDG.cs@24M 300cy (ovh 241) | LDG.cs@128M 566cy (ovh 145) | LDG.nc@16K 39cy (ovh 290) | LDG.nc@1M 283cy (ovh 287) | LDG.nc@24M 294cy (ovh 264) | LDG.nc@128M 548cy (ovh 264) | LDS 23cy (ovh 286) | FADD 4cy (ovh 286) | FFMA 4cy (ovh 286) | IMAD 4cy (ovh 285) | SHFL 26cy (ovh 291) | ATOM(ret) 483cy (ovh 284) | RED+fence 8cy (ovh 978) | STG+fence 8cy (ovh 973) | BAR 27cy (ovh 145)
+  instr_cotenant (28 s): instr(cotenant=1): LDG.ca@16K 976cy (ovh 395) | LDG.ca@1M 974cy (ovh 454) | LDG.ca@24M 972cy (ovh 426) | LDG.ca@128M 978cy (ovh 397) | LDG.cg@16K 975cy (ovh 440) | LDG.cg@1M 978cy (ovh 441) | LDG.cg@24M 970cy (ovh 468) | LDG.cg@128M 969cy (ovh 440) | LDG.cs@16K 966cy (ovh 468) | LDG.cs@1M 977cy (ovh 410) | LDG.cs@24M 978cy (ovh 390) | LDG.cs@128M 977cy (ovh 390) | LDG.nc@16K 972cy (ovh 440) | LDG.nc@1M 972cy (ovh 449) | LDG.nc@24M 971cy (ovh 429) | LDG.nc@128M 977cy (ovh 422) | LDS 23cy (ovh 442) | FADD 4cy (ovh 436) | FFMA 4cy (ovh 432) | IMAD 4cy (ovh 428) | SHFL 26cy (ovh 435) | ATOM(ret) 529cy (ovh 323) | RED+fence 8cy (ovh 1184) | STG+fence 8cy (ovh 1180) | BAR 26cy (ovh 244)
+MPS daemon started for the partitioned runs
+  instr_mps50 (14 s): instr(cotenant=2): LDG.ca@16K 39cy (ovh 284) | LDG.ca@1M 847cy (ovh 216) | LDG.ca@24M 850cy (ovh 266) | LDG.ca@128M 859cy (ovh 238) | LDG.cg@16K 424cy (ovh 626) | LDG.cg@1M 852cy (ovh 270) | LDG.cg@24M 854cy (ovh 272) | LDG.cg@128M 855cy (ovh 248) | LDG.cs@16K 39cy (ovh 283) | LDG.cs@1M 853cy (ovh 250) | LDG.cs@24M 852cy (ovh 286) | LDG.cs@128M 843cy (ovh 298) | LDG.nc@16K 39cy (ovh 283) | LDG.nc@1M 853cy (ovh 295) | LDG.nc@24M 852cy (ovh 267) | LDG.nc@128M 855cy (ovh 252) | LDS 23cy (ovh 279) | FADD 4cy (ovh 278) | FFMA 4cy (ovh 294) | IMAD 4cy (ovh 278) | SHFL 26cy (ovh 284) | ATOM(ret) 320cy (ovh 200) | RED+fence 8cy (ovh 966) | STG+fence 8cy (ovh 961) | BAR 27cy (ovh 139)
+
+/root/res/instr/report.md written; 3/3 runs analysed in 0.9 min
+timeline: /root/res/instr/timeline.html
+
+===== 01:56:04 pack

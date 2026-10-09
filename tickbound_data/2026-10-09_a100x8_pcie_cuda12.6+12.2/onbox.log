@@ -1,0 +1,350 @@
+
+===== 17:53:26 machine
+Fri Oct  9 17:53:26 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 595.91.07              Driver Version: 595.91.07      CUDA Version: 13.2     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA A100-PCIE-40GB          On  |   00000000:01:00.0 Off |                    0 |
+| N/A   34C    P0             37W /  250W |       0MiB /  40960MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   1  NVIDIA A100-PCIE-40GB          On  |   00000000:22:00.0 Off |                    0 |
+| N/A   32C    P0             37W /  250W |       0MiB /  40960MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   2  NVIDIA A100-PCIE-40GB          On  |   00000000:41:00.0 Off |                    0 |
+| N/A   35C    P0             38W /  250W |       0MiB /  40960MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   3  NVIDIA A100-PCIE-40GB          On  |   00000000:61:00.0 Off |                    0 |
+| N/A   33C    P0             36W /  250W |       0MiB /  40960MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   4  NVIDIA A100-PCIE-40GB          On  |   00000000:81:00.0 Off |                    0 |
+| N/A   33C    P0             38W /  250W |       0MiB /  40960MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   5  NVIDIA A100-PCIE-40GB          On  |   00000000:A1:00.0 Off |                    0 |
+| N/A   32C    P0             34W /  250W |       0MiB /  40960MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   6  NVIDIA A100-PCIE-40GB          On  |   00000000:C1:00.0 Off |                    0 |
+| N/A   31C    P0             34W /  250W |       0MiB /  40960MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+|   7  NVIDIA A100-PCIE-40GB          On  |   00000000:E1:00.0 Off |                    0 |
+| N/A   31C    P0             39W /  250W |       0MiB /  40960MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+	[4mGPU0	GPU1	GPU2	GPU3	GPU4	GPU5	GPU6	GPU7	CPU Affinity	NUMA Affinity	GPU NUMA ID[0m
+GPU0	 X 	NODE	NODE	NODE	SYS	SYS	SYS	SYS	0-63	0		N/A
+GPU1	NODE	 X 	NODE	NODE	SYS	SYS	SYS	SYS	0-63	0		N/A
+GPU2	NODE	NODE	 X 	NODE	SYS	SYS	SYS	SYS	0-63	0		N/A
+GPU3	NODE	NODE	NODE	 X 	SYS	SYS	SYS	SYS	0-63	0		N/A
+GPU4	SYS	SYS	SYS	SYS	 X 	NODE	NODE	NODE	64-127	1		N/A
+GPU5	SYS	SYS	SYS	SYS	NODE	 X 	NODE	NODE	64-127	1		N/A
+GPU6	SYS	SYS	SYS	SYS	NODE	NODE	 X 	NODE	64-127	1		N/A
+GPU7	SYS	SYS	SYS	SYS	NODE	NODE	NODE	 X 	64-127	1		N/A
+
+Legend:
+
+  X    = Self
+  SYS  = Connection traversing PCIe as well as the SMP interconnect between NUMA nodes (e.g., QPI/UPI)
+  NODE = Connection traversing PCIe as well as the interconnect between PCIe Host Bridges within a NUMA node
+  PHB  = Connection traversing PCIe as well as a PCIe Host Bridge (typically the CPU)
+  PXB  = Connection traversing multiple PCIe bridges (without traversing the PCIe Host Bridge)
+  PIX  = Connection traversing at most a single PCIe bridge
+  NV#  = Connection traversing a bonded set of # NVLinks
+index, pci.bus_id, name, driver_version, clocks.current.sm [MHz], clocks.max.sm [MHz], persistence_mode, uuid
+0, 00000000:01:00.0, NVIDIA A100-PCIE-40GB, 595.91.07, 210 MHz, 1410 MHz, Enabled, GPU-fd7d192a-6ac3-ae3c-0105-6d66ffafd645
+1, 00000000:22:00.0, NVIDIA A100-PCIE-40GB, 595.91.07, 210 MHz, 1410 MHz, Enabled, GPU-eea9343d-8510-ccab-7430-b8b2790e46f5
+2, 00000000:41:00.0, NVIDIA A100-PCIE-40GB, 595.91.07, 210 MHz, 1410 MHz, Enabled, GPU-340fe3aa-b6a5-2c4a-f4ed-f844cdbcf8c2
+3, 00000000:61:00.0, NVIDIA A100-PCIE-40GB, 595.91.07, 210 MHz, 1410 MHz, Enabled, GPU-808df975-5fbc-99f8-d1fe-b72a9d08c85f
+4, 00000000:81:00.0, NVIDIA A100-PCIE-40GB, 595.91.07, 210 MHz, 1410 MHz, Enabled, GPU-c328c731-a896-8e60-419e-7b27bcfbb2f1
+5, 00000000:A1:00.0, NVIDIA A100-PCIE-40GB, 595.91.07, 225 MHz, 1410 MHz, Enabled, GPU-7ff6ef4a-4478-7864-c51d-140221427621
+6, 00000000:C1:00.0, NVIDIA A100-PCIE-40GB, 595.91.07, 225 MHz, 1410 MHz, Enabled, GPU-cd557544-742d-76fa-89aa-9330386efbc2
+7, 00000000:E1:00.0, NVIDIA A100-PCIE-40GB, 595.91.07, 1230 MHz, 1410 MHz, Enabled, GPU-e32c15b2-fc0f-91b3-b5d0-4e23ee842047
+GPU 0: NVIDIA A100-PCIE-40GB (UUID: GPU-fd7d192a-6ac3-ae3c-0105-6d66ffafd645)
+NVML: Unable to retrieve Nvlink information as all links are inActive
+GPU 1: NVIDIA A100-PCIE-40GB (UUID: GPU-eea9343d-8510-ccab-7430-b8b2790e46f5)
+NVML: Unable to retrieve Nvlink information as all links are inActive
+GPU 2: NVIDIA A100-PCIE-40GB (UUID: GPU-340fe3aa-b6a5-2c4a-f4ed-f844cdbcf8c2)
+NVML: Unable to retrieve Nvlink information as all links are inActive
+GPU 3: NVIDIA A100-PCIE-40GB (UUID: GPU-808df975-5fbc-99f8-d1fe-b72a9d08c85f)
+NVML: Unable to retrieve Nvlink information as all links are inActive
+GPU 4: NVIDIA A100-PCIE-40GB (UUID: GPU-c328c731-a896-8e60-419e-7b27bcfbb2f1)
+NVML: Unable to retrieve Nvlink information as all links are inActive
+GPU 5: NVIDIA A100-PCIE-40GB (UUID: GPU-7ff6ef4a-4478-7864-c51d-140221427621)
+NVML: Unable to retrieve Nvlink information as all links are inActive
+GPU 6: NVIDIA A100-PCIE-40GB (UUID: GPU-cd557544-742d-76fa-89aa-9330386efbc2)
+NVML: Unable to retrieve Nvlink information as all links are inActive
+GPU 7: NVIDIA A100-PCIE-40GB (UUID: GPU-e32c15b2-fc0f-91b3-b5d0-4e23ee842047)
+NVML: Unable to retrieve Nvlink information as all links are inActive
+/usr/local/cuda-12.6/bin/nvcc
+Cuda compilation tools, release 12.6, V12.6.85
+Build cuda_12.6.r12.6/compiler.35059454_0
+128
+model name	: AMD EPYC 7713 64-Core Processor
+Linux 3990b2003192 6.8.0-146-generic #146-Ubuntu SMP PREEMPT_DYNAMIC Thu Sep  3 16:12:30 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux
+affinity 128 cpus
+
+===== 17:53:31 python + tickbound
+debconf: delaying package configuration, since apt-utils is not installed
+Python 3.10.12
+tickbound 0.1.0
+tickbound 0.1.0
+  python     3.10.12  (/root/venv/bin/python3)
+  numpy      2.2.6
+  os         Linux-6.8.0-146-generic-x86_64-with-glibc2.35
+  nvidia-smi /usr/bin/nvidia-smi
+    GPU 0: NVIDIA A100-PCIE-40GB, sm_80, driver 595.91.07, persistence Enabled
+    GPU 1: NVIDIA A100-PCIE-40GB, sm_80, driver 595.91.07, persistence Enabled
+    GPU 2: NVIDIA A100-PCIE-40GB, sm_80, driver 595.91.07, persistence Enabled
+    GPU 3: NVIDIA A100-PCIE-40GB, sm_80, driver 595.91.07, persistence Enabled
+    GPU 4: NVIDIA A100-PCIE-40GB, sm_80, driver 595.91.07, persistence Enabled
+    GPU 5: NVIDIA A100-PCIE-40GB, sm_80, driver 595.91.07, persistence Enabled
+    GPU 6: NVIDIA A100-PCIE-40GB, sm_80, driver 595.91.07, persistence Enabled
+    GPU 7: NVIDIA A100-PCIE-40GB, sm_80, driver 595.91.07, persistence Enabled
+  nvcc       /usr/local/cuda-12.6/bin/nvcc  Build cuda_12.6.r12.6/compiler.35059454_0
+  cuobjdump  /usr/local/cuda-12.6/bin/cuobjdump  (for `tickbound sass` on a binary)
+  MPS        /usr/bin/nvidia-cuda-mps-control  (for the MPS variants)
+  NCCL       /usr/include  (for multi-GPU NCCL runs)
+  cache      /root/.cache/tickbound  (0 probe build(s))
+
+  analyse / export / view: yes
+  measure:                 yes
+  multi-GPU profile:       yes (8 GPUs)
+0 2 3 local
+1 4 5 local
+2 6 7 local
+3 8 9 local
+4 66 67 local
+5 68 69 local
+6 70 71 local
+7 72 73 local
+
+===== 17:53:51 1. build the 12.6 probe + ktrace SASS check (GPU 0)
+building the probes for sm_80 (once per GPU architecture and toolkit) ...
+gputrace: gpu.bin: No such file or directory
+warm-up run exit 1
+binary 12.6: /root/.cache/tickbound/bin/tickbound_probe_sm80_cuda12.6.85_5ea01065c6c8
+  check ok   no STL/LDL in the function                   none
+  check ok   entry -> cal empty                           0 instr
+  check ok   load: 2 LDG + 1 STS + <= 3 address           LDG=2 STS=1 address=3
+  check ok   calibration chain: LDS + STS                 {'LDS.128': 1, 'STS.128': 1}
+  check ok   barrier1 = BAR + calibration chain           found {'BAR.SYNC.DEFER_BLOCKING': 1, 'LDS.128': 1, 'STS.128': 1}
+  check ok   barrier2 = BAR + calibration chain           found {'BAR.SYNC.DEFER_BLOCKING': 1, 'LDS.128': 1, 'STS.128': 1}
+  check ok   compute: exactly FADD x1 + FFMA x4096        found {'FFMA': 4096, 'FADD': 1}
+  check ok   store: STG + device fence (+ 1 move)         STG=1 MEMBAR.GPU=1 moves=1
+  check ok   tail: BAR, LDS, predicate on it              BAR=1 LDS=1 predicate reads the LDS: True ISETP/PLOP3=1 address=0
+  check ok   flag -> exit: one @P STG.SYS (+ ISETP/PLOP3) STG=1 (@!P1 STG.E.64.STRONG.SYS [R38.64], R66) ISETP/PLOP3=0
+  check ok   writer fence: MEMBAR.SYS, clock, timer       11 instr, fence MEMBAR.SC.SYS + {'ERRBAR': 1, 'CCTL.IVALL': 1}
+  check ok   no other clock read                          none
+  wait  bar1_release clock         02f0 CS2R R10, SR_CLOCKLO                on SB0: 0270 STS.128 [R43.X16], R8 (operand read) (cycle value)
+  wait  computed     opening timer 10320 CS2R R6, SR_GLOBALTIMERLO          on SB1: 02d0 STS.128 [R43.X16], R4 (operand read) (cycle value)
+  wait  bar2_release closing timer 103f0 CS2R R42, SR_GLOBALTIMERLO         on SB0: 103c0 STS.128 [R43.X16], R36 (operand read) (window only)
+  wait  ticket       closing timer 10520 CS2R R54, SR_GLOBALTIMERLO         on SB0: 104e0 STS [0x1000], R36 (operand read) (window only)
+
+===== 17:54:18 2. MULTI: ktrace on every GPU at once (start together, shared 2 ms launch grid)
+TB_START_AT_NS=302328461382523 (CLOCK_MONOTONIC_RAW)
+--- /root/res/multi/gpu0.log
+gputrace ktrace: NVIDIA A100-PCIE-40GB sms=108 recs=418560 events=482 kernels=80 in 16.36 s (sync pre ok post ok)
+ktrace SASS check: PASS (4 k_ktrace instantiation(s), 56 exact checks on the binary that measured; 16 scoreboard wait(s) in checkpoint brackets, 8 on a cycle read (listed in the ktrace_sass JSON))
+--- /root/res/multi/gpu1.log
+gputrace ktrace: NVIDIA A100-PCIE-40GB sms=108 recs=418560 events=482 kernels=80 in 16.00 s (sync pre ok post ok)
+ktrace SASS check: PASS (4 k_ktrace instantiation(s), 56 exact checks on the binary that measured; 16 scoreboard wait(s) in checkpoint brackets, 8 on a cycle read (listed in the ktrace_sass JSON))
+--- /root/res/multi/gpu2.log
+gputrace ktrace: NVIDIA A100-PCIE-40GB sms=108 recs=418560 events=482 kernels=80 in 15.95 s (sync pre ok post ok)
+ktrace SASS check: PASS (4 k_ktrace instantiation(s), 56 exact checks on the binary that measured; 16 scoreboard wait(s) in checkpoint brackets, 8 on a cycle read (listed in the ktrace_sass JSON))
+--- /root/res/multi/gpu3.log
+gputrace ktrace: NVIDIA A100-PCIE-40GB sms=108 recs=418560 events=482 kernels=80 in 15.95 s (sync pre ok post ok)
+ktrace SASS check: PASS (4 k_ktrace instantiation(s), 56 exact checks on the binary that measured; 16 scoreboard wait(s) in checkpoint brackets, 8 on a cycle read (listed in the ktrace_sass JSON))
+--- /root/res/multi/gpu4.log
+gputrace ktrace: NVIDIA A100-PCIE-40GB sms=108 recs=418560 events=482 kernels=80 in 16.01 s (sync pre ok post ok)
+ktrace SASS check: PASS (4 k_ktrace instantiation(s), 56 exact checks on the binary that measured; 16 scoreboard wait(s) in checkpoint brackets, 8 on a cycle read (listed in the ktrace_sass JSON))
+--- /root/res/multi/gpu5.log
+gputrace ktrace: NVIDIA A100-PCIE-40GB sms=108 recs=418560 events=482 kernels=80 in 15.96 s (sync pre ok post ok)
+ktrace SASS check: PASS (4 k_ktrace instantiation(s), 56 exact checks on the binary that measured; 16 scoreboard wait(s) in checkpoint brackets, 8 on a cycle read (listed in the ktrace_sass JSON))
+--- /root/res/multi/gpu6.log
+gputrace ktrace: NVIDIA A100-PCIE-40GB sms=108 recs=418560 events=482 kernels=80 in 16.00 s (sync pre ok post ok)
+ktrace SASS check: PASS (4 k_ktrace instantiation(s), 56 exact checks on the binary that measured; 16 scoreboard wait(s) in checkpoint brackets, 8 on a cycle read (listed in the ktrace_sass JSON))
+--- /root/res/multi/gpu7.log
+gputrace ktrace: NVIDIA A100-PCIE-40GB sms=108 recs=418560 events=482 kernels=80 in 15.96 s (sync pre ok post ok)
+ktrace SASS check: PASS (4 k_ktrace instantiation(s), 56 exact checks on the binary that measured; 16 scoreboard wait(s) in checkpoint brackets, 8 on a cycle read (listed in the ktrace_sass JSON))
+ktrace ±782 ns (edge): B=1: load 303 | bar1 wait 30/61 rel 27 | compute 1028 | store+fence 772 | atomic 273 cy; span 3.8 us, block bound 203/249 ns p50/max, SM 0.722-0.819 GHz, rate incons 0 ns, ticket 0+0/40 viol (floor nan ns), launch->first 8.2 us warm, flag->seen 0.82 us, flag store -2 cy, writ
+ktrace ±749 ns (edge): B=1: load 292 | bar1 wait 32/62 rel 26 | compute 1028 | store+fence 756 | atomic 261 cy; span 3.8 us, block bound 193/248 ns p50/max, SM 0.709-0.798 GHz, rate incons 0 ns, ticket 0+0/40 viol (floor nan ns), launch->first 7.9 us warm, flag->seen 0.72 us, flag store -2 cy, writ
+ktrace ±768 ns (edge): B=1: load 294 | bar1 wait 32/58 rel 26 | compute 1028 | store+fence 775 | atomic 266 cy; span 3.8 us, block bound 196/253 ns p50/max, SM 0.723-0.805 GHz, rate incons 0 ns, ticket 0+0/40 viol (floor nan ns), launch->first 7.9 us warm, flag->seen 0.76 us, flag store -2 cy, writ
+ktrace ±761 ns (edge): B=1: load 306 | bar1 wait 30/59 rel 28 | compute 1028 | store+fence 631 | atomic 423 cy; span 3.8 us, block bound 211/334 ns p50/max, SM 0.722-0.816 GHz, rate incons 0 ns, ticket 0+0/40 viol (floor nan ns), launch->first 8.4 us warm, flag->seen 0.72 us, flag store -2 cy, writ
+ktrace ±764 ns (edge): B=1: load 303 | bar1 wait 30/61 rel 28 | compute 1028 | store+fence 774 | atomic 273 cy; span 3.8 us, block bound 204/269 ns p50/max, SM 0.705-0.807 GHz, rate incons 0 ns, ticket 0+0/40 viol (floor nan ns), launch->first 7.8 us warm, flag->seen 0.78 us, flag store -2 cy, writ
+ktrace ±787 ns (edge): B=1: load 289 | bar1 wait 30/58 rel 27 | compute 1028 | store+fence 756 | atomic 261 cy; span 3.7 us, block bound 190/252 ns p50/max, SM 0.718-0.809 GHz, rate incons 0 ns, ticket 0+0/40 viol (floor nan ns), launch->first 7.7 us warm, flag->seen 0.81 us, flag store -2 cy, writ
+ktrace ±761 ns (edge): B=1: load 292 | bar1 wait 32/64 rel 28 | compute 1028 | store+fence 755 | atomic 261 cy; span 3.7 us, block bound 195/248 ns p50/max, SM 0.718-0.820 GHz, rate incons 0 ns, ticket 0+0/40 viol (floor nan ns), launch->first 7.6 us warm, flag->seen 0.83 us, flag store -2 cy, writ
+ktrace ±761 ns (edge): B=1: load 302 | bar1 wait 30/61 rel 27 | compute 1028 | store+fence 773 | atomic 273 cy; span 3.8 us, block bound 190/251 ns p50/max, SM 0.720-0.817 GHz, rate incons 0 ns, ticket 0+0/40 viol (floor nan ns), launch->first 7.8 us warm, flag->seen 0.72 us, flag store -2 cy, writ
+
+===== 18:02:24 3. REORDER 12.6: six experiments in parallel (GPUs 0-5) + Tier B edits (GPU 6)
+--- /root/res/reorder126/bar.log
+    FAIL load_use overlap2 L2 N=192: overlap: the loaded data is first used after the last FFMA (used before the chain ends: ['0840 R2UR UR10, R18'])
+    FAIL load_use overlap2 DRAM N=96: overlap: the loaded data is first used after the last FFMA (used before the chain ends: ['0840 R2UR UR10, R18'])
+    FAIL load_use overlap2 DRAM N=128: overlap: the loaded data is first used after the last FFMA (used before the chain ends: ['0840 R2UR UR10, R18'])
+    FAIL load_use overlap2 DRAM N=192: overlap: the loaded data is first used after the last FFMA (used before the chain ends: ['0840 R2UR UR10, R18'])
+--- /root/res/reorder126/fence.log
+    FAIL load_use overlap2 L2 N=192: overlap: the loaded data is first used after the last FFMA (used before the chain ends: ['0840 R2UR UR10, R18'])
+    FAIL load_use overlap2 DRAM N=96: overlap: the loaded data is first used after the last FFMA (used before the chain ends: ['0840 R2UR UR10, R18'])
+    FAIL load_use overlap2 DRAM N=128: overlap: the loaded data is first used after the last FFMA (used before the chain ends: ['0840 R2UR UR10, R18'])
+    FAIL load_use overlap2 DRAM N=192: overlap: the loaded data is first used after the last FFMA (used before the chain ends: ['0840 R2UR UR10, R18'])
+--- /root/res/reorder126/load_use.log
+    FAIL load_use overlap2 L2 N=192: overlap: the loaded data is first used after the last FFMA (used before the chain ends: ['0840 R2UR UR10, R18'])
+    FAIL load_use overlap2 DRAM N=96: overlap: the loaded data is first used after the last FFMA (used before the chain ends: ['0840 R2UR UR10, R18'])
+    FAIL load_use overlap2 DRAM N=128: overlap: the loaded data is first used after the last FFMA (used before the chain ends: ['0840 R2UR UR10, R18'])
+    FAIL load_use overlap2 DRAM N=192: overlap: the loaded data is first used after the last FFMA (used before the chain ends: ['0840 R2UR UR10, R18'])
+--- /root/res/reorder126/pipe.log
+    FAIL load_use overlap2 L2 N=192: overlap: the loaded data is first used after the last FFMA (used before the chain ends: ['0840 R2UR UR10, R18'])
+    FAIL load_use overlap2 DRAM N=96: overlap: the loaded data is first used after the last FFMA (used before the chain ends: ['0840 R2UR UR10, R18'])
+    FAIL load_use overlap2 DRAM N=128: overlap: the loaded data is first used after the last FFMA (used before the chain ends: ['0840 R2UR UR10, R18'])
+    FAIL load_use overlap2 DRAM N=192: overlap: the loaded data is first used after the last FFMA (used before the chain ends: ['0840 R2UR UR10, R18'])
+--- /root/res/reorder126/stall.log
+    FAIL load_use overlap2 L2 N=192: overlap: the loaded data is first used after the last FFMA (used before the chain ends: ['0840 R2UR UR10, R18'])
+    FAIL load_use overlap2 DRAM N=96: overlap: the loaded data is first used after the last FFMA (used before the chain ends: ['0840 R2UR UR10, R18'])
+    FAIL load_use overlap2 DRAM N=128: overlap: the loaded data is first used after the last FFMA (used before the chain ends: ['0840 R2UR UR10, R18'])
+    FAIL load_use overlap2 DRAM N=192: overlap: the loaded data is first used after the last FFMA (used before the chain ends: ['0840 R2UR UR10, R18'])
+--- /root/res/reorder126/war.log
+    FAIL load_use overlap2 L2 N=192: overlap: the loaded data is first used after the last FFMA (used before the chain ends: ['0840 R2UR UR10, R18'])
+    FAIL load_use overlap2 DRAM N=96: overlap: the loaded data is first used after the last FFMA (used before the chain ends: ['0840 R2UR UR10, R18'])
+    FAIL load_use overlap2 DRAM N=128: overlap: the loaded data is first used after the last FFMA (used before the chain ends: ['0840 R2UR UR10, R18'])
+    FAIL load_use overlap2 DRAM N=192: overlap: the loaded data is first used after the last FFMA (used before the chain ends: ['0840 R2UR UR10, R18'])
+--- /root/res/cuasm_sm80.log
+ek_ldgsts: ok, cycles p50 337 (min 336 max 490), output matches the reference in every launch
+ek_barwork: ok, cycles p50 766 (min 756 max 796), output matches the reference in every launch
+wrote /root/res/cuasm_sm80/summary.json
+run_edits exit 0
+gate 12.6 exit 1
+  FAIL     load_use overlap2 L1 N=96                1 bracket(s), loads ['LDG.E.STRONG.SM', 'LDG.E.STRONG.SM'], data first waited for at 0840, chain starts 39 cy after the seed
+           FAIL overlap: the loaded data is first used after the last FFMA: used before the chain ends: ['0840 R2UR UR10, R18']
+  FAIL     load_use overlap2 L1 N=128               1 bracket(s), loads ['LDG.E.STRONG.SM', 'LDG.E.STRONG.SM'], data first waited for at 0840, chain starts 39 cy after the seed
+           FAIL overlap: the loaded data is first used after the last FFMA: used before the chain ends: ['0840 R2UR UR10, R18']
+  FAIL     load_use overlap2 L1 N=192               1 bracket(s), loads ['LDG.E.STRONG.SM', 'LDG.E.STRONG.SM'], data first waited for at 0840, chain starts 39 cy after the seed
+           FAIL overlap: the loaded data is first used after the last FFMA: used before the chain ends: ['0840 R2UR UR10, R18']
+  FAIL     load_use overlap2 L2 N=96                1 bracket(s), loads ['LDG.E.STRONG.GPU', 'LDG.E.STRONG.GPU'], data first waited for at 0840, chain starts 39 cy after the seed
+           FAIL overlap: the loaded data is first used after the last FFMA: used before the chain ends: ['0840 R2UR UR10, R18']
+  FAIL     load_use overlap2 L2 N=128               1 bracket(s), loads ['LDG.E.STRONG.GPU', 'LDG.E.STRONG.GPU'], data first waited for at 0840, chain starts 39 cy after the seed
+           FAIL overlap: the loaded data is first used after the last FFMA: used before the chain ends: ['0840 R2UR UR10, R18']
+  FAIL     load_use overlap2 L2 N=192               1 bracket(s), loads ['LDG.E.STRONG.GPU', 'LDG.E.STRONG.GPU'], data first waited for at 0840, chain starts 39 cy after the seed
+           FAIL overlap: the loaded data is first used after the last FFMA: used before the chain ends: ['0840 R2UR UR10, R18']
+  FAIL     load_use overlap2 DRAM N=96              1 bracket(s), loads ['LDG.E.STRONG.GPU', 'LDG.E.STRONG.GPU'], data first waited for at 0840, chain starts 39 cy after the seed
+           FAIL overlap: the loaded data is first used after the last FFMA: used before the chain ends: ['0840 R2UR UR10, R18']
+  FAIL     load_use overlap2 DRAM N=128             1 bracket(s), loads ['LDG.E.STRONG.GPU', 'LDG.E.STRONG.GPU'], data first waited for at 0840, chain starts 39 cy after the seed
+           FAIL overlap: the loaded data is first used after the last FFMA: used before the chain ends: ['0840 R2UR UR10, R18']
+  FAIL     load_use overlap2 DRAM N=192             1 bracket(s), loads ['LDG.E.STRONG.GPU', 'LDG.E.STRONG.GPU'], data first waited for at 0840, chain starts 39 cy after the seed
+           FAIL overlap: the loaded data is first used after the last FFMA: used before the chain ends: ['0840 R2UR UR10, R18']
+reorder SASS gate: FAIL (295 instantiation(s): 286 pass, 0 excluded, 9 fail; 0 E2 reuse build(s) without the WAR wait; 9 with pre-bracket waits)
+reorder ±564 ns (edge): gate FAIL, 9 dropped | load_use L1 L 50 d 30 N* 4.7 ((L-d)/4 4.8) max saving 19@N=192, L2 L 353 d 30 N* 73.0 ((L-d)/4 80.6) max saving 198@N=128, DRAM L 614 d 30 N* 140.8 ((L-d)/4 145.9) max saving 595@N=192 | 2 inconsistencies
+reorder ±678 ns (edge): gate FAIL | war reuse-fresh (1/32 warps) STS.32 +0/+1 (D 13), STS.128 +4/+10 (D 13), STG.32 +0/-28 (D 13), STG.128 +6/+8 (D 13) cy, WAR waits 8/8 | war reuse_clock-fresh_clock (1/32 warps) STS.32 +9/+10 (D 2), STS.128 +1/+0 (D 71), STG.32 +11/-44 (D 2), STG.128 +0/+5 (D 71) cy, WAR waits 8/8
+reorder ±771 ns (edge): gate FAIL | bar M=64: post-pre +0, post_mem-pre +298, sink +254 (4M 256, post clock in the wait 100%); M=256: post-pre +0, post_mem-pre +1066, sink +1025 (4M 1024, post clock in the wait 100%)
+reorder ±858 ns (edge): gate FAIL | fence sc_gpu 410: saving -3/-2/-2/-2 @M=0/64/256/1024; sc_sys 2277: saving 3/-1/2/-2 @M=0/64/256/1024; acqrel_gpu 413: saving -1/-6/-6/-3 @M=0/64/256/1024
+reorder ±707 ns (edge): gate FAIL | pipe cy/FFMA ILP1 4.01..15.75 (W 1..32, exp 4.0..15.8, k 7.9), ILP2 2.02..15.84 (W 1..32, exp 2.0..15.1, k 7.6), ILP4 2.02..15.83 (W 1..32, exp 2.0..15.1, k 7.6)
+reorder ±715 ns (edge): gate FAIL | stall dep_consumed 16 ops slope [encoded per link, op stall, CuAsmRL]: IADD3 4.0[4,4,4] LOP3 4.0[4,4,-] SHF 4.0[4,4,-] LEA 4.0[4,4,4] SEL 4.0[4,4,4] IMNMX 4.0[4,4,4] IABS 8.0[8,4,4] HADD2 4.0[4,4,4] HFMA2 4.0[4,4,-] IMAD_WIDE 13.0[10,5,5] FMUL 4.0[4,4,-] FADD 4.0[4,4,4] FFMA 4.0[4,4,-] IMAD 4.0[4,4,4] DADD 6.0[6,6,-] DFMA 6.0[6,6,-]; indep IADD3 1.9 LOP3 2.0 SH
+  slide_k00                  slide     legal=True  match=True  mismatching=0/200 p50=267 err=
+  slide_k04                  slide     legal=True  match=True  mismatching=0/200 p50=266 err=
+  slide_k08                  slide     legal=True  match=True  mismatching=0/200 p50=268 err=
+  slide_k12                  slide     legal=True  match=True  mismatching=0/200 p50=284 err=
+  slide_k16                  slide     legal=True  match=True  mismatching=0/200 p50=300 err=
+  slide_k20                  slide     legal=True  match=True  mismatching=0/200 p50=316 err=
+  slide_k24                  slide     legal=True  match=True  mismatching=0/200 p50=332 err=
+  slide_k28                  slide     legal=True  match=True  mismatching=0/200 p50=348 err=
+  slide_k32                  slide     legal=True  match=True  mismatching=0/200 p50=365 err=
+  slide_k36                  slide     legal=True  match=True  mismatching=0/200 p50=380 err=
+  slide_k40                  slide     legal=True  match=True  mismatching=0/200 p50=396 err=
+  slide_k44                  slide     legal=True  match=True  mismatching=0/200 p50=412 err=
+  slide_k48                  slide     legal=True  match=True  mismatching=0/200 p50=428 err=
+  slide_k52                  slide     legal=True  match=True  mismatching=0/200 p50=443 err=
+  slide_k56                  slide     legal=True  match=True  mismatching=0/200 p50=459 err=
+  slide_k60                  slide     legal=True  match=True  mismatching=0/200 p50=475 err=
+  slide_k64                  slide     legal=True  match=True  mismatching=0/200 p50=491 err=
+  viol_load_past_consumer    violation legal=False match=False mismatching=200/200 p50=266 err=
+  viol_consumer_above_load   violation legal=False match=False mismatching=200/200 p50=266 err=
+  viol_wait_cleared          violation legal=False match=False mismatching=1/200 p50=267 err=
+  viol_stall_ffma_3          violation legal=False match=False mismatching=200/200 p50=103 err=
+  viol_stall_ffma_2          violation legal=False match=False mismatching=200/200 p50=71 err=
+  viol_stall_ffma_1          violation legal=False match=False mismatching=200/200 p50=71 err=
+  viol_stall_iadd3_3         violation legal=False match=False mismatching=8/200 p50=113 err=
+  viol_stall_iadd3_2         violation legal=False match=False mismatching=8/200 p50=82 err=
+  viol_stall_iadd3_1         violation legal=False match=False mismatching=8/200 p50=82 err=
+  probe_mem_consumer_ffma_4  probe     legal=False match=True  mismatching=0/200 p50=132 err=
+  probe_mem_consumer_iadd3_4 probe     legal=False match=True  mismatching=0/200 p50=143 err=
+  viol_ldgsts_swap           violation legal=False match=True  mismatching=0/200 p50=337 err=
+  bar_ffma_across            barrier   legal=False match=True  mismatching=0/200 p50=766 err=
+
+===== 18:03:07 4. REORDER 12.2 (E7): wait for the compiler, build once, six experiments in parallel
+Processing triggers for libc-bin (2.35-0ubuntu3.8) ...
+apt 12.2 exit 0
+Build cuda_12.2.r12.2/compiler.33191640_0
+12.2 build/warm exit 0
+binary 12.2: /root/.cache/tickbound/bin/tickbound_probe_sm80_cuda12.2.140_5ea01065c6c8
+--- /root/res/reorder122/bar.log
+    FAIL bar pre M=64: the barrier is BAR.SYNC.DEFER_BLOCKING (barrier forms ['BAR.SYNC'])
+    FAIL bar pre M=256: the barrier is BAR.SYNC.DEFER_BLOCKING (barrier forms ['BAR.SYNC'])
+    FAIL bar post M=64: the barrier is BAR.SYNC.DEFER_BLOCKING (barrier forms ['BAR.SYNC'])
+--- /root/res/reorder122/fence.log
+    FAIL bar pre M=64: the barrier is BAR.SYNC.DEFER_BLOCKING (barrier forms ['BAR.SYNC'])
+    FAIL bar pre M=256: the barrier is BAR.SYNC.DEFER_BLOCKING (barrier forms ['BAR.SYNC'])
+    FAIL bar post M=64: the barrier is BAR.SYNC.DEFER_BLOCKING (barrier forms ['BAR.SYNC'])
+--- /root/res/reorder122/load_use.log
+    FAIL bar pre M=64: the barrier is BAR.SYNC.DEFER_BLOCKING (barrier forms ['BAR.SYNC'])
+    FAIL bar pre M=256: the barrier is BAR.SYNC.DEFER_BLOCKING (barrier forms ['BAR.SYNC'])
+    FAIL bar post M=64: the barrier is BAR.SYNC.DEFER_BLOCKING (barrier forms ['BAR.SYNC'])
+--- /root/res/reorder122/pipe.log
+    FAIL bar pre M=64: the barrier is BAR.SYNC.DEFER_BLOCKING (barrier forms ['BAR.SYNC'])
+    FAIL bar pre M=256: the barrier is BAR.SYNC.DEFER_BLOCKING (barrier forms ['BAR.SYNC'])
+    FAIL bar post M=64: the barrier is BAR.SYNC.DEFER_BLOCKING (barrier forms ['BAR.SYNC'])
+--- /root/res/reorder122/stall.log
+    FAIL bar pre M=64: the barrier is BAR.SYNC.DEFER_BLOCKING (barrier forms ['BAR.SYNC'])
+    FAIL bar pre M=256: the barrier is BAR.SYNC.DEFER_BLOCKING (barrier forms ['BAR.SYNC'])
+    FAIL bar post M=64: the barrier is BAR.SYNC.DEFER_BLOCKING (barrier forms ['BAR.SYNC'])
+--- /root/res/reorder122/war.log
+    FAIL bar pre M=64: the barrier is BAR.SYNC.DEFER_BLOCKING (barrier forms ['BAR.SYNC'])
+    FAIL bar pre M=256: the barrier is BAR.SYNC.DEFER_BLOCKING (barrier forms ['BAR.SYNC'])
+    FAIL bar post M=64: the barrier is BAR.SYNC.DEFER_BLOCKING (barrier forms ['BAR.SYNC'])
+--- /root/res/reorder122/warm.log
+    FAIL bar pre M=64: the barrier is BAR.SYNC.DEFER_BLOCKING (barrier forms ['BAR.SYNC'])
+    FAIL bar pre M=256: the barrier is BAR.SYNC.DEFER_BLOCKING (barrier forms ['BAR.SYNC'])
+    FAIL bar post M=64: the barrier is BAR.SYNC.DEFER_BLOCKING (barrier forms ['BAR.SYNC'])
+gate 12.2 exit 1
+  FAIL     load_use overlap2 L1 N=96                1 bracket(s), loads ['LDG.E.STRONG.SM', 'LDG.E.STRONG.SM'], data first waited for at 0840, chain starts 39 cy after the seed
+           FAIL overlap: the loaded data is first used after the last FFMA: used before the chain ends: ['0840 R2UR UR10, R18']
+  FAIL     load_use overlap2 L1 N=128               1 bracket(s), loads ['LDG.E.STRONG.SM', 'LDG.E.STRONG.SM'], data first waited for at 0840, chain starts 39 cy after the seed
+           FAIL overlap: the loaded data is first used after the last FFMA: used before the chain ends: ['0840 R2UR UR10, R18']
+  FAIL     load_use overlap2 L1 N=192               1 bracket(s), loads ['LDG.E.STRONG.SM', 'LDG.E.STRONG.SM'], data first waited for at 0840, chain starts 39 cy after the seed
+           FAIL overlap: the loaded data is first used after the last FFMA: used before the chain ends: ['0840 R2UR UR10, R18']
+  FAIL     load_use overlap2 L2 N=96                1 bracket(s), loads ['LDG.E.STRONG.GPU', 'LDG.E.STRONG.GPU'], data first waited for at 0840, chain starts 39 cy after the seed
+           FAIL overlap: the loaded data is first used after the last FFMA: used before the chain ends: ['0840 R2UR UR10, R18']
+  FAIL     load_use overlap2 L2 N=128               1 bracket(s), loads ['LDG.E.STRONG.GPU', 'LDG.E.STRONG.GPU'], data first waited for at 0840, chain starts 39 cy after the seed
+           FAIL overlap: the loaded data is first used after the last FFMA: used before the chain ends: ['0840 R2UR UR10, R18']
+  FAIL     load_use overlap2 L2 N=192               1 bracket(s), loads ['LDG.E.STRONG.GPU', 'LDG.E.STRONG.GPU'], data first waited for at 0840, chain starts 39 cy after the seed
+           FAIL overlap: the loaded data is first used after the last FFMA: used before the chain ends: ['0840 R2UR UR10, R18']
+  FAIL     load_use overlap2 DRAM N=96              1 bracket(s), loads ['LDG.E.STRONG.GPU', 'LDG.E.STRONG.GPU'], data first waited for at 0840, chain starts 39 cy after the seed
+           FAIL overlap: the loaded data is first used after the last FFMA: used before the chain ends: ['0840 R2UR UR10, R18']
+  FAIL     load_use overlap2 DRAM N=128             1 bracket(s), loads ['LDG.E.STRONG.GPU', 'LDG.E.STRONG.GPU'], data first waited for at 0840, chain starts 39 cy after the seed
+           FAIL overlap: the loaded data is first used after the last FFMA: used before the chain ends: ['0840 R2UR UR10, R18']
+  FAIL     load_use overlap2 DRAM N=192             1 bracket(s), loads ['LDG.E.STRONG.GPU', 'LDG.E.STRONG.GPU'], data first waited for at 0840, chain starts 39 cy after the seed
+           FAIL overlap: the loaded data is first used after the last FFMA: used before the chain ends: ['0840 R2UR UR10, R18']
+  FAIL     bar pre M=64                             2 bracket(s), FFMA before the barrier [64, 1024], after it {'early': ['touch'], 'late': ['touch']}
+           FAIL the barrier is BAR.SYNC.DEFER_BLOCKING: barrier forms ['BAR.SYNC']
+reorder ±574 ns (edge): gate FAIL, 9 dropped | load_use L1 L 49 d 30 N* 4.6 ((L-d)/4 4.7) max saving 18@N=64, L2 L 352 d 30 N* 72.8 ((L-d)/4 80.5) max saving 198@N=64, DRAM L 612 d 30 N* 141.6 ((L-d)/4 145.5) max saving 603@N=192 | 2 inconsistencies
+reorder ±806 ns (edge): gate FAIL | war reuse-fresh (1/32 warps) STS.32 +0/+1 (D 13), STS.128 +4/+7 (D 13), STG.32 +0/-41 (D 13), STG.128 +6/+18 (D 13) cy, WAR waits 8/8 | war reuse_clock-fresh_clock (1/32 warps) STS.32 +9/+10 (D 2), STS.128 +0/+1 (D 71), STG.32 +11/-22 (D 2), STG.128 +0/-15 (D 71) cy, WAR waits 8/8
+reorder ±766 ns (edge): gate FAIL, 8 dropped | bar M=64: post-pre -, post_mem-pre -, sink - (4M 256, post clock in the wait 0%); M=256: post-pre -, post_mem-pre -, sink - (4M 1024, post clock in the wait 0%)
+reorder ±764 ns (edge): gate FAIL | fence sc_gpu 412: saving -0/-4/-4/-2 @M=0/64/256/1024; sc_sys 2276: saving -1/0/1/-2 @M=0/64/256/1024; acqrel_gpu 565: saving -2/-7/-4/-5 @M=0/64/256/1024
+reorder ±756 ns (edge): gate FAIL | pipe cy/FFMA ILP1 4.01..15.75 (W 1..32, exp 4.0..15.8, k 7.9), ILP2 2.02..15.83 (W 1..32, exp 2.0..15.1, k 7.6), ILP4 2.02..15.82 (W 1..32, exp 2.0..15.2, k 7.6)
+reorder ±737 ns (edge): gate FAIL | stall dep_consumed 16 ops slope [encoded per link, op stall, CuAsmRL]: IADD3 4.0[4,4,4] LOP3 4.0[4,4,-] SHF 4.0[4,4,-] LEA 4.0[4,4,4] SEL 4.0[4,4,4] IMNMX 4.0[4,4,4] IABS 8.0[8,4,4] HADD2 4.0[4,4,4] HFMA2 4.0[4,4,-] IMAD_WIDE 13.0[10,5,5] FMUL 4.0[4,4,-] FADD 4.0[4,4,4] FFMA 4.0[4,4,-] IMAD 4.0[4,4,4] DADD 6.0[6,6,-] DFMA 6.0[6,6,-]; indep IADD3 2.0 LOP3 2.0 SH
+
+===== 18:04:15 pack

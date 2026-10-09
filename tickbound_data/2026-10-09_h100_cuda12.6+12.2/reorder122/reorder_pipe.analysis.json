@@ -1,0 +1,1448 @@
+{
+ "prefix": "C:\\Users\\pierr\\AppData\\Local\\Temp\\claude\\C--Users-pierr\\5c9f69cd-4ab2-4054-ba7c-33d14cfa0fa5\\scratchpad\\box_9oct\\out_h100\\res\\reorder122\\reorder_pipe",
+ "strategy": "reorder",
+ "gpu": "NVIDIA H100 80GB HBM3",
+ "sms": 132,
+ "host": "aed87a1b0dd5",
+ "clock": {
+  "tick_ns": 64,
+  "method": "edge",
+  "bound_ns": 544.8138523064554,
+  "rate_ppm": 10.187678659789867,
+  "feasible": true,
+  "windows": {
+   "pre": {
+    "edge_bound_ns": 583.3769474586006,
+    "edge_feasible": true,
+    "n_up": 3000,
+    "n_down": 3000,
+    "rate_ppm": 9.59677109779733
+   },
+   "post": {
+    "edge_bound_ns": 549.6310593637027,
+    "edge_feasible": true,
+    "n_up": 3000,
+    "n_down": 3000,
+    "rate_ppm": 11.890892691823751
+   }
+  },
+  "width_ns": 1089.6277046129107
+ },
+ "n_gpu_recs": 627264,
+ "gpu_recs_dropped": 0,
+ "n_host_events": 98,
+ "result": {
+  "reorder_layout": 1,
+  "cc": "9.0",
+  "tick_ns": 64.0,
+  "bound_ns": 544.8138523064554,
+  "toolkit": {
+   "cuda_runtime": 12020,
+   "driver": 13020
+  },
+  "gate": {
+   "status": "FAIL",
+   "label": "FAIL",
+   "file": "reorder_sass.json",
+   "source": "directory",
+   "error": null,
+   "kernels_in_gate": 295,
+   "unparsed_kernels": [],
+   "group_labels": {
+    "PASS": 24
+   }
+  },
+  "n_records": 627264,
+  "experiments": {
+   "pipe": {
+    "cc": "9.0",
+    "fp32_lanes_per_subpartition": 32,
+    "pipe_cycles_per_warp_ffma": 1.0,
+    "groups": [
+     {
+      "W": 1,
+      "ILP": 1,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 2112,
+       "p10": 4111.0,
+       "p50": 4111.0,
+       "p90": 4111.0
+      },
+      "ns": {
+       "p10": 2068.242424242424,
+       "p50": 2068.242424242424,
+       "p90": 2068.242424242424,
+       "sm_clock_samples": 2112
+      },
+      "sm_ghz": 1.9876780167614136,
+      "timer_ticks_p50": 32.5
+     },
+     {
+      "W": 1,
+      "ILP": 2,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 2112,
+       "p10": 2064.0,
+       "p50": 2064.0,
+       "p90": 2064.0
+      },
+      "ns": {
+       "p10": 1042.1060606060605,
+       "p50": 1042.1060606060605,
+       "p90": 1042.1060606060605,
+       "sm_clock_samples": 2112
+      },
+      "sm_ghz": 1.9806045449919307,
+      "timer_ticks_p50": 16.5
+     },
+     {
+      "W": 1,
+      "ILP": 4,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 2112,
+       "p10": 1043.0,
+       "p50": 1043.0,
+       "p90": 1043.0
+      },
+      "ns": {
+       "p10": 529.3636363636364,
+       "p50": 529.3636363636364,
+       "p90": 529.3636363636364,
+       "sm_clock_samples": 2112
+      },
+      "sm_ghz": 1.9702902284046024,
+      "timer_ticks_p50": 8.5
+     },
+     {
+      "W": 2,
+      "ILP": 1,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 4224,
+       "p10": 4111.0,
+       "p50": 4111.0,
+       "p90": 4111.0
+      },
+      "ns": {
+       "p10": 2067.3939393939395,
+       "p50": 2067.3939393939395,
+       "p90": 2067.3939393939395,
+       "sm_clock_samples": 4224
+      },
+      "sm_ghz": 1.9884937851782365,
+      "timer_ticks_p50": 32.5
+     },
+     {
+      "W": 2,
+      "ILP": 2,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 4224,
+       "p10": 2064.0,
+       "p50": 2064.0,
+       "p90": 2064.0
+      },
+      "ns": {
+       "p10": 1041.1969696969697,
+       "p50": 1041.1969696969697,
+       "p90": 1041.1969696969697,
+       "sm_clock_samples": 4224
+      },
+      "sm_ghz": 1.9823338523552438,
+      "timer_ticks_p50": 16.5
+     },
+     {
+      "W": 2,
+      "ILP": 4,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 4224,
+       "p10": 1043.0,
+       "p50": 1043.0,
+       "p90": 1043.0
+      },
+      "ns": {
+       "p10": 530.5675796712258,
+       "p50": 530.5675796712258,
+       "p90": 530.5675796712258,
+       "sm_clock_samples": 4224
+      },
+      "sm_ghz": 1.9658193224816163,
+      "timer_ticks_p50": 8.5
+     },
+     {
+      "W": 4,
+      "ILP": 1,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 8448,
+       "p10": 4111.0,
+       "p50": 4111.0,
+       "p90": 4111.0
+      },
+      "ns": {
+       "p10": 2067.7613636363635,
+       "p50": 2067.7613636363635,
+       "p90": 2067.7613636363635,
+       "sm_clock_samples": 8448
+      },
+      "sm_ghz": 1.9881404461346537,
+      "timer_ticks_p50": 32.5
+     },
+     {
+      "W": 4,
+      "ILP": 2,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 8448,
+       "p10": 2064.0,
+       "p50": 2064.0,
+       "p90": 2064.0
+      },
+      "ns": {
+       "p10": 1042.7651515151515,
+       "p50": 1042.7651515151515,
+       "p90": 1042.7651515151515,
+       "sm_clock_samples": 8448
+      },
+      "sm_ghz": 1.9793526826255947,
+      "timer_ticks_p50": 16.5
+     },
+     {
+      "W": 4,
+      "ILP": 4,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 8448,
+       "p10": 1043.0,
+       "p50": 1043.0,
+       "p90": 1046.0
+      },
+      "ns": {
+       "p10": 530.3768981865621,
+       "p50": 530.3768981865621,
+       "p90": 531.9024309713749,
+       "sm_clock_samples": 8448
+      },
+      "sm_ghz": 1.966526075261145,
+      "timer_ticks_p50": 8.5
+     },
+     {
+      "W": 8,
+      "ILP": 1,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 16896,
+       "p10": 4111.0,
+       "p50": 4112.0,
+       "p90": 4115.0
+      },
+      "ns": {
+       "p10": 2068.4144135910674,
+       "p50": 2068.9175550198174,
+       "p90": 2070.426979306067,
+       "sm_clock_samples": 16896
+      },
+      "sm_ghz": 1.9875127406711055,
+      "timer_ticks_p50": 32.5
+     },
+     {
+      "W": 8,
+      "ILP": 2,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 16896,
+       "p10": 2066.0,
+       "p50": 2067.0,
+       "p90": 2069.0
+      },
+      "ns": {
+       "p10": 1044.3319437233736,
+       "p50": 1044.837428691294,
+       "p90": 1045.8483986271347,
+       "sm_clock_samples": 16896
+      },
+      "sm_ghz": 1.9782981957193195,
+      "timer_ticks_p50": 16.5
+     },
+     {
+      "W": 8,
+      "ILP": 4,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 16896,
+       "p10": 1045.0,
+       "p50": 2054.0,
+       "p90": 2071.0
+      },
+      "ns": {
+       "p10": 600.8199778233258,
+       "p50": 1180.9418511474748,
+       "p90": 1190.7159560498637,
+       "sm_clock_samples": 16896
+      },
+      "sm_ghz": 1.739289701693787,
+      "timer_ticks_p50": 16.5
+     },
+     {
+      "W": 12,
+      "ILP": 1,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 25344,
+       "p10": 4111.0,
+       "p50": 4113.0,
+       "p90": 4120.0
+      },
+      "ns": {
+       "p10": 2069.168331132432,
+       "p50": 2070.1749807705405,
+       "p90": 2073.698254503921,
+       "sm_clock_samples": 25344
+      },
+      "sm_ghz": 1.9867885749778984,
+      "timer_ticks_p50": 32.5
+     },
+     {
+      "W": 12,
+      "ILP": 2,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 25344,
+       "p10": 2752.0,
+       "p50": 3005.0,
+       "p90": 3245.0
+      },
+      "ns": {
+       "p10": 1389.2906435848645,
+       "p50": 1517.0124941760603,
+       "p90": 1638.1715619305542,
+       "sm_clock_samples": 25344
+      },
+      "sm_ghz": 1.980867007711835,
+      "timer_ticks_p50": 24.0
+     },
+     {
+      "W": 12,
+      "ILP": 4,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 25344,
+       "p10": 1059.0,
+       "p50": 2067.0,
+       "p90": 3094.0
+      },
+      "ns": {
+       "p10": 689.0556824316162,
+       "p50": 1344.9273801568938,
+       "p90": 2013.1617388511997,
+       "sm_clock_samples": 25344
+      },
+      "sm_ghz": 1.536885954213284,
+      "timer_ticks_p50": 24.0
+     },
+     {
+      "W": 16,
+      "ILP": 1,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 33792,
+       "p10": 4113.0,
+       "p50": 4116.0,
+       "p90": 4128.0
+      },
+      "ns": {
+       "p10": 2071.0974454903317,
+       "p50": 2072.608092788282,
+       "p90": 2078.6506819800848,
+       "sm_clock_samples": 33792
+      },
+      "sm_ghz": 1.985903661344263,
+      "timer_ticks_p50": 32.5
+     },
+     {
+      "W": 16,
+      "ILP": 2,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 33792,
+       "p10": 4021.0,
+       "p50": 4029.0,
+       "p90": 4218.0
+      },
+      "ns": {
+       "p10": 2026.2373929076323,
+       "p50": 2030.2687033138152,
+       "p90": 2125.5084116598837,
+       "sm_clock_samples": 33792
+      },
+      "sm_ghz": 1.9844663878351891,
+      "timer_ticks_p50": 32.0
+     },
+     {
+      "W": 16,
+      "ILP": 4,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 33792,
+       "p10": 1121.0,
+       "p50": 2122.0,
+       "p90": 3120.0
+      },
+      "ns": {
+       "p10": 778.6859655628544,
+       "p50": 1474.0157171493106,
+       "p90": 2167.2615633863566,
+       "sm_clock_samples": 33792
+      },
+      "sm_ghz": 1.4396047310159392,
+      "timer_ticks_p50": 24.5
+     },
+     {
+      "W": 24,
+      "ILP": 1,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 50688,
+       "p10": 5413.0,
+       "p50": 6003.0,
+       "p90": 6491.0
+      },
+      "ns": {
+       "p10": 2724.300645596452,
+       "p50": 3021.24086006198,
+       "p90": 3266.845647619909,
+       "sm_clock_samples": 50688
+      },
+      "sm_ghz": 1.9869319521505642,
+      "timer_ticks_p50": 47.5
+     },
+     {
+      "W": 24,
+      "ILP": 2,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 50688,
+       "p10": 5666.0,
+       "p50": 6172.0,
+       "p90": 6264.0
+      },
+      "ns": {
+       "p10": 2853.385299672552,
+       "p50": 3108.205801196433,
+       "p90": 3154.5368014735027,
+       "sm_clock_samples": 50688
+      },
+      "sm_ghz": 1.9857114987766347,
+      "timer_ticks_p50": 48.5
+     },
+     {
+      "W": 24,
+      "ILP": 4,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 50688,
+       "p10": 1072.0,
+       "p50": 2145.0,
+       "p90": 3187.0
+      },
+      "ns": {
+       "p10": 939.9678894488264,
+       "p50": 1880.8126146154223,
+       "p90": 2794.4754325311656,
+       "sm_clock_samples": 50688
+      },
+      "sm_ghz": 1.1404644903652974,
+      "timer_ticks_p50": 33.0
+     },
+     {
+      "W": 32,
+      "ILP": 1,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 67584,
+       "p10": 7293.0,
+       "p50": 8158.0,
+       "p90": 8531.700000000004
+      },
+      "ns": {
+       "p10": 3666.6397291806384,
+       "p50": 4101.528439689518,
+       "p90": 4289.410417859656,
+       "sm_clock_samples": 67584
+      },
+      "sm_ghz": 1.9890146124690908,
+      "timer_ticks_p50": 64.0
+     },
+     {
+      "W": 32,
+      "ILP": 2,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 67584,
+       "p10": 7888.0,
+       "p50": 8204.0,
+       "p90": 8289.0
+      },
+      "ns": {
+       "p10": 3967.614596752305,
+       "p50": 4126.560617616114,
+       "p90": 4169.315085253531,
+       "sm_clock_samples": 67584
+      },
+      "sm_ghz": 1.9880963252975052,
+      "timer_ticks_p50": 64.5
+     },
+     {
+      "W": 32,
+      "ILP": 4,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 67584,
+       "p10": 1183.0,
+       "p50": 2195.0,
+       "p90": 3251.0
+      },
+      "ns": {
+       "p10": 1083.682913599512,
+       "p50": 2010.7218895612248,
+       "p90": 2978.0669079560557,
+       "sm_clock_samples": 67584
+      },
+      "sm_ghz": 1.0916477367633313,
+      "timer_ticks_p50": 34.5
+     }
+    ],
+    "table": [
+     {
+      "W": 1,
+      "ILP": 1,
+      "gate": "PASS",
+      "used": true,
+      "cycles_per_ffma": {
+       "n": 2112,
+       "p10": 4.0146484375,
+       "p50": 4.0146484375,
+       "p90": 4.0146484375
+      },
+      "k": {
+       "n": 2112,
+       "p10": 1.0,
+       "p50": 1.0,
+       "p90": 1.0
+      },
+      "warps_per_sm": {
+       "n": 132,
+       "p10": 1.0,
+       "p50": 1.0,
+       "p90": 1.0
+      },
+      "expected_cycles_per_ffma": {
+       "n": 2112,
+       "p10": 4.0,
+       "p50": 4.0,
+       "p90": 4.0
+      },
+      "measured_over_expected": {
+       "n": 2112,
+       "p10": 1.003662109375,
+       "p50": 1.003662109375,
+       "p90": 1.003662109375
+      },
+      "limit": "latency (4 / ILP)"
+     },
+     {
+      "W": 1,
+      "ILP": 2,
+      "gate": "PASS",
+      "used": true,
+      "cycles_per_ffma": {
+       "n": 2112,
+       "p10": 2.015625,
+       "p50": 2.015625,
+       "p90": 2.015625
+      },
+      "k": {
+       "n": 2112,
+       "p10": 1.0,
+       "p50": 1.0,
+       "p90": 1.0
+      },
+      "warps_per_sm": {
+       "n": 132,
+       "p10": 1.0,
+       "p50": 1.0,
+       "p90": 1.0
+      },
+      "expected_cycles_per_ffma": {
+       "n": 2112,
+       "p10": 2.0,
+       "p50": 2.0,
+       "p90": 2.0
+      },
+      "measured_over_expected": {
+       "n": 2112,
+       "p10": 1.0078125,
+       "p50": 1.0078125,
+       "p90": 1.0078125
+      },
+      "limit": "latency (4 / ILP)"
+     },
+     {
+      "W": 1,
+      "ILP": 4,
+      "gate": "PASS",
+      "used": true,
+      "cycles_per_ffma": {
+       "n": 2112,
+       "p10": 1.0185546875,
+       "p50": 1.0185546875,
+       "p90": 1.0185546875
+      },
+      "k": {
+       "n": 2112,
+       "p10": 1.0,
+       "p50": 1.0,
+       "p90": 1.0
+      },
+      "warps_per_sm": {
+       "n": 132,
+       "p10": 1.0,
+       "p50": 1.0,
+       "p90": 1.0
+      },
+      "expected_cycles_per_ffma": {
+       "n": 2112,
+       "p10": 1.0,
+       "p50": 1.0,
+       "p90": 1.0
+      },
+      "measured_over_expected": {
+       "n": 2112,
+       "p10": 1.0185546875,
+       "p50": 1.0185546875,
+       "p90": 1.0185546875
+      },
+      "limit": "both"
+     },
+     {
+      "W": 2,
+      "ILP": 1,
+      "gate": "PASS",
+      "used": true,
+      "cycles_per_ffma": {
+       "n": 4224,
+       "p10": 4.0146484375,
+       "p50": 4.0146484375,
+       "p90": 4.0146484375
+      },
+      "k": {
+       "n": 4224,
+       "p10": 1.0,
+       "p50": 1.0,
+       "p90": 1.0
+      },
+      "warps_per_sm": {
+       "n": 132,
+       "p10": 2.0,
+       "p50": 2.0,
+       "p90": 2.0
+      },
+      "expected_cycles_per_ffma": {
+       "n": 4224,
+       "p10": 4.0,
+       "p50": 4.0,
+       "p90": 4.0
+      },
+      "measured_over_expected": {
+       "n": 4224,
+       "p10": 1.003662109375,
+       "p50": 1.003662109375,
+       "p90": 1.003662109375
+      },
+      "limit": "latency (4 / ILP)"
+     },
+     {
+      "W": 2,
+      "ILP": 2,
+      "gate": "PASS",
+      "used": true,
+      "cycles_per_ffma": {
+       "n": 4224,
+       "p10": 2.015625,
+       "p50": 2.015625,
+       "p90": 2.015625
+      },
+      "k": {
+       "n": 4224,
+       "p10": 1.0,
+       "p50": 1.0,
+       "p90": 1.0
+      },
+      "warps_per_sm": {
+       "n": 132,
+       "p10": 2.0,
+       "p50": 2.0,
+       "p90": 2.0
+      },
+      "expected_cycles_per_ffma": {
+       "n": 4224,
+       "p10": 2.0,
+       "p50": 2.0,
+       "p90": 2.0
+      },
+      "measured_over_expected": {
+       "n": 4224,
+       "p10": 1.0078125,
+       "p50": 1.0078125,
+       "p90": 1.0078125
+      },
+      "limit": "latency (4 / ILP)"
+     },
+     {
+      "W": 2,
+      "ILP": 4,
+      "gate": "PASS",
+      "used": true,
+      "cycles_per_ffma": {
+       "n": 4224,
+       "p10": 1.0185546875,
+       "p50": 1.0185546875,
+       "p90": 1.0185546875
+      },
+      "k": {
+       "n": 4224,
+       "p10": 1.0,
+       "p50": 1.0,
+       "p90": 1.0
+      },
+      "warps_per_sm": {
+       "n": 132,
+       "p10": 2.0,
+       "p50": 2.0,
+       "p90": 2.0
+      },
+      "expected_cycles_per_ffma": {
+       "n": 4224,
+       "p10": 1.0,
+       "p50": 1.0,
+       "p90": 1.0
+      },
+      "measured_over_expected": {
+       "n": 4224,
+       "p10": 1.0185546875,
+       "p50": 1.0185546875,
+       "p90": 1.0185546875
+      },
+      "limit": "both"
+     },
+     {
+      "W": 4,
+      "ILP": 1,
+      "gate": "PASS",
+      "used": true,
+      "cycles_per_ffma": {
+       "n": 8448,
+       "p10": 4.0146484375,
+       "p50": 4.0146484375,
+       "p90": 4.0146484375
+      },
+      "k": {
+       "n": 8448,
+       "p10": 1.0,
+       "p50": 1.0,
+       "p90": 1.0
+      },
+      "warps_per_sm": {
+       "n": 132,
+       "p10": 4.0,
+       "p50": 4.0,
+       "p90": 4.0
+      },
+      "expected_cycles_per_ffma": {
+       "n": 8448,
+       "p10": 4.0,
+       "p50": 4.0,
+       "p90": 4.0
+      },
+      "measured_over_expected": {
+       "n": 8448,
+       "p10": 1.003662109375,
+       "p50": 1.003662109375,
+       "p90": 1.003662109375
+      },
+      "limit": "latency (4 / ILP)"
+     },
+     {
+      "W": 4,
+      "ILP": 2,
+      "gate": "PASS",
+      "used": true,
+      "cycles_per_ffma": {
+       "n": 8448,
+       "p10": 2.015625,
+       "p50": 2.015625,
+       "p90": 2.015625
+      },
+      "k": {
+       "n": 8448,
+       "p10": 1.0,
+       "p50": 1.0,
+       "p90": 1.0
+      },
+      "warps_per_sm": {
+       "n": 132,
+       "p10": 4.0,
+       "p50": 4.0,
+       "p90": 4.0
+      },
+      "expected_cycles_per_ffma": {
+       "n": 8448,
+       "p10": 2.0,
+       "p50": 2.0,
+       "p90": 2.0
+      },
+      "measured_over_expected": {
+       "n": 8448,
+       "p10": 1.0078125,
+       "p50": 1.0078125,
+       "p90": 1.0078125
+      },
+      "limit": "latency (4 / ILP)"
+     },
+     {
+      "W": 4,
+      "ILP": 4,
+      "gate": "PASS",
+      "used": true,
+      "cycles_per_ffma": {
+       "n": 8448,
+       "p10": 1.0185546875,
+       "p50": 1.0185546875,
+       "p90": 1.021484375
+      },
+      "k": {
+       "n": 8448,
+       "p10": 1.0,
+       "p50": 1.0,
+       "p90": 1.0
+      },
+      "warps_per_sm": {
+       "n": 132,
+       "p10": 4.0,
+       "p50": 4.0,
+       "p90": 4.0
+      },
+      "expected_cycles_per_ffma": {
+       "n": 8448,
+       "p10": 1.0,
+       "p50": 1.0,
+       "p90": 1.0
+      },
+      "measured_over_expected": {
+       "n": 8448,
+       "p10": 1.0185546875,
+       "p50": 1.0185546875,
+       "p90": 1.021484375
+      },
+      "limit": "both"
+     },
+     {
+      "W": 8,
+      "ILP": 1,
+      "gate": "PASS",
+      "used": true,
+      "cycles_per_ffma": {
+       "n": 16896,
+       "p10": 4.0146484375,
+       "p50": 4.015625,
+       "p90": 4.0185546875
+      },
+      "k": {
+       "n": 16896,
+       "p10": 1.9956268221574345,
+       "p50": 1.9970817120622568,
+       "p90": 1.9990272373540856
+      },
+      "warps_per_sm": {
+       "n": 132,
+       "p10": 8.0,
+       "p50": 8.0,
+       "p90": 8.0
+      },
+      "expected_cycles_per_ffma": {
+       "n": 16896,
+       "p10": 4.0,
+       "p50": 4.0,
+       "p90": 4.0
+      },
+      "measured_over_expected": {
+       "n": 16896,
+       "p10": 1.003662109375,
+       "p50": 1.00390625,
+       "p90": 1.004638671875
+      },
+      "limit": "latency (4 / ILP)"
+     },
+     {
+      "W": 8,
+      "ILP": 2,
+      "gate": "PASS",
+      "used": true,
+      "cycles_per_ffma": {
+       "n": 16896,
+       "p10": 2.017578125,
+       "p50": 2.0185546875,
+       "p90": 2.0205078125
+      },
+      "k": {
+       "n": 16896,
+       "p10": 1.9912917271407837,
+       "p50": 1.9941972920696325,
+       "p90": 1.9980638915779283
+      },
+      "warps_per_sm": {
+       "n": 132,
+       "p10": 8.0,
+       "p50": 8.0,
+       "p90": 8.0
+      },
+      "expected_cycles_per_ffma": {
+       "n": 16896,
+       "p10": 2.0,
+       "p50": 2.0,
+       "p90": 2.0
+      },
+      "measured_over_expected": {
+       "n": 16896,
+       "p10": 1.0087890625,
+       "p50": 1.00927734375,
+       "p90": 1.01025390625
+      },
+      "limit": "latency (4 / ILP)"
+     },
+     {
+      "W": 8,
+      "ILP": 4,
+      "gate": "PASS",
+      "used": true,
+      "cycles_per_ffma": {
+       "n": 16896,
+       "p10": 1.0205078125,
+       "p50": 2.005859375,
+       "p90": 2.0224609375
+      },
+      "k": {
+       "n": 16896,
+       "p10": 1.00575263662512,
+       "p50": 1.9896519285042333,
+       "p90": 1.998061076102763
+      },
+      "warps_per_sm": {
+       "n": 132,
+       "p10": 8.0,
+       "p50": 8.0,
+       "p90": 8.0
+      },
+      "expected_cycles_per_ffma": {
+       "n": 16896,
+       "p10": 1.00575263662512,
+       "p50": 1.9896519285042333,
+       "p90": 1.998061076102763
+      },
+      "measured_over_expected": {
+       "n": 16896,
+       "p10": 0.57568359375,
+       "p50": 1.0117272830703883,
+       "p90": 1.2844745063741758
+      },
+      "limit": "FP32 pipe (p * k)"
+     },
+     {
+      "W": 12,
+      "ILP": 1,
+      "gate": "PASS",
+      "used": true,
+      "cycles_per_ffma": {
+       "n": 25344,
+       "p10": 4.0146484375,
+       "p50": 4.0166015625,
+       "p90": 4.0234375
+      },
+      "k": {
+       "n": 25344,
+       "p10": 2.9883495145631067,
+       "p50": 2.994406614785992,
+       "p90": 2.9965953307392996
+      },
+      "warps_per_sm": {
+       "n": 132,
+       "p10": 12.0,
+       "p50": 12.0,
+       "p90": 12.0
+      },
+      "expected_cycles_per_ffma": {
+       "n": 25344,
+       "p10": 4.0,
+       "p50": 4.0,
+       "p90": 4.0
+      },
+      "measured_over_expected": {
+       "n": 25344,
+       "p10": 1.003662109375,
+       "p50": 1.004150390625,
+       "p90": 1.005859375
+      },
+      "limit": "latency (4 / ILP)"
+     },
+     {
+      "W": 12,
+      "ILP": 2,
+      "gate": "PASS",
+      "used": true,
+      "cycles_per_ffma": {
+       "n": 25344,
+       "p10": 2.6875,
+       "p50": 2.9345703125,
+       "p90": 3.1689453125
+      },
+      "k": {
+       "n": 25344,
+       "p10": 2.7700369913686806,
+       "p50": 2.9212101063829787,
+       "p90": 2.9974573192880496
+      },
+      "warps_per_sm": {
+       "n": 132,
+       "p10": 12.0,
+       "p50": 12.0,
+       "p90": 12.0
+      },
+      "expected_cycles_per_ffma": {
+       "n": 25344,
+       "p10": 2.7700369913686806,
+       "p50": 2.9212101063829787,
+       "p90": 2.9974573192880496
+      },
+      "measured_over_expected": {
+       "n": 25344,
+       "p10": 0.8972461482469974,
+       "p50": 1.005518500465083,
+       "p90": 1.1442336195685434
+      },
+      "limit": "FP32 pipe (p * k)"
+     },
+     {
+      "W": 12,
+      "ILP": 4,
+      "gate": "PASS",
+      "used": true,
+      "cycles_per_ffma": {
+       "n": 25344,
+       "p10": 1.0341796875,
+       "p50": 2.0185546875,
+       "p90": 3.021484375
+      },
+      "k": {
+       "n": 25344,
+       "p10": 1.2872104220983434,
+       "p50": 2.0347322720694647,
+       "p90": 2.9917914051183003
+      },
+      "warps_per_sm": {
+       "n": 132,
+       "p10": 12.0,
+       "p50": 12.0,
+       "p90": 12.0
+      },
+      "expected_cycles_per_ffma": {
+       "n": 25344,
+       "p10": 1.2872104220983434,
+       "p50": 2.0347322720694647,
+       "p90": 2.9917914051183003
+      },
+      "measured_over_expected": {
+       "n": 25344,
+       "p10": 0.5685066228109227,
+       "p50": 1.0078125,
+       "p90": 1.2974833310285905
+      },
+      "limit": "FP32 pipe (p * k)"
+     },
+     {
+      "W": 16,
+      "ILP": 1,
+      "gate": "PASS",
+      "used": true,
+      "cycles_per_ffma": {
+       "n": 33792,
+       "p10": 4.0166015625,
+       "p50": 4.01953125,
+       "p90": 4.03125
+      },
+      "k": {
+       "n": 33792,
+       "p10": 3.9764848484848483,
+       "p50": 3.989790957705396,
+       "p90": 3.9939217116460006
+      },
+      "warps_per_sm": {
+       "n": 132,
+       "p10": 16.0,
+       "p50": 16.0,
+       "p90": 16.0
+      },
+      "expected_cycles_per_ffma": {
+       "n": 33792,
+       "p10": 4.0,
+       "p50": 4.0,
+       "p90": 4.0
+      },
+      "measured_over_expected": {
+       "n": 33792,
+       "p10": 1.004150390625,
+       "p50": 1.0048828125,
+       "p90": 1.0078125
+      },
+      "limit": "latency (4 / ILP)"
+     },
+     {
+      "W": 16,
+      "ILP": 2,
+      "gate": "PASS",
+      "used": true,
+      "cycles_per_ffma": {
+       "n": 33792,
+       "p10": 3.9267578125,
+       "p50": 3.9345703125,
+       "p90": 4.119140625
+      },
+      "k": {
+       "n": 33792,
+       "p10": 3.8464818763326227,
+       "p50": 3.9885799404170803,
+       "p90": 3.993041749502982
+      },
+      "warps_per_sm": {
+       "n": 132,
+       "p10": 16.0,
+       "p50": 16.0,
+       "p90": 16.0
+      },
+      "expected_cycles_per_ffma": {
+       "n": 33792,
+       "p10": 3.8464818763326227,
+       "p50": 3.9885799404170803,
+       "p90": 3.993041749502982
+      },
+      "measured_over_expected": {
+       "n": 33792,
+       "p10": 0.9837680692645411,
+       "p50": 0.9863354771691452,
+       "p90": 1.0710680801506414
+      },
+      "limit": "FP32 pipe (p * k)"
+     },
+     {
+      "W": 16,
+      "ILP": 4,
+      "gate": "PASS",
+      "used": true,
+      "cycles_per_ffma": {
+       "n": 33792,
+       "p10": 1.0947265625,
+       "p50": 2.072265625,
+       "p90": 3.046875
+      },
+      "k": {
+       "n": 33792,
+       "p10": 1.497601456529126,
+       "p50": 2.6769825918762087,
+       "p90": 3.3533197674418607
+      },
+      "warps_per_sm": {
+       "n": 132,
+       "p10": 16.0,
+       "p50": 16.0,
+       "p90": 16.0
+      },
+      "expected_cycles_per_ffma": {
+       "n": 33792,
+       "p10": 1.497601456529126,
+       "p50": 2.6769825918762087,
+       "p90": 3.3533197674418607
+      },
+      "measured_over_expected": {
+       "n": 33792,
+       "p10": 0.5564041734200995,
+       "p50": 1.0087900060386474,
+       "p90": 1.3279531897124703
+      },
+      "limit": "FP32 pipe (p * k)"
+     },
+     {
+      "W": 24,
+      "ILP": 1,
+      "gate": "PASS",
+      "used": true,
+      "cycles_per_ffma": {
+       "n": 50688,
+       "p10": 5.2861328125,
+       "p50": 5.8623046875,
+       "p90": 6.3388671875
+      },
+      "k": {
+       "n": 50688,
+       "p10": 5.581141811025817,
+       "p50": 5.878194490540989,
+       "p90": 5.978080677841223
+      },
+      "warps_per_sm": {
+       "n": 132,
+       "p10": 24.0,
+       "p50": 24.0,
+       "p90": 24.0
+      },
+      "expected_cycles_per_ffma": {
+       "n": 50688,
+       "p10": 5.581141811025817,
+       "p50": 5.878194490540989,
+       "p90": 5.978080677841223
+      },
+      "measured_over_expected": {
+       "n": 50688,
+       "p10": 0.8841254762718607,
+       "p50": 0.99736912468835,
+       "p90": 1.1345475610552898
+      },
+      "limit": "FP32 pipe (p * k)"
+     },
+     {
+      "W": 24,
+      "ILP": 2,
+      "gate": "PASS",
+      "used": true,
+      "cycles_per_ffma": {
+       "n": 50688,
+       "p10": 5.533203125,
+       "p50": 6.02734375,
+       "p90": 6.1171875
+      },
+      "k": {
+       "n": 50688,
+       "p10": 5.791243527286633,
+       "p50": 5.90121583461392,
+       "p90": 5.984588581786335
+      },
+      "warps_per_sm": {
+       "n": 132,
+       "p10": 24.0,
+       "p50": 24.0,
+       "p90": 24.0
+      },
+      "expected_cycles_per_ffma": {
+       "n": 50688,
+       "p10": 5.791243527286633,
+       "p50": 5.90121583461392,
+       "p90": 5.984588581786335
+      },
+      "measured_over_expected": {
+       "n": 50688,
+       "p10": 0.9251385336006637,
+       "p50": 1.0230256338728199,
+       "p90": 1.0529402593571449
+      },
+      "limit": "FP32 pipe (p * k)"
+     },
+     {
+      "W": 24,
+      "ILP": 4,
+      "gate": "PASS",
+      "used": true,
+      "cycles_per_ffma": {
+       "n": 50688,
+       "p10": 1.046875,
+       "p50": 2.0947265625,
+       "p90": 3.1123046875
+      },
+      "k": {
+       "n": 50688,
+       "p10": 1.4938302574365863,
+       "p50": 2.432505696885162,
+       "p90": 3.4506923347428367
+      },
+      "warps_per_sm": {
+       "n": 132,
+       "p10": 24.0,
+       "p50": 24.0,
+       "p90": 24.0
+      },
+      "expected_cycles_per_ffma": {
+       "n": 50688,
+       "p10": 1.4938302574365863,
+       "p50": 2.432505696885162,
+       "p90": 3.4506923347428367
+      },
+      "measured_over_expected": {
+       "n": 50688,
+       "p10": 0.5136887770432692,
+       "p50": 1.012127486000895,
+       "p90": 1.359706325663071
+      },
+      "limit": "FP32 pipe (p * k)"
+     },
+     {
+      "W": 32,
+      "ILP": 1,
+      "gate": "PASS",
+      "used": true,
+      "cycles_per_ffma": {
+       "n": 67584,
+       "p10": 7.1220703125,
+       "p50": 7.966796875,
+       "p90": 8.331738281250004
+      },
+      "k": {
+       "n": 67584,
+       "p10": 7.523545275237582,
+       "p50": 7.79857572581583,
+       "p90": 7.9698130899296835
+      },
+      "warps_per_sm": {
+       "n": 132,
+       "p10": 32.0,
+       "p50": 32.0,
+       "p90": 32.0
+      },
+      "expected_cycles_per_ffma": {
+       "n": 67584,
+       "p10": 7.523545275237582,
+       "p50": 7.79857572581583,
+       "p90": 7.9698130899296835
+      },
+      "measured_over_expected": {
+       "n": 67584,
+       "p10": 0.8933219038157171,
+       "p50": 1.0214982122983742,
+       "p90": 1.1084834834743962
+      },
+      "limit": "FP32 pipe (p * k)"
+     },
+     {
+      "W": 32,
+      "ILP": 2,
+      "gate": "PASS",
+      "used": true,
+      "cycles_per_ffma": {
+       "n": 67584,
+       "p10": 7.703125,
+       "p50": 8.01171875,
+       "p90": 8.0947265625
+      },
+      "k": {
+       "n": 67584,
+       "p10": 7.820685743227946,
+       "p50": 7.884072089624939,
+       "p90": 7.969315429670574
+      },
+      "warps_per_sm": {
+       "n": 132,
+       "p10": 32.0,
+       "p50": 32.0,
+       "p90": 32.0
+      },
+      "expected_cycles_per_ffma": {
+       "n": 67584,
+       "p10": 7.820685743227946,
+       "p50": 7.884072089624939,
+       "p90": 7.969315429670574
+      },
+      "measured_over_expected": {
+       "n": 67584,
+       "p10": 0.9666095578531458,
+       "p50": 1.0162798994768436,
+       "p90": 1.0347159188934167
+      },
+      "limit": "FP32 pipe (p * k)"
+     },
+     {
+      "W": 32,
+      "ILP": 4,
+      "gate": "PASS",
+      "used": true,
+      "cycles_per_ffma": {
+       "n": 67584,
+       "p10": 1.1552734375,
+       "p50": 2.1435546875,
+       "p90": 3.1748046875
+      },
+      "k": {
+       "n": 67584,
+       "p10": 1.5509720386090537,
+       "p50": 2.6482469455784345,
+       "p90": 3.481945113143958
+      },
+      "warps_per_sm": {
+       "n": 132,
+       "p10": 32.0,
+       "p50": 32.0,
+       "p90": 32.0
+      },
+      "expected_cycles_per_ffma": {
+       "n": 67584,
+       "p10": 1.5509720386090537,
+       "p50": 2.6482469455784345,
+       "p90": 3.481945113143958
+      },
+      "measured_over_expected": {
+       "n": 67584,
+       "p10": 0.5809676505553355,
+       "p50": 1.0170900783877943,
+       "p90": 1.3632891713631137
+      },
+      "limit": "FP32 pipe (p * k)"
+     }
+    ]
+   }
+  },
+  "dropped": [],
+  "inconsistencies": [],
+  "notes": [
+   "orders: each intended order is forced in the kernel by data dependencies or asm volatile clock reads; it holds for this run only where the reorder SASS gate of the binary that measured says PASS (label 'gate' per instantiation). FAIL (E1-E5) and EXCLUDED (E6) instantiations are dropped from every derived figure and listed in 'dropped'; 'gate not run' = no usable PREFIX.reorder_sass.json / reorder_sass.json next to the run; 'not in gate' = the gate lists no such kernel. The gate also fails compared variants whose brackets wait on different scoreboards left outstanding before c0 (pre-bracket waits)",
+   "cycles = the bracket c0 .. c1 in SM cycles (body + consume: the closing clock read waits for the consumed results); p10 / p50 / p90 with the sample count n per (variant, params); derived differences are p50 - p50. ns only where a group's brackets span >= 8 %globaltimer ticks, through that group's own SM clock (sum of cycles / sum of timer spans); shorter brackets are cycles only",
+   "load_use: L = overlap(0) - chain_only(0) (the load's latency exposed at N = 0, with its dependent address arithmetic, its issue and the consume of its value; serial(0) - chain_only(0) is the cross-check), c = chain_only(0). The overlap chain cannot start before the load is issued: d = the cycles from the seed's data to its first FFMA (the load's address arithmetic, its issue, the clock read that orders the chain after it; 26-27 issue cycles with NVRTC 12.9), which serial's and chain_only's chains do not pay. Model overlap = max(L, 4N + d) + c, serial = L + 4N + c, saving = serial - overlap = min(4N, L - d): L - d is the part of the load's latency a chain can hide. Crossover N* = the knee of overlap(N), least squares a + b * max(N*, N) with b = chain_only's slope (at the top of the measured N it lies beyond the range); model N* = (L - d) / 4. d comes from the knee fit (its intercept - chain_only's) when the knee is inside the range, else from the gate (chain_start_cycles, the binary's issue cycles); both are reported, and a fit that differs from the issue count by more than max(8, d / 4) is an inconsistency (overlap holds a cost the SASS does not explain). overlap2 - overlap = the second independent load's extra cost (both in flight at once)",
+   "war: reuse - fresh = the cost of overwriting a register a store has not read yet (stores read their operands late, through the MIO queue). It is a WAR measurement only where the gate decoded a wait on the store's read scoreboard in the reuse build (war_wait true) and none in the fresh build; a reuse build without it is 'not provoked'. The overwrite issues D cycles after the store (war_distance_cycles, the gate's issue count; reuse: the clock read and its LOP3 that order the chain lie between, 12-13 cycles), so the figure is the WAR stall beyond D: an operand read done within D costs 0. reuse_clock - fresh_clock is the same with the first overwrite right after the store where ptxas gave the clock read (or the chain seed's LOP3) the stored register (D = 2-5 with NVRTC 12.9; the gate says per build). fresh - nostore = the store's own cost in the bracket",
+   "bar: per rep the late warp (1024 FFMA before the barrier) arrives last. Early warps' c_end - the late warp's c_arrive: pre = release + touch; post = pre when the M register-only FFMA after BAR.SYNC.DEFER_BLOCKING ran during the wait (exposed fraction (post - pre) / 4M near 0), pre + 4M when they waited for the release; post_mem puts a shared load + store before them (expected not to overlap). post's FFMA are ordered after the barrier by a clock read, assumed not to end the deferral (it is not a memory instruction); each warp records when that clock read issued (flags >> 16 = it - c_arrive), and post_clock_during_wait is the fraction of early-warp samples where it issued before the late warp arrived: near 1 the assumption holds; near 0 post cannot tell a clock read that ends the deferral from no deferral at all (post_reading says which). late_sink shift = pre - late_sink of the early warps' c_end - the late warp's c_start (expected 4M). Reps are rebuilt per SM from the arrival stamps (every arrival of a rep precedes its release, a warp's next arrival follows it); incomplete reps are counted and not used. The per-group bracket (groups) is every warp's c_end - c_start, early and late warps pooled; the comparisons use the per-rep stamps",
+   "fence: fence cycles = after(M = 0) - chain_only(M = 0): the same clock read, LOP3 and consume STS, plus one fence after one store (the store's drain included). fence_only lacks that scaffolding: fence_only(0) - chain_only(0) + the scaffolding's issue cycles (the gate's after_store_cycles of chain_only(0)) is the cross-check. after - before = what moving the work ahead of the fence saves, against min(fence, W), W = the issue cycles before keeps between its store and its fence (the gate's store_to_fence_cycles: 4M plus the clock read, its LOP3 and the consume STS; else 4M); before's fence also covers that STS, which in after issues behind the fence and nothing waits for. before - chain_only = the fence's exposed part, against max(0, fence - W)",
+   "pipe: cycles per FFMA = (c1 - c0) / 1024 per warp (the consume adds ~0.02). k = the time-weighted number of recorded warps on the same SM and sub-partition (%warpid % 4) during that warp's bracket, itself included (unrecorded warm-up brackets are not counted). Expectation max(4 / ILP, p * k), p = 32 / FP32 lanes per sub-partition: 2 on cc 7.x and 8.0, 1 on cc 8.6 / 8.7 / 8.9, 9.0 and later; limit = the term that binds at the median k (the chain's latency, which interleaving ILP chains hides, or the shared FP32 pipe, which it cannot)",
+   "stall: slope of cycles = a + b * N over the per-N medians per (OP, MODE). dep_consumed (the chain consumed before c1): slope_cycles_per_link = the issue interval of one dependent link. One warp waits exactly the stall count ptxas encoded before its next instruction, so for the fixed-latency ops the slope reproduces the encoding (encoded_cycles_per_link, the gate's static_cycles_per_link) unless the hardware adds to it (hardware_extra_cycles); the encoding is ptxas's choice, an upper bound on the op's minimum stall, which CuAsmRL finds by lowering stall counts until results go wrong (Tier B's stall-lowering edits test that on the GPU). op_encoded_stall = the stall ptxas put on the op itself (the gate's target_stalls), compared with CuAsmRL's dependency-based A100 table (IADD3, IMAD.IADD, IADD3.X, MOV, IABS, IMAD, FADD, HADD2, IMNMX, SEL, LEA 4; IMAD.WIDE(.U32) 5; the other OPs are not in it): encoded_minus_cuasmrl. A link of IABS (LOP3.LUT + IABS) or IMAD_WIDE (IMAD.WIDE.U32 + the IADD3 of the 64-bit add, its IADD3.X off the chain) holds a helper, so its slope is the link's, not the op's. Variable-latency ops (DADD, DFMA on sm_80 / sm_86) wait on a scoreboard, not on the stall count. dep_unconsumed keeps the slope (each instruction still waits for its predecessor) but the closing clock read does not wait for the last result (intercept about one latency lower); indep's slope is the issue interval of one update (IABS's and IMAD_WIDE's updates issue their helpers too), what a clock-based method without dependencies reports (CuAsmRL measured 2.6 cycles per IADD3 that way); naive_cycles_per_instr = p50 / N at the largest N. An (OP, MODE) with an instantiation the gate EXCLUDED (opcode count != N, or a dependency structure other than the mode's) is dropped from the fits' use and from the table"
+  ]
+ }
+}

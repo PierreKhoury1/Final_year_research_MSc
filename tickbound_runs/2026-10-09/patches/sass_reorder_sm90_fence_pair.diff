@@ -1,0 +1,51 @@
+--- a/src/tickbound/tools/sass_reorder.py
++++ b/src/tickbound/tools/sass_reorder.py
+@@ -103,7 +103,8 @@
+   pairs a late part with an early one) for the variant. Roles are told apart by the FFMA count before the barrier
+   (RO_BAR_D must differ from M).
+ E4 fence: FFMA == M; exactly one STG, weak (st.global; not a consume); after / before / fence_only: one MEMBAR of the
+-  FK's form (sc_gpu: .SC and .GPU; sc_sys: .SC and .SYS; acqrel_gpu: .GPU without .SC, MEMBAR.ALL.GPU with NVRTC 12.9)
++  FK's form (sc_gpu: .SC and .GPU; sc_sys: .SC and .SYS; acqrel_gpu: .GPU without .SC, MEMBAR.ALL.GPU with NVRTC 12.9;
++  sm_90 ptxas puts a MEMBAR.ALL.CTA directly before it, accepted as part of the same fence)
+   and at most one each of ERRBAR, CGAERRBAR, CCTL after it; chain_only: none of them; order: after = STG, fence, an
+   inner clock read (required when M > 0), then the M FFMA; before = STG, the M FFMA, then the fence; fence_only = STG,
+   then the fence; chain_only = STG, then the M FFMA; the consume; no other memory instruction; the chain's result read
+@@ -801,7 +802,10 @@
+         C.add("the consume: one STS of the chain's value", len(cons) == 1, f"STS of the chain's value: {_list(P, cons)}")
+     if V in (0, 1, 2):
+         names = [_b(P.T[x]) for x in comp]
+-        ok = len(mb) == 1 and _fence_ok(P.T[mb[0]], FK) and all(x > mb[0] for x in comp) and len(names) == len(set(names))
++        # sm_90 (CUDA 12.2 and 12.6, H100, 9 Oct 2026): one PTX fence is MEMBAR.ALL.CTA directly followed by the scoped
++        # MEMBAR; the pair is accepted as that fence when adjacent, the scoped one (the last) must have the FK's form
++        pair = len(mb) == 2 and mb[1] == mb[0] + 1 and _op(P.T[mb[0]]).startswith("MEMBAR.ALL.CTA")
++        ok = (len(mb) == 1 or pair) and _fence_ok(P.T[mb[-1]], FK) and all(x > mb[-1] for x in comp) and len(names) == len(set(names))
+         C.add(f"one {FENCES[FK]} fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL)", ok, f"fence {_list(P, mb)} + {_list(P, comp)}")
+     else:
+         C.add("no fence", not mb and not comp, f"found {_list(P, mb + comp)}" if mb or comp else "none")
+--- a/tests/test_reorder_sass.py
++++ b/tests/test_reorder_sass.py
+@@ -826,3 +826,24 @@
+     assert imw["static_cycles_per_link"] == (10.0 if sm == "80" else 8.0)
+     fence = [w for w in k["204:0,2,0"]["info"]["pre_waits"]]
+     assert all(w["role"] == "fence" for w in fence) and k["204:0,2,0"]["status"] == "PASS"   # reported, not compared
++
++
++def test_sm90_fence_pair_is_one_fence():
++    """sm_90 ptxas (CUDA 12.2 and 12.6, H100, 9 Oct 2026) emits MEMBAR.ALL.CTA directly before the scoped MEMBAR of one
++    PTX fence: the adjacent pair passes as that fence; split by another instruction, or with a scoped MEMBAR of the
++    wrong form, the fence check still fails."""
++    text, exp = handmade()
++
++    def kernel(fn):
++        g = sr.gate(mutate(text, "204:0,0,8", fn), exp["consts"])
++        return next(x for x in g["kernels"] if x["key"] == "204:0,0,8")
++
++    def failed(r):
++        return [c["name"] for c in r["checks"] if not c["ok"]]
++
++    pair = kernel(lambda L: insert(L, find(L, r"MEMBAR\.SC\.GPU"), "MEMBAR.ALL.CTA"))
++    assert pair["status"] == "PASS" and pair["info"]["fence"][:2] == ["MEMBAR.ALL.CTA", "MEMBAR.SC.GPU"], failed(pair)
++    split = kernel(lambda L: insert(L, find(L, r" STG"), "MEMBAR.ALL.CTA"))
++    assert split["status"] == "FAIL" and any(b.startswith("one sc_gpu fence") for b in failed(split)), failed(split)
++    wrong = kernel(lambda L: insert(replace(L, r"MEMBAR\.SC\.GPU", "MEMBAR.SC.SYS"), find(L, r"MEMBAR\.SC\.GPU"), "MEMBAR.ALL.CTA"))
++    assert wrong["status"] == "FAIL" and any(b.startswith("one sc_gpu fence") for b in failed(wrong)), failed(wrong)

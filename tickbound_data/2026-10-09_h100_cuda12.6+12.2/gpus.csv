@@ -1,0 +1,2 @@
+index, pci.bus_id, name, driver_version, clocks.current.sm [MHz], clocks.max.sm [MHz], persistence_mode, uuid
+0, 00000000:01:00.0, NVIDIA H100 80GB HBM3, 595.71.05, 345 MHz, 1980 MHz, Enabled, GPU-0cff4e3d-a8c8-efc7-276f-af529e5ad1a6

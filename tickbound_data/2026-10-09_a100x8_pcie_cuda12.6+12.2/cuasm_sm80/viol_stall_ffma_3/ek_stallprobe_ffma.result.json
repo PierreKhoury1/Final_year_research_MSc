@@ -1,0 +1,20 @@
+{
+ "kernel": "ek_stallprobe_ffma",
+ "edited": "/root/tb/cuasm_edits/sm_80/viol_stall_ffma_3.cubin",
+ "reference": "/root/tb/cuasm_edits/sm_80/reference.cubin",
+ "reps": 200,
+ "threads": 32,
+ "param": 0,
+ "samples": 6400,
+ "load_error": null,
+ "launch_error": null,
+ "compared": true,
+ "match": false,
+ "launches_compared": 200,
+ "mismatching_launches": 200,
+ "first_mismatch_launch": 0,
+ "first_mismatch_word": 0,
+ "cycles_min": 103,
+ "cycles_p50": 103,
+ "cycles_max": 103
+}

@@ -1,0 +1,2 @@
+gputrace ktrace: NVIDIA A100-PCIE-40GB sms=108 recs=418560 events=482 kernels=80 in 16.00 s (sync pre ok post ok)
+ktrace SASS check: PASS (4 k_ktrace instantiation(s), 56 exact checks on the binary that measured; 16 scoreboard wait(s) in checkpoint brackets, 8 on a cycle read (listed in the ktrace_sass JSON))

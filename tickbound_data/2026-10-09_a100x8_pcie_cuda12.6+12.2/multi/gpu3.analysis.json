@@ -1,0 +1,4901 @@
+{
+ "prefix": "/root/res/multi/gpu3",
+ "strategy": "ktrace",
+ "gpu": "NVIDIA A100-PCIE-40GB",
+ "sms": 108,
+ "host": "3990b2003192",
+ "clock": {
+  "tick_ns": 1024,
+  "method": "edge",
+  "bound_ns": 761.1767883300781,
+  "rate_ppm": -19.840048788966058,
+  "feasible": true,
+  "windows": {
+   "pre": {
+    "edge_bound_ns": 895.6226630177116,
+    "edge_feasible": true,
+    "n_up": 3000,
+    "n_down": 2926,
+    "rate_ppm": -19.890465876359897
+   },
+   "post": {
+    "edge_bound_ns": 763.0441943779588,
+    "edge_feasible": true,
+    "n_up": 3000,
+    "n_down": 2931,
+    "rate_ppm": -19.0315191432866
+   }
+  },
+  "width_ns": 1522.3535766601562
+ },
+ "n_gpu_recs": 418560,
+ "gpu_recs_dropped": 0,
+ "n_host_events": 482,
+ "result": {
+  "ffma": 256,
+  "kt_layout": 2,
+  "tick_ns": 1024,
+  "bound_ns": 761.1767883300781,
+  "by_blocks": {
+   "1": {
+    "kernels": 40,
+    "checkpoint_cost_cycles": {
+     "p50": 13.0,
+     "p90": 15.0,
+     "p99": 15.0,
+     "p100": 15.0,
+     "n": 320,
+     "mean": 13.375
+    },
+    "touch_chain_cycles": {
+     "p50": 65.0,
+     "p90": 74.10000000000002,
+     "p99": 78.0,
+     "p100": 78.0,
+     "n": 320,
+     "mean": 65.503125
+    },
+    "phases_cycles": {
+     "load": {
+      "p50": 306.0,
+      "p90": 318.0,
+      "p99": 320.0,
+      "p100": 321.0,
+      "n": 320,
+      "mean": 306.584375
+     },
+     "barrier1": {
+      "p50": 48.0,
+      "p90": 77.0,
+      "p99": 82.0,
+      "p100": 82.0,
+      "n": 320,
+      "mean": 45.359375
+     },
+     "compute": {
+      "p50": 1027.5,
+      "p90": 1029.0,
+      "p99": 1029.0,
+      "p100": 1029.0,
+      "n": 320,
+      "mean": 1027.25
+     },
+     "barrier2": {
+      "p50": 38.0,
+      "p90": 51.0,
+      "p99": 51.0,
+      "p100": 51.0,
+      "n": 320,
+      "mean": 37.246875
+     },
+     "store_fence": {
+      "p50": 631.0,
+      "p90": 641.0,
+      "p99": 642.0,
+      "p100": 643.0,
+      "n": 320,
+      "mean": 580.303125
+     },
+     "ticket": {
+      "p50": 423.0,
+      "p90": 458.2,
+      "p99": 460.61,
+      "p100": 461.0,
+      "n": 40,
+      "mean": 427.95
+     },
+     "tail": {
+      "p50": 474.0,
+      "p90": 625.0,
+      "p99": 662.62,
+      "p100": 663.0,
+      "n": 320,
+      "mean": 481.478125
+     },
+     "flag_store": {
+      "p50": -2.0,
+      "p90": -1.0,
+      "p99": -1.0,
+      "p100": -1.0,
+      "n": 320,
+      "mean": -2.375
+     }
+    },
+    "barrier1": {
+     "wait_cycles": {
+      "p50": 30.0,
+      "p90": 54.0,
+      "p99": 59.0,
+      "p100": 59.0,
+      "n": 280,
+      "mean": 29.414285714285715
+     },
+     "release_cycles": {
+      "p50": 27.5,
+      "p90": 41.3,
+      "p99": 45.5,
+      "p100": 45.5,
+      "n": 320,
+      "mean": 27.5125
+     },
+     "arrival_spread_cycles": {
+      "p50": 56.0,
+      "p90": 59.0,
+      "p99": 59.0,
+      "p100": 59.0,
+      "n": 40,
+      "mean": 56.25
+     }
+    },
+    "barrier2": {
+     "wait_cycles": {
+      "p50": 18.0,
+      "p90": 30.0,
+      "p99": 30.0,
+      "p100": 30.0,
+      "n": 280,
+      "mean": 18.142857142857142
+     },
+     "release_cycles": {
+      "p50": 29.5,
+      "p90": 42.3,
+      "p99": 46.5,
+      "p100": 46.5,
+      "n": 320,
+      "mean": 29.2625
+     },
+     "arrival_spread_cycles": {
+      "p50": 30.0,
+      "p90": 30.0,
+      "p99": 30.0,
+      "p100": 30.0,
+      "n": 40,
+      "mean": 30.0
+     }
+    },
+    "barrier_release_before_last_arrival": 0,
+    "kernel_span_ns": {
+     "p50": 3764.34308719635,
+     "p90": 3949.0780577022583,
+     "p99": 4173.165158826783,
+     "p100": 4229.346175588667,
+     "n": 40,
+     "mean": 3787.205755587615
+    },
+    "block_start_spread_ns": {
+     "p50": 0.0,
+     "p90": 0.0,
+     "p99": 0.0,
+     "p100": 0.0,
+     "n": 40,
+     "mean": 0.0
+    },
+    "sm_ghz_lo": {
+     "p50": 0.721817851351596,
+     "p90": 0.7470272838704402,
+     "p99": 0.7596350743433202,
+     "p100": 0.7609613325175515,
+     "n": 40,
+     "mean": 0.711513730091416
+    },
+    "sm_ghz_hi": {
+     "p50": 0.81557461365757,
+     "p90": 0.902413768156988,
+     "p99": 0.9041139549965388,
+     "p100": 0.9043683233721056,
+     "n": 40,
+     "mean": 0.8379185750532454
+    },
+    "rate_inconsistency_ns": {
+     "p50": 0.0,
+     "p90": 0.0,
+     "p99": 0.0,
+     "p100": 0.0,
+     "n": 40,
+     "mean": 0.0
+    },
+    "block_bound_ns": {
+     "p50_over_launches": {
+      "p50": 211.22899645962752,
+      "p90": 293.64025725349785,
+      "p99": 327.46343451175835,
+      "p100": 334.4128541275859,
+      "n": 40,
+      "mean": 186.90372451561774
+     },
+     "max_over_launches": {
+      "p50": 211.22899645962752,
+      "p90": 293.64025725349785,
+      "p99": 327.46343451175835,
+      "p100": 334.4128541275859,
+      "n": 40,
+      "mean": 186.90372451561774
+     }
+    },
+    "ticket": {
+     "n": 40,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "cross_sm_floor_ns": {
+      "p50": null,
+      "p90": null,
+      "p99": null,
+      "p100": null,
+      "n": 0
+     }
+    },
+    "launch_to_first_entry_ns": {
+     "p50": 8404.5625,
+     "p90": 9471.5,
+     "p99": 12389.819999999998,
+     "p100": 12749.0625,
+     "n": 39,
+     "mean": 8659.488782051281
+    },
+    "launch_to_first_entry_cold_ns": {
+     "p50": 277022.5625,
+     "p90": 277022.5625,
+     "p99": 277022.5625,
+     "p100": 277022.5625,
+     "n": 1,
+     "mean": 277022.5625
+    },
+    "flag_write_to_flag_seen_ns": {
+     "p50": 719.5,
+     "p90": 809.4375,
+     "p99": 1581.4293749999993,
+     "p100": 2065.6875,
+     "n": 40,
+     "mean": 744.171875
+    },
+    "flag_write_to_flag_seen_min_ns": {
+     "p50": 622.125,
+     "p90": 684.775,
+     "p99": 1503.6612499999992,
+     "p100": 2010.125,
+     "n": 40,
+     "mean": 577.9453125
+    },
+    "flag_write_to_flag_seen_max_ns": {
+     "p50": 868.65625,
+     "p90": 1027.1937500000001,
+     "p99": 1727.7887499999995,
+     "p100": 2121.25,
+     "n": 40,
+     "mean": 910.396875
+    },
+    "last_exit_to_sync_return_ns": {
+     "p50": 8522.0,
+     "p90": 8678.975,
+     "p99": 9041.793749999999,
+     "p100": 9159.0,
+     "n": 39,
+     "mean": 8517.035256410256
+    },
+    "compute_cycles_per_ffma": {
+     "p50": 4.013671875,
+     "p90": 4.01953125,
+     "p99": 4.01953125,
+     "p100": 4.01953125,
+     "n": 312,
+     "mean": 4.0126953125
+    },
+    "compute_cycles_per_ffma_cold": {
+     "p50": 4.013671875,
+     "p90": 4.016796875,
+     "p99": 4.0192578125,
+     "p100": 4.01953125,
+     "n": 8,
+     "mean": 4.0126953125
+    },
+    "writer_fence_cycles": {
+     "p50": 2448.0,
+     "p90": 2452.0,
+     "p99": 2452.62,
+     "p100": 2453.0,
+     "n": 39,
+     "mean": 2448.6153846153848
+    },
+    "writer_fence_cycles_cold": {
+     "p50": 3126.0,
+     "p90": 3126.0,
+     "p99": 3126.0,
+     "p100": 3126.0,
+     "n": 1,
+     "mean": 3126.0
+    },
+    "kernel_span_incl_writer_fence_ns": {
+     "p50": 6944.087842665613,
+     "p90": 7417.090385676548,
+     "p99": 7817.903124767597,
+     "p100": 7830.457340654503,
+     "n": 40,
+     "mean": 7001.118175645768
+    },
+    "last_exit_incl_writer_fence_to_sync_return_ns": {
+     "p50": 5349.1875,
+     "p90": 5578.0125,
+     "p99": 5898.456249999999,
+     "p100": 6015.1875,
+     "n": 39,
+     "mean": 5324.891025641025
+    }
+   },
+   "108": {
+    "kernels": 40,
+    "checkpoint_cost_cycles": {
+     "p50": 13.0,
+     "p90": 15.0,
+     "p99": 15.0,
+     "p100": 15.0,
+     "n": 34560,
+     "mean": 13.48839699074074
+    },
+    "touch_chain_cycles": {
+     "p50": 62.0,
+     "p90": 70.0,
+     "p99": 77.0,
+     "p100": 86.0,
+     "n": 34560,
+     "mean": 62.11177662037037
+    },
+    "phases_cycles": {
+     "load": {
+      "p50": 343.0,
+      "p90": 380.0,
+      "p99": 421.0,
+      "p100": 527.0,
+      "n": 34560,
+      "mean": 342.75772569444445
+     },
+     "barrier1": {
+      "p50": 58.0,
+      "p90": 118.0,
+      "p99": 205.0,
+      "p100": 378.0,
+      "n": 34560,
+      "mean": 67.73275462962962
+     },
+     "compute": {
+      "p50": 1027.0,
+      "p90": 1028.0,
+      "p99": 1028.0,
+      "p100": 1029.0,
+      "n": 34560,
+      "mean": 1026.9018229166666
+     },
+     "barrier2": {
+      "p50": 41.0,
+      "p90": 49.0,
+      "p99": 52.0,
+      "p100": 54.0,
+      "n": 34560,
+      "mean": 40.413975694444446
+     },
+     "store_fence": {
+      "p50": 753.0,
+      "p90": 950.0,
+      "p99": 1018.0,
+      "p100": 1077.0,
+      "n": 34560,
+      "mean": 747.4609085648148
+     },
+     "ticket": {
+      "p50": 408.5,
+      "p90": 436.0,
+      "p99": 465.0,
+      "p100": 482.0,
+      "n": 4320,
+      "mean": 357.74560185185186
+     },
+     "tail": {
+      "p50": 167.0,
+      "p90": 475.0,
+      "p99": 777.4099999999962,
+      "p100": 843.0,
+      "n": 34560,
+      "mean": 259.5630208333333
+     },
+     "flag_store": {
+      "p50": -2.0,
+      "p90": -1.0,
+      "p99": -1.0,
+      "p100": -1.0,
+      "n": 34560,
+      "mean": -2.488396990740741
+     }
+    },
+    "barrier1": {
+     "wait_cycles": {
+      "p50": 41.0,
+      "p90": 102.0,
+      "p99": 188.0,
+      "p100": 359.0,
+      "n": 30240,
+      "mean": 49.945998677248674
+     },
+     "release_cycles": {
+      "p50": 30.0,
+      "p90": 48.0,
+      "p99": 49.0,
+      "p100": 49.0,
+      "n": 34560,
+      "mean": 31.959282407407407
+     },
+     "arrival_spread_cycles": {
+      "p50": 97.0,
+      "p90": 158.0,
+      "p99": 223.0,
+      "p100": 359.0,
+      "n": 4320,
+      "mean": 102.17847222222223
+     }
+    },
+    "barrier2": {
+     "wait_cycles": {
+      "p50": 20.0,
+      "p90": 34.0,
+      "p99": 34.0,
+      "p100": 34.0,
+      "n": 30240,
+      "mean": 19.317162698412698
+     },
+     "release_cycles": {
+      "p50": 32.0,
+      "p90": 47.0,
+      "p99": 48.0,
+      "p100": 50.0,
+      "n": 34560,
+      "mean": 31.440734953703704
+     },
+     "arrival_spread_cycles": {
+      "p50": 34.0,
+      "p90": 34.0,
+      "p99": 34.0,
+      "p100": 34.0,
+      "n": 4320,
+      "mean": 33.67314814814815
+     }
+    },
+    "barrier_release_before_last_arrival": 0,
+    "kernel_span_ns": {
+     "p50": 4969.3005568906665,
+     "p90": 5025.442174458503,
+     "p99": 5074.940034143776,
+     "p100": 5077.857972711325,
+     "n": 40,
+     "mean": 4968.246243706718
+    },
+    "block_start_spread_ns": {
+     "p50": 678.0274579972029,
+     "p90": 728.2308822363615,
+     "p99": 760.9215082935989,
+     "p100": 761.3685535788536,
+     "n": 40,
+     "mean": 683.1984734736383
+    },
+    "sm_ghz_lo": {
+     "p50": 0.7575445728543728,
+     "p90": 0.7600823753336384,
+     "p99": 0.7621497591818748,
+     "p100": 0.7629109053390036,
+     "n": 40,
+     "mean": 0.7572676212644414
+    },
+    "sm_ghz_hi": {
+     "p50": 0.7644384458063376,
+     "p90": 0.7680259994081077,
+     "p99": 0.771389071919806,
+     "p100": 0.7729146232258041,
+     "n": 40,
+     "mean": 0.7645247498603552
+    },
+    "rate_inconsistency_ns": {
+     "p50": 0.0,
+     "p90": 0.0,
+     "p99": 0.0,
+     "p100": 0.0,
+     "n": 40,
+     "mean": 0.0
+    },
+    "block_bound_ns": {
+     "p50_over_launches": {
+      "p50": 51.591920332983136,
+      "p90": 80.31046652533114,
+      "p99": 93.86653664525598,
+      "p100": 96.88321198150516,
+      "n": 40,
+      "mean": 47.20255453381687
+     },
+     "max_over_launches": {
+      "p50": 139.22436591237783,
+      "p90": 156.1364686496556,
+      "p99": 165.52309153936804,
+      "p100": 166.52816573530436,
+      "n": 40,
+      "mean": 129.01243527214973
+     }
+    },
+    "ticket": {
+     "n": 4320,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "cross_sm_floor_ns": {
+      "p50": 383.52442367374897,
+      "p90": 408.1644187957049,
+      "p99": 474.5543679907918,
+      "p100": 480.5627251416445,
+      "n": 40,
+      "mean": 387.7468485727906
+     }
+    },
+    "launch_to_first_entry_ns": {
+     "p50": 7942.5625,
+     "p90": 8210.59375,
+     "p99": 8764.205625,
+     "p100": 8793.1875,
+     "n": 40,
+     "mean": 7968.5546875
+    },
+    "launch_to_first_entry_cold_ns": {
+     "p50": null,
+     "p90": null,
+     "p99": null,
+     "p100": null,
+     "n": 0
+    },
+    "flag_write_to_flag_seen_ns": {
+     "p50": 731.5,
+     "p90": 834.6437500000001,
+     "p99": 1038.7424999999998,
+     "p100": 1077.9375,
+     "n": 40,
+     "mean": 753.9453125
+    },
+    "flag_write_to_flag_seen_min_ns": {
+     "p50": 682.9375,
+     "p90": 761.0062500000003,
+     "p99": 944.236875,
+     "p100": 945.1875,
+     "n": 40,
+     "mean": 699.0453125
+    },
+    "flag_write_to_flag_seen_max_ns": {
+     "p50": 780.46875,
+     "p90": 908.21875,
+     "p99": 1133.2862499999999,
+     "p100": 1210.75,
+     "n": 40,
+     "mean": 808.846875
+    },
+    "last_exit_to_sync_return_ns": {
+     "p50": 9392.9375,
+     "p90": 9791.125,
+     "p99": 10123.086874999999,
+     "p100": 10237.625,
+     "n": 40,
+     "mean": 9441.803125
+    },
+    "compute_cycles_per_ffma": {
+     "p50": 4.01171875,
+     "p90": 4.015625,
+     "p99": 4.015625,
+     "p100": 4.01953125,
+     "n": 34560,
+     "mean": 4.011335245768229
+    },
+    "compute_cycles_per_ffma_cold": {
+     "p50": null,
+     "p90": null,
+     "p99": null,
+     "p100": null,
+     "n": 0
+    },
+    "writer_fence_cycles": {
+     "p50": 2879.5,
+     "p90": 3071.1,
+     "p99": 3301.06,
+     "p100": 3358.0,
+     "n": 40,
+     "mean": 2890.55
+    },
+    "writer_fence_cycles_cold": {
+     "p50": null,
+     "p90": null,
+     "p99": null,
+     "p100": null,
+     "n": 0
+    },
+    "kernel_span_incl_writer_fence_ns": {
+     "p50": 8738.725094236434,
+     "p90": 9028.156254442036,
+     "p99": 9317.142729359419,
+     "p100": 9384.600197687745,
+     "n": 40,
+     "mean": 8765.740158011764
+    },
+    "last_exit_incl_writer_fence_to_sync_return_ns": {
+     "p50": 5598.21875,
+     "p90": 5917.743750000001,
+     "p99": 6137.635625,
+     "p100": 6210.6875,
+     "n": 40,
+     "mean": 5644.3796875
+    }
+   }
+  },
+  "kernels": [
+   {
+    "kid": 1,
+    "blocks": 1,
+    "cold": true,
+    "span_gpu_ns": 3769.7390847012894,
+    "block_start_spread_ns": 0.0,
+    "sm_fit": {
+     "n": 1,
+     "bound_ns_p50": 46.78501684993421,
+     "bound_ns_max": 64.44800530508542,
+     "block_max_bound_p50": 63.98042606466163,
+     "block_max_bound_max": 63.98042606466163,
+     "ghz_lo": 0.746670907149075,
+     "ghz_hi": 0.7944387971688003,
+     "ghz_lo_exact": 0.7473958333333334,
+     "ghz_hi_exact": 0.7936197916666666,
+     "ghz_p50": 0.7705548521589376,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 1,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 494.6888311605159,
+     "slack_min_ns": null,
+     "slack_p50_ns": null,
+     "worst_margin_ns": null,
+     "cross_sm_floor_ns": null
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 277022.5625,
+     "call_ns": 272020,
+     "last_exit_to_sync_return_ns": 9822.75,
+     "bound_ns": 761.1767883300781,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 5762.125,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      4118.680885972109,
+      4229.797909407665
+     ],
+     "flag_write_to_flag_seen_ns": 2065.6875,
+     "flag_write_to_flag_seen_min_ns": 2010.125,
+     "flag_write_to_flag_seen_max_ns": 2121.25,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 3126.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 7830.457340654503,
+    "compute_cycles_per_ffma_p50": 4.013671875
+   },
+   {
+    "kid": 2,
+    "blocks": 1,
+    "cold": false,
+    "span_gpu_ns": 3641.642445441801,
+    "block_start_spread_ns": 0.0,
+    "sm_fit": {
+     "n": 1,
+     "bound_ns_p50": 168.3362236644025,
+     "bound_ns_max": 212.7973784818314,
+     "block_max_bound_p50": 211.55846130521968,
+     "block_max_bound_max": 211.55846130521968,
+     "ghz_lo": 0.7168019075926069,
+     "ghz_hi": 0.8950481720113151,
+     "ghz_lo_exact": 0.7174479166666169,
+     "ghz_hi_exact": 0.894042968750076,
+     "ghz_p50": 0.8059250398019611,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 1,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 436.84799570213187,
+     "slack_min_ns": null,
+     "slack_p50_ns": null,
+     "worst_margin_ns": null,
+     "cross_sm_floor_ns": null
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 9426.5625,
+     "call_ns": 3917,
+     "last_exit_to_sync_return_ns": 8682.875,
+     "bound_ns": 761.1767883300781,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 5610.3125,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      1736263.8645548879,
+      1736648.7114337569
+     ],
+     "flag_write_to_flag_seen_ns": 824.0,
+     "flag_write_to_flag_seen_min_ns": 631.625,
+     "flag_write_to_flag_seen_max_ns": 1016.4375,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 2446.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 6714.239003410563,
+    "compute_cycles_per_ffma_p50": 4.013671875
+   },
+   {
+    "kid": 3,
+    "blocks": 1,
+    "cold": false,
+    "span_gpu_ns": 3834.9592045741156,
+    "block_start_spread_ns": 0.0,
+    "sm_fit": {
+     "n": 1,
+     "bound_ns_p50": 29.072761243442073,
+     "bound_ns_max": 55.79627792793326,
+     "block_max_bound_p50": 55.79627792793326,
+     "block_max_bound_max": 55.79627792793326,
+     "ghz_lo": 0.7404851309017999,
+     "ghz_hi": 0.7725984416297662,
+     "ghz_lo_exact": 0.7412109374999508,
+     "ghz_hi_exact": 0.7718098958333903,
+     "ghz_p50": 0.7565417862657831,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 1,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 509.96737602637717,
+     "slack_min_ns": null,
+     "slack_p50_ns": null,
+     "worst_margin_ns": null,
+     "cross_sm_floor_ns": null
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 8331.25,
+     "call_ns": 3136,
+     "last_exit_to_sync_return_ns": 8221.875,
+     "bound_ns": 761.1767883300781,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 4986.0,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      3735561.06959089,
+      3735686.9143610015
+     ],
+     "flag_write_to_flag_seen_ns": 685.0,
+     "flag_write_to_flag_seen_min_ns": 622.0625,
+     "flag_write_to_flag_seen_max_ns": 747.875,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 2447.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 7070.871333398856,
+    "compute_cycles_per_ffma_p50": 4.013671875
+   },
+   {
+    "kid": 4,
+    "blocks": 1,
+    "cold": false,
+    "span_gpu_ns": 3729.3338677091524,
+    "block_start_spread_ns": 0.0,
+    "sm_fit": {
+     "n": 1,
+     "bound_ns_p50": 192.84660561266355,
+     "bound_ns_max": 291.81960690394044,
+     "block_max_bound_p50": 291.81960690394044,
+     "block_max_bound_max": 291.81960690394044,
+     "ghz_lo": 0.682505502523801,
+     "ghz_hi": 0.9020876541742696,
+     "ghz_lo_exact": 0.6831054687499629,
+     "ghz_hi_exact": 0.9010416666667549,
+     "ghz_p50": 0.7922965783490353,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 1,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 435.65611188830036,
+     "slack_min_ns": null,
+     "slack_p50_ns": null,
+     "worst_margin_ns": null,
+     "cross_sm_floor_ns": null
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 8591.875,
+     "call_ns": 3136,
+     "last_exit_to_sync_return_ns": 8517.875,
+     "bound_ns": 761.1767883300781,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 5362.5,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      5735522.774566473,
+      5736118.621872767
+     ],
+     "flag_write_to_flag_seen_ns": 799.9375,
+     "flag_write_to_flag_seen_min_ns": 502.0625,
+     "flag_write_to_flag_seen_max_ns": 1097.875,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 2452.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 6884.726084280759,
+    "compute_cycles_per_ffma_p50": 4.013671875
+   },
+   {
+    "kid": 5,
+    "blocks": 1,
+    "cold": false,
+    "span_gpu_ns": 3725.2964041735977,
+    "block_start_spread_ns": 0.0,
+    "sm_fit": {
+     "n": 1,
+     "bound_ns_p50": 191.8289522936102,
+     "bound_ns_max": 288.8594392617233,
+     "block_max_bound_p50": 288.8594392617233,
+     "block_max_bound_max": 288.8594392617233,
+     "ghz_lo": 0.6849443067934377,
+     "ghz_hi": 0.9037160967680882,
+     "ghz_lo_exact": 0.6855468749998648,
+     "ghz_hi_exact": 0.9026692708335838,
+     "ghz_p50": 0.794330201780763,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 1,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 433.7645433138668,
+     "slack_min_ns": null,
+     "slack_p50_ns": null,
+     "worst_margin_ns": null,
+     "cross_sm_floor_ns": null
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 8414.0625,
+     "call_ns": 3046,
+     "last_exit_to_sync_return_ns": 8489.6875,
+     "bound_ns": 761.1767883300781,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 5344.5,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      7735394.596465921,
+      7735984.501424502
+     ],
+     "flag_write_to_flag_seen_ns": 700.75,
+     "flag_write_to_flag_seen_min_ns": 405.8125,
+     "flag_write_to_flag_seen_max_ns": 995.75,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 2451.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 6870.560436772183,
+    "compute_cycles_per_ffma_p50": 4.013671875
+   },
+   {
+    "kid": 6,
+    "blocks": 1,
+    "cold": false,
+    "span_gpu_ns": 3657.932802999392,
+    "block_start_spread_ns": 0.0,
+    "sm_fit": {
+     "n": 1,
+     "bound_ns_p50": 157.14827348897234,
+     "bound_ns_max": 213.19344262313098,
+     "block_max_bound_p50": 211.95749131962657,
+     "block_max_bound_max": 211.95749131962657,
+     "ghz_lo": 0.727854987221688,
+     "ghz_hi": 0.8945505645029023,
+     "ghz_lo_exact": 0.7285156249997069,
+     "ghz_hi_exact": 0.8935546875004625,
+     "ghz_p50": 0.8112027758622951,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 1,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 480.68831105030836,
+     "slack_min_ns": null,
+     "slack_p50_ns": null,
+     "worst_margin_ns": null,
+     "cross_sm_floor_ns": null
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 8732.25,
+     "call_ns": 3075,
+     "last_exit_to_sync_return_ns": 8558.875,
+     "bound_ns": 761.1767883300781,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 5507.75,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      9735795.829508195,
+      9736126.112600537
+     ],
+     "flag_write_to_flag_seen_ns": 780.0625,
+     "flag_write_to_flag_seen_min_ns": 614.875,
+     "flag_write_to_flag_seen_max_ns": 945.1875,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 2449.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 6709.117215311155,
+    "compute_cycles_per_ffma_p50": 4.013671875
+   },
+   {
+    "kid": 7,
+    "blocks": 1,
+    "cold": false,
+    "span_gpu_ns": 3730.039766835049,
+    "block_start_spread_ns": 0.0,
+    "sm_fit": {
+     "n": 1,
+     "bound_ns_p50": 193.32151041179895,
+     "bound_ns_max": 291.1076957155019,
+     "block_max_bound_p50": 291.1076957155019,
+     "block_max_bound_max": 291.1076957155019,
+     "ghz_lo": 0.682505595873774,
+     "ghz_hi": 0.9024137681569603,
+     "ghz_lo_exact": 0.6831054687498872,
+     "ghz_hi_exact": 0.9013671875001804,
+     "ghz_p50": 0.7924596820153671,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 1,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 434.39053550856056,
+     "slack_min_ns": null,
+     "slack_p50_ns": null,
+     "worst_margin_ns": null,
+     "cross_sm_floor_ns": null
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 8104.375,
+     "call_ns": 2765,
+     "last_exit_to_sync_return_ns": 8533.625,
+     "bound_ns": 761.1767883300781,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 5381.375,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      11735138.738894908,
+      11735733.157969978
+     ],
+     "flag_write_to_flag_seen_ns": 794.75,
+     "flag_write_to_flag_seen_min_ns": 497.5,
+     "flag_write_to_flag_seen_max_ns": 1091.9375,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 2450.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 6882.367268990725,
+    "compute_cycles_per_ffma_p50": 4.013671875
+   },
+   {
+    "kid": 8,
+    "blocks": 1,
+    "cold": false,
+    "span_gpu_ns": 3941.35520472005,
+    "block_start_spread_ns": 0.0,
+    "sm_fit": {
+     "n": 1,
+     "bound_ns_p50": 142.00274094194174,
+     "bound_ns_max": 290.89254464861006,
+     "block_max_bound_p50": 290.89254464861006,
+     "block_max_bound_max": 290.89254464861006,
+     "ghz_lo": 0.6761348475591534,
+     "ghz_hi": 0.8039388535122381,
+     "ghz_lo_exact": 0.6767578124997702,
+     "ghz_hi_exact": 0.8030598958335302,
+     "ghz_p50": 0.7400368505356958,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 1,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 487.5992723668414,
+     "slack_min_ns": null,
+     "slack_p50_ns": null,
+     "worst_margin_ns": null,
+     "cross_sm_floor_ns": null
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 11803.6875,
+     "call_ns": 6241,
+     "last_exit_to_sync_return_ns": 8450.0,
+     "bound_ns": 761.1767883300781,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 5115.9375,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      13739118.82610458,
+      13739714.308802309
+     ],
+     "flag_write_to_flag_seen_ns": 601.875,
+     "flag_write_to_flag_seen_min_ns": 304.125,
+     "flag_write_to_flag_seen_max_ns": 899.625,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 2449.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 7275.510263910517,
+    "compute_cycles_per_ffma_p50": 4.013671875
+   },
+   {
+    "kid": 9,
+    "blocks": 1,
+    "cold": false,
+    "span_gpu_ns": 3764.1431463211775,
+    "block_start_spread_ns": 0.0,
+    "sm_fit": {
+     "n": 1,
+     "bound_ns_p50": 84.90051116142422,
+     "bound_ns_max": 190.7215041136369,
+     "block_max_bound_p50": 189.69395541772246,
+     "block_max_bound_max": 189.69395541772246,
+     "ghz_lo": 0.716455051488217,
+     "ghz_hi": 0.8319527281666321,
+     "ghz_lo_exact": 0.7171223958330812,
+     "ghz_hi_exact": 0.8310546875004581,
+     "ghz_p50": 0.7742038898274246,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 1,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 469.978625902993,
+     "slack_min_ns": null,
+     "slack_p50_ns": null,
+     "worst_margin_ns": null,
+     "cross_sm_floor_ns": null
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 8214.75,
+     "call_ns": 2916,
+     "last_exit_to_sync_return_ns": 8630.1875,
+     "bound_ns": 761.1767883300781,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 5450.625,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      15735567.341950646,
+      15735753.151157513
+     ],
+     "flag_write_to_flag_seen_ns": 711.8125,
+     "flag_write_to_flag_seen_min_ns": 618.875,
+     "flag_write_to_flag_seen_max_ns": 804.6875,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 2448.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 6943.792015265673,
+    "compute_cycles_per_ffma_p50": 4.013671875
+   },
+   {
+    "kid": 10,
+    "blocks": 1,
+    "cold": false,
+    "span_gpu_ns": 3720.275383129716,
+    "block_start_spread_ns": 0.0,
+    "sm_fit": {
+     "n": 1,
+     "bound_ns_p50": 189.91271504946053,
+     "bound_ns_max": 285.2346491701901,
+     "block_max_bound_p50": 285.2346491701901,
+     "block_max_bound_max": 285.2346491701901,
+     "ghz_lo": 0.6854315035586346,
+     "ghz_hi": 0.9020851105478334,
+     "ghz_lo_exact": 0.6860351562493133,
+     "ghz_hi_exact": 0.9010416666672924,
+     "ghz_p50": 0.7937583070532339,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 1,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 433.4402546147192,
+     "slack_min_ns": null,
+     "slack_p50_ns": null,
+     "worst_margin_ns": null,
+     "cross_sm_floor_ns": null
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 9651.25,
+     "call_ns": 3186,
+     "last_exit_to_sync_return_ns": 8850.5625,
+     "bound_ns": 761.1767883300781,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 5708.0,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      17736802.77456647,
+      17737385.451957297
+     ],
+     "flag_write_to_flag_seen_ns": 691.625,
+     "flag_write_to_flag_seen_min_ns": 400.3125,
+     "flag_write_to_flag_seen_max_ns": 983.0,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 2448.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 6862.868253350258,
+    "compute_cycles_per_ffma_p50": 4.013671875
+   },
+   {
+    "kid": 11,
+    "blocks": 1,
+    "cold": false,
+    "span_gpu_ns": 4044.5985045284033,
+    "block_start_spread_ns": 0.0,
+    "sm_fit": {
+     "n": 1,
+     "bound_ns_p50": 151.43501902092248,
+     "bound_ns_max": 312.14797323942184,
+     "block_max_bound_p50": 312.14797323942184,
+     "block_max_bound_max": 312.14797323942184,
+     "ghz_lo": 0.6556490786539367,
+     "ghz_hi": 0.7886280640109188,
+     "ghz_lo_exact": 0.6562499999995789,
+     "ghz_hi_exact": 0.7877604166666843,
+     "ghz_p50": 0.7221385713324278,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 1,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 495.7977249901501,
+     "slack_min_ns": null,
+     "slack_p50_ns": null,
+     "worst_margin_ns": null,
+     "cross_sm_floor_ns": null
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 8177.1875,
+     "call_ns": 3006,
+     "last_exit_to_sync_return_ns": 8327.3125,
+     "bound_ns": 761.1767883300781,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 4907.0625,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      19735664.978512395,
+      19736303.23809524
+     ],
+     "flag_write_to_flag_seen_ns": 489.3125,
+     "flag_write_to_flag_seen_min_ns": 170.1875,
+     "flag_write_to_flag_seen_max_ns": 808.4375,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 2449.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 7464.909878004342,
+    "compute_cycles_per_ffma_p50": 4.013671875
+   },
+   {
+    "kid": 12,
+    "blocks": 1,
+    "cold": false,
+    "span_gpu_ns": 3922.4498406872153,
+    "block_start_spread_ns": 0.0,
+    "sm_fit": {
+     "n": 1,
+     "bound_ns_p50": 45.88727544154972,
+     "bound_ns_max": 73.46615145169199,
+     "block_max_bound_p50": 72.97674734331667,
+     "block_max_bound_max": 72.97674734331667,
+     "ghz_lo": 0.7268337951105851,
+     "ghz_hi": 0.7742361583741796,
+     "ghz_lo_exact": 0.7275390624988951,
+     "ghz_hi_exact": 0.7734375000014123,
+     "ghz_p50": 0.7505349767423823,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 1,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 556.6776949620358,
+     "slack_min_ns": null,
+     "slack_p50_ns": null,
+     "worst_margin_ns": null,
+     "cross_sm_floor_ns": null
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 8417.125,
+     "call_ns": 2996,
+     "last_exit_to_sync_return_ns": 8499.5,
+     "bound_ns": 761.1767883300781,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 5234.625,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      21736098.909090906,
+      21736206.088590607
+     ],
+     "flag_write_to_flag_seen_ns": 702.625,
+     "flag_write_to_flag_seen_min_ns": 649.0,
+     "flag_write_to_flag_seen_max_ns": 756.1875,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 2448.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 7187.379187848419,
+    "compute_cycles_per_ffma_p50": 4.013671875
+   },
+   {
+    "kid": 13,
+    "blocks": 1,
+    "cold": false,
+    "span_gpu_ns": 3730.0397668369114,
+    "block_start_spread_ns": 0.0,
+    "sm_fit": {
+     "n": 1,
+     "bound_ns_p50": 193.05519110243767,
+     "bound_ns_max": 289.64379293099046,
+     "block_max_bound_p50": 289.64379293099046,
+     "block_max_bound_max": 289.64379293099046,
+     "ghz_lo": 0.6825055958726719,
+     "ghz_hi": 0.9024137681572377,
+     "ghz_lo_exact": 0.6831054687487836,
+     "ghz_hi_exact": 0.9013671875004565,
+     "ghz_p50": 0.7924596820149548,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 1,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 435.498674629622,
+     "slack_min_ns": null,
+     "slack_p50_ns": null,
+     "worst_margin_ns": null,
+     "cross_sm_floor_ns": null
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 8115.875,
+     "call_ns": 2765,
+     "last_exit_to_sync_return_ns": 8552.1875,
+     "bound_ns": 761.1767883300781,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 5399.9375,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      23735394.738894906,
+      23735986.23016441
+     ],
+     "flag_write_to_flag_seen_ns": 724.3125,
+     "flag_write_to_flag_seen_min_ns": 428.5625,
+     "flag_write_to_flag_seen_max_ns": 1020.0,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 2450.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 6882.367268994451,
+    "compute_cycles_per_ffma_p50": 4.013671875
+   },
+   {
+    "kid": 14,
+    "blocks": 1,
+    "cold": false,
+    "span_gpu_ns": 3767.766631089151,
+    "block_start_spread_ns": 0.0,
+    "sm_fit": {
+     "n": 1,
+     "bound_ns_p50": 84.86195431929082,
+     "bound_ns_max": 189.93062904290855,
+     "block_max_bound_p50": 188.90688263066113,
+     "block_max_bound_max": 188.90688263066113,
+     "ghz_lo": 0.7164548699306588,
+     "ghz_hi": 0.8314636359051942,
+     "ghz_lo_exact": 0.7171223958328894,
+     "ghz_hi_exact": 0.8305664062508786,
+     "ghz_p50": 0.7739592529179264,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 1,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 472.66047849723515,
+     "slack_min_ns": null,
+     "slack_p50_ns": null,
+     "worst_margin_ns": null,
+     "cross_sm_floor_ns": null
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 8404.5625,
+     "call_ns": 2855,
+     "last_exit_to_sync_return_ns": 8736.75,
+     "bound_ns": 761.1767883300781,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 5560.1875,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      25735954.21046443,
+      25736139.940081708
+     ],
+     "flag_write_to_flag_seen_ns": 738.375,
+     "flag_write_to_flag_seen_min_ns": 645.5,
+     "flag_write_to_flag_seen_max_ns": 831.25,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 2445.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 6944.383670065552,
+    "compute_cycles_per_ffma_p50": 4.013671875
+   },
+   {
+    "kid": 15,
+    "blocks": 1,
+    "cold": false,
+    "span_gpu_ns": 3612.019386485219,
+    "block_start_spread_ns": 0.0,
+    "sm_fit": {
+     "n": 1,
+     "bound_ns_p50": 151.46381704043597,
+     "bound_ns_max": 212.79737848229706,
+     "block_max_bound_p50": 211.55952117405832,
+     "block_max_bound_max": 211.55952117405832,
+     "ghz_lo": 0.7288304285765994,
+     "ghz_hi": 0.8950389542005651,
+     "ghz_lo_exact": 0.7294921874993232,
+     "ghz_hi_exact": 0.8940429687511942,
+     "ghz_p50": 0.8119346913885823,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 1,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 440.20430412653343,
+     "slack_min_ns": null,
+     "slack_p50_ns": null,
+     "worst_margin_ns": null,
+     "cross_sm_floor_ns": null
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 8238.75,
+     "call_ns": 2835,
+     "last_exit_to_sync_return_ns": 8607.3125,
+     "bound_ns": 761.1767883300781,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 5557.9375,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      27735627.220098305,
+      27735946.109772425
+     ],
+     "flag_write_to_flag_seen_ns": 809.4375,
+     "flag_write_to_flag_seen_min_ns": 650.0,
+     "flag_write_to_flag_seen_max_ns": 968.9375,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 2450.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 6661.449950542301,
+    "compute_cycles_per_ffma_p50": 4.013671875
+   },
+   {
+    "kid": 16,
+    "blocks": 1,
+    "cold": false,
+    "span_gpu_ns": 3876.423592004925,
+    "block_start_spread_ns": 0.0,
+    "sm_fit": {
+     "n": 1,
+     "bound_ns_p50": 127.42976657953113,
+     "bound_ns_max": 181.58340004645288,
+     "block_max_bound_p50": 180.2978538516909,
+     "block_max_bound_max": 180.2978538516909,
+     "ghz_lo": 0.691742379538656,
+     "ghz_hi": 0.8138730381533814,
+     "ghz_lo_exact": 0.6923828124984502,
+     "ghz_hi_exact": 0.8129882812504792,
+     "ghz_p50": 0.7528077088460188,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 1,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 482.87629836182845,
+     "slack_min_ns": null,
+     "slack_p50_ns": null,
+     "worst_margin_ns": null,
+     "cross_sm_floor_ns": null
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 8662.75,
+     "call_ns": 3056,
+     "last_exit_to_sync_return_ns": 8579.875,
+     "bound_ns": 761.1767883300781,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 5303.9375,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      29736379.425825827,
+      29736650.922425956
+     ],
+     "flag_write_to_flag_seen_ns": 732.625,
+     "flag_write_to_flag_seen_min_ns": 596.875,
+     "flag_write_to_flag_seen_max_ns": 868.375,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 2450.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 7152.462847061455,
+    "compute_cycles_per_ffma_p50": 4.013671875
+   },
+   {
+    "kid": 17,
+    "blocks": 1,
+    "cold": false,
+    "span_gpu_ns": 3764.5430280715227,
+    "block_start_spread_ns": 0.0,
+    "sm_fit": {
+     "n": 1,
+     "bound_ns_p50": 46.785016850568354,
+     "bound_ns_max": 64.29214556142688,
+     "block_max_bound_p50": 63.82456631958485,
+     "block_max_bound_max": 63.82456631958485,
+     "ghz_lo": 0.746670907148678,
+     "ghz_hi": 0.794438797169383,
+     "ghz_lo_exact": 0.7473958333329355,
+     "ghz_hi_exact": 0.7936197916672484,
+     "ghz_p50": 0.7705548521590305,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 1,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 493.43008095363865,
+     "slack_min_ns": null,
+     "slack_p50_ns": null,
+     "worst_margin_ns": null,
+     "cross_sm_floor_ns": null
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 8125.1875,
+     "call_ns": 2875,
+     "last_exit_to_sync_return_ns": 8458.3125,
+     "bound_ns": 761.1767883300781,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 5275.8125,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      31735830.68088597,
+      31735941.79790941
+     ],
+     "flag_write_to_flag_seen_ns": 730.25,
+     "flag_write_to_flag_seen_min_ns": 674.6875,
+     "flag_write_to_flag_seen_max_ns": 785.8125,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 2450.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 6947.127713639289,
+    "compute_cycles_per_ffma_p50": 4.013671875
+   },
+   {
+    "kid": 18,
+    "blocks": 1,
+    "cold": false,
+    "span_gpu_ns": 3928.7230236679316,
+    "block_start_spread_ns": 0.0,
+    "sm_fit": {
+     "n": 1,
+     "bound_ns_p50": 135.50749340839684,
+     "bound_ns_max": 188.25723807513714,
+     "block_max_bound_p50": 186.92601423338056,
+     "block_max_bound_max": 186.92601423338056,
+     "ghz_lo": 0.6888169919697101,
+     "ghz_hi": 0.8148532762014615,
+     "ghz_lo_exact": 0.6894531249985855,
+     "ghz_hi_exact": 0.8139648437519466,
+     "ghz_p50": 0.7518351340855858,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 1,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 525.2479341988713,
+     "slack_min_ns": null,
+     "slack_p50_ns": null,
+     "worst_margin_ns": null,
+     "cross_sm_floor_ns": null
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 8328.8125,
+     "call_ns": 2905,
+     "last_exit_to_sync_return_ns": 8450.5625,
+     "bound_ns": 761.1767883300781,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 5175.5625,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      33736160.9790042,
+      33736448.72521247
+     ],
+     "flag_write_to_flag_seen_ns": 693.3125,
+     "flag_write_to_flag_seen_min_ns": 549.4375,
+     "flag_write_to_flag_seen_max_ns": 837.1875,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 2445.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 7203.775118067861,
+    "compute_cycles_per_ffma_p50": 4.013671875
+   },
+   {
+    "kid": 19,
+    "blocks": 1,
+    "cold": false,
+    "span_gpu_ns": 3726.703195504844,
+    "block_start_spread_ns": 0.0,
+    "sm_fit": {
+     "n": 1,
+     "bound_ns_p50": 192.05897179432213,
+     "bound_ns_max": 288.1700161732733,
+     "block_max_bound_p50": 288.1700161732733,
+     "block_max_bound_max": 288.1700161732733,
+     "ghz_lo": 0.6849444940841274,
+     "ghz_hi": 0.9043683233721056,
+     "ghz_lo_exact": 0.6855468749986534,
+     "ghz_hi_exact": 0.903320312501643,
+     "ghz_p50": 0.7946564087281165,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 1,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 434.5574583313869,
+     "slack_min_ns": null,
+     "slack_p50_ns": null,
+     "worst_margin_ns": null,
+     "cross_sm_floor_ns": null
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 8109.375,
+     "call_ns": 2795,
+     "last_exit_to_sync_return_ns": 8522.0,
+     "bound_ns": 761.1767883300781,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 5381.625,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      35735650.5254054,
+      35736239.04273505
+     ],
+     "flag_write_to_flag_seen_ns": 713.0625,
+     "flag_write_to_flag_seen_min_ns": 418.8125,
+     "flag_write_to_flag_seen_max_ns": 1007.3125,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 2448.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 6867.140174023807,
+    "compute_cycles_per_ffma_p50": 4.013671875
+   },
+   {
+    "kid": 20,
+    "blocks": 1,
+    "cold": false,
+    "span_gpu_ns": 3827.8825644105673,
+    "block_start_spread_ns": 0.0,
+    "sm_fit": {
+     "n": 1,
+     "bound_ns_p50": 88.56915506348014,
+     "bound_ns_max": 184.36908328160644,
+     "block_max_bound_p50": 183.36398948729038,
+     "block_max_bound_max": 183.36398948729038,
+     "ghz_lo": 0.7075906801678562,
+     "ghz_hi": 0.815818671450777,
+     "ghz_lo_exact": 0.7082519531237522,
+     "ghz_hi_exact": 0.8149414062506412,
+     "ghz_p50": 0.7617046758093167,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 1,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 482.9504567471428,
+     "slack_min_ns": null,
+     "slack_p50_ns": null,
+     "worst_margin_ns": null,
+     "cross_sm_floor_ns": null
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 8411.875,
+     "call_ns": 2976,
+     "last_exit_to_sync_return_ns": 8579.3125,
+     "bound_ns": 761.1767883300781,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 5349.1875,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      37736267.00539245,
+      37736448.0
+     ],
+     "flag_write_to_flag_seen_ns": 742.0625,
+     "flag_write_to_flag_seen_min_ns": 651.5625,
+     "flag_write_to_flag_seen_max_ns": 832.5625,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 2448.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 7058.029588773847,
+    "compute_cycles_per_ffma_p50": 4.013671875
+   },
+   {
+    "kid": 21,
+    "blocks": 1,
+    "cold": false,
+    "span_gpu_ns": 3610.605128593743,
+    "block_start_spread_ns": 0.0,
+    "sm_fit": {
+     "n": 1,
+     "bound_ns_p50": 152.14304506964982,
+     "bound_ns_max": 213.1238406971097,
+     "block_max_bound_p50": 211.8829955086112,
+     "block_max_bound_max": 211.8829955086112,
+     "ghz_lo": 0.7291558459197669,
+     "ghz_hi": 0.8960169595852393,
+     "ghz_lo_exact": 0.7298177083320063,
+     "ghz_hi_exact": 0.8950195312503207,
+     "ghz_p50": 0.8125864027525032,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 1,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 438.6077694131116,
+     "slack_min_ns": null,
+     "slack_p50_ns": null,
+     "worst_margin_ns": null,
+     "cross_sm_floor_ns": null
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 8272.0,
+     "call_ns": 2886,
+     "last_exit_to_sync_return_ns": 8556.5,
+     "bound_ns": 761.1767883300781,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 5506.875,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      39735881.46208401,
+      39736201.70561998
+     ],
+     "flag_write_to_flag_seen_ns": 807.625,
+     "flag_write_to_flag_seen_min_ns": 647.5,
+     "flag_write_to_flag_seen_max_ns": 967.75,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 2452.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 6660.2791814133525,
+    "compute_cycles_per_ffma_p50": 4.013671875
+   },
+   {
+    "kid": 22,
+    "blocks": 1,
+    "cold": false,
+    "span_gpu_ns": 4085.2922864556313,
+    "block_start_spread_ns": 0.0,
+    "sm_fit": {
+     "n": 1,
+     "bound_ns_p50": 151.72034315764904,
+     "bound_ns_max": 316.59382947161794,
+     "block_max_bound_p50": 316.59382947161794,
+     "block_max_bound_max": 316.59382947161794,
+     "ghz_lo": 0.6497954751056707,
+     "ghz_hi": 0.782762942806528,
+     "ghz_lo_exact": 0.6503906249996052,
+     "ghz_hi_exact": 0.7819010416683014,
+     "ghz_p50": 0.7162792089560994,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 1,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 502.0677123407668,
+     "slack_min_ns": null,
+     "slack_p50_ns": null,
+     "worst_margin_ns": null,
+     "cross_sm_floor_ns": null
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 8355.375,
+     "call_ns": 2836,
+     "last_exit_to_sync_return_ns": 8008.4375,
+     "bound_ns": 761.1767883300781,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 4561.125,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      41736305.82514571,
+      41736953.081081085
+     ],
+     "flag_write_to_flag_seen_ns": 470.4375,
+     "flag_write_to_flag_seen_min_ns": 146.8125,
+     "flag_write_to_flag_seen_max_ns": 794.0625,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 2448.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 7532.653719499707,
+    "compute_cycles_per_ffma_p50": 4.013671875
+   },
+   {
+    "kid": 23,
+    "blocks": 1,
+    "cold": false,
+    "span_gpu_ns": 3773.0739912092686,
+    "block_start_spread_ns": 0.0,
+    "sm_fit": {
+     "n": 1,
+     "bound_ns_p50": 48.37776418402791,
+     "bound_ns_max": 70.09842629730701,
+     "block_max_bound_p50": 69.60629698261619,
+     "block_max_bound_max": 69.60629698261619,
+     "ghz_lo": 0.7443955390751378,
+     "ghz_hi": 0.794440088368882,
+     "ghz_lo_exact": 0.7451171874986822,
+     "ghz_hi_exact": 0.7936197916677624,
+     "ghz_p50": 0.7694178137220099,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 1,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 493.429278984198,
+     "slack_min_ns": null,
+     "slack_p50_ns": null,
+     "worst_margin_ns": null,
+     "cross_sm_floor_ns": null
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 9143.75,
+     "call_ns": 3787,
+     "last_exit_to_sync_return_ns": 8433.25,
+     "bound_ns": 761.1767883300781,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 5249.5625,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      43737110.68088597,
+      43737222.20707733
+     ],
+     "flag_write_to_flag_seen_ns": 686.125,
+     "flag_write_to_flag_seen_min_ns": 630.375,
+     "flag_write_to_flag_seen_max_ns": 741.9375,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 2447.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 6956.767803788185,
+    "compute_cycles_per_ffma_p50": 4.013671875
+   },
+   {
+    "kid": 24,
+    "blocks": 1,
+    "cold": false,
+    "span_gpu_ns": 3877.7569047510624,
+    "block_start_spread_ns": 0.0,
+    "sm_fit": {
+     "n": 1,
+     "bound_ns_p50": 27.26633537001908,
+     "bound_ns_max": 35.60472708195448,
+     "block_max_bound_p50": 35.338689271360636,
+     "block_max_bound_max": 35.338689271360636,
+     "ghz_lo": 0.74340947988502,
+     "ghz_hi": 0.7703147065611903,
+     "ghz_lo_exact": 0.7441406249953095,
+     "ghz_hi_exact": 0.769531250002676,
+     "ghz_p50": 0.7568620932231052,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 1,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 555.6170696917645,
+     "slack_min_ns": null,
+     "slack_p50_ns": null,
+     "worst_margin_ns": null,
+     "cross_sm_floor_ns": null
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 8522.25,
+     "call_ns": 2935,
+     "last_exit_to_sync_return_ns": 8449.125,
+     "bound_ns": 761.1767883300781,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 5208.4375,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      45736623.43147207,
+      45736696.60892389
+     ],
+     "flag_write_to_flag_seen_ns": 712.25,
+     "flag_write_to_flag_seen_min_ns": 675.6875,
+     "flag_write_to_flag_seen_max_ns": 748.8125,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 2452.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 7118.472627475858,
+    "compute_cycles_per_ffma_p50": 4.013671875
+   },
+   {
+    "kid": 25,
+    "blocks": 1,
+    "cold": false,
+    "span_gpu_ns": 3611.8497791066766,
+    "block_start_spread_ns": 0.0,
+    "sm_fit": {
+     "n": 1,
+     "bound_ns_p50": 150.26567843928933,
+     "bound_ns_max": 209.83606557548046,
+     "block_max_bound_p50": 208.6287682428956,
+     "block_max_bound_max": 208.6287682428956,
+     "ghz_lo": 0.7301306366104819,
+     "ghz_hi": 0.8945488520396447,
+     "ghz_lo_exact": 0.7307942708320992,
+     "ghz_hi_exact": 0.8935546875025202,
+     "ghz_p50": 0.8123397443250633,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 1,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 438.209717788143,
+     "slack_min_ns": null,
+     "slack_p50_ns": null,
+     "worst_margin_ns": null,
+     "cross_sm_floor_ns": null
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 8637.9375,
+     "call_ns": 3226,
+     "last_exit_to_sync_return_ns": 8509.25,
+     "bound_ns": 761.1767883300781,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 5463.375,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      47736393.30273224,
+      47736709.75857461
+     ],
+     "flag_write_to_flag_seen_ns": 780.4375,
+     "flag_write_to_flag_seen_min_ns": 622.1875,
+     "flag_write_to_flag_seen_max_ns": 938.625,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 2449.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 6657.793342828751,
+    "compute_cycles_per_ffma_p50": 4.013671875
+   },
+   {
+    "kid": 26,
+    "blocks": 1,
+    "cold": false,
+    "span_gpu_ns": 3608.6478061005473,
+    "block_start_spread_ns": 0.0,
+    "sm_fit": {
+     "n": 1,
+     "bound_ns_p50": 152.41144104488194,
+     "bound_ns_max": 214.2411347515881,
+     "block_max_bound_p50": 212.98634556680918,
+     "block_max_bound_max": 212.98634556680918,
+     "ghz_lo": 0.728505659393226,
+     "ghz_hi": 0.896017450686396,
+     "ghz_lo_exact": 0.7291666666650094,
+     "ghz_hi_exact": 0.8950195312510817,
+     "ghz_p50": 0.812261555039811,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 1,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 437.4914793229837,
+     "slack_min_ns": null,
+     "slack_p50_ns": null,
+     "worst_margin_ns": null,
+     "cross_sm_floor_ns": null
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 8443.6875,
+     "call_ns": 2825,
+     "last_exit_to_sync_return_ns": 8285.75,
+     "bound_ns": 761.1767883300781,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 5238.375,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      49736264.34478996,
+      49736585.14285715
+     ],
+     "flag_write_to_flag_seen_ns": 787.875,
+     "flag_write_to_flag_seen_min_ns": 627.5,
+     "flag_write_to_flag_seen_max_ns": 948.25,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 2449.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 6656.088660284877,
+    "compute_cycles_per_ffma_p50": 4.013671875
+   },
+   {
+    "kid": 27,
+    "blocks": 1,
+    "cold": false,
+    "span_gpu_ns": 3831.4612555503845,
+    "block_start_spread_ns": 0.0,
+    "sm_fit": {
+     "n": 1,
+     "bound_ns_p50": 29.541661385446787,
+     "bound_ns_max": 39.130500957369804,
+     "block_max_bound_p50": 38.838300578296185,
+     "block_max_bound_max": 38.838300578296185,
+     "ghz_lo": 0.7414594404267597,
+     "ghz_hi": 0.7708047886292833,
+     "ghz_lo_exact": 0.7421874999977797,
+     "ghz_hi_exact": 0.7700195312508655,
+     "ghz_p50": 0.7561321145280215,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 1,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 507.2620276468606,
+     "slack_min_ns": null,
+     "slack_p50_ns": null,
+     "worst_margin_ns": null,
+     "cross_sm_floor_ns": null
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 8002.6875,
+     "call_ns": 2775,
+     "last_exit_to_sync_return_ns": 8483.9375,
+     "bound_ns": 761.1767883300781,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 5245.25,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      51736187.698161066,
+      51736264.75789474
+     ],
+     "flag_write_to_flag_seen_ns": 706.0625,
+     "flag_write_to_flag_seen_min_ns": 667.5625,
+     "flag_write_to_flag_seen_max_ns": 744.625,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 2448.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 7070.210272677243,
+    "compute_cycles_per_ffma_p50": 4.013671875
+   },
+   {
+    "kid": 28,
+    "blocks": 1,
+    "cold": false,
+    "span_gpu_ns": 4229.346175588667,
+    "block_start_spread_ns": 0.0,
+    "sm_fit": {
+     "n": 1,
+     "bound_ns_p50": 173.48839434608817,
+     "bound_ns_max": 334.4128541275859,
+     "block_max_bound_p50": 334.4128541275859,
+     "block_max_bound_max": 334.4128541275859,
+     "ghz_lo": 0.6179323990451906,
+     "ghz_hi": 0.7707218046495448,
+     "ghz_lo_exact": 0.6184895833331241,
+     "ghz_hi_exact": 0.7698567708345885,
+     "ghz_p50": 0.6943271018473677,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 1,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 508.6141298133462,
+     "slack_min_ns": null,
+     "slack_p50_ns": null,
+     "worst_margin_ns": null,
+     "cross_sm_floor_ns": null
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 8223.0625,
+     "call_ns": 2865,
+     "last_exit_to_sync_return_ns": 8155.6875,
+     "bound_ns": 761.1767883300781,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 4586.8125,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      53736563.60591966,
+      53737246.720000006
+     ],
+     "flag_write_to_flag_seen_ns": 408.8125,
+     "flag_write_to_flag_seen_min_ns": 67.25,
+     "flag_write_to_flag_seen_max_ns": 750.375,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 2448.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 7798.267043508589,
+    "compute_cycles_per_ffma_p50": 4.013671875
+   },
+   {
+    "kid": 29,
+    "blocks": 1,
+    "cold": false,
+    "span_gpu_ns": 3833.252422697842,
+    "block_start_spread_ns": 0.0,
+    "sm_fit": {
+     "n": 1,
+     "bound_ns_p50": 27.033993689343333,
+     "bound_ns_max": 51.07736323028803,
+     "block_max_bound_p50": 51.07736323028803,
+     "block_max_bound_max": 51.07736323028803,
+     "ghz_lo": 0.7424352542206701,
+     "ghz_hi": 0.7722713611244454,
+     "ghz_lo_exact": 0.7431640624987051,
+     "ghz_hi_exact": 0.7714843750001974,
+     "ghz_p50": 0.7573533076725578,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 1,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 508.8884811522503,
+     "slack_min_ns": null,
+     "slack_p50_ns": null,
+     "worst_margin_ns": null,
+     "cross_sm_floor_ns": null
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 8079.625,
+     "call_ns": 2775,
+     "last_exit_to_sync_return_ns": 8405.1875,
+     "bound_ns": 761.1767883300781,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 5171.6875,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      55736338.14683545,
+      55736454.559789754
+     ],
+     "flag_write_to_flag_seen_ns": 677.3125,
+     "flag_write_to_flag_seen_min_ns": 619.125,
+     "flag_write_to_flag_seen_max_ns": 735.5,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 2448.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 7066.816147975624,
+    "compute_cycles_per_ffma_p50": 4.013671875
+   },
+   {
+    "kid": 30,
+    "blocks": 1,
+    "cold": false,
+    "span_gpu_ns": 3656.8294447883964,
+    "block_start_spread_ns": 0.0,
+    "sm_fit": {
+     "n": 1,
+     "bound_ns_p50": 157.06999376229942,
+     "bound_ns_max": 213.51965065672994,
+     "block_max_bound_p50": 212.2757953889668,
+     "block_max_bound_max": 212.2757953889668,
+     "ghz_lo": 0.7285054975573672,
+     "ghz_hi": 0.8955283248434516,
+     "ghz_lo_exact": 0.7291666666661388,
+     "ghz_hi_exact": 0.8945312500031993,
+     "ghz_p50": 0.8120169112004094,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 1,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 480.16348346677796,
+     "slack_min_ns": null,
+     "slack_p50_ns": null,
+     "worst_margin_ns": null,
+     "cross_sm_floor_ns": null
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 9837.1875,
+     "call_ns": 4118,
+     "last_exit_to_sync_return_ns": 8608.0,
+     "bound_ns": 761.1767883300781,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 5562.375,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      57737843.1441048,
+      57738173.25714286
+     ],
+     "flag_write_to_flag_seen_ns": 799.1875,
+     "flag_write_to_flag_seen_min_ns": 634.125,
+     "flag_write_to_flag_seen_max_ns": 964.25,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 2447.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 6702.527760446072,
+    "compute_cycles_per_ffma_p50": 4.013671875
+   },
+   {
+    "kid": 31,
+    "blocks": 1,
+    "cold": false,
+    "span_gpu_ns": 3610.0583918839693,
+    "block_start_spread_ns": 0.0,
+    "sm_fit": {
+     "n": 1,
+     "bound_ns_p50": 151.8095238134265,
+     "bound_ns_max": 212.0743169374764,
+     "block_max_bound_p50": 210.89953161403537,
+     "block_max_bound_max": 210.89953161403537,
+     "ghz_lo": 0.7285051733520964,
+     "ghz_hi": 0.8945500741339272,
+     "ghz_lo_exact": 0.7291666666652397,
+     "ghz_hi_exact": 0.8935546875000963,
+     "ghz_p50": 0.8115276237430118,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 1,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 437.0912387197026,
+     "slack_min_ns": null,
+     "slack_p50_ns": null,
+     "worst_margin_ns": null,
+     "cross_sm_floor_ns": null
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 12749.0625,
+     "call_ns": 7244,
+     "last_exit_to_sync_return_ns": 8678.0,
+     "bound_ns": 761.1767883300781,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 5623.375,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      59740744.18360655,
+      59741063.77142858
+     ],
+     "flag_write_to_flag_seen_ns": 709.125,
+     "flag_write_to_flag_seen_min_ns": 549.375,
+     "flag_write_to_flag_seen_max_ns": 868.9375,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 2453.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 6664.723185017705,
+    "compute_cycles_per_ffma_p50": 4.013671875
+   },
+   {
+    "kid": 32,
+    "blocks": 1,
+    "cold": false,
+    "span_gpu_ns": 3825.2661870494485,
+    "block_start_spread_ns": 0.0,
+    "sm_fit": {
+     "n": 1,
+     "bound_ns_p50": 89.40919223241508,
+     "bound_ns_max": 186.01438849046826,
+     "block_max_bound_p50": 184.99738323315978,
+     "block_max_bound_max": 184.99738323315978,
+     "ghz_lo": 0.7061276547256041,
+     "ghz_hi": 0.815330555864363,
+     "ghz_lo_exact": 0.7067871093743734,
+     "ghz_hi_exact": 0.8144531250019106,
+     "ghz_p50": 0.7607291052949836,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 1,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 482.0130892596877,
+     "slack_min_ns": null,
+     "slack_p50_ns": null,
+     "worst_margin_ns": null,
+     "cross_sm_floor_ns": null
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 8438.375,
+     "call_ns": 2956,
+     "last_exit_to_sync_return_ns": 8495.4375,
+     "bound_ns": 761.1767883300781,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 5266.125,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      61736777.05515587,
+      61736960.0
+     ],
+     "flag_write_to_flag_seen_ns": 778.1875,
+     "flag_write_to_flag_seen_min_ns": 686.6875,
+     "flag_write_to_flag_seen_max_ns": 869.625,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 2444.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 7054.6100769117475,
+    "compute_cycles_per_ffma_p50": 4.013671875
+   },
+   {
+    "kid": 33,
+    "blocks": 1,
+    "cold": false,
+    "span_gpu_ns": 3821.310412965715,
+    "block_start_spread_ns": 0.0,
+    "sm_fit": {
+     "n": 1,
+     "bound_ns_p50": 18.68959035165608,
+     "bound_ns_max": 23.71779302880168,
+     "block_max_bound_p50": 23.540020685642958,
+     "block_max_bound_max": 23.540020685642958,
+     "ghz_lo": 0.7502346743627265,
+     "ghz_hi": 0.7688439984750258,
+     "ghz_lo_exact": 0.7509765624974806,
+     "ghz_hi_exact": 0.7680664062515985,
+     "ghz_p50": 0.7595393364188762,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 1,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 512.4576647297563,
+     "slack_min_ns": null,
+     "slack_p50_ns": null,
+     "worst_margin_ns": null,
+     "cross_sm_floor_ns": null
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 8043.5,
+     "call_ns": 2775,
+     "last_exit_to_sync_return_ns": 8543.25,
+     "bound_ns": 761.1767883300781,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 5319.8125,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      63736463.5422759,
+      63736516.41092328
+     ],
+     "flag_write_to_flag_seen_ns": 706.4375,
+     "flag_write_to_flag_seen_min_ns": 680.0,
+     "flag_write_to_flag_seen_max_ns": 732.8125,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 2448.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 7044.800382271409,
+    "compute_cycles_per_ffma_p50": 4.013671875
+   },
+   {
+    "kid": 34,
+    "blocks": 1,
+    "cold": false,
+    "span_gpu_ns": 4018.5837345421314,
+    "block_start_spread_ns": 0.0,
+    "sm_fit": {
+     "n": 1,
+     "bound_ns_p50": 151.0663751680404,
+     "bound_ns_max": 310.02611039951444,
+     "block_max_bound_p50": 310.02611039951444,
+     "block_max_bound_max": 310.02611039951444,
+     "ghz_lo": 0.6602023318589612,
+     "ghz_hi": 0.7944941265826349,
+     "ghz_lo_exact": 0.6608072916659226,
+     "ghz_hi_exact": 0.7936197916669762,
+     "ghz_p50": 0.727348229220798,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 1,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 492.1370554138795,
+     "slack_min_ns": null,
+     "slack_p50_ns": null,
+     "worst_margin_ns": null,
+     "cross_sm_floor_ns": null
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 8418.4375,
+     "call_ns": 2825,
+     "last_exit_to_sync_return_ns": 8312.0625,
+     "bound_ns": 761.1767883300781,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 4918.9375,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      65736816.14438064,
+      65737450.05714286
+     ],
+     "flag_write_to_flag_seen_ns": 534.0,
+     "flag_write_to_flag_seen_min_ns": 217.0,
+     "flag_write_to_flag_seen_max_ns": 850.9375,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 2447.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 7411.777108751237,
+    "compute_cycles_per_ffma_p50": 4.013671875
+   },
+   {
+    "kid": 35,
+    "blocks": 1,
+    "cold": false,
+    "span_gpu_ns": 3790.755891352892,
+    "block_start_spread_ns": 0.0,
+    "sm_fit": {
+     "n": 1,
+     "bound_ns_p50": 7.209702044725418,
+     "bound_ns_max": 10.436422854661942,
+     "block_max_bound_p50": 10.36305608600378,
+     "block_max_bound_max": 10.36305608600378,
+     "ghz_lo": 0.7609613325175515,
+     "ghz_hi": 0.7696534798460226,
+     "ghz_lo_exact": 0.7617187499996617,
+     "ghz_hi_exact": 0.7688802083369958,
+     "ghz_p50": 0.765307406181787,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 1,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 508.02083046285156,
+     "slack_min_ns": null,
+     "slack_p50_ns": null,
+     "worst_margin_ns": null,
+     "cross_sm_floor_ns": null
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 8085.75,
+     "call_ns": 2875,
+     "last_exit_to_sync_return_ns": 8571.5625,
+     "bound_ns": 761.1767883300781,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 5374.0625,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      67736578.60118543,
+      67736607.5076923
+     ],
+     "flag_write_to_flag_seen_ns": 714.6875,
+     "flag_write_to_flag_seen_min_ns": 700.25,
+     "flag_write_to_flag_seen_max_ns": 729.125,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 2447.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 6988.266979292035,
+    "compute_cycles_per_ffma_p50": 4.013671875
+   },
+   {
+    "kid": 36,
+    "blocks": 1,
+    "cold": false,
+    "span_gpu_ns": 3657.174818634987,
+    "block_start_spread_ns": 0.0,
+    "sm_fit": {
+     "n": 1,
+     "bound_ns_p50": 156.8608524426818,
+     "bound_ns_max": 212.9606986939907,
+     "block_max_bound_p50": 211.71984591335058,
+     "block_max_bound_max": 211.71984591335058,
+     "ghz_lo": 0.7288305907350751,
+     "ghz_hi": 0.8955280794537911,
+     "ghz_lo_exact": 0.7294921874994794,
+     "ghz_hi_exact": 0.8945312500052388,
+     "ghz_p50": 0.8121793350944331,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 1,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 480.16361503959723,
+     "slack_min_ns": null,
+     "slack_p50_ns": null,
+     "worst_margin_ns": null,
+     "cross_sm_floor_ns": null
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 8834.5625,
+     "call_ns": 3236,
+     "last_exit_to_sync_return_ns": 8617.3125,
+     "bound_ns": 761.1767883300781,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 5569.9375,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      69737075.1441048,
+      69737404.82998662
+     ],
+     "flag_write_to_flag_seen_ns": 809.4375,
+     "flag_write_to_flag_seen_min_ns": 644.625,
+     "flag_write_to_flag_seen_max_ns": 974.3125,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 2449.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 6704.613107442856,
+    "compute_cycles_per_ffma_p50": 4.013671875
+   },
+   {
+    "kid": 37,
+    "blocks": 1,
+    "cold": false,
+    "span_gpu_ns": 3730.0397668480873,
+    "block_start_spread_ns": 0.0,
+    "sm_fit": {
+     "n": 1,
+     "bound_ns_p50": 193.05519109591842,
+     "bound_ns_max": 289.64379293471575,
+     "block_max_bound_p50": 289.64379293471575,
+     "block_max_bound_max": 289.64379293471575,
+     "ghz_lo": 0.682505595872713,
+     "ghz_hi": 0.9024137681590569,
+     "ghz_lo_exact": 0.6831054687488243,
+     "ghz_hi_exact": 0.9013671875022724,
+     "ghz_p50": 0.7924596820158849,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 1,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 435.498674628744,
+     "slack_min_ns": null,
+     "slack_p50_ns": null,
+     "worst_margin_ns": null,
+     "cross_sm_floor_ns": null
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 8195.5,
+     "call_ns": 2765,
+     "last_exit_to_sync_return_ns": 8442.5,
+     "bound_ns": 761.1767883300781,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 5287.6875,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      71736418.7388949,
+      71737010.23016441
+     ],
+     "flag_write_to_flag_seen_ns": 633.625,
+     "flag_write_to_flag_seen_min_ns": 337.875,
+     "flag_write_to_flag_seen_max_ns": 929.375,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 2452.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 6884.940597563982,
+    "compute_cycles_per_ffma_p50": 4.013671875
+   },
+   {
+    "kid": 38,
+    "blocks": 1,
+    "cold": false,
+    "span_gpu_ns": 3740.11370241642,
+    "block_start_spread_ns": 0.0,
+    "sm_fit": {
+     "n": 1,
+     "bound_ns_p50": 36.278861079365015,
+     "bound_ns_max": 47.17444717884064,
+     "block_max_bound_p50": 46.86878531426191,
+     "block_max_bound_max": 46.86878531426191,
+     "ghz_lo": 0.757560670532343,
+     "ghz_hi": 0.7957368263369209,
+     "ghz_lo_exact": 0.7583007812488535,
+     "ghz_hi_exact": 0.7949218750025411,
+     "ghz_p50": 0.7766487484346319,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 1,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 495.1385771772456,
+     "slack_min_ns": null,
+     "slack_p50_ns": null,
+     "worst_margin_ns": null,
+     "cross_sm_floor_ns": null
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 8331.4375,
+     "call_ns": 2745,
+     "last_exit_to_sync_return_ns": 8627.5,
+     "bound_ns": 761.1767883300781,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 5471.0625,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      73736852.44226043,
+      73736948.2962009
+     ],
+     "flag_write_to_flag_seen_ns": 759.4375,
+     "flag_write_to_flag_seen_min_ns": 711.5,
+     "flag_write_to_flag_seen_max_ns": 807.375,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 2450.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 6896.5996035039425,
+    "compute_cycles_per_ffma_p50": 4.013671875
+   },
+   {
+    "kid": 39,
+    "blocks": 1,
+    "cold": false,
+    "span_gpu_ns": 3737.65900978446,
+    "block_start_spread_ns": 0.0,
+    "sm_fit": {
+     "n": 1,
+     "bound_ns_p50": 38.93546994403005,
+     "bound_ns_max": 50.88588956743479,
+     "block_max_bound_p50": 50.551222048699856,
+     "block_max_bound_max": 50.551222048699856,
+     "ghz_lo": 0.7556108198078642,
+     "ghz_hi": 0.7967159843424397,
+     "ghz_lo_exact": 0.7563476562484055,
+     "ghz_hi_exact": 0.795898437501178,
+     "ghz_p50": 0.776163402075152,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 1,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 493.27490313170756,
+     "slack_min_ns": null,
+     "slack_p50_ns": null,
+     "worst_margin_ns": null,
+     "cross_sm_floor_ns": null
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 8156.5,
+     "call_ns": 2785,
+     "last_exit_to_sync_return_ns": 8573.9375,
+     "bound_ns": 761.1767883300781,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 5417.8125,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      75736722.37546012,
+      75736824.89347966
+     ],
+     "flag_write_to_flag_seen_ns": 735.8125,
+     "flag_write_to_flag_seen_min_ns": 684.5625,
+     "flag_write_to_flag_seen_max_ns": 787.125,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 2448.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 6893.847093909979,
+    "compute_cycles_per_ffma_p50": 4.013671875
+   },
+   {
+    "kid": 40,
+    "blocks": 1,
+    "cold": false,
+    "span_gpu_ns": 3723.2862692922354,
+    "block_start_spread_ns": 0.0,
+    "sm_fit": {
+     "n": 1,
+     "bound_ns_p50": 190.98392585664988,
+     "bound_ns_max": 287.18008890748024,
+     "block_max_bound_p50": 287.18008890748024,
+     "block_max_bound_max": 287.18008890748024,
+     "ghz_lo": 0.6844561709367517,
+     "ghz_hi": 0.902085956007023,
+     "ghz_lo_exact": 0.6850585937497727,
+     "ghz_hi_exact": 0.9010416666697331,
+     "ghz_p50": 0.7932710634718874,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 1,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 433.43984838286957,
+     "slack_min_ns": null,
+     "slack_p50_ns": null,
+     "worst_margin_ns": null,
+     "cross_sm_floor_ns": null
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 8687.8125,
+     "call_ns": 3115,
+     "last_exit_to_sync_return_ns": 9159.0,
+     "bound_ns": 761.1767883300781,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 6015.1875,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      77737058.77456647,
+      77737645.34283677
+     ],
+     "flag_write_to_flag_seen_ns": 819.125,
+     "flag_write_to_flag_seen_min_ns": 525.8125,
+     "flag_write_to_flag_seen_max_ns": 1112.375,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 2447.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 6867.137718901038,
+    "compute_cycles_per_ffma_p50": 4.013671875
+   },
+   {
+    "kid": 41,
+    "blocks": 108,
+    "cold": false,
+    "span_gpu_ns": 4937.770747989416,
+    "block_start_spread_ns": 584.3959513902664,
+    "sm_fit": {
+     "n": 108,
+     "bound_ns_p50": 48.58374197036028,
+     "bound_ns_max": 110.74940789490938,
+     "block_max_bound_p50": 58.129857163876295,
+     "block_max_bound_max": 110.68941528350115,
+     "ghz_lo": 0.7564081145555775,
+     "ghz_hi": 0.764113588598108,
+     "ghz_lo_exact": 0.7571614583302215,
+     "ghz_hi_exact": 0.7633463541672503,
+     "ghz_p50": 0.7602608515768428,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 108,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 278.7543673850684,
+     "slack_min_ns": 306.4816284775734,
+     "slack_p50_ns": 535.1834197491407,
+     "worst_margin_ns": 386.20999163389206,
+     "cross_sm_floor_ns": 386.20999163389206
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 7947.125,
+     "call_ns": 2976,
+     "last_exit_to_sync_return_ns": 9467.1875,
+     "bound_ns": 761.1767883300781,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 5539.5625,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      79737812.93751566,
+      79737856.0
+     ],
+     "flag_write_to_flag_seen_ns": 958.375,
+     "flag_write_to_flag_seen_min_ns": 936.875,
+     "flag_write_to_flag_seen_max_ns": 979.9375,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 2986.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 8865.47093078494,
+    "compute_cycles_per_ffma_p50": 4.01171875
+   },
+   {
+    "kid": 42,
+    "blocks": 108,
+    "cold": false,
+    "span_gpu_ns": 4974.315229609609,
+    "block_start_spread_ns": 726.8074256926775,
+    "sm_fit": {
+     "n": 108,
+     "bound_ns_p50": 16.1627184599638,
+     "bound_ns_max": 110.44014888256788,
+     "block_max_bound_p50": 20.053936317563057,
+     "block_max_bound_max": 110.4028727337718,
+     "ghz_lo": 0.7567318663229051,
+     "ghz_hi": 0.761505329069027,
+     "ghz_lo_exact": 0.7574869791651223,
+     "ghz_hi_exact": 0.7607421875016043,
+     "ghz_p50": 0.759118597695966,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 108,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 274.456385296097,
+     "slack_min_ns": 321.07457515597343,
+     "slack_p50_ns": 539.7523600161076,
+     "worst_margin_ns": 371.2878428250551,
+     "cross_sm_floor_ns": 371.2878428250551
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 8004.875,
+     "call_ns": 2856,
+     "last_exit_to_sync_return_ns": 9943.9375,
+     "bound_ns": 761.1767883300781,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 5533.75,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      81737931.37897348,
+      81738000.78655061
+     ],
+     "flag_write_to_flag_seen_ns": 977.4375,
+     "flag_write_to_flag_seen_min_ns": 942.75,
+     "flag_write_to_flag_seen_max_ns": 1012.125,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 3358.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 9384.600197687745,
+    "compute_cycles_per_ffma_p50": 4.01171875
+   },
+   {
+    "kid": 43,
+    "blocks": 108,
+    "cold": false,
+    "span_gpu_ns": 4972.89855068922,
+    "block_start_spread_ns": 731.2688222527504,
+    "sm_fit": {
+     "n": 108,
+     "bound_ns_p50": 57.91696831211448,
+     "bound_ns_max": 150.88531541079283,
+     "block_max_bound_p50": 66.23134457692504,
+     "block_max_bound_max": 150.82607275247574,
+     "ghz_lo": 0.759012692086732,
+     "ghz_hi": 0.7729146232258041,
+     "ghz_lo_exact": 0.7597656249975571,
+     "ghz_hi_exact": 0.7721354166669123,
+     "ghz_p50": 0.7659636576562681,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 108,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 278.1678513244904,
+     "slack_min_ns": 240.64180046319962,
+     "slack_p50_ns": 516.0813884139061,
+     "worst_margin_ns": 384.52074940502644,
+     "cross_sm_floor_ns": 384.52074940502644
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 7553.4375,
+     "call_ns": 2715,
+     "last_exit_to_sync_return_ns": 9374.75,
+     "bound_ns": 761.1767883300781,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 5777.75,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      83737514.7006068,
+      83737600.0
+     ],
+     "flag_write_to_flag_seen_ns": 735.875,
+     "flag_write_to_flag_seen_min_ns": 693.1875,
+     "flag_write_to_flag_seen_max_ns": 778.5,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 2755.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 8569.971167385578,
+    "compute_cycles_per_ffma_p50": 4.01171875
+   },
+   {
+    "kid": 44,
+    "blocks": 108,
+    "cold": false,
+    "span_gpu_ns": 4961.627551406622,
+    "block_start_spread_ns": 673.9926975518465,
+    "sm_fit": {
+     "n": 108,
+     "bound_ns_p50": 64.42041286081076,
+     "bound_ns_max": 152.17600301653147,
+     "block_max_bound_p50": 69.53577106073499,
+     "block_max_bound_max": 152.17600301653147,
+     "ghz_lo": 0.7547826151316046,
+     "ghz_hi": 0.7634623932008687,
+     "ghz_lo_exact": 0.7555338541663821,
+     "ghz_hi_exact": 0.7626953125024855,
+     "ghz_p50": 0.7591225041662366,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 108,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 276.3724865547967,
+     "slack_min_ns": 280.07202529907227,
+     "slack_p50_ns": 540.7472507059574,
+     "worst_margin_ns": 384.954652518034,
+     "cross_sm_floor_ns": 384.954652518034
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 7841.625,
+     "call_ns": 2725,
+     "last_exit_to_sync_return_ns": 9318.8125,
+     "bound_ns": 761.1767883300781,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 5548.625,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      85737797.95978488,
+      85737991.76264219
+     ],
+     "flag_write_to_flag_seen_ns": 770.0625,
+     "flag_write_to_flag_seen_min_ns": 673.125,
+     "flag_write_to_flag_seen_max_ns": 866.9375,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 2862.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 8731.893257647753,
+    "compute_cycles_per_ffma_p50": 4.01171875
+   },
+   {
+    "kid": 45,
+    "blocks": 108,
+    "cold": false,
+    "span_gpu_ns": 4923.0652304291725,
+    "block_start_spread_ns": 637.0229395031929,
+    "sm_fit": {
+     "n": 108,
+     "bound_ns_p50": 17.676912877708673,
+     "bound_ns_max": 139.33845973014832,
+     "block_max_bound_p50": 21.49168534949422,
+     "block_max_bound_max": 139.31637880951166,
+     "ghz_lo": 0.7573824185862653,
+     "ghz_hi": 0.7624830336643276,
+     "ghz_lo_exact": 0.7581380208324973,
+     "ghz_hi_exact": 0.7617187500052051,
+     "ghz_p50": 0.7599327261252964,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 108,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 279.35047810358265,
+     "slack_min_ns": 244.7705942839384,
+     "slack_p50_ns": 547.0531935691833,
+     "worst_margin_ns": 358.7052488178015,
+     "cross_sm_floor_ns": 358.7052488178015
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 7946.1875,
+     "call_ns": 2986,
+     "last_exit_to_sync_return_ns": 9582.875,
+     "bound_ns": 761.1767883300781,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 5544.375,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      87737961.26241739,
+      87738021.75696598
+     ],
+     "flag_write_to_flag_seen_ns": 734.0625,
+     "flag_write_to_flag_seen_min_ns": 703.8125,
+     "flag_write_to_flag_seen_max_ns": 764.3125,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 3069.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 8961.62609180808,
+    "compute_cycles_per_ffma_p50": 4.01171875
+   },
+   {
+    "kid": 46,
+    "blocks": 108,
+    "cold": false,
+    "span_gpu_ns": 4989.835608899593,
+    "block_start_spread_ns": 661.146611303091,
+    "sm_fit": {
+     "n": 108,
+     "bound_ns_p50": 89.84924221411347,
+     "bound_ns_max": 166.59252757579088,
+     "block_max_bound_p50": 96.88321198150516,
+     "block_max_bound_max": 166.52816573530436,
+     "ghz_lo": 0.7525092495886249,
+     "ghz_hi": 0.7673757365096256,
+     "ghz_lo_exact": 0.753255208333068,
+     "ghz_hi_exact": 0.7666015625006011,
+     "ghz_p50": 0.7599424930491252,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 108,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 273.65994259236766,
+     "slack_min_ns": 244.08670264482498,
+     "slack_p50_ns": 539.6442838907242,
+     "worst_margin_ns": 480.5627251416445,
+     "cross_sm_floor_ns": 480.5627251416445
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 8024.75,
+     "call_ns": 2775,
+     "last_exit_to_sync_return_ns": 9417.5,
+     "bound_ns": 761.1767883300781,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 5910.4375,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      89738095.128314,
+      89738240.0
+     ],
+     "flag_write_to_flag_seen_ns": 738.6875,
+     "flag_write_to_flag_seen_min_ns": 666.25,
+     "flag_write_to_flag_seen_max_ns": 811.125,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 2665.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 8497.015455752611,
+    "compute_cycles_per_ffma_p50": 4.01171875
+   },
+   {
+    "kid": 47,
+    "blocks": 108,
+    "cold": false,
+    "span_gpu_ns": 4874.407685875893,
+    "block_start_spread_ns": 650.32253703475,
+    "sm_fit": {
+     "n": 108,
+     "bound_ns_p50": 80.62286858260632,
+     "bound_ns_max": 155.8164054825902,
+     "block_max_bound_p50": 86.0097931176424,
+     "block_max_bound_max": 155.77475913614035,
+     "ghz_lo": 0.756734266657108,
+     "ghz_hi": 0.7663955123789145,
+     "ghz_lo_exact": 0.7574869791642677,
+     "ghz_hi_exact": 0.7656250000019417,
+     "ghz_p50": 0.7615648895180112,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 108,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 272.7051458733856,
+     "slack_min_ns": 299.0617351233959,
+     "slack_p50_ns": 564.9270716756582,
+     "worst_margin_ns": 465.15668116509914,
+     "cross_sm_floor_ns": 465.15668116509914
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 7807.8125,
+     "call_ns": 2805,
+     "last_exit_to_sync_return_ns": 9388.875,
+     "bound_ns": 761.1767883300781,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 5618.4375,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      91737783.46336244,
+      91737972.47472557
+     ],
+     "flag_write_to_flag_seen_ns": 767.9375,
+     "flag_write_to_flag_seen_min_ns": 673.4375,
+     "flag_write_to_flag_seen_max_ns": 862.5,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 2885.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 8644.913842707872,
+    "compute_cycles_per_ffma_p50": 4.01171875
+   },
+   {
+    "kid": 48,
+    "blocks": 108,
+    "cold": false,
+    "span_gpu_ns": 4878.141495078802,
+    "block_start_spread_ns": 654.1024878621101,
+    "sm_fit": {
+     "n": 108,
+     "bound_ns_p50": 65.99752049148083,
+     "bound_ns_max": 159.3918542712927,
+     "block_max_bound_p50": 73.79186382889748,
+     "block_max_bound_max": 159.3918542712927,
+     "ghz_lo": 0.7560849850360799,
+     "ghz_hi": 0.768025915422764,
+     "ghz_lo_exact": 0.7568359374968201,
+     "ghz_hi_exact": 0.7672526041677061,
+     "ghz_p50": 0.7620554502294219,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 108,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 274.7303128226525,
+     "slack_min_ns": 282.4547344446182,
+     "slack_p50_ns": 533.0703861415386,
+     "worst_margin_ns": 384.18430015444756,
+     "cross_sm_floor_ns": 384.18430015444756
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 8249.125,
+     "call_ns": 3005,
+     "last_exit_to_sync_return_ns": 9865.875,
+     "bound_ns": 761.1767883300781,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 5682.6875,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      93738206.86468072,
+      93738472.44631658
+     ],
+     "flag_write_to_flag_seen_ns": 1077.9375,
+     "flag_write_to_flag_seen_min_ns": 945.1875,
+     "flag_write_to_flag_seen_max_ns": 1210.75,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 3212.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 9061.354957729578,
+    "compute_cycles_per_ffma_p50": 4.01171875
+   },
+   {
+    "kid": 49,
+    "blocks": 108,
+    "cold": false,
+    "span_gpu_ns": 4971.141463831067,
+    "block_start_spread_ns": 678.0332747399807,
+    "sm_fit": {
+     "n": 108,
+     "bound_ns_p50": 45.994598142802715,
+     "bound_ns_max": 89.90668398886919,
+     "block_max_bound_p50": 48.09222310036421,
+     "block_max_bound_max": 89.90668398886919,
+     "ghz_lo": 0.7609589258628577,
+     "ghz_hi": 0.7647633030145673,
+     "ghz_lo_exact": 0.761718749996967,
+     "ghz_hi_exact": 0.7639973958348151,
+     "ghz_p50": 0.7628611144387125,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 108,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 274.59476569052885,
+     "slack_min_ns": 318.4521186053753,
+     "slack_p50_ns": 524.3450995981693,
+     "worst_margin_ns": 380.22312362492085,
+     "cross_sm_floor_ns": 380.22312362492085
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 7705.5,
+     "call_ns": 2785,
+     "last_exit_to_sync_return_ns": 9234.5,
+     "bound_ns": 761.1767883300781,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 5488.125,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      95737911.91894284,
+      95737951.34827356
+     ],
+     "flag_write_to_flag_seen_ns": 905.6875,
+     "flag_write_to_flag_seen_min_ns": 885.9375,
+     "flag_write_to_flag_seen_max_ns": 925.375,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 2858.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 8717.587200343609,
+    "compute_cycles_per_ffma_p50": 4.01171875
+   },
+   {
+    "kid": 50,
+    "blocks": 108,
+    "cold": false,
+    "span_gpu_ns": 5014.029259219766,
+    "block_start_spread_ns": 713.3699356764555,
+    "sm_fit": {
+     "n": 108,
+     "bound_ns_p50": 49.12096893042326,
+     "bound_ns_max": 139.17437186837196,
+     "block_max_bound_p50": 53.824746545404196,
+     "block_max_bound_max": 139.132353015244,
+     "ghz_lo": 0.7599841445650598,
+     "ghz_hi": 0.7654158184431985,
+     "ghz_lo_exact": 0.7607421874985266,
+     "ghz_hi_exact": 0.7646484375007017,
+     "ghz_p50": 0.7626999815041291,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 108,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 279.58659181523166,
+     "slack_min_ns": 307.97508665919304,
+     "slack_p50_ns": 519.254369571805,
+     "worst_margin_ns": 381.4312660098076,
+     "cross_sm_floor_ns": 381.4312660098076
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 7932.625,
+     "call_ns": 2845,
+     "last_exit_to_sync_return_ns": 9244.4375,
+     "bound_ns": 761.1767883300781,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 5513.0,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      97738205.70453252,
+      97738338.97157253
+     ],
+     "flag_write_to_flag_seen_ns": 715.625,
+     "flag_write_to_flag_seen_min_ns": 649.0,
+     "flag_write_to_flag_seen_max_ns": 782.25,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 2846.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 8745.556930825114,
+    "compute_cycles_per_ffma_p50": 4.01171875
+   },
+   {
+    "kid": 51,
+    "blocks": 108,
+    "cold": false,
+    "span_gpu_ns": 4939.491687491536,
+    "block_start_spread_ns": 639.0385363996029,
+    "sm_fit": {
+     "n": 108,
+     "bound_ns_p50": 69.92746639251709,
+     "bound_ns_max": 163.9510524123907,
+     "block_max_bound_p50": 80.08228503540158,
+     "block_max_bound_max": 163.9510524123907,
+     "ghz_lo": 0.7544597952613921,
+     "ghz_hi": 0.768026755276201,
+     "ghz_lo_exact": 0.7552083333314868,
+     "ghz_hi_exact": 0.7672526041696409,
+     "ghz_p50": 0.7612432752687965,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 108,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 274.73001239926765,
+     "slack_min_ns": 276.78710843622684,
+     "slack_p50_ns": 532.0810850411654,
+     "worst_margin_ns": 375.5334002673626,
+     "cross_sm_floor_ns": 375.5334002673626
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 7701.9375,
+     "call_ns": 2765,
+     "last_exit_to_sync_return_ns": 9279.625,
+     "bound_ns": 761.1767883300781,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 5681.375,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      99737898.37816042,
+      99738117.32313824
+     ],
+     "flag_write_to_flag_seen_ns": 730.8125,
+     "flag_write_to_flag_seen_min_ns": 621.3125,
+     "flag_write_to_flag_seen_max_ns": 840.25,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 2739.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 8537.83876222372,
+    "compute_cycles_per_ffma_p50": 4.01171875
+   },
+   {
+    "kid": 52,
+    "blocks": 108,
+    "cold": false,
+    "span_gpu_ns": 5077.857972711325,
+    "block_start_spread_ns": 754.8627579212189,
+    "sm_fit": {
+     "n": 108,
+     "bound_ns_p50": 14.827391307801008,
+     "bound_ns_max": 135.5951269492507,
+     "block_max_bound_p50": 17.986006274819374,
+     "block_max_bound_max": 135.57974372059107,
+     "ghz_lo": 0.7582759407046221,
+     "ghz_hi": 0.7618305598949304,
+     "ghz_lo_exact": 0.7590332031242336,
+     "ghz_hi_exact": 0.761067708333427,
+     "ghz_p50": 0.7600532502997763,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 108,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 280.90235711929733,
+     "slack_min_ns": 262.55415247380733,
+     "slack_p50_ns": 548.8957363069057,
+     "worst_margin_ns": 365.1811329424381,
+     "cross_sm_floor_ns": 365.1811329424381
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 7832.5,
+     "call_ns": 2716,
+     "last_exit_to_sync_return_ns": 9121.75,
+     "bound_ns": 761.1767883300781,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 5740.4375,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      101738228.93540055,
+      101738403.81950293
+     ],
+     "flag_write_to_flag_seen_ns": 672.9375,
+     "flag_write_to_flag_seen_min_ns": 585.5,
+     "flag_write_to_flag_seen_max_ns": 760.4375,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 2570.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 8459.218492031097,
+    "compute_cycles_per_ffma_p50": 4.01171875
+   },
+   {
+    "kid": 53,
+    "blocks": 108,
+    "cold": false,
+    "span_gpu_ns": 4934.300539135933,
+    "block_start_spread_ns": 691.5603255331516,
+    "sm_fit": {
+     "n": 108,
+     "bound_ns_p50": 46.532301150262356,
+     "bound_ns_max": 90.41017105430365,
+     "block_max_bound_p50": 52.2093839161098,
+     "block_max_bound_max": 90.41017105430365,
+     "ghz_lo": 0.7629109053390036,
+     "ghz_hi": 0.7683484385275737,
+     "ghz_lo_exact": 0.7636718749952155,
+     "ghz_hi_exact": 0.7675781250035214,
+     "ghz_p50": 0.7656296719332887,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 108,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 278.5194701639524,
+     "slack_min_ns": 323.1930936574936,
+     "slack_p50_ns": 523.003700107336,
+     "worst_margin_ns": 388.283969566226,
+     "cross_sm_floor_ns": 388.283969566226
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 8024.5625,
+     "call_ns": 3076,
+     "last_exit_to_sync_return_ns": 9363.1875,
+     "bound_ns": 761.1767883300781,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 5524.5625,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      103738386.22089991,
+      103738425.09508877
+     ],
+     "flag_write_to_flag_seen_ns": 734.375,
+     "flag_write_to_flag_seen_min_ns": 714.9375,
+     "flag_write_to_flag_seen_max_ns": 753.8125,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 2939.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 8773.019397944212,
+    "compute_cycles_per_ffma_p50": 4.01171875
+   },
+   {
+    "kid": 54,
+    "blocks": 108,
+    "cold": false,
+    "span_gpu_ns": 4942.860962972045,
+    "block_start_spread_ns": 722.3393204659224,
+    "sm_fit": {
+     "n": 108,
+     "bound_ns_p50": 19.1897184997797,
+     "bound_ns_max": 147.14568574726582,
+     "block_max_bound_p50": 22.191046964377165,
+     "block_max_bound_max": 147.14568574726582,
+     "ghz_lo": 0.7567321077405392,
+     "ghz_hi": 0.7619943459803119,
+     "ghz_lo_exact": 0.7574869791642411,
+     "ghz_hi_exact": 0.7612304687518673,
+     "ghz_p50": 0.7593632268604256,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 108,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 280.84197885312034,
+     "slack_min_ns": 321.73462937772274,
+     "slack_p50_ns": 509.3128280490637,
+     "worst_margin_ns": 364.3465898782015,
+     "cross_sm_floor_ns": 364.3465898782015
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 8093.75,
+     "call_ns": 2886,
+     "last_exit_to_sync_return_ns": 9576.5,
+     "bound_ns": 761.1767883300781,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 5666.6875,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      105738414.3728934,
+      105738573.57285109
+     ],
+     "flag_write_to_flag_seen_ns": 826.75,
+     "flag_write_to_flag_seen_min_ns": 747.125,
+     "flag_write_to_flag_seen_max_ns": 906.3125,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 2969.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 8852.762759461999,
+    "compute_cycles_per_ffma_p50": 4.01171875
+   },
+   {
+    "kid": 55,
+    "blocks": 108,
+    "cold": false,
+    "span_gpu_ns": 4980.127671986818,
+    "block_start_spread_ns": 660.1496078073978,
+    "sm_fit": {
+     "n": 108,
+     "bound_ns_p50": 14.17849774286151,
+     "bound_ns_max": 61.55127041786909,
+     "block_max_bound_p50": 16.226239047944546,
+     "block_max_bound_max": 61.51169631630182,
+     "ghz_lo": 0.7567313825542635,
+     "ghz_hi": 0.7605272961931729,
+     "ghz_lo_exact": 0.7574869791639629,
+     "ghz_hi_exact": 0.7597656250011735,
+     "ghz_p50": 0.7586293393737182,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 108,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 277.43908871668725,
+     "slack_min_ns": 327.45234398543835,
+     "slack_p50_ns": 553.6551147550344,
+     "worst_margin_ns": 367.1116053760052,
+     "cross_sm_floor_ns": 367.1116053760052
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 7804.9375,
+     "call_ns": 2815,
+     "last_exit_to_sync_return_ns": 9296.0625,
+     "bound_ns": 761.1767883300781,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 5470.1875,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      107738267.31105399,
+      107738298.89360626
+     ],
+     "flag_write_to_flag_seen_ns": 697.25,
+     "flag_write_to_flag_seen_min_ns": 681.5,
+     "flag_write_to_flag_seen_max_ns": 713.0625,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 2901.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 8806.06547358632,
+    "compute_cycles_per_ffma_p50": 4.01171875
+   },
+   {
+    "kid": 56,
+    "blocks": 108,
+    "cold": false,
+    "span_gpu_ns": 4932.961657136679,
+    "block_start_spread_ns": 657.7918916642666,
+    "sm_fit": {
+     "n": 108,
+     "bound_ns_p50": 46.944452326744795,
+     "bound_ns_max": 155.34273774176836,
+     "block_max_bound_p50": 52.68812355771661,
+     "block_max_bound_max": 155.34273774176836,
+     "ghz_lo": 0.7580356842356872,
+     "ghz_hi": 0.7690029532104243,
+     "ghz_lo_exact": 0.758789062497284,
+     "ghz_hi_exact": 0.7682291666695571,
+     "ghz_p50": 0.7635193187230558,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 108,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 275.68164610414686,
+     "slack_min_ns": 268.46975591778755,
+     "slack_p50_ns": 528.3929386138916,
+     "worst_margin_ns": 378.30865393579006,
+     "cross_sm_floor_ns": 378.30865393579006
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 8020.0625,
+     "call_ns": 2976,
+     "last_exit_to_sync_return_ns": 9840.0625,
+     "bound_ns": 761.1767883300781,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 6210.6875,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      109738423.03983246,
+      109738580.69272494
+     ],
+     "flag_write_to_flag_seen_ns": 740.1875,
+     "flag_write_to_flag_seen_min_ns": 661.375,
+     "flag_write_to_flag_seen_max_ns": 819.0,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 2771.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 8562.39561215043,
+    "compute_cycles_per_ffma_p50": 4.01171875
+   },
+   {
+    "kid": 57,
+    "blocks": 108,
+    "cold": false,
+    "span_gpu_ns": 4898.745611026883,
+    "block_start_spread_ns": 651.2000644356012,
+    "sm_fit": {
+     "n": 108,
+     "bound_ns_p50": 80.58004980161786,
+     "bound_ns_max": 150.1899571865797,
+     "block_max_bound_p50": 89.14814701676369,
+     "block_max_bound_max": 150.14543370902538,
+     "ghz_lo": 0.7557589974139145,
+     "ghz_hi": 0.7660699992288569,
+     "ghz_lo_exact": 0.7565104166637874,
+     "ghz_hi_exact": 0.7652994791672383,
+     "ghz_p50": 0.7609144983213857,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 108,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 279.34784055689056,
+     "slack_min_ns": 252.15254124999046,
+     "slack_p50_ns": 540.5205153077841,
+     "worst_margin_ns": 453.5560452193022,
+     "cross_sm_floor_ns": 453.5560452193022
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 8206.3125,
+     "call_ns": 3136,
+     "last_exit_to_sync_return_ns": 9397.0625,
+     "bound_ns": 761.1767883300781,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 5587.0625,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      111738582.60848609,
+      111738806.4463227
+     ],
+     "flag_write_to_flag_seen_ns": 768.25,
+     "flag_write_to_flag_seen_min_ns": 656.3125,
+     "flag_write_to_flag_seen_max_ns": 880.125,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 2899.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 8708.8098089993,
+    "compute_cycles_per_ffma_p50": 4.01171875
+   },
+   {
+    "kid": 58,
+    "blocks": 108,
+    "cold": false,
+    "span_gpu_ns": 4957.2754201442,
+    "block_start_spread_ns": 690.0346022844315,
+    "sm_fit": {
+     "n": 108,
+     "bound_ns_p50": 30.933517158031464,
+     "bound_ns_max": 141.9683392867446,
+     "block_max_bound_p50": 34.97754418849945,
+     "block_max_bound_max": 141.95399251580238,
+     "ghz_lo": 0.7577067271224803,
+     "ghz_hi": 0.7610158202688971,
+     "ghz_lo_exact": 0.7584635416665567,
+     "ghz_hi_exact": 0.7602539062539885,
+     "ghz_p50": 0.7593612736956887,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 108,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 277.26099035029955,
+     "slack_min_ns": 256.7569844722748,
+     "slack_p50_ns": 531.999388590455,
+     "worst_margin_ns": 389.78448617458344,
+     "cross_sm_floor_ns": 389.78448617458344
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 7942.875,
+     "call_ns": 2815,
+     "last_exit_to_sync_return_ns": 9482.0,
+     "bound_ns": 761.1767883300781,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 5526.0625,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      113738470.42871824,
+      113738610.03642696
+     ],
+     "flag_write_to_flag_seen_ns": 732.1875,
+     "flag_write_to_flag_seen_min_ns": 662.375,
+     "flag_write_to_flag_seen_max_ns": 802.0,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 3004.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 8913.250481680036,
+    "compute_cycles_per_ffma_p50": 4.01171875
+   },
+   {
+    "kid": 59,
+    "blocks": 108,
+    "cold": false,
+    "span_gpu_ns": 4997.982828646898,
+    "block_start_spread_ns": 688.2415688931942,
+    "sm_fit": {
+     "n": 108,
+     "bound_ns_p50": 20.690539129078388,
+     "bound_ns_max": 144.80565243959427,
+     "block_max_bound_p50": 25.241688262671232,
+     "block_max_bound_max": 144.77999576181173,
+     "ghz_lo": 0.7560820378639566,
+     "ghz_hi": 0.7619946756699403,
+     "ghz_lo_exact": 0.7568359374969622,
+     "ghz_hi_exact": 0.7612304687516611,
+     "ghz_p50": 0.7590383567669484,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 108,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 272.9677865755793,
+     "slack_min_ns": 259.1020869612694,
+     "slack_p50_ns": 534.7825547605753,
+     "worst_margin_ns": 394.5550412982702,
+     "cross_sm_floor_ns": 394.5550412982702
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 7766.5,
+     "call_ns": 2885,
+     "last_exit_to_sync_return_ns": 9356.625,
+     "bound_ns": 761.1767883300781,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 5409.5625,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      115738345.61197667,
+      115738524.92076872
+     ],
+     "flag_write_to_flag_seen_ns": 697.8125,
+     "flag_write_to_flag_seen_min_ns": 608.1875,
+     "flag_write_to_flag_seen_max_ns": 787.5,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 2996.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 8945.142313018441,
+    "compute_cycles_per_ffma_p50": 4.01171875
+   },
+   {
+    "kid": 60,
+    "blocks": 108,
+    "cold": false,
+    "span_gpu_ns": 5012.665107727051,
+    "block_start_spread_ns": 727.8933333456516,
+    "sm_fit": {
+     "n": 108,
+     "bound_ns_p50": 24.16410258039832,
+     "bound_ns_max": 87.15552821010351,
+     "block_max_bound_p50": 25.45362052693963,
+     "block_max_bound_max": 87.14240001142025,
+     "ghz_lo": 0.760957792203359,
+     "ghz_hi": 0.7624812312346054,
+     "ghz_lo_exact": 0.7617187499955584,
+     "ghz_hi_exact": 0.761718750003367,
+     "ghz_p50": 0.7617195117189822,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 108,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 275.41661538339656,
+     "slack_min_ns": 335.8326154053211,
+     "slack_p50_ns": 576.9813333451748,
+     "worst_margin_ns": 383.4092307686806,
+     "cross_sm_floor_ns": 383.4092307686806
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 7902.0,
+     "call_ns": 2845,
+     "last_exit_to_sync_return_ns": 9577.4375,
+     "bound_ns": 761.1767883300781,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 5888.5,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      117738589.40455385,
+      117738622.89066668
+     ],
+     "flag_write_to_flag_seen_ns": 727.625,
+     "flag_write_to_flag_seen_min_ns": 710.875,
+     "flag_write_to_flag_seen_max_ns": 744.375,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 2810.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 8701.690748751163,
+    "compute_cycles_per_ffma_p50": 4.01171875
+   },
+   {
+    "kid": 61,
+    "blocks": 108,
+    "cold": false,
+    "span_gpu_ns": 5025.2964924275875,
+    "block_start_spread_ns": 726.265337318182,
+    "sm_fit": {
+     "n": 108,
+     "bound_ns_p50": 45.081467516720295,
+     "bound_ns_max": 112.90175550431013,
+     "block_max_bound_p50": 50.97445674985647,
+     "block_max_bound_max": 112.85134830325842,
+     "ghz_lo": 0.7577092165177077,
+     "ghz_hi": 0.7660690004112304,
+     "ghz_lo_exact": 0.7584635416649879,
+     "ghz_hi_exact": 0.7652994791685409,
+     "ghz_p50": 0.761889108464469,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 108,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 279.34820477675447,
+     "slack_min_ns": 312.1489045023918,
+     "slack_p50_ns": 537.6450957655907,
+     "worst_margin_ns": 388.64906841516495,
+     "cross_sm_floor_ns": 388.64906841516495
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 8710.125,
+     "call_ns": 2995,
+     "last_exit_to_sync_return_ns": 9146.6875,
+     "bound_ns": 761.1767883300781,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 5489.9375,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      119739474.94989556,
+      119739520.29661097
+     ],
+     "flag_write_to_flag_seen_ns": 708.875,
+     "flag_write_to_flag_seen_min_ns": 686.1875,
+     "flag_write_to_flag_seen_max_ns": 731.5625,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 2786.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 8682.106684789062,
+    "compute_cycles_per_ffma_p50": 4.01171875
+   },
+   {
+    "kid": 62,
+    "blocks": 108,
+    "cold": false,
+    "span_gpu_ns": 4974.381430983543,
+    "block_start_spread_ns": 705.7770310640335,
+    "sm_fit": {
+     "n": 108,
+     "bound_ns_p50": 49.248562194406986,
+     "bound_ns_max": 147.27162437886,
+     "block_max_bound_p50": 54.53079419583082,
+     "block_max_bound_max": 147.27162437886,
+     "ghz_lo": 0.757707935776569,
+     "ghz_hi": 0.7634609032308695,
+     "ghz_lo_exact": 0.7584635416630123,
+     "ghz_hi_exact": 0.7626953125010821,
+     "ghz_p50": 0.7605844195037192,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 108,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 278.9926754580504,
+     "slack_min_ns": 259.4777201861143,
+     "slack_p50_ns": 498.0129901766777,
+     "worst_margin_ns": 363.36392460763454,
+     "cross_sm_floor_ns": 363.36392460763454
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 7989.5625,
+     "call_ns": 2826,
+     "last_exit_to_sync_return_ns": 9378.1875,
+     "bound_ns": 761.1767883300781,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 5763.875,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      121738678.33037665,
+      121738813.20400222
+     ],
+     "flag_write_to_flag_seen_ns": 689.375,
+     "flag_write_to_flag_seen_min_ns": 621.9375,
+     "flag_write_to_flag_seen_max_ns": 756.8125,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 2749.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 8588.75907163322,
+    "compute_cycles_per_ffma_p50": 4.01171875
+   },
+   {
+    "kid": 63,
+    "blocks": 108,
+    "cold": false,
+    "span_gpu_ns": 4981.7626976668835,
+    "block_start_spread_ns": 663.6261314302683,
+    "sm_fit": {
+     "n": 108,
+     "bound_ns_p50": 53.038911525160074,
+     "bound_ns_max": 154.14796470850706,
+     "block_max_bound_p50": 56.73425854742527,
+     "block_max_bound_max": 154.14796470850706,
+     "ghz_lo": 0.7599851067925584,
+     "ghz_hi": 0.767371889610881,
+     "ghz_lo_exact": 0.7607421874976666,
+     "ghz_hi_exact": 0.7666015625021808,
+     "ghz_p50": 0.7636784982017197,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 108,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 281.4802091715,
+     "slack_min_ns": 297.2524566054344,
+     "slack_p50_ns": 518.7617339938879,
+     "worst_margin_ns": 378.4360051751137,
+     "cross_sm_floor_ns": 378.4360051751137
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 7852.75,
+     "call_ns": 2856,
+     "last_exit_to_sync_return_ns": 9728.625,
+     "bound_ns": 761.1767883300781,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 5682.375,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      123738584.56559698,
+      123738729.54598576
+     ],
+     "flag_write_to_flag_seen_ns": 688.75,
+     "flag_write_to_flag_seen_min_ns": 616.3125,
+     "flag_write_to_flag_seen_max_ns": 761.25,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 3090.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 9028.06265759468,
+    "compute_cycles_per_ffma_p50": 4.01171875
+   },
+   {
+    "kid": 64,
+    "blocks": 108,
+    "cold": false,
+    "span_gpu_ns": 4908.4166279137135,
+    "block_start_spread_ns": 668.5051696300507,
+    "sm_fit": {
+     "n": 108,
+     "bound_ns_p50": 67.57856348156929,
+     "bound_ns_max": 152.90956350415945,
+     "block_max_bound_p50": 76.10400822386146,
+     "block_max_bound_max": 152.8749470487237,
+     "ghz_lo": 0.7577090569001653,
+     "ghz_hi": 0.765742987774676,
+     "ghz_lo_exact": 0.7584635416632031,
+     "ghz_hi_exact": 0.7649739583363068,
+     "ghz_p50": 0.7617260223374207,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 108,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 274.24345159239465,
+     "slack_min_ns": 269.95223984122276,
+     "slack_p50_ns": 528.1408451348543,
+     "worst_margin_ns": 407.73713609576225,
+     "cross_sm_floor_ns": 407.73713609576225
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 8003.5625,
+     "call_ns": 2765,
+     "last_exit_to_sync_return_ns": 9691.125,
+     "bound_ns": 761.1767883300781,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 5698.8125,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      125738728.3750829,
+      125738862.06496589
+     ],
+     "flag_write_to_flag_seen_ns": 751.3125,
+     "flag_write_to_flag_seen_min_ns": 684.4375,
+     "flag_write_to_flag_seen_max_ns": 818.125,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 3041.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 8900.776719212532,
+    "compute_cycles_per_ffma_p50": 4.01171875
+   },
+   {
+    "kid": 65,
+    "blocks": 108,
+    "cold": false,
+    "span_gpu_ns": 4947.51609992981,
+    "block_start_spread_ns": 636.7295389920473,
+    "sm_fit": {
+     "n": 108,
+     "bound_ns_p50": 13.862744510173798,
+     "bound_ns_max": 135.39014304429293,
+     "block_max_bound_p50": 15.873329058289528,
+     "block_max_bound_max": 135.3814646974206,
+     "ghz_lo": 0.759982448789841,
+     "ghz_hi": 0.7619927059998782,
+     "ghz_lo_exact": 0.7607421874982669,
+     "ghz_hi_exact": 0.7612304687519298,
+     "ghz_p50": 0.7609875773948596,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 108,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 275.59318920834073,
+     "slack_min_ns": 248.4260462373495,
+     "slack_p50_ns": 551.252243027091,
+     "worst_margin_ns": 361.5682877600193,
+     "cross_sm_floor_ns": 361.5682877600193
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 8718.875,
+     "call_ns": 2956,
+     "last_exit_to_sync_return_ns": 9046.6875,
+     "bound_ns": 761.1767883300781,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 5460.625,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      127739529.61251742,
+      127739590.98209989
+     ],
+     "flag_write_to_flag_seen_ns": 707.9375,
+     "flag_write_to_flag_seen_min_ns": 677.25,
+     "flag_write_to_flag_seen_max_ns": 738.625,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 2729.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 8533.651855617762,
+    "compute_cycles_per_ffma_p50": 4.01171875
+   },
+   {
+    "kid": 66,
+    "blocks": 108,
+    "cold": false,
+    "span_gpu_ns": 5054.457061186433,
+    "block_start_spread_ns": 760.222283616662,
+    "sm_fit": {
+     "n": 108,
+     "bound_ns_p50": 17.194213096052408,
+     "bound_ns_max": 152.16814809292555,
+     "block_max_bound_p50": 21.487937673926353,
+     "block_max_bound_max": 152.14335099607706,
+     "ghz_lo": 0.7577074532448885,
+     "ghz_hi": 0.7624828691034665,
+     "ghz_lo_exact": 0.7584635416651104,
+     "ghz_hi_exact": 0.7617187500050269,
+     "ghz_p50": 0.7600951611741775,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 108,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 279.3505383936653,
+     "slack_min_ns": 230.55005171895027,
+     "slack_p50_ns": 547.4714087247849,
+     "worst_margin_ns": 370.3966439962387,
+     "cross_sm_floor_ns": 370.3966439962387
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 7530.0625,
+     "call_ns": 2785,
+     "last_exit_to_sync_return_ns": 9697.625,
+     "bound_ns": 761.1767883300781,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 5723.125,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      129738510.51282787,
+      129738587.596538
+     ],
+     "flag_write_to_flag_seen_ns": 717.8125,
+     "flag_write_to_flag_seen_min_ns": 679.25,
+     "flag_write_to_flag_seen_max_ns": 756.375,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 3021.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 9028.998626068234,
+    "compute_cycles_per_ffma_p50": 4.01171875
+   },
+   {
+    "kid": 67,
+    "blocks": 108,
+    "cold": false,
+    "span_gpu_ns": 5070.376078948379,
+    "block_start_spread_ns": 761.3685535788536,
+    "sm_fit": {
+     "n": 108,
+     "bound_ns_p50": 46.90546829998493,
+     "bound_ns_max": 152.73492708057165,
+     "block_max_bound_p50": 59.13867807388306,
+     "block_max_bound_max": 152.73492708057165,
+     "ghz_lo": 0.7541327014014164,
+     "ghz_hi": 0.7637887390894867,
+     "ghz_lo_exact": 0.7548828124907103,
+     "ghz_hi_exact": 0.7630208333347649,
+     "ghz_p50": 0.7589607202454516,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 108,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 281.49145044518684,
+     "slack_min_ns": 239.7240758240223,
+     "slack_p50_ns": 538.5331210941076,
+     "worst_margin_ns": 397.1659296602011,
+     "cross_sm_floor_ns": 397.1659296602011
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 7635.8125,
+     "call_ns": 2825,
+     "last_exit_to_sync_return_ns": 9274.875,
+     "bound_ns": 761.1767883300781,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 5434.0625,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      131738673.43862146,
+      131738729.46715105
+     ],
+     "flag_write_to_flag_seen_ns": 696.125,
+     "flag_write_to_flag_seen_min_ns": 668.0625,
+     "flag_write_to_flag_seen_max_ns": 724.125,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 2915.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 8911.309987455606,
+    "compute_cycles_per_ffma_p50": 4.01171875
+   },
+   {
+    "kid": 68,
+    "blocks": 108,
+    "cold": false,
+    "span_gpu_ns": 4967.459649950266,
+    "block_start_spread_ns": 683.719123840332,
+    "sm_fit": {
+     "n": 108,
+     "bound_ns_p50": 59.14106772467494,
+     "bound_ns_max": 137.96104096621275,
+     "block_max_bound_p50": 61.16992500796914,
+     "block_max_bound_max": 137.96104096621275,
+     "ghz_lo": 0.7590069429722882,
+     "ghz_hi": 0.7611781709662002,
+     "ghz_lo_exact": 0.7597656249979025,
+     "ghz_hi_exact": 0.7604166666691944,
+     "ghz_p50": 0.7600925569692443,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 108,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 275.8881008548062,
+     "slack_min_ns": 279.0425763130188,
+     "slack_p50_ns": 537.1020149886608,
+     "worst_margin_ns": 390.8792928904295,
+     "cross_sm_floor_ns": 390.8792928904295
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 7916.1875,
+     "call_ns": 2805,
+     "last_exit_to_sync_return_ns": 9508.4375,
+     "bound_ns": 761.1767883300781,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 5647.125,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      133738841.79842375,
+      133738977.32717966
+     ],
+     "flag_write_to_flag_seen_ns": 768.6875,
+     "flag_write_to_flag_seen_min_ns": 700.9375,
+     "flag_write_to_flag_seen_max_ns": 836.4375,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 2935.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 8828.83937317133,
+    "compute_cycles_per_ffma_p50": 4.01171875
+   },
+   {
+    "kid": 69,
+    "blocks": 108,
+    "cold": false,
+    "span_gpu_ns": 4914.6837028265,
+    "block_start_spread_ns": 675.9944194555283,
+    "sm_fit": {
+     "n": 108,
+     "bound_ns_p50": 28.505662187933922,
+     "bound_ns_max": 125.04878358542919,
+     "block_max_bound_p50": 31.07425344735384,
+     "block_max_bound_max": 125.00176329910755,
+     "ghz_lo": 0.7599844658493176,
+     "ghz_hi": 0.7660678416119242,
+     "ghz_lo_exact": 0.7607421874945485,
+     "ghz_hi_exact": 0.7652994791725781,
+     "ghz_p50": 0.7630261537306209,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 108,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 279.3486273352908,
+     "slack_min_ns": 309.968043923378,
+     "slack_p50_ns": 545.3866351544857,
+     "worst_margin_ns": 382.9384189248085,
+     "cross_sm_floor_ns": 382.9384189248085
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 7934.75,
+     "call_ns": 2945,
+     "last_exit_to_sync_return_ns": 9392.6875,
+     "bound_ns": 761.1767883300781,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 5626.0625,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      135738845.29400805,
+      135738986.86491376
+     ],
+     "flag_write_to_flag_seen_ns": 762.8125,
+     "flag_write_to_flag_seen_min_ns": 692.0625,
+     "flag_write_to_flag_seen_max_ns": 833.625,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 2874.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 8681.324803292751,
+    "compute_cycles_per_ffma_p50": 4.01171875
+   },
+   {
+    "kid": 70,
+    "blocks": 108,
+    "cold": false,
+    "span_gpu_ns": 5026.75331273675,
+    "block_start_spread_ns": 703.3266012966633,
+    "sm_fit": {
+     "n": 108,
+     "bound_ns_p50": 24.916025638580322,
+     "bound_ns_max": 145.85050342977047,
+     "block_max_bound_p50": 29.376957930624485,
+     "block_max_bound_max": 145.81984992325306,
+     "ghz_lo": 0.7547818164231964,
+     "ghz_hi": 0.7618323306580963,
+     "ghz_lo_exact": 0.7555338541654358,
+     "ghz_hi_exact": 0.7610677083339815,
+     "ghz_p50": 0.7583070735406463,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 108,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 279.589079418569,
+     "slack_min_ns": 255.45953285694122,
+     "slack_p50_ns": 552.6448871791363,
+     "worst_margin_ns": 385.09981375932693,
+     "cross_sm_floor_ns": 385.09981375932693
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 7954.9375,
+     "call_ns": 2845,
+     "last_exit_to_sync_return_ns": 9420.4375,
+     "bound_ns": 761.1767883300781,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 5989.125,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      137739008.74012384,
+      137739169.15627363
+     ],
+     "flag_write_to_flag_seen_ns": 710.625,
+     "flag_write_to_flag_seen_min_ns": 630.4375,
+     "flag_write_to_flag_seen_max_ns": 790.875,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 2602.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 8458.155083835125,
+    "compute_cycles_per_ffma_p50": 4.01171875
+   },
+   {
+    "kid": 71,
+    "blocks": 108,
+    "cold": false,
+    "span_gpu_ns": 4997.305033504963,
+    "block_start_spread_ns": 700.2634075582027,
+    "sm_fit": {
+     "n": 108,
+     "bound_ns_p50": 18.627420850098133,
+     "bound_ns_max": 141.3298859745264,
+     "block_max_bound_p50": 20.251779094338417,
+     "block_max_bound_max": 141.31836891174316,
+     "ghz_lo": 0.7583567947748894,
+     "ghz_hi": 0.761015492832168,
+     "ghz_lo_exact": 0.759114583329717,
+     "ghz_hi_exact": 0.7602539062513777,
+     "ghz_p50": 0.7596861438035287,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 108,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 274.633042255412,
+     "slack_min_ns": 263.73813635110855,
+     "slack_p50_ns": 540.6259843707085,
+     "worst_margin_ns": 384.0197394192219,
+     "cross_sm_floor_ns": 384.0197394192219
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 7777.125,
+     "call_ns": 2765,
+     "last_exit_to_sync_return_ns": 9236.6875,
+     "bound_ns": 761.1767883300781,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 5466.8125,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      139738895.37486112,
+      139738989.32836446
+     ],
+     "flag_write_to_flag_seen_ns": 707.9375,
+     "flag_write_to_flag_seen_min_ns": 660.9375,
+     "flag_write_to_flag_seen_max_ns": 754.875,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 2864.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 8767.29451277852,
+    "compute_cycles_per_ffma_p50": 4.01171875
+   },
+   {
+    "kid": 72,
+    "blocks": 108,
+    "cold": false,
+    "span_gpu_ns": 5000.674150019884,
+    "block_start_spread_ns": 678.021641254425,
+    "sm_fit": {
+     "n": 108,
+     "bound_ns_p50": 15.520505011081696,
+     "bound_ns_max": 61.94565065205097,
+     "block_max_bound_p50": 18.055051289498806,
+     "block_max_bound_max": 61.92676265537739,
+     "ghz_lo": 0.7570569008455358,
+     "ghz_hi": 0.7615051646507607,
+     "ghz_lo_exact": 0.757812499998816,
+     "ghz_hi_exact": 0.7607421875044743,
+     "ghz_p50": 0.7592810327481483,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 108,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 281.02238820421405,
+     "slack_min_ns": 332.6778787970543,
+     "slack_p50_ns": 551.1782581806183,
+     "worst_margin_ns": 381.2762923836708,
+     "cross_sm_floor_ns": 381.2762923836708
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 7971.0625,
+     "call_ns": 2765,
+     "last_exit_to_sync_return_ns": 9460.3125,
+     "bound_ns": 761.1767883300781,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 5609.375,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      141739150.39880154,
+      141739190.41024417
+     ],
+     "flag_write_to_flag_seen_ns": 720.5625,
+     "flag_write_to_flag_seen_min_ns": 700.5625,
+     "flag_write_to_flag_seen_max_ns": 740.5625,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 2924.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 8851.718708872795,
+    "compute_cycles_per_ffma_p50": 4.01171875
+   },
+   {
+    "kid": 73,
+    "blocks": 108,
+    "cold": false,
+    "span_gpu_ns": 4945.828467458487,
+    "block_start_spread_ns": 666.149159938097,
+    "sm_fit": {
+     "n": 108,
+     "bound_ns_p50": 46.54289785027504,
+     "bound_ns_max": 100.7647474706173,
+     "block_max_bound_p50": 57.64557318389416,
+     "block_max_bound_max": 100.7647474706173,
+     "ghz_lo": 0.7580345716473065,
+     "ghz_hi": 0.766720859854957,
+     "ghz_lo_exact": 0.7587890624959213,
+     "ghz_hi_exact": 0.7659505208357429,
+     "ghz_p50": 0.7623777157511318,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 108,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 283.02347224653647,
+     "slack_min_ns": 320.8033812344074,
+     "slack_p50_ns": 554.8120917975903,
+     "worst_margin_ns": 412.00996309518814,
+     "cross_sm_floor_ns": 412.00996309518814
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 8793.1875,
+     "call_ns": 3697,
+     "last_exit_to_sync_return_ns": 9164.0625,
+     "bound_ns": 761.1767883300781,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 5455.875,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      143739939.05557358,
+      143739995.744097
+     ],
+     "flag_write_to_flag_seen_ns": 705.25,
+     "flag_write_to_flag_seen_min_ns": 676.9375,
+     "flag_write_to_flag_seen_max_ns": 733.625,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 2827.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 8654.084482818842,
+    "compute_cycles_per_ffma_p50": 4.01171875
+   },
+   {
+    "kid": 74,
+    "blocks": 108,
+    "cold": false,
+    "span_gpu_ns": 4958.688996553421,
+    "block_start_spread_ns": 693.7277805805206,
+    "sm_fit": {
+     "n": 108,
+     "bound_ns_p50": 47.80678966641426,
+     "bound_ns_max": 138.51202297210693,
+     "block_max_bound_p50": 52.36559472978115,
+     "block_max_bound_max": 138.47759537398815,
+     "ghz_lo": 0.7609592485258527,
+     "ghz_hi": 0.7654153247804754,
+     "ghz_lo_exact": 0.7617187499980379,
+     "ghz_hi_exact": 0.7646484375031446,
+     "ghz_p50": 0.763187286653164,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 108,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 278.2802918939327,
+     "slack_min_ns": 293.196914434433,
+     "slack_p50_ns": 529.3251816630363,
+     "worst_margin_ns": 372.8773193359375,
+     "cross_sm_floor_ns": 372.8773193359375
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 8040.125,
+     "call_ns": 2926,
+     "last_exit_to_sync_return_ns": 9163.3125,
+     "bound_ns": 761.1767883300781,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 5523.375,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      145739233.6262627,
+      145739282.0325731
+     ],
+     "flag_write_to_flag_seen_ns": 754.5,
+     "flag_write_to_flag_seen_min_ns": 730.3125,
+     "flag_write_to_flag_seen_max_ns": 778.6875,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 2778.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 8598.71776163578,
+    "compute_cycles_per_ffma_p50": 4.01171875
+   },
+   {
+    "kid": 75,
+    "blocks": 108,
+    "cold": false,
+    "span_gpu_ns": 4932.987879008055,
+    "block_start_spread_ns": 605.2807028591633,
+    "sm_fit": {
+     "n": 108,
+     "bound_ns_p50": 75.86114910244942,
+     "bound_ns_max": 161.15108397603035,
+     "block_max_bound_p50": 82.36409993469715,
+     "block_max_bound_max": 161.15108397603035,
+     "ghz_lo": 0.7534831033371089,
+     "ghz_hi": 0.764767113971423,
+     "ghz_lo_exact": 0.7542317708262295,
+     "ghz_hi_exact": 0.763997395840306,
+     "ghz_p50": 0.759125108654266,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 108,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 279.82374776642985,
+     "slack_min_ns": 288.6594258546829,
+     "slack_p50_ns": 532.3523954153061,
+     "worst_margin_ns": 383.28207287192345,
+     "cross_sm_floor_ns": 383.28207287192345
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 7762.375,
+     "call_ns": 2836,
+     "last_exit_to_sync_return_ns": 9045.75,
+     "bound_ns": 761.1767883300781,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 5470.4375,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      147738924.10953265,
+      147739126.06820148
+     ],
+     "flag_write_to_flag_seen_ns": 706.9375,
+     "flag_write_to_flag_seen_min_ns": 605.9375,
+     "flag_write_to_flag_seen_max_ns": 807.875,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 2714.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 8508.353644251823,
+    "compute_cycles_per_ffma_p50": 4.01171875
+   },
+   {
+    "kid": 76,
+    "blocks": 108,
+    "cold": false,
+    "span_gpu_ns": 4977.342248529196,
+    "block_start_spread_ns": 670.8053557276726,
+    "sm_fit": {
+     "n": 108,
+     "bound_ns_p50": 17.825469344854355,
+     "bound_ns_max": 74.54388086497784,
+     "block_max_bound_p50": 21.94534183293581,
+     "block_max_bound_max": 74.48924565315247,
+     "ghz_lo": 0.7577076946630065,
+     "ghz_hi": 0.7629718860135662,
+     "ghz_lo_exact": 0.7584635416618514,
+     "ghz_hi_exact": 0.7622070312570126,
+     "ghz_p50": 0.7603397903382864,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 108,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 277.8608280151367,
+     "slack_min_ns": 308.0682285428047,
+     "slack_p50_ns": 547.4248811304569,
+     "worst_margin_ns": 376.27613216638565,
+     "cross_sm_floor_ns": 376.27613216638565
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 7825.8125,
+     "call_ns": 2715,
+     "last_exit_to_sync_return_ns": 9508.9375,
+     "bound_ns": 761.1767883300781,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 5830.3125,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      149739139.73324257,
+      149739207.3561124
+     ],
+     "flag_write_to_flag_seen_ns": 740.125,
+     "flag_write_to_flag_seen_min_ns": 706.3125,
+     "flag_write_to_flag_seen_max_ns": 773.9375,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 2797.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 8656.004807174206,
+    "compute_cycles_per_ffma_p50": 4.01171875
+   },
+   {
+    "kid": 77,
+    "blocks": 108,
+    "cold": false,
+    "span_gpu_ns": 4947.876880943775,
+    "block_start_spread_ns": 661.9009127616882,
+    "sm_fit": {
+     "n": 108,
+     "bound_ns_p50": 48.5306696370244,
+     "bound_ns_max": 96.38850730657578,
+     "block_max_bound_p50": 66.83120615780354,
+     "block_max_bound_max": 96.38850730657578,
+     "ghz_lo": 0.7531593270233575,
+     "ghz_hi": 0.767375398961827,
+     "ghz_lo_exact": 0.7539062499992648,
+     "ghz_hi_exact": 0.7666015625005675,
+     "ghz_p50": 0.7602673629925922,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 108,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 277.56949243898765,
+     "slack_min_ns": 296.90416893363,
+     "slack_p50_ns": 535.3847859501839,
+     "worst_margin_ns": 388.5677269399166,
+     "cross_sm_floor_ns": 388.5677269399166
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 8102.0625,
+     "call_ns": 3106,
+     "last_exit_to_sync_return_ns": 9262.125,
+     "bound_ns": 761.1767883300781,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 5567.125,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      151739412.08819017,
+      151739470.02445912
+     ],
+     "flag_write_to_flag_seen_ns": 713.3125,
+     "flag_write_to_flag_seen_min_ns": 684.375,
+     "flag_write_to_flag_seen_max_ns": 742.25,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 2809.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 8642.952713429928,
+    "compute_cycles_per_ffma_p50": 4.01171875
+   },
+   {
+    "kid": 78,
+    "blocks": 108,
+    "cold": false,
+    "span_gpu_ns": 4936.712758868933,
+    "block_start_spread_ns": 704.0469109416008,
+    "sm_fit": {
+     "n": 108,
+     "bound_ns_p50": 32.87276957184076,
+     "bound_ns_max": 86.82160586118698,
+     "block_max_bound_p50": 39.98334497213364,
+     "block_max_bound_max": 86.69034186005592,
+     "ghz_lo": 0.7521829528193823,
+     "ghz_hi": 0.7647677844809753,
+     "ghz_lo_exact": 0.7529296874934597,
+     "ghz_hi_exact": 0.7639973958351255,
+     "ghz_p50": 0.7584753686501788,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 108,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 277.20832951126204,
+     "slack_min_ns": 271.6708691716194,
+     "slack_p50_ns": 543.703517884016,
+     "worst_margin_ns": 396.8633954823017,
+     "cross_sm_floor_ns": 396.8633954823017
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 7942.25,
+     "call_ns": 2805,
+     "last_exit_to_sync_return_ns": 9393.1875,
+     "bound_ns": 761.1767883300781,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 5468.0,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      153739285.9093661,
+      153739335.4781638
+     ],
+     "flag_write_to_flag_seen_ns": 764.375,
+     "flag_write_to_flag_seen_min_ns": 739.5625,
+     "flag_write_to_flag_seen_max_ns": 789.125,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 2977.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 8861.962057471275,
+    "compute_cycles_per_ffma_p50": 4.01171875
+   },
+   {
+    "kid": 79,
+    "blocks": 108,
+    "cold": false,
+    "span_gpu_ns": 4997.348413527012,
+    "block_start_spread_ns": 713.3795836865902,
+    "sm_fit": {
+     "n": 108,
+     "bound_ns_p50": 32.45407062023878,
+     "bound_ns_max": 95.322633638978,
+     "block_max_bound_p50": 40.033387556672096,
+     "block_max_bound_max": 95.21935522556305,
+     "ghz_lo": 0.7567344255883864,
+     "ghz_hi": 0.7667215257213793,
+     "ghz_lo_exact": 0.757486979160791,
+     "ghz_hi_exact": 0.7659505208351751,
+     "ghz_p50": 0.7617279756548829,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 108,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 276.5019539532782,
+     "slack_min_ns": 313.27657729387283,
+     "slack_p50_ns": 541.9007017612457,
+     "worst_margin_ns": 383.63961657881737,
+     "cross_sm_floor_ns": 383.63961657881737
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 7768.125,
+     "call_ns": 2805,
+     "last_exit_to_sync_return_ns": 10237.625,
+     "bound_ns": 761.1767883300781,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 6023.375,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      155739206.10930765,
+      155739249.7835749
+     ],
+     "flag_write_to_flag_seen_ns": 716.75,
+     "flag_write_to_flag_seen_min_ns": 694.9375,
+     "flag_write_to_flag_seen_max_ns": 738.625,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 3210.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 9211.632330179214,
+    "compute_cycles_per_ffma_p50": 4.01171875
+   },
+   {
+    "kid": 80,
+    "blocks": 108,
+    "cold": false,
+    "span_gpu_ns": 4992.479483276606,
+    "block_start_spread_ns": 655.2546016573906,
+    "sm_fit": {
+     "n": 108,
+     "bound_ns_p50": 18.190092839300632,
+     "bound_ns_max": 135.80130998790264,
+     "block_max_bound_p50": 21.913685858249664,
+     "block_max_bound_max": 135.7756533175707,
+     "ghz_lo": 0.756082037852845,
+     "ghz_hi": 0.7619946756778531,
+     "ghz_lo_exact": 0.7568359374858302,
+     "ghz_hi_exact": 0.7612304687595564,
+     "ghz_p50": 0.759038356765349,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 108,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 279.5295122115126,
+     "slack_min_ns": 236.3426299393177,
+     "slack_p50_ns": 552.9968727827072,
+     "worst_margin_ns": 367.5204266309738,
+     "cross_sm_floor_ns": 367.5204266309738
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 8204.9375,
+     "call_ns": 2985,
+     "last_exit_to_sync_return_ns": 9785.6875,
+     "bound_ns": 761.1767883300781,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 5983.5,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      157739690.6194105,
+      157739750.40089253
+     ],
+     "flag_write_to_flag_seen_ns": 715.875,
+     "flag_write_to_flag_seen_min_ns": 686.0,
+     "flag_write_to_flag_seen_max_ns": 745.8125,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 2886.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 8794.716556668282,
+    "compute_cycles_per_ffma_p50": 4.01171875
+   }
+  ],
+  "notes": [
+   "phase cycles subtract the entry checkpoint cost (c1 - c0), which may overstate the in-phase checkpoint cost by a few cycles: phases may be a few cy short",
+   "load = a 4 B .nc load + the dependent address (LOP3, LEA, LEA.HI.X) + a dependent 16 B .nc load + the consuming shared store; every index and address is computed before entry",
+   "compute = the seed FADD + 256 dependent FFMA, fully unrolled (no loop control); compute_cycles_per_ffma per block count (warm launches; the first launch, the first fetch of this instantiation's code, in compute_cycles_per_ffma_cold) and per launch. It is compute / FFMA_N, so it carries a fixed per-warp term (the seed FADD and the checkpoint-cost residual, a few cycles: ~0.1 cy/FFMA at 64, ~0 at 4096) that falls with FFMA_N: compare across an --ffma sweep with a fit a + b * FFMA_N, not point by point. Hypotheses, not established: at 1 block/SM a rise of cycles/FFMA with FFMA_N (64..4096 = 1-64 KB of straight-line code) points at instruction-cache overflow; at 3 blocks/SM issue contention between overlapping warps also grows with FFMA_N; a cold sequential fetch cost per instruction is constant in FFMA_N and cannot be separated from the FFMA latency by the sweep (compare with the instr profile's isolated FFMA latency); Ampere/Hopper L0/L1 i-cache sizes are undocumented",
+   "barrier1/2 = the barrier + exactly the calibrated touch chain; tail = third barrier + shared load of (ticket, flag pointer) + writer predicate; flag_store = the predicated flag store alone (each checked on the measuring binary by its ktrace SASS check: these hold only if it says PASS)",
+   "scoreboard waits (SASS control bits): a timer or clock read inside a checkpoint may wait on an earlier instruction (usually a store's operand read). On a closing timer read it only widens that checkpoint's window; on an opening timer or clock read it delays the cycle value. NVRTC 12.9 builds: the bar1_release clock read (sm_80/86) waits on the pre-barrier calibration STS (already satisfied: the release LDS behind it has returned), the computed stamp's opening timer read on the barrier-1 touch STS (behind >= 64 dependent FFMA), the bar2_release and ticket closing timer reads (window only); the ktrace SASS check lists the waits of the binary that measured",
+   "ticket = warp 0 only (the atomic with return); the other 7 warps branch around it",
+   "flag write window = [max(flag checkpoint, flag value), exit checkpoint] of the writer warp (no value + tick bound); the writer is warp 0 of the block with ticket n_blocks - 1: a launch whose writer warp is missing (flag_writer_present false) or whose flag value is not that warp's flag-stamp timer read (flag_value_is_flag_stamp false) gets no window and no flag -> seen",
+   "exit excludes the writer's system fence (layout 1 included it: ~3.5k cy A100, ~1.8k cy RTX 3060): kernel_span_ns and last_exit_to_sync_return_ns are not comparable with layout 1; kernel_span_incl_writer_fence_ns and last_exit_incl_writer_fence_to_sync_return_ns are; writer_fence_cycles = writer's exit -> fence done (MEMBAR.SC.SYS + ERRBAR, as in layout 1, plus ~10 setup instructions incl. an S2R: a few tens of cycles), warm launches; the first launch's in writer_fence_cycles_cold",
+   "host-axis latencies carry the run's host<->GPU bound (bound_ns) in addition to the block bound"
+  ]
+ }
+}

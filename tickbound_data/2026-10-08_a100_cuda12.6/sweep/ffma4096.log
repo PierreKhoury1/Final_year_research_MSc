@@ -1,0 +1,2 @@
+gputrace ktrace: NVIDIA A100-SXM4-40GB sms=108 recs=259680 events=77 kernels=15 in 0.08 s (sync pre ok post ok)
+ktrace SASS check: PASS (4 k_ktrace instantiation(s), 28 exact checks on the binary that measured)

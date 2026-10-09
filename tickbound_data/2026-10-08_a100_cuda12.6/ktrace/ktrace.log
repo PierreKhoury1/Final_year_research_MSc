@@ -1,0 +1,1 @@
+gputrace ktrace: NVIDIA A100-SXM4-40GB sms=108 recs=259200 events=52 kernels=10 in 0.08 s (sync pre ok post ok)

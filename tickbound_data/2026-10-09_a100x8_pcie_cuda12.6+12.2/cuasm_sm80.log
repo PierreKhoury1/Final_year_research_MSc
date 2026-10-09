@@ -1,0 +1,34 @@
++ /usr/local/cuda-12.6/bin/nvcc -O2 -std=c++17 -o /root/res/cuasm_sm80/cubin_runner /root/tb/devtools/cuasm/../../src/tickbound/cuda/cubin_runner.cu -lcuda
+running 31 entries (reps=200) against /root/tb/cuasm_edits/sm_80/reference.cubin
+ek_slide: ok, cycles p50 267 (min 267 max 376), output matches the reference in every launch
+ek_slide: ok, cycles p50 266 (min 266 max 391), output matches the reference in every launch
+ek_slide: ok, cycles p50 268 (min 266 max 407), output matches the reference in every launch
+ek_slide: ok, cycles p50 284 (min 282 max 423), output matches the reference in every launch
+ek_slide: ok, cycles p50 300 (min 298 max 443), output matches the reference in every launch
+ek_slide: ok, cycles p50 316 (min 313 max 459), output matches the reference in every launch
+ek_slide: ok, cycles p50 332 (min 330 max 473), output matches the reference in every launch
+ek_slide: ok, cycles p50 348 (min 346 max 491), output matches the reference in every launch
+ek_slide: ok, cycles p50 365 (min 362 max 505), output matches the reference in every launch
+ek_slide: ok, cycles p50 380 (min 377 max 521), output matches the reference in every launch
+ek_slide: ok, cycles p50 396 (min 393 max 535), output matches the reference in every launch
+ek_slide: ok, cycles p50 412 (min 409 max 555), output matches the reference in every launch
+ek_slide: ok, cycles p50 428 (min 426 max 568), output matches the reference in every launch
+ek_slide: ok, cycles p50 443 (min 441 max 583), output matches the reference in every launch
+ek_slide: ok, cycles p50 459 (min 457 max 596), output matches the reference in every launch
+ek_slide: ok, cycles p50 475 (min 473 max 614), output matches the reference in every launch
+ek_slide: ok, cycles p50 491 (min 488 max 628), output matches the reference in every launch
+ek_slide: ok, cycles p50 266 (min 266 max 266), OUTPUT DIFFERS from the reference in 200 of 200 launches
+ek_slide: ok, cycles p50 266 (min 266 max 266), OUTPUT DIFFERS from the reference in 200 of 200 launches
+ek_slide: ok, cycles p50 267 (min 267 max 267), OUTPUT DIFFERS from the reference in 1 of 200 launches
+ek_stallprobe_ffma: ok, cycles p50 103 (min 103 max 103), OUTPUT DIFFERS from the reference in 200 of 200 launches
+ek_stallprobe_ffma: ok, cycles p50 71 (min 71 max 71), OUTPUT DIFFERS from the reference in 200 of 200 launches
+ek_stallprobe_ffma: ok, cycles p50 71 (min 71 max 71), OUTPUT DIFFERS from the reference in 200 of 200 launches
+ek_stallprobe_iadd3: ok, cycles p50 113 (min 113 max 113), OUTPUT DIFFERS from the reference in 8 of 200 launches
+ek_stallprobe_iadd3: ok, cycles p50 82 (min 82 max 82), OUTPUT DIFFERS from the reference in 8 of 200 launches
+ek_stallprobe_iadd3: ok, cycles p50 82 (min 82 max 82), OUTPUT DIFFERS from the reference in 8 of 200 launches
+ek_stallprobe_ffma: ok, cycles p50 132 (min 132 max 132), output matches the reference in every launch
+ek_stallprobe_iadd3: ok, cycles p50 143 (min 143 max 143), output matches the reference in every launch
+ek_ldgsts: ok, cycles p50 337 (min 336 max 490), output matches the reference in every launch
+ek_barwork: ok, cycles p50 766 (min 756 max 796), output matches the reference in every launch
+wrote /root/res/cuasm_sm80/summary.json
+run_edits exit 0

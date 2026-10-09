@@ -1,0 +1,37 @@
+[2026-10-08 01:58:16.679 Other  1733] Startup
+[2026-10-08 01:58:16.679 Other  1733] Connecting to control daemon on socket: /root/res/instr/mps-pipe/control
+[2026-10-08 01:58:16.679 Other  1733] Initializing server process
+[2026-10-08 01:58:16.761 Server  1733] Creating server context on device 0 (NVIDIA A100-SXM4-40GB)
+[2026-10-08 01:58:16.830 Server  1733] Created anonymous shared memory region mps.shm.0.1733
+[2026-10-08 01:58:16.830 Server  1733] CUDA MPS Server for Linux/Unix. Binary version: 13000
+[2026-10-08 01:58:16.830 Server  1733] Display Driver version: 580
+[2026-10-08 01:58:16.830 Server  1733] Active Threads Percentage set to 100.0
+[2026-10-08 01:58:16.830 Server  1733] Server Priority set to 0
+[2026-10-08 01:58:16.830 Server  1733] Server has started
+[2026-10-08 01:58:16.830 Server  1733] Received new client request for {PID: -1333654781, Context ID: 0}
+[2026-10-08 01:58:16.830 Server  1733] Client {PID: 1731, Context ID: 0} connected
+[2026-10-08 01:58:16.830 Server  1733] Creating worker thread for client {PID: 1731, Context ID: 0}
+[2026-10-08 01:58:16.858 Server  1733] Received new client request for {PID: 1731, Context ID: 0}
+[2026-10-08 01:58:16.858 Server  1733] Client {PID: 1731, Context ID: 1} connected
+[2026-10-08 01:58:16.858 Server  1733] Creating worker thread for client {PID: 1731, Context ID: 1}
+[2026-10-08 01:58:16.858 Server  1733] Device NVIDIA A100-SXM4-40GB (uuid GPU-605db1af-bd4e-40db-a6ba-15eb7c23c8b8) is associated
+[2026-10-08 01:58:16.858 Server  1733] Status of client {PID: 1731, Context ID: 1} is ACTIVE
+[2026-10-08 01:58:17.081 Server  1733] Received new client request for {PID: 1731, Context ID: 1}
+[2026-10-08 01:58:17.081 Server  1733] Client {PID: 1740, Context ID: 0} connected
+[2026-10-08 01:58:17.081 Server  1733] Creating worker thread for client {PID: 1740, Context ID: 0}
+[2026-10-08 01:58:17.131 Server  1733] Received new client request for {PID: 1740, Context ID: 0}
+[2026-10-08 01:58:17.137 Server  1733] Client {PID: 1740, Context ID: 1} connected
+[2026-10-08 01:58:17.137 Server  1733] Creating worker thread for client {PID: 1740, Context ID: 1}
+[2026-10-08 01:58:17.137 Server  1733] Device NVIDIA A100-SXM4-40GB (uuid GPU-605db1af-bd4e-40db-a6ba-15eb7c23c8b8) is associated
+[2026-10-08 01:58:17.137 Server  1733] Status of client {PID: 1740, Context ID: 1} is ACTIVE
+[2026-10-08 01:58:30.656 Server  1733] Server failed to recevie command with status 806, assuming client {PID: 1740, Context ID: 1} exit
+[2026-10-08 01:58:30.656 Server  1733] Client {PID: 1740, Context ID: 1} exiting. Number of active client contexts is 1.
+[2026-10-08 01:58:30.674 Server  1733] Server failed to recevie command with status 806, assuming client {PID: 1740, Context ID: 0} exit
+[2026-10-08 01:58:30.674 Server  1733] Client process 1740 disconnected
+[2026-10-08 01:58:30.749 Server  1733] Server failed to recevie command with status 806, assuming client {PID: 1731, Context ID: 1} exit
+[2026-10-08 01:58:30.749 Server  1733] Client {PID: 1731, Context ID: 1} exiting. Number of active client contexts is 0.
+[2026-10-08 01:58:30.769 Server  1733] Server failed to recevie command with status 806, assuming client {PID: 1731, Context ID: 0} exit
+[2026-10-08 01:58:30.769 Server  1733] Client process 1731 disconnected
+[2026-10-08 01:58:32.178 Server  1733] Server has been notified to shutdown
+[2026-10-08 01:58:32.178 Server  1733] Waiting for current clients to finish
+[2026-10-08 01:58:32.178 Server  1733] Exiting

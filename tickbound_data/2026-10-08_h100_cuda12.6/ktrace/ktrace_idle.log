@@ -1,0 +1,1 @@
+gputrace ktrace: NVIDIA H100 80GB HBM3 sms=132 recs=63360 events=32 kernels=5 in 0.32 s (sync pre ok post ok)

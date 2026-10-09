@@ -2,7 +2,7 @@
 
 Early feasibility work for an MSc research project: how precisely can a CPU and a GPU be kept in step, first in *time* (do their clocks agree?) and then in *execution* (can the GPU start work at an exact chosen moment?), with 5G/6G GPU base stations as the motivating use case.
 
-Status: exploratory. Everything so far ran on a laptop iGPU (AMD Ryzen AI 7 350, Radeon 860M, OpenCL). The NVIDIA version is written but not yet run.
+Status: exploratory. The findings in this README ran on a laptop iGPU (AMD Ryzen AI 7 350, Radeon 860M, OpenCL); the NVIDIA lockstep version in `gpu_run/` is written but not yet run. NVIDIA timing measurements with tickbound (A100, H100, and eight A100s on one host timeline, 8-9 Oct 2026) are in [FINDINGS.md](FINDINGS.md).
 
 ## Findings so far (laptop, AMD Radeon 860M)
 

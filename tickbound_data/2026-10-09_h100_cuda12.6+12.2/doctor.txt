@@ -1,0 +1,14 @@
+tickbound 0.1.0
+  python     3.10.12  (/root/venv/bin/python3)
+  numpy      2.2.6
+  os         Linux-6.8.0-138-generic-x86_64-with-glibc2.35
+  nvidia-smi /usr/bin/nvidia-smi
+    GPU 0: NVIDIA H100 80GB HBM3, sm_90, driver 595.71.05, persistence Enabled
+  nvcc       /usr/local/cuda-12.6/bin/nvcc  Build cuda_12.6.r12.6/compiler.35059454_0
+  cuobjdump  /usr/local/cuda-12.6/bin/cuobjdump  (for `tickbound sass` on a binary)
+  MPS        /usr/bin/nvidia-cuda-mps-control  (for the MPS variants)
+  NCCL       /usr/include  (for multi-GPU NCCL runs)
+  cache      /root/.cache/tickbound  (0 probe build(s))
+
+  analyse / export / view: yes
+  measure:                 yes

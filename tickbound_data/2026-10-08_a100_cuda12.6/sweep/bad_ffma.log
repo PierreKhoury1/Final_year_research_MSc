@@ -1,0 +1,2 @@
+gputrace: --ffma 100 is not supported by ktrace: the FFMA chain is unrolled at compile time, one of 64, 256, 1024, 4096
+ktrace SASS check: PASS (4 k_ktrace instantiation(s), 28 exact checks on the binary that measured)

@@ -1,0 +1,1 @@
++ /usr/local/cuda-12.6/bin/nvcc -O2 -std=c++17 -o /root/res/cuasm_sm80/cubin_runner /root/tb/devtools/cuasm/../../src/tickbound/cuda/cubin_runner.cu -lcuda

@@ -1,0 +1,1 @@
+gputrace reorder: NVIDIA H100 80GB HBM3 sms=132 recs=2496 events=158 kernels=39 in 0.06 s (sync pre ok post ok)

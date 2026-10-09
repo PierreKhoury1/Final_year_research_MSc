@@ -3,3 +3,9 @@
 __pycache__/
 *.pyc
 storyboard/*.png
+~$*
+tickbound_data/**/*.bin
+tickbound_data/**/*.trace.json
+tickbound_data/**/*.sass
+tickbound_data/**/timeline.html
+tickbound_data/**/cubin_runner

@@ -1,0 +1,43 @@
+
+===== 02:00:23 install CUDA 12.6 compiler
+Cuda compilation tools, release 12.6, V12.6.85
+Build cuda_12.6.r12.6/compiler.35059454_0
+/usr/local/cuda-12.6/bin/nvcc
+/usr/local/cuda-12.6/bin/cuobjdump
+
+===== 02:00:35 ktrace profile (rebuild with 12.6)
+building the probes for sm_90 (once per GPU architecture) ...
+GPU 0: NVIDIA H100 80GB HBM3 (sm_90), 1 GPU(s), profile ktrace, output /root/res126/ktrace/
+  ktrace (1 s): ktrace ±654 ns (edge): B=132: load 386 | bar1 wait 38/255 rel 29 | compute 1032 | store+fence 1534 | atomic 498 cy; span 2.3 us, block bound 21/25 ns p50/max, SM 1.945-2.006 GHz, rate incons 0 ns, ticket 0+0/660 viol (floor 214 ns), launch->first 5.2 us warm, flag->seen 0.72 us, flag store 2 cy, writer fence 3374 cy, 4.03 cy/FFMA || B=528: load 610 | bar1 wait 172/2298 rel 66 | compute 1058 | store+fence 1458 | atomic 568 cy; span 9.0 us, block bound 20/27 ns p50/max, SM 1.960-1.983 GHz, rate incons 0 ns, ticket 0+0/2640 viol (floor 217 ns), launch->first 5.1 us warm, flag->seen 0.75 us, flag store 0 cy, writer fence 3608 cy, 4.13 cy/FFMA
+  ktrace_long (1 s): ktrace ±713 ns (edge): B=528: load 576 | bar1 wait 160/9657 rel 52 | compute 16816 | store+fence 1352 | atomic 492 cy; span 28.6 us, block bound 41/91 ns p50/max, SM 1.963-1.967 GHz, rate incons 70 ns, ticket 0+0/1584 viol (floor 200 ns), launch->first 5.6 us warm, flag->seen 0.72 us, flag store 0 cy, writer fence 3240 cy, 4.11 cy/FFMA
+  ktrace_idle (1 s): ktrace ±715 ns (edge): B=132: load 386 | bar1 wait 36/258 rel 29 | compute 1032 | store+fence 1500 | atomic 472 cy; span 2.3 us, block bound 21/26 ns p50/max, SM 1.943-2.005 GHz, rate incons 0 ns, ticket 0+0/660 viol (floor 218 ns), launch->first 24.4 us warm, flag->seen 0.73 us, flag store 4 cy, writer fence 3358 cy, 4.03 cy/FFMA
+ktrace SASS check: PASS (4 k_ktrace instantiation(s), 28 exact checks on the binary that measured)
+
+/root/res126/ktrace/report.md written; 3/3 runs analysed in 1.8 min
+timeline: /root/res126/ktrace/timeline.html
+ktrace SASS check: PASS (4 k_ktrace instantiation(s), 28 exact checks on the binary that measured)
+binary: /root/.cache/tickbound/bin/tickbound_probe_sm90_c9d82b082b8c
+  bar2_release -> stored          7 instr  {'MOV': 1, 'STG.E.128': 1, 'MEMBAR.ALL.CTA': 1, 'MEMBAR.SC.GPU': 1, 'ERRBAR': 1, 'CGAERRBAR': 1, 'CCTL.IVALL': 1}
+  stored -> ticket                7 instr  {'BSSY': 1, 'BRA': 1, 'LDC.64': 1, 'HFMA2.MMA': 1, 'ATOMG.E.ADD.STRONG.GPU': 1, 'STS': 1, 'BSYNC': 1}
+  ticket -> flag                  3 instr  {'BAR.SYNC.DEFER_BLOCKING': 1, 'LDS.128': 1, 'ISETP.NE.AND': 1}
+  flag -> exit                    1 instr  {'STG.E.64.STRONG.SYS': 1}
+  exit -> writer fence clock     13 instr  {'MOV': 2, 'S2R': 1, 'LOP3.LUT': 1, 'EXIT': 1, 'BSSY': 1, 'CS2R': 1, 'BRA': 1, 'MEMBAR.ALL.CTA': 1, 'MEMBAR.SC.SYS': 1, 'ERRBAR': 1, 'CGAERRBAR': 1, 'CCTL.IVALL': 1}
+  check ok   checkpoints == 12                            found 12
+  check ok   no STL/LDL in the function                   none
+  check ok   load: 2 LDG + 1 STS + address arithmetic     LDG=2 STS=1
+  check ok   compute: exactly FADD x1 + FFMA x4096        found {'FFMA': 4096, 'FADD': 1}
+  check ok   flag -> exit: one STG (+ ISETP/PLOP3) only   STG=1 ISETP/PLOP3=0
+  check ok   writer fence: MEMBAR.SYS then clock read     13 instr, fence MEMBAR.SC.SYS
+  check ok   no other clock read                          none
+
+===== 02:04:34 FFMA_N sweep
+ffma 64 exit 0
+ktrace ±650 ns (edge): B=1: load 354 | bar1 wait 24/55 rel 24 | compute 264 | store+fence 1232 | atomic 508 cy; span 1.5 us, block bound 23/24 ns p50/max, SM 1.921-2.043 GHz, rate incons 0 ns, ticket 0+0/5 viol (floor nan ns), launch->first 5.0 us warm, flag->seen 0.72 us, flag store 2 cy, writer f
+ffma 256 exit 0
+ktrace ±714 ns (edge): B=1: load 359 | bar1 wait 24/55 rel 24 | compute 1032 | store+fence 1235 | atomic 512 cy; span 1.9 us, block bound 22/25 ns p50/max, SM 1.936-2.030 GHz, rate incons 0 ns, ticket 0+0/5 viol (floor nan ns), launch->first 5.5 us warm, flag->seen 0.68 us, flag store 4 cy, writer 
+ffma 1024 exit 0
+ktrace ±654 ns (edge): B=1: load 353 | bar1 wait 28/66 rel 26 | compute 4104 | store+fence 1236 | atomic 512 cy; span 3.4 us, block bound 22/26 ns p50/max, SM 1.953-2.006 GHz, rate incons 0 ns, ticket 0+0/5 viol (floor nan ns), launch->first 5.2 us warm, flag->seen 0.70 us, flag store 4 cy, writer 
+ffma 4096 exit 0
+ktrace ±641 ns (edge): B=1: load 355 | bar1 wait 24/55 rel 22 | compute 16396 | store+fence 1233 | atomic 510 cy; span 9.6 us, block bound 20/21 ns p50/max, SM 1.970-1.990 GHz, rate incons 0 ns, ticket 0+0/5 viol (floor nan ns), launch->first 5.3 us warm, flag->seen 0.72 us, flag store 2 cy, writer
+
+===== 02:10:39 pack

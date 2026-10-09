@@ -1,0 +1,1044 @@
+{
+ "prefix": "C:\\Users\\pierr\\AppData\\Local\\Temp\\claude\\C--Users-pierr\\5c9f69cd-4ab2-4054-ba7c-33d14cfa0fa5\\scratchpad\\box_9oct\\out_a100x8\\res\\reorder122\\reorder_fence",
+ "strategy": "reorder",
+ "gpu": "NVIDIA A100-PCIE-40GB",
+ "sms": 108,
+ "host": "3990b2003192",
+ "clock": {
+  "tick_ns": 1024,
+  "method": "edge",
+  "bound_ns": 764.281602114439,
+  "rate_ppm": -17.47659431350357,
+  "feasible": true,
+  "windows": {
+   "pre": {
+    "edge_bound_ns": 848.4673093976453,
+    "edge_feasible": true,
+    "n_up": 3000,
+    "n_down": 2931,
+    "rate_ppm": -19.69574191051926
+   },
+   "post": {
+    "edge_bound_ns": 764.5108416546136,
+    "edge_feasible": true,
+    "n_up": 3000,
+    "n_down": 2738,
+    "rate_ppm": -17.19482372286585
+   }
+  },
+  "width_ns": 1528.563204228878
+ },
+ "n_gpu_recs": 2496,
+ "gpu_recs_dropped": 0,
+ "n_host_events": 158,
+ "result": {
+  "reorder_layout": 1,
+  "cc": "8.0",
+  "tick_ns": 1024.0,
+  "bound_ns": 764.281602114439,
+  "toolkit": {
+   "cuda_runtime": 12020,
+   "driver": 13020
+  },
+  "gate": {
+   "status": "FAIL",
+   "label": "FAIL",
+   "file": "reorder_fence.reorder_sass.json",
+   "source": "run",
+   "error": null,
+   "kernels_in_gate": 295,
+   "unparsed_kernels": [],
+   "group_labels": {
+    "PASS": 39
+   }
+  },
+  "n_records": 2496,
+  "experiments": {
+   "fence": {
+    "groups": [
+     {
+      "variant": "after",
+      "v": 0,
+      "fence": "sc_gpu",
+      "M": 0,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 783.0,
+       "p50": 785.5,
+       "p90": 787.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "variant": "after",
+      "v": 0,
+      "fence": "sc_gpu",
+      "M": 64,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 888.0,
+       "p50": 1041.0,
+       "p90": 1043.7
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "variant": "after",
+      "v": 0,
+      "fence": "sc_gpu",
+      "M": 256,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 1659.3,
+       "p50": 1811.0,
+       "p90": 1814.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 2.0
+     },
+     {
+      "variant": "after",
+      "v": 0,
+      "fence": "sc_gpu",
+      "M": 1024,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 4880.3,
+       "p50": 4886.0,
+       "p90": 4898.7
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 6.0
+     },
+     {
+      "variant": "after",
+      "v": 0,
+      "fence": "sc_sys",
+      "M": 0,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 2498.0,
+       "p50": 2650.5,
+       "p90": 2655.7
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 3.0
+     },
+     {
+      "variant": "after",
+      "v": 0,
+      "fence": "sc_sys",
+      "M": 64,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 2762.5,
+       "p50": 2914.0,
+       "p90": 2921.1
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 4.0
+     },
+     {
+      "variant": "after",
+      "v": 0,
+      "fence": "sc_sys",
+      "M": 256,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 3531.3,
+       "p50": 3681.0,
+       "p90": 3693.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 5.0
+     },
+     {
+      "variant": "after",
+      "v": 0,
+      "fence": "sc_sys",
+      "M": 1024,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 6605.0,
+       "p50": 6758.0,
+       "p90": 6764.0
+      },
+      "ns": {
+       "p10": 8636.975632818983,
+       "p50": 8837.044863980422,
+       "p90": 8844.89071618283,
+       "sm_clock_samples": 64
+      },
+      "sm_ghz": 0.7647352824410163,
+      "timer_ticks_p50": 9.0
+     },
+     {
+      "variant": "after",
+      "v": 0,
+      "fence": "acqrel_gpu",
+      "M": 0,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 784.0,
+       "p50": 786.0,
+       "p90": 793.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "variant": "after",
+      "v": 0,
+      "fence": "acqrel_gpu",
+      "M": 64,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 889.0,
+       "p50": 1042.5,
+       "p90": 1054.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "variant": "after",
+      "v": 0,
+      "fence": "acqrel_gpu",
+      "M": 256,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 1807.0,
+       "p50": 1810.0,
+       "p90": 1811.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 2.0
+     },
+     {
+      "variant": "after",
+      "v": 0,
+      "fence": "acqrel_gpu",
+      "M": 1024,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 4774.3,
+       "p50": 4882.0,
+       "p90": 4884.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 6.0
+     },
+     {
+      "variant": "before",
+      "v": 1,
+      "fence": "sc_gpu",
+      "M": 0,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 632.3,
+       "p50": 786.0,
+       "p90": 789.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "variant": "before",
+      "v": 1,
+      "fence": "sc_gpu",
+      "M": 64,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 1043.0,
+       "p50": 1045.0,
+       "p90": 1047.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "variant": "before",
+      "v": 1,
+      "fence": "sc_gpu",
+      "M": 256,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 1661.3,
+       "p50": 1815.0,
+       "p90": 1818.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 2.0
+     },
+     {
+      "variant": "before",
+      "v": 1,
+      "fence": "sc_gpu",
+      "M": 1024,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 4735.3,
+       "p50": 4888.5,
+       "p90": 4901.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 6.0
+     },
+     {
+      "variant": "before",
+      "v": 1,
+      "fence": "sc_sys",
+      "M": 0,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 2499.3,
+       "p50": 2651.5,
+       "p90": 2656.7
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 3.0
+     },
+     {
+      "variant": "before",
+      "v": 1,
+      "fence": "sc_sys",
+      "M": 64,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 2761.0,
+       "p50": 2914.0,
+       "p90": 2919.1
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 4.0
+     },
+     {
+      "variant": "before",
+      "v": 1,
+      "fence": "sc_sys",
+      "M": 256,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 3534.3,
+       "p50": 3680.0,
+       "p90": 3692.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 5.0
+     },
+     {
+      "variant": "before",
+      "v": 1,
+      "fence": "sc_sys",
+      "M": 1024,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 6607.6,
+       "p50": 6760.0,
+       "p90": 6770.7
+      },
+      "ns": {
+       "p10": 8647.338921135311,
+       "p50": 8846.784173811171,
+       "p90": 8860.78721976676,
+       "sm_clock_samples": 64
+      },
+      "sm_ghz": 0.7641194661458334,
+      "timer_ticks_p50": 9.0
+     },
+     {
+      "variant": "before",
+      "v": 1,
+      "fence": "acqrel_gpu",
+      "M": 0,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 634.0,
+       "p50": 787.5,
+       "p90": 796.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "variant": "before",
+      "v": 1,
+      "fence": "acqrel_gpu",
+      "M": 64,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 1045.0,
+       "p50": 1049.5,
+       "p90": 1057.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "variant": "before",
+      "v": 1,
+      "fence": "acqrel_gpu",
+      "M": 256,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 1659.3,
+       "p50": 1814.5,
+       "p90": 1825.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 2.0
+     },
+     {
+      "variant": "before",
+      "v": 1,
+      "fence": "acqrel_gpu",
+      "M": 1024,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 4737.0,
+       "p50": 4887.0,
+       "p90": 4898.7
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 6.0
+     },
+     {
+      "variant": "fence_only",
+      "v": 2,
+      "fence": "sc_gpu",
+      "M": 0,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 619.0,
+       "p50": 772.0,
+       "p90": 774.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "variant": "fence_only",
+      "v": 2,
+      "fence": "sc_sys",
+      "M": 0,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 2484.3,
+       "p50": 2637.0,
+       "p90": 2642.7
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 3.0
+     },
+     {
+      "variant": "fence_only",
+      "v": 2,
+      "fence": "acqrel_gpu",
+      "M": 0,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 770.3,
+       "p50": 772.0,
+       "p90": 774.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "variant": "chain_only",
+      "v": 3,
+      "fence": "sc_gpu",
+      "M": 0,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 220.0,
+       "p50": 374.0,
+       "p90": 375.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "variant": "chain_only",
+      "v": 3,
+      "fence": "sc_gpu",
+      "M": 64,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 630.0,
+       "p50": 631.0,
+       "p90": 632.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "variant": "chain_only",
+      "v": 3,
+      "fence": "sc_gpu",
+      "M": 256,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 1245.0,
+       "p50": 1399.0,
+       "p90": 1401.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 2.0
+     },
+     {
+      "variant": "chain_only",
+      "v": 3,
+      "fence": "sc_gpu",
+      "M": 1024,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 4318.0,
+       "p50": 4471.0,
+       "p90": 4473.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 6.0
+     },
+     {
+      "variant": "chain_only",
+      "v": 3,
+      "fence": "sc_sys",
+      "M": 0,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 373.0,
+       "p50": 375.0,
+       "p90": 376.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "variant": "chain_only",
+      "v": 3,
+      "fence": "sc_sys",
+      "M": 64,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 630.0,
+       "p50": 631.5,
+       "p90": 633.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "variant": "chain_only",
+      "v": 3,
+      "fence": "sc_sys",
+      "M": 256,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 1245.0,
+       "p50": 1399.0,
+       "p90": 1400.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 2.0
+     },
+     {
+      "variant": "chain_only",
+      "v": 3,
+      "fence": "sc_sys",
+      "M": 1024,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 4318.0,
+       "p50": 4471.0,
+       "p90": 4473.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 6.0
+     },
+     {
+      "variant": "chain_only",
+      "v": 3,
+      "fence": "acqrel_gpu",
+      "M": 0,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 220.0,
+       "p50": 221.0,
+       "p90": 375.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "variant": "chain_only",
+      "v": 3,
+      "fence": "acqrel_gpu",
+      "M": 64,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 630.0,
+       "p50": 631.0,
+       "p90": 633.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "variant": "chain_only",
+      "v": 3,
+      "fence": "acqrel_gpu",
+      "M": 256,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 1245.0,
+       "p50": 1398.0,
+       "p90": 1400.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 2.0
+     },
+     {
+      "variant": "chain_only",
+      "v": 3,
+      "fence": "acqrel_gpu",
+      "M": 1024,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 4469.3,
+       "p50": 4471.0,
+       "p90": 4472.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 6.0
+     }
+    ],
+    "kinds": {
+     "sc_gpu": {
+      "fk": 0,
+      "fence_cycles": 411.5,
+      "fence_from": "after(0) - chain_only(0)",
+      "fence_after0_minus_chain0": 411.5,
+      "fence_only_minus_chain0": 398.0,
+      "fence_only_scaffold_cycles": 13.0,
+      "fence_only_plus_scaffold": 411.0,
+      "fence_n": {
+       "after0": 64,
+       "fence_only": 64,
+       "chain_only0": 64
+      },
+      "chain_fit": {
+       "intercept": 374.58064516129025,
+       "cycles_per_ffma": 4.000504032258065,
+       "max_residual": 0.5806451612902492,
+       "points": 4
+      },
+      "per_M": [
+       {
+        "M": 0,
+        "after": 785.5,
+        "before": 786.0,
+        "chain_only": 374.0,
+        "n": {
+         "after": 64,
+         "before": 64,
+         "chain_only": 64
+        },
+        "work_before_fence_cycles": 12.0,
+        "work_before_fence_from": "gate store_to_fence_cycles",
+        "saving": -0.5,
+        "expected_saving": 12.0,
+        "saving_minus_expected": -12.5,
+        "after_minus_chain": 411.5,
+        "before_minus_chain": 412.0,
+        "expected_before_minus_chain": 399.5
+       },
+       {
+        "M": 64,
+        "after": 1041.0,
+        "before": 1045.0,
+        "chain_only": 631.0,
+        "n": {
+         "after": 64,
+         "before": 64,
+         "chain_only": 64
+        },
+        "work_before_fence_cycles": 270.0,
+        "work_before_fence_from": "gate store_to_fence_cycles",
+        "saving": -4.0,
+        "expected_saving": 270.0,
+        "saving_minus_expected": -274.0,
+        "after_minus_chain": 410.0,
+        "before_minus_chain": 414.0,
+        "expected_before_minus_chain": 141.5
+       },
+       {
+        "M": 256,
+        "after": 1811.0,
+        "before": 1815.0,
+        "chain_only": 1399.0,
+        "n": {
+         "after": 64,
+         "before": 64,
+         "chain_only": 64
+        },
+        "work_before_fence_cycles": 1038.0,
+        "work_before_fence_from": "gate store_to_fence_cycles",
+        "saving": -4.0,
+        "expected_saving": 411.5,
+        "saving_minus_expected": -415.5,
+        "after_minus_chain": 412.0,
+        "before_minus_chain": 416.0,
+        "expected_before_minus_chain": 0.0
+       },
+       {
+        "M": 1024,
+        "after": 4886.0,
+        "before": 4888.5,
+        "chain_only": 4471.0,
+        "n": {
+         "after": 64,
+         "before": 64,
+         "chain_only": 64
+        },
+        "work_before_fence_cycles": 4110.0,
+        "work_before_fence_from": "gate store_to_fence_cycles",
+        "saving": -2.5,
+        "expected_saving": 411.5,
+        "saving_minus_expected": -414.0,
+        "after_minus_chain": 415.0,
+        "before_minus_chain": 417.5,
+        "expected_before_minus_chain": 0.0
+       }
+      ]
+     },
+     "sc_sys": {
+      "fk": 1,
+      "fence_cycles": 2275.5,
+      "fence_from": "after(0) - chain_only(0)",
+      "fence_after0_minus_chain0": 2275.5,
+      "fence_only_minus_chain0": 2262.0,
+      "fence_only_scaffold_cycles": 13.0,
+      "fence_only_plus_scaffold": 2275.0,
+      "fence_n": {
+       "after0": 64,
+       "fence_only": 64,
+       "chain_only0": 64
+      },
+      "chain_fit": {
+       "intercept": 375.1935483870968,
+       "cycles_per_ffma": 3.9997959869431643,
+       "max_residual": 0.31950844854065963,
+       "points": 4
+      },
+      "per_M": [
+       {
+        "M": 0,
+        "after": 2650.5,
+        "before": 2651.5,
+        "chain_only": 375.0,
+        "n": {
+         "after": 64,
+         "before": 64,
+         "chain_only": 64
+        },
+        "work_before_fence_cycles": 13.0,
+        "work_before_fence_from": "gate store_to_fence_cycles",
+        "saving": -1.0,
+        "expected_saving": 13.0,
+        "saving_minus_expected": -14.0,
+        "after_minus_chain": 2275.5,
+        "before_minus_chain": 2276.5,
+        "expected_before_minus_chain": 2262.5
+       },
+       {
+        "M": 64,
+        "after": 2914.0,
+        "before": 2914.0,
+        "chain_only": 631.5,
+        "n": {
+         "after": 64,
+         "before": 64,
+         "chain_only": 64
+        },
+        "work_before_fence_cycles": 270.0,
+        "work_before_fence_from": "gate store_to_fence_cycles",
+        "saving": 0.0,
+        "expected_saving": 270.0,
+        "saving_minus_expected": -270.0,
+        "after_minus_chain": 2282.5,
+        "before_minus_chain": 2282.5,
+        "expected_before_minus_chain": 2005.5
+       },
+       {
+        "M": 256,
+        "after": 3681.0,
+        "before": 3680.0,
+        "chain_only": 1399.0,
+        "n": {
+         "after": 64,
+         "before": 64,
+         "chain_only": 64
+        },
+        "work_before_fence_cycles": 1038.0,
+        "work_before_fence_from": "gate store_to_fence_cycles",
+        "saving": 1.0,
+        "expected_saving": 1038.0,
+        "saving_minus_expected": -1037.0,
+        "after_minus_chain": 2282.0,
+        "before_minus_chain": 2281.0,
+        "expected_before_minus_chain": 1237.5
+       },
+       {
+        "M": 1024,
+        "after": 6758.0,
+        "before": 6760.0,
+        "chain_only": 4471.0,
+        "n": {
+         "after": 64,
+         "before": 64,
+         "chain_only": 64
+        },
+        "work_before_fence_cycles": 4110.0,
+        "work_before_fence_from": "gate store_to_fence_cycles",
+        "saving": -2.0,
+        "expected_saving": 2275.5,
+        "saving_minus_expected": -2277.5,
+        "after_minus_chain": 2287.0,
+        "before_minus_chain": 2289.0,
+        "expected_before_minus_chain": 0.0
+       }
+      ]
+     },
+     "acqrel_gpu": {
+      "fk": 2,
+      "fence_cycles": 565.0,
+      "fence_from": "after(0) - chain_only(0)",
+      "fence_after0_minus_chain0": 565.0,
+      "fence_only_minus_chain0": 551.0,
+      "fence_only_scaffold_cycles": 13.0,
+      "fence_only_plus_scaffold": 564.0,
+      "fence_n": {
+       "after0": 64,
+       "fence_only": 64,
+       "chain_only0": 64
+      },
+      "chain_fit": {
+       "intercept": 310.1290322580646,
+       "cycles_per_ffma": 4.077740975422427,
+       "max_residual": 89.12903225806463,
+       "points": 4
+      },
+      "per_M": [
+       {
+        "M": 0,
+        "after": 786.0,
+        "before": 787.5,
+        "chain_only": 221.0,
+        "n": {
+         "after": 64,
+         "before": 64,
+         "chain_only": 64
+        },
+        "work_before_fence_cycles": 13.0,
+        "work_before_fence_from": "gate store_to_fence_cycles",
+        "saving": -1.5,
+        "expected_saving": 13.0,
+        "saving_minus_expected": -14.5,
+        "after_minus_chain": 565.0,
+        "before_minus_chain": 566.5,
+        "expected_before_minus_chain": 552.0
+       },
+       {
+        "M": 64,
+        "after": 1042.5,
+        "before": 1049.5,
+        "chain_only": 631.0,
+        "n": {
+         "after": 64,
+         "before": 64,
+         "chain_only": 64
+        },
+        "work_before_fence_cycles": 270.0,
+        "work_before_fence_from": "gate store_to_fence_cycles",
+        "saving": -7.0,
+        "expected_saving": 270.0,
+        "saving_minus_expected": -277.0,
+        "after_minus_chain": 411.5,
+        "before_minus_chain": 418.5,
+        "expected_before_minus_chain": 295.0
+       },
+       {
+        "M": 256,
+        "after": 1810.0,
+        "before": 1814.5,
+        "chain_only": 1398.0,
+        "n": {
+         "after": 64,
+         "before": 64,
+         "chain_only": 64
+        },
+        "work_before_fence_cycles": 1038.0,
+        "work_before_fence_from": "gate store_to_fence_cycles",
+        "saving": -4.5,
+        "expected_saving": 565.0,
+        "saving_minus_expected": -569.5,
+        "after_minus_chain": 412.0,
+        "before_minus_chain": 416.5,
+        "expected_before_minus_chain": 0.0
+       },
+       {
+        "M": 1024,
+        "after": 4882.0,
+        "before": 4887.0,
+        "chain_only": 4471.0,
+        "n": {
+         "after": 64,
+         "before": 64,
+         "chain_only": 64
+        },
+        "work_before_fence_cycles": 4110.0,
+        "work_before_fence_from": "gate store_to_fence_cycles",
+        "saving": -5.0,
+        "expected_saving": 565.0,
+        "saving_minus_expected": -570.0,
+        "after_minus_chain": 411.0,
+        "before_minus_chain": 416.0,
+        "expected_before_minus_chain": 0.0
+       }
+      ]
+     }
+    }
+   }
+  },
+  "dropped": [],
+  "inconsistencies": [],
+  "notes": [
+   "orders: each intended order is forced in the kernel by data dependencies or asm volatile clock reads; it holds for this run only where the reorder SASS gate of the binary that measured says PASS (label 'gate' per instantiation). FAIL (E1-E5) and EXCLUDED (E6) instantiations are dropped from every derived figure and listed in 'dropped'; 'gate not run' = no usable PREFIX.reorder_sass.json / reorder_sass.json next to the run; 'not in gate' = the gate lists no such kernel. The gate also fails compared variants whose brackets wait on different scoreboards left outstanding before c0 (pre-bracket waits)",
+   "cycles = the bracket c0 .. c1 in SM cycles (body + consume: the closing clock read waits for the consumed results); p10 / p50 / p90 with the sample count n per (variant, params); derived differences are p50 - p50. ns only where a group's brackets span >= 8 %globaltimer ticks, through that group's own SM clock (sum of cycles / sum of timer spans); shorter brackets are cycles only",
+   "load_use: L = overlap(0) - chain_only(0) (the load's latency exposed at N = 0, with its dependent address arithmetic, its issue and the consume of its value; serial(0) - chain_only(0) is the cross-check), c = chain_only(0). The overlap chain cannot start before the load is issued: d = the cycles from the seed's data to its first FFMA (the load's address arithmetic, its issue, the clock read that orders the chain after it; 26-27 issue cycles with NVRTC 12.9), which serial's and chain_only's chains do not pay. Model overlap = max(L, 4N + d) + c, serial = L + 4N + c, saving = serial - overlap = min(4N, L - d): L - d is the part of the load's latency a chain can hide. Crossover N* = the knee of overlap(N), least squares a + b * max(N*, N) with b = chain_only's slope (at the top of the measured N it lies beyond the range); model N* = (L - d) / 4. d comes from the knee fit (its intercept - chain_only's) when the knee is inside the range, else from the gate (chain_start_cycles, the binary's issue cycles); both are reported, and a fit that differs from the issue count by more than max(8, d / 4) is an inconsistency (overlap holds a cost the SASS does not explain). overlap2 - overlap = the second independent load's extra cost (both in flight at once)",
+   "war: reuse - fresh = the cost of overwriting a register a store has not read yet (stores read their operands late, through the MIO queue). It is a WAR measurement only where the gate decoded a wait on the store's read scoreboard in the reuse build (war_wait true) and none in the fresh build; a reuse build without it is 'not provoked'. The overwrite issues D cycles after the store (war_distance_cycles, the gate's issue count; reuse: the clock read and its LOP3 that order the chain lie between, 12-13 cycles), so the figure is the WAR stall beyond D: an operand read done within D costs 0. reuse_clock - fresh_clock is the same with the first overwrite right after the store where ptxas gave the clock read (or the chain seed's LOP3) the stored register (D = 2-5 with NVRTC 12.9; the gate says per build). fresh - nostore = the store's own cost in the bracket",
+   "bar: per rep the late warp (1024 FFMA before the barrier) arrives last. Early warps' c_end - the late warp's c_arrive: pre = release + touch; post = pre when the M register-only FFMA after BAR.SYNC.DEFER_BLOCKING ran during the wait (exposed fraction (post - pre) / 4M near 0), pre + 4M when they waited for the release; post_mem puts a shared load + store before them (expected not to overlap). post's FFMA are ordered after the barrier by a clock read, assumed not to end the deferral (it is not a memory instruction); each warp records when that clock read issued (flags >> 16 = it - c_arrive), and post_clock_during_wait is the fraction of early-warp samples where it issued before the late warp arrived: near 1 the assumption holds; near 0 post cannot tell a clock read that ends the deferral from no deferral at all (post_reading says which). late_sink shift = pre - late_sink of the early warps' c_end - the late warp's c_start (expected 4M). Reps are rebuilt per SM from the arrival stamps (every arrival of a rep precedes its release, a warp's next arrival follows it); incomplete reps are counted and not used. The per-group bracket (groups) is every warp's c_end - c_start, early and late warps pooled; the comparisons use the per-rep stamps",
+   "fence: fence cycles = after(M = 0) - chain_only(M = 0): the same clock read, LOP3 and consume STS, plus one fence after one store (the store's drain included). fence_only lacks that scaffolding: fence_only(0) - chain_only(0) + the scaffolding's issue cycles (the gate's after_store_cycles of chain_only(0)) is the cross-check. after - before = what moving the work ahead of the fence saves, against min(fence, W), W = the issue cycles before keeps between its store and its fence (the gate's store_to_fence_cycles: 4M plus the clock read, its LOP3 and the consume STS; else 4M); before's fence also covers that STS, which in after issues behind the fence and nothing waits for. before - chain_only = the fence's exposed part, against max(0, fence - W)",
+   "pipe: cycles per FFMA = (c1 - c0) / 1024 per warp (the consume adds ~0.02). k = the time-weighted number of recorded warps on the same SM and sub-partition (%warpid % 4) during that warp's bracket, itself included (unrecorded warm-up brackets are not counted). Expectation max(4 / ILP, p * k), p = 32 / FP32 lanes per sub-partition: 2 on cc 7.x and 8.0, 1 on cc 8.6 / 8.7 / 8.9, 9.0 and later; limit = the term that binds at the median k (the chain's latency, which interleaving ILP chains hides, or the shared FP32 pipe, which it cannot)",
+   "stall: slope of cycles = a + b * N over the per-N medians per (OP, MODE). dep_consumed (the chain consumed before c1): slope_cycles_per_link = the issue interval of one dependent link. One warp waits exactly the stall count ptxas encoded before its next instruction, so for the fixed-latency ops the slope reproduces the encoding (encoded_cycles_per_link, the gate's static_cycles_per_link) unless the hardware adds to it (hardware_extra_cycles); the encoding is ptxas's choice, an upper bound on the op's minimum stall, which CuAsmRL finds by lowering stall counts until results go wrong (Tier B's stall-lowering edits test that on the GPU). op_encoded_stall = the stall ptxas put on the op itself (the gate's target_stalls), compared with CuAsmRL's dependency-based A100 table (IADD3, IMAD.IADD, IADD3.X, MOV, IABS, IMAD, FADD, HADD2, IMNMX, SEL, LEA 4; IMAD.WIDE(.U32) 5; the other OPs are not in it): encoded_minus_cuasmrl. A link of IABS (LOP3.LUT + IABS) or IMAD_WIDE (IMAD.WIDE.U32 + the IADD3 of the 64-bit add, its IADD3.X off the chain) holds a helper, so its slope is the link's, not the op's. Variable-latency ops (DADD, DFMA on sm_80 / sm_86) wait on a scoreboard, not on the stall count. dep_unconsumed keeps the slope (each instruction still waits for its predecessor) but the closing clock read does not wait for the last result (intercept about one latency lower); indep's slope is the issue interval of one update (IABS's and IMAD_WIDE's updates issue their helpers too), what a clock-based method without dependencies reports (CuAsmRL measured 2.6 cycles per IADD3 that way); naive_cycles_per_instr = p50 / N at the largest N. An (OP, MODE) with an instantiation the gate EXCLUDED (opcode count != N, or a dependency structure other than the mode's) is dropped from the fits' use and from the table"
+  ]
+ }
+}

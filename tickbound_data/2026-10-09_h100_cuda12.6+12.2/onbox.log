@@ -1,0 +1,259 @@
+
+===== 17:57:14 machine
+Fri Oct  9 17:57:14 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 595.71.05              Driver Version: 595.71.05      CUDA Version: 13.2     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA H100 80GB HBM3          On  |   00000000:01:00.0 Off |                    0 |
+| N/A   26C    P0             81W /  500W |       0MiB /  81559MiB |      0%      Default |
+|                                         |                        |             Disabled |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+index, pci.bus_id, name, driver_version, clocks.current.sm [MHz], clocks.max.sm [MHz], persistence_mode, uuid
+0, 00000000:01:00.0, NVIDIA H100 80GB HBM3, 595.71.05, 345 MHz, 1980 MHz, Enabled, GPU-0cff4e3d-a8c8-efc7-276f-af529e5ad1a6
+/usr/local/cuda-12.6/bin/nvcc
+Cuda compilation tools, release 12.6, V12.6.85
+Build cuda_12.6.r12.6/compiler.35059454_0
+24
+model name	: AMD EPYC 9454 48-Core Processor
+Linux aed87a1b0dd5 6.8.0-138-generic #138-Ubuntu SMP PREEMPT_DYNAMIC Fri Jul 31 22:41:49 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux
+
+===== 17:57:14 python + tickbound
+debconf: delaying package configuration, since apt-utils is not installed
+Python 3.10.12
+tickbound 0.1.0
+tickbound 0.1.0
+  python     3.10.12  (/root/venv/bin/python3)
+  numpy      2.2.6
+  os         Linux-6.8.0-138-generic-x86_64-with-glibc2.35
+  nvidia-smi /usr/bin/nvidia-smi
+    GPU 0: NVIDIA H100 80GB HBM3, sm_90, driver 595.71.05, persistence Enabled
+  nvcc       /usr/local/cuda-12.6/bin/nvcc  Build cuda_12.6.r12.6/compiler.35059454_0
+  cuobjdump  /usr/local/cuda-12.6/bin/cuobjdump  (for `tickbound sass` on a binary)
+  MPS        /usr/bin/nvidia-cuda-mps-control  (for the MPS variants)
+  NCCL       /usr/include  (for multi-GPU NCCL runs)
+  cache      /root/.cache/tickbound  (0 probe build(s))
+
+  analyse / export / view: yes
+  measure:                 yes
+
+===== 17:57:29 1. REORDER, CUDA 12.6
+/usr/local/cuda-12.6/bin/nvcc
+/usr/local/cuda-12.6/bin/cuobjdump
+Build cuda_12.6.r12.6/compiler.35059454_0
+building the probes for sm_90 (once per GPU architecture and toolkit) ...
+GPU 0: NVIDIA H100 80GB HBM3 (sm_90), 1 GPU(s), profile reorder, output /root/res/reorder126/
+reorder SASS check: FAIL (27 of 295 instantiation(s)): their instruction order is not the intended one; the analysis drops them; 1 E2 reuse build(s) without the WAR wait (not a WAR measurement); 9 with a wait on a scoreboard set before the bracket (reorder_sass.json pre_waits)
+    FAIL fence after sc_gpu M=0: one sc_gpu fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL) (fence ['01f0 MEMBAR.ALL.CTA', '0200 MEMBAR.SC.GPU'] + ['0210 ERRBAR', '0220 CGAERRBAR', '0230 CCTL.IVALL'])
+    FAIL fence after sc_gpu M=64: one sc_gpu fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL) (fence ['01f0 MEMBAR.ALL.CTA', '0200 MEMBAR.SC.GPU'] + ['0210 ERRBAR', '0220 CGAERRBAR', '0230 CCTL.IVALL'])
+    FAIL fence after sc_gpu M=256: one sc_gpu fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL) (fence ['01f0 MEMBAR.ALL.CTA', '0200 MEMBAR.SC.GPU'] + ['0210 ERRBAR', '0220 CGAERRBAR', '0230 CCTL.IVALL'])
+    FAIL fence after sc_gpu M=1024: one sc_gpu fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL) (fence ['01f0 MEMBAR.ALL.CTA', '0200 MEMBAR.SC.GPU'] + ['0210 ERRBAR', '0220 CGAERRBAR', '0230 CCTL.IVALL'])
+    FAIL fence after sc_sys M=0: one sc_sys fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL) (fence ['01f0 MEMBAR.ALL.CTA', '0200 MEMBAR.SC.SYS'] + ['0210 ERRBAR', '0220 CGAERRBAR', '0230 CCTL.IVALL'])
+    FAIL fence after sc_sys M=64: one sc_sys fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL) (fence ['01f0 MEMBAR.ALL.CTA', '0200 MEMBAR.SC.SYS'] + ['0210 ERRBAR', '0220 CGAERRBAR', '0230 CCTL.IVALL'])
+    FAIL fence after sc_sys M=256: one sc_sys fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL) (fence ['01f0 MEMBAR.ALL.CTA', '0200 MEMBAR.SC.SYS'] + ['0210 ERRBAR', '0220 CGAERRBAR', '0230 CCTL.IVALL'])
+    FAIL fence after sc_sys M=1024: one sc_sys fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL) (fence ['01f0 MEMBAR.ALL.CTA', '0200 MEMBAR.SC.SYS'] + ['0210 ERRBAR', '0220 CGAERRBAR', '0230 CCTL.IVALL'])
+    FAIL fence after acqrel_gpu M=0: one acqrel_gpu fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL) (fence ['01f0 MEMBAR.ALL.CTA', '0200 MEMBAR.ALL.GPU'] + ['0210 ERRBAR', '0220 CGAERRBAR', '0230 CCTL.IVALL'])
+    FAIL fence after acqrel_gpu M=64: one acqrel_gpu fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL) (fence ['01f0 MEMBAR.ALL.CTA', '0200 MEMBAR.ALL.GPU'] + ['0210 ERRBAR', '0220 CGAERRBAR', '0230 CCTL.IVALL'])
+    FAIL fence after acqrel_gpu M=256: one acqrel_gpu fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL) (fence ['01f0 MEMBAR.ALL.CTA', '0200 MEMBAR.ALL.GPU'] + ['0210 ERRBAR', '0220 CGAERRBAR', '0230 CCTL.IVALL'])
+    FAIL fence after acqrel_gpu M=1024: one acqrel_gpu fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL) (fence ['01f0 MEMBAR.ALL.CTA', '0200 MEMBAR.ALL.GPU'] + ['0210 ERRBAR', '0220 CGAERRBAR', '0230 CCTL.IVALL'])
+  reorder_loaduse (2 s): reorder ±579 ns (edge): gate FAIL | load_use L1 L 49 d 33 N* 3.9 ((L-d)/4 4.1) max saving 19@N=32, L2 L 370 d 32 N* 84.8 ((L-d)/4 84.7) max saving 396@N=96, DRAM L 771 d 30 N* 164.1 ((L-d)/4 185.2) max saving 634@N=128 | 3 inconsistencies
+  reorder_war (0 s): reorder ±586 ns (edge): gate FAIL | war reuse-fresh (1/32 warps) STS.32 +0/+1 (D 14), STS.128 +2/+8 (D 14), STG.32 +0/+0 (D 14), STG.128 +6/+46 (D 14) cy, WAR waits 8/8 | war reuse_clock-fresh_clock (1/32 warps) STS.32 +1/+3 (D 9), STS.128 +6/+18 (D 9), STG.32 +0/+1 (D 74), STG.128 +0/-24 cy, WAR waits 6/8
+  reorder_bar (0 s): reorder ±559 ns (edge): gate FAIL | bar M=64: post-pre +0, post_mem-pre +296, sink +224 (4M 256, post clock in the wait 100%); M=256: post-pre +0, post_mem-pre +1066, sink +1030 (4M 1024, post clock in the wait 100%)
+  reorder_fence (0 s): reorder ±625 ns (edge): gate FAIL, 27 dropped | fence sc_gpu -: saving  @M=; sc_sys -: saving  @M=; acqrel_gpu -: saving  @M= | 3 inconsistencies
+  reorder_pipe (1 s): reorder ±571 ns (edge): gate FAIL | pipe cy/FFMA ILP1 4.01..7.96 (W 1..32, exp 4.0..7.8, k 7.8), ILP2 2.02..8.02 (W 1..32, exp 2.0..7.9, k 7.9), ILP4 1.02..2.21 (W 1..32, exp 1.0..3.0, k 3.0)
+  reorder_stall (0 s): reorder ±641 ns (edge): gate FAIL | stall dep_consumed 16 ops slope [encoded per link, op stall, CuAsmRL]: IADD3 4.0[4,4,4] LOP3 4.0[4,4,-] SHF 4.0[4,4,-] LEA 4.0[4,4,4] SEL 4.0[4,4,4] IMNMX 4.0[4,4,4] IABS 8.0[8,4,4] HADD2 4.0[4,4,4] HFMA2 4.0[4,4,-] IMAD_WIDE 12.0[8,3,5] FMUL 4.0[4,4,-] FADD 4.0[4,4,4] FFMA 4.0[4,4,-] IMAD 4.0[4,4,4] DADD 8.0[8,8,-] DFMA 8.0[8,8,-]; indep IADD3 2.0 LOP3 2.0 SHF 2.0 LEA 2.0 SEL 2.0 IMNMX 2.0 IABS 4.0 HADD2 2.0 HFMA2 2.0 IMAD_WIDE 7.5 FMUL 1.0 FADD 1.0 FFMA 1.0 IMAD 2.0 DADD 2.2 DFMA 2.2
+
+/root/res/reorder126/report.md written; 6/6 runs analysed in 0.2 min
+timeline: /root/res/reorder126/timeline.html
+reorder SASS check: FAIL (27 of 295 instantiation(s)): their instruction order is not the intended one; the analysis drops them; 1 E2 reuse build(s) without the WAR wait (not a WAR measurement); 9 with a wait on a scoreboard set before the bracket (reorder_sass.json pre_waits)
+characterize exit 0
+# tickbound characterisation: NVIDIA H100 80GB HBM3 (aed87a1b0dd5, 2026-10-09 17:58)
+
+**reorder SASS check: FAIL (27 of 295 instantiation(s)): their instruction order is not the intended one; the analysis drops them; 1 E2 reuse build(s) without the WAR wait (not a WAR measurement); 9 with a wait on a scoreboard set before the bracket (reorder_sass.json pre_waits)** (`reorder_sass.json`)
+
+- FAIL fence after sc_gpu M=0: one sc_gpu fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL) (fence ['01f0 MEMBAR.ALL.CTA', '0200 MEMBAR.SC.GPU'] + ['0210 ERRBAR', '0220 CGAERRBAR', '0230 CCTL.IVALL'])
+- FAIL fence after sc_gpu M=64: one sc_gpu fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL) (fence ['01f0 MEMBAR.ALL.CTA', '0200 MEMBAR.SC.GPU'] + ['0210 ERRBAR', '0220 CGAERRBAR', '0230 CCTL.IVALL'])
+- FAIL fence after sc_gpu M=256: one sc_gpu fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL) (fence ['01f0 MEMBAR.ALL.CTA', '0200 MEMBAR.SC.GPU'] + ['0210 ERRBAR', '0220 CGAERRBAR', '0230 CCTL.IVALL'])
+- FAIL fence after sc_gpu M=1024: one sc_gpu fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL) (fence ['01f0 MEMBAR.ALL.CTA', '0200 MEMBAR.SC.GPU'] + ['0210 ERRBAR', '0220 CGAERRBAR', '0230 CCTL.IVALL'])
+- FAIL fence after sc_sys M=0: one sc_sys fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL) (fence ['01f0 MEMBAR.ALL.CTA', '0200 MEMBAR.SC.SYS'] + ['0210 ERRBAR', '0220 CGAERRBAR', '0230 CCTL.IVALL'])
+- FAIL fence after sc_sys M=64: one sc_sys fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL) (fence ['01f0 MEMBAR.ALL.CTA', '0200 MEMBAR.SC.SYS'] + ['0210 ERRBAR', '0220 CGAERRBAR', '0230 CCTL.IVALL'])
+- FAIL fence after sc_sys M=256: one sc_sys fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL) (fence ['01f0 MEMBAR.ALL.CTA', '0200 MEMBAR.SC.SYS'] + ['0210 ERRBAR', '0220 CGAERRBAR', '0230 CCTL.IVALL'])
+- FAIL fence after sc_sys M=1024: one sc_sys fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL) (fence ['01f0 MEMBAR.ALL.CTA', '0200 MEMBAR.SC.SYS'] + ['0210 ERRBAR', '0220 CGAERRBAR', '0230 CCTL.IVALL'])
+- FAIL fence after acqrel_gpu M=0: one acqrel_gpu fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL) (fence ['01f0 MEMBAR.ALL.CTA', '0200 MEMBAR.ALL.GPU'] + ['0210 ERRBAR', '0220 CGAERRBAR', '0230 CCTL.IVALL'])
+- FAIL fence after acqrel_gpu M=64: one acqrel_gpu fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL) (fence ['01f0 MEMBAR.ALL.CTA', '0200 MEMBAR.ALL.GPU'] + ['0210 ERRBAR', '0220 CGAERRBAR', '0230 CCTL.IVALL'])
+- FAIL fence after acqrel_gpu M=256: one acqrel_gpu fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL) (fence ['01f0 MEMBAR.ALL.CTA', '0200 MEMBAR.ALL.GPU'] + ['0210 ERRBAR', '0220 CGAERRBAR', '0230 CCTL.IVALL'])
+- FAIL fence after acqrel_gpu M=1024: one acqrel_gpu fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL) (fence ['01f0 MEMBAR.ALL.CTA', '0200 MEMBAR.ALL.GPU'] + ['0210 ERRBAR', '0220 CGAERRBAR', '0230 CCTL.IVALL'])
+- FAIL fence before sc_gpu M=0: one sc_gpu fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL) (fence ['0220 MEMBAR.ALL.CTA', '0230 MEMBAR.SC.GPU'] + ['0240 ERRBAR', '0250 CGAERRBAR', '0260 CCTL.IVALL'])
+- FAIL fence before sc_gpu M=64: one sc_gpu fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL) (fence ['0620 MEMBAR.ALL.CTA', '0630 MEMBAR.SC.GPU'] + ['0640 ERRBAR', '0650 CGAERRBAR', '0660 CCTL.IVALL'])
+- FAIL fence before sc_gpu M=256: one sc_gpu fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL) (fence ['1220 MEMBAR.ALL.CTA', '1230 MEMBAR.SC.GPU'] + ['1240 ERRBAR', '1250 CGAERRBAR', '1260 CCTL.IVALL'])
+- FAIL fence before sc_gpu M=1024: one sc_gpu fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL) (fence ['4220 MEMBAR.ALL.CTA', '4230 MEMBAR.SC.GPU'] + ['4240 ERRBAR', '4250 CGAERRBAR', '4260 CCTL.IVALL'])
+- FAIL fence before sc_sys M=0: one sc_sys fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL) (fence ['0220 MEMBAR.ALL.CTA', '0230 MEMBAR.SC.SYS'] + ['0240 ERRBAR', '0250 CGAERRBAR', '0260 CCTL.IVALL'])
+- FAIL fence before sc_sys M=64: one sc_sys fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL) (fence ['0620 MEMBAR.ALL.CTA', '0630 MEMBAR.SC.SYS'] + ['0640 ERRBAR', '0650 CGAERRBAR', '0660 CCTL.IVALL'])
+- FAIL fence before sc_sys M=256: one sc_sys fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL) (fence ['1220 MEMBAR.ALL.CTA', '1230 MEMBAR.SC.SYS'] + ['1240 ERRBAR', '1250 CGAERRBAR', '1260 CCTL.IVALL'])
+- FAIL fence before sc_sys M=1024: one sc_sys fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL) (fence ['4220 MEMBAR.ALL.CTA', '4230 MEMBAR.SC.SYS'] + ['4240 ERRBAR', '4250 CGAERRBAR', '4260 CCTL.IVALL'])
+binary: /root/.cache/tickbound/bin/tickbound_probe_sm90_cuda12.6.85_5ea01065c6c8
+sass --reorder exit 1 (0 = PASS, 1 = a FAIL)
+  FAIL     fence after sc_gpu M=0                   1 bracket(s), fence ['MEMBAR.ALL.CTA', 'MEMBAR.SC.GPU', 'ERRBAR', 'CGAERRBAR', 'CCTL.IVALL'], 0 cy store -> fence
+           FAIL one sc_gpu fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL): fence ['01f0 MEMBAR.ALL.CTA', '0200 MEMBAR.SC.GPU'] + ['0210 ERRBAR', '0220 CGAERRBAR', '0230 CCTL.IVALL']
+  FAIL     fence after sc_gpu M=64                  1 bracket(s), fence ['MEMBAR.ALL.CTA', 'MEMBAR.SC.GPU', 'ERRBAR', 'CGAERRBAR', 'CCTL.IVALL'], 0 cy store -> fence
+           FAIL one sc_gpu fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL): fence ['01f0 MEMBAR.ALL.CTA', '0200 MEMBAR.SC.GPU'] + ['0210 ERRBAR', '0220 CGAERRBAR', '0230 CCTL.IVALL']
+  FAIL     fence after sc_gpu M=256                 1 bracket(s), fence ['MEMBAR.ALL.CTA', 'MEMBAR.SC.GPU', 'ERRBAR', 'CGAERRBAR', 'CCTL.IVALL'], 0 cy store -> fence
+           FAIL one sc_gpu fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL): fence ['01f0 MEMBAR.ALL.CTA', '0200 MEMBAR.SC.GPU'] + ['0210 ERRBAR', '0220 CGAERRBAR', '0230 CCTL.IVALL']
+  FAIL     fence after sc_gpu M=1024                1 bracket(s), fence ['MEMBAR.ALL.CTA', 'MEMBAR.SC.GPU', 'ERRBAR', 'CGAERRBAR', 'CCTL.IVALL'], 0 cy store -> fence
+           FAIL one sc_gpu fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL): fence ['01f0 MEMBAR.ALL.CTA', '0200 MEMBAR.SC.GPU'] + ['0210 ERRBAR', '0220 CGAERRBAR', '0230 CCTL.IVALL']
+  FAIL     fence after sc_sys M=0                   1 bracket(s), fence ['MEMBAR.ALL.CTA', 'MEMBAR.SC.SYS', 'ERRBAR', 'CGAERRBAR', 'CCTL.IVALL'], 0 cy store -> fence
+           FAIL one sc_sys fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL): fence ['01f0 MEMBAR.ALL.CTA', '0200 MEMBAR.SC.SYS'] + ['0210 ERRBAR', '0220 CGAERRBAR', '0230 CCTL.IVALL']
+  FAIL     fence after sc_sys M=64                  1 bracket(s), fence ['MEMBAR.ALL.CTA', 'MEMBAR.SC.SYS', 'ERRBAR', 'CGAERRBAR', 'CCTL.IVALL'], 0 cy store -> fence
+           FAIL one sc_sys fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL): fence ['01f0 MEMBAR.ALL.CTA', '0200 MEMBAR.SC.SYS'] + ['0210 ERRBAR', '0220 CGAERRBAR', '0230 CCTL.IVALL']
+  FAIL     fence after sc_sys M=256                 1 bracket(s), fence ['MEMBAR.ALL.CTA', 'MEMBAR.SC.SYS', 'ERRBAR', 'CGAERRBAR', 'CCTL.IVALL'], 0 cy store -> fence
+           FAIL one sc_sys fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL): fence ['01f0 MEMBAR.ALL.CTA', '0200 MEMBAR.SC.SYS'] + ['0210 ERRBAR', '0220 CGAERRBAR', '0230 CCTL.IVALL']
+  FAIL     fence after sc_sys M=1024                1 bracket(s), fence ['MEMBAR.ALL.CTA', 'MEMBAR.SC.SYS', 'ERRBAR', 'CGAERRBAR', 'CCTL.IVALL'], 0 cy store -> fence
+           FAIL one sc_sys fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL): fence ['01f0 MEMBAR.ALL.CTA', '0200 MEMBAR.SC.SYS'] + ['0210 ERRBAR', '0220 CGAERRBAR', '0230 CCTL.IVALL']
+  FAIL     fence after acqrel_gpu M=0               1 bracket(s), fence ['MEMBAR.ALL.CTA', 'MEMBAR.ALL.GPU', 'ERRBAR', 'CGAERRBAR', 'CCTL.IVALL'], 0 cy store -> fence, 1 pre-bracket wait(s)
+           FAIL one acqrel_gpu fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL): fence ['01f0 MEMBAR.ALL.CTA', '0200 MEMBAR.ALL.GPU'] + ['0210 ERRBAR', '0220 CGAERRBAR', '0230 CCTL.IVALL']
+  FAIL     fence after acqrel_gpu M=64              1 bracket(s), fence ['MEMBAR.ALL.CTA', 'MEMBAR.ALL.GPU', 'ERRBAR', 'CGAERRBAR', 'CCTL.IVALL'], 0 cy store -> fence, 1 pre-bracket wait(s)
+           FAIL one acqrel_gpu fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL): fence ['01f0 MEMBAR.ALL.CTA', '0200 MEMBAR.ALL.GPU'] + ['0210 ERRBAR', '0220 CGAERRBAR', '0230 CCTL.IVALL']
+  FAIL     fence after acqrel_gpu M=256             1 bracket(s), fence ['MEMBAR.ALL.CTA', 'MEMBAR.ALL.GPU', 'ERRBAR', 'CGAERRBAR', 'CCTL.IVALL'], 0 cy store -> fence, 1 pre-bracket wait(s)
+           FAIL one acqrel_gpu fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL): fence ['01f0 MEMBAR.ALL.CTA', '0200 MEMBAR.ALL.GPU'] + ['0210 ERRBAR', '0220 CGAERRBAR', '0230 CCTL.IVALL']
+  FAIL     fence after acqrel_gpu M=1024            1 bracket(s), fence ['MEMBAR.ALL.CTA', 'MEMBAR.ALL.GPU', 'ERRBAR', 'CGAERRBAR', 'CCTL.IVALL'], 0 cy store -> fence, 1 pre-bracket wait(s)
+           FAIL one acqrel_gpu fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL): fence ['01f0 MEMBAR.ALL.CTA', '0200 MEMBAR.ALL.GPU'] + ['0210 ERRBAR', '0220 CGAERRBAR', '0230 CCTL.IVALL']
+  FAIL     fence before sc_gpu M=0                  1 bracket(s), fence ['MEMBAR.ALL.CTA', 'MEMBAR.SC.GPU', 'ERRBAR', 'CGAERRBAR', 'CCTL.IVALL'], 13 cy store -> fence
+           FAIL one sc_gpu fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL): fence ['0220 MEMBAR.ALL.CTA', '0230 MEMBAR.SC.GPU'] + ['0240 ERRBAR', '0250 CGAERRBAR', '0260 CCTL.IVALL']
+  FAIL     fence before sc_gpu M=64                 1 bracket(s), fence ['MEMBAR.ALL.CTA', 'MEMBAR.SC.GPU', 'ERRBAR', 'CGAERRBAR', 'CCTL.IVALL'], 270 cy store -> fence
+           FAIL one sc_gpu fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL): fence ['0620 MEMBAR.ALL.CTA', '0630 MEMBAR.SC.GPU'] + ['0640 ERRBAR', '0650 CGAERRBAR', '0660 CCTL.IVALL']
+  FAIL     fence before sc_gpu M=256                1 bracket(s), fence ['MEMBAR.ALL.CTA', 'MEMBAR.SC.GPU', 'ERRBAR', 'CGAERRBAR', 'CCTL.IVALL'], 1038 cy store -> fence
+           FAIL one sc_gpu fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL): fence ['1220 MEMBAR.ALL.CTA', '1230 MEMBAR.SC.GPU'] + ['1240 ERRBAR', '1250 CGAERRBAR', '1260 CCTL.IVALL']
+  FAIL     fence before sc_gpu M=1024               1 bracket(s), fence ['MEMBAR.ALL.CTA', 'MEMBAR.SC.GPU', 'ERRBAR', 'CGAERRBAR', 'CCTL.IVALL'], 4110 cy store -> fence
+           FAIL one sc_gpu fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL): fence ['4220 MEMBAR.ALL.CTA', '4230 MEMBAR.SC.GPU'] + ['4240 ERRBAR', '4250 CGAERRBAR', '4260 CCTL.IVALL']
+  FAIL     fence before sc_sys M=0                  1 bracket(s), fence ['MEMBAR.ALL.CTA', 'MEMBAR.SC.SYS', 'ERRBAR', 'CGAERRBAR', 'CCTL.IVALL'], 13 cy store -> fence
+           FAIL one sc_sys fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL): fence ['0220 MEMBAR.ALL.CTA', '0230 MEMBAR.SC.SYS'] + ['0240 ERRBAR', '0250 CGAERRBAR', '0260 CCTL.IVALL']
+  FAIL     fence before sc_sys M=64                 1 bracket(s), fence ['MEMBAR.ALL.CTA', 'MEMBAR.SC.SYS', 'ERRBAR', 'CGAERRBAR', 'CCTL.IVALL'], 270 cy store -> fence
+           FAIL one sc_sys fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL): fence ['0620 MEMBAR.ALL.CTA', '0630 MEMBAR.SC.SYS'] + ['0640 ERRBAR', '0650 CGAERRBAR', '0660 CCTL.IVALL']
+  FAIL     fence before sc_sys M=256                1 bracket(s), fence ['MEMBAR.ALL.CTA', 'MEMBAR.SC.SYS', 'ERRBAR', 'CGAERRBAR', 'CCTL.IVALL'], 1038 cy store -> fence
+           FAIL one sc_sys fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL): fence ['1220 MEMBAR.ALL.CTA', '1230 MEMBAR.SC.SYS'] + ['1240 ERRBAR', '1250 CGAERRBAR', '1260 CCTL.IVALL']
+  FAIL     fence before sc_sys M=1024               1 bracket(s), fence ['MEMBAR.ALL.CTA', 'MEMBAR.SC.SYS', 'ERRBAR', 'CGAERRBAR', 'CCTL.IVALL'], 4110 cy store -> fence
+           FAIL one sc_sys fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL): fence ['4220 MEMBAR.ALL.CTA', '4230 MEMBAR.SC.SYS'] + ['4240 ERRBAR', '4250 CGAERRBAR', '4260 CCTL.IVALL']
+
+===== 17:58:47 2. REORDER, CUDA 12.2 (E7)
+Processing triggers for libc-bin (2.35-0ubuntu3.8) ...
+apt 12.2 exit 0
+/usr/local/cuda-12.2/bin/nvcc
+/usr/local/cuda-12.2/bin/cuobjdump
+Build cuda_12.2.r12.2/compiler.33191640_0
+building the probes for sm_90 (once per GPU architecture and toolkit) ...
+GPU 0: NVIDIA H100 80GB HBM3 (sm_90), 1 GPU(s), profile reorder, output /root/res/reorder122/
+reorder SASS check: FAIL (35 of 295 instantiation(s)): their instruction order is not the intended one; the analysis drops them; 1 E2 reuse build(s) without the WAR wait (not a WAR measurement)
+    FAIL bar pre M=64: the barrier is BAR.SYNC.DEFER_BLOCKING (barrier forms ['BAR.SYNC'])
+    FAIL bar pre M=256: the barrier is BAR.SYNC.DEFER_BLOCKING (barrier forms ['BAR.SYNC'])
+    FAIL bar post M=64: the barrier is BAR.SYNC.DEFER_BLOCKING (barrier forms ['BAR.SYNC'])
+    FAIL bar post M=256: the barrier is BAR.SYNC.DEFER_BLOCKING (barrier forms ['BAR.SYNC'])
+    FAIL bar post_mem M=64: the barrier is BAR.SYNC.DEFER_BLOCKING (barrier forms ['BAR.SYNC'])
+    FAIL bar post_mem M=256: the barrier is BAR.SYNC.DEFER_BLOCKING (barrier forms ['BAR.SYNC'])
+    FAIL bar late_sink M=64: the barrier is BAR.SYNC.DEFER_BLOCKING (barrier forms ['BAR.SYNC'])
+    FAIL bar late_sink M=256: the barrier is BAR.SYNC.DEFER_BLOCKING (barrier forms ['BAR.SYNC'])
+    FAIL fence after sc_gpu M=0: one sc_gpu fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL) (fence ['0210 MEMBAR.ALL.CTA', '0220 MEMBAR.SC.GPU'] + ['0230 ERRBAR', '0240 CGAERRBAR', '0250 CCTL.IVALL'])
+    FAIL fence after sc_gpu M=64: one sc_gpu fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL) (fence ['0210 MEMBAR.ALL.CTA', '0220 MEMBAR.SC.GPU'] + ['0230 ERRBAR', '0240 CGAERRBAR', '0250 CCTL.IVALL'])
+    FAIL fence after sc_gpu M=256: one sc_gpu fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL) (fence ['0210 MEMBAR.ALL.CTA', '0220 MEMBAR.SC.GPU'] + ['0230 ERRBAR', '0240 CGAERRBAR', '0250 CCTL.IVALL'])
+    FAIL fence after sc_gpu M=1024: one sc_gpu fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL) (fence ['0210 MEMBAR.ALL.CTA', '0220 MEMBAR.SC.GPU'] + ['0230 ERRBAR', '0240 CGAERRBAR', '0250 CCTL.IVALL'])
+  reorder_loaduse (2 s): reorder ±549 ns (edge): gate FAIL | load_use L1 L 43 d 33 N* 2.5 ((L-d)/4 2.6) max saving 18@N=16, L2 L 376 d 33 N* 85.9 ((L-d)/4 85.8) max saving 390@N=96, DRAM L 762 d 33 N* 163.9 ((L-d)/4 182.4) max saving 645@N=128 | 3 inconsistencies
+  reorder_war (0 s): reorder ±570 ns (edge): gate FAIL | war reuse-fresh (1/32 warps) STS.32 -6/+5 (D 14), STS.128 -4/+1 (D 14), STG.32 -6/-0 (D 14), STG.128 +5/+30 (D 14) cy, WAR waits 8/8 | war reuse_clock-fresh_clock (1/32 warps) STS.32 +3/-4 (D 9), STS.128 +6/+7 (D 9), STG.32 +0/+1 (D 74), STG.128 -1/-30 cy, WAR waits 6/8
+  reorder_bar (0 s): reorder ±553 ns (edge): gate FAIL, 8 dropped | bar M=64: post-pre -, post_mem-pre -, sink - (4M 256, post clock in the wait 0%); M=256: post-pre -, post_mem-pre -, sink - (4M 1024, post clock in the wait 0%)
+  reorder_fence (0 s): reorder ±627 ns (edge): gate FAIL, 27 dropped | fence sc_gpu -: saving  @M=; sc_sys -: saving  @M=; acqrel_gpu -: saving  @M= | 3 inconsistencies
+  reorder_pipe (0 s): reorder ±545 ns (edge): gate FAIL | pipe cy/FFMA ILP1 4.01..7.97 (W 1..32, exp 4.0..7.8, k 7.8), ILP2 2.02..8.01 (W 1..32, exp 2.0..7.9, k 7.9), ILP4 1.02..2.14 (W 1..32, exp 1.0..2.6, k 2.6)
+  reorder_stall (0 s): reorder ±652 ns (edge): gate FAIL | stall dep_consumed 16 ops slope [encoded per link, op stall, CuAsmRL]: IADD3 4.0[4,4,4] LOP3 4.0[4,4,-] SHF 4.0[4,4,-] LEA 4.0[4,4,4] SEL 4.0[4,4,4] IMNMX 4.0[4,4,4] IABS 8.0[8,4,4] HADD2 4.0[4,4,4] HFMA2 4.0[4,4,-] IMAD_WIDE 12.0[8,3,5] FMUL 4.0[4,4,-] FADD 4.0[4,4,4] FFMA 4.0[4,4,-] IMAD 4.0[4,4,4] DADD 8.0[8,8,-] DFMA 8.0[8,8,-]; indep IADD3 2.0 LOP3 2.0 SHF 2.0 LEA 2.0 SEL 2.0 IMNMX 2.0 IABS 4.0 HADD2 2.0 HFMA2 2.0 IMAD_WIDE 7.5 FMUL 1.0 FADD 1.0 FFMA 1.0 IMAD 2.0 DADD 2.2 DFMA 2.2
+
+/root/res/reorder122/report.md written; 6/6 runs analysed in 0.2 min
+timeline: /root/res/reorder122/timeline.html
+reorder SASS check: FAIL (35 of 295 instantiation(s)): their instruction order is not the intended one; the analysis drops them; 1 E2 reuse build(s) without the WAR wait (not a WAR measurement)
+characterize exit 0
+# tickbound characterisation: NVIDIA H100 80GB HBM3 (aed87a1b0dd5, 2026-10-09 17:59)
+
+**reorder SASS check: FAIL (35 of 295 instantiation(s)): their instruction order is not the intended one; the analysis drops them; 1 E2 reuse build(s) without the WAR wait (not a WAR measurement)** (`reorder_sass.json`)
+
+- FAIL bar pre M=64: the barrier is BAR.SYNC.DEFER_BLOCKING (barrier forms ['BAR.SYNC'])
+- FAIL bar pre M=256: the barrier is BAR.SYNC.DEFER_BLOCKING (barrier forms ['BAR.SYNC'])
+- FAIL bar post M=64: the barrier is BAR.SYNC.DEFER_BLOCKING (barrier forms ['BAR.SYNC'])
+- FAIL bar post M=256: the barrier is BAR.SYNC.DEFER_BLOCKING (barrier forms ['BAR.SYNC'])
+- FAIL bar post_mem M=64: the barrier is BAR.SYNC.DEFER_BLOCKING (barrier forms ['BAR.SYNC'])
+- FAIL bar post_mem M=256: the barrier is BAR.SYNC.DEFER_BLOCKING (barrier forms ['BAR.SYNC'])
+- FAIL bar late_sink M=64: the barrier is BAR.SYNC.DEFER_BLOCKING (barrier forms ['BAR.SYNC'])
+- FAIL bar late_sink M=256: the barrier is BAR.SYNC.DEFER_BLOCKING (barrier forms ['BAR.SYNC'])
+- FAIL fence after sc_gpu M=0: one sc_gpu fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL) (fence ['0210 MEMBAR.ALL.CTA', '0220 MEMBAR.SC.GPU'] + ['0230 ERRBAR', '0240 CGAERRBAR', '0250 CCTL.IVALL'])
+- FAIL fence after sc_gpu M=64: one sc_gpu fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL) (fence ['0210 MEMBAR.ALL.CTA', '0220 MEMBAR.SC.GPU'] + ['0230 ERRBAR', '0240 CGAERRBAR', '0250 CCTL.IVALL'])
+- FAIL fence after sc_gpu M=256: one sc_gpu fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL) (fence ['0210 MEMBAR.ALL.CTA', '0220 MEMBAR.SC.GPU'] + ['0230 ERRBAR', '0240 CGAERRBAR', '0250 CCTL.IVALL'])
+- FAIL fence after sc_gpu M=1024: one sc_gpu fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL) (fence ['0210 MEMBAR.ALL.CTA', '0220 MEMBAR.SC.GPU'] + ['0230 ERRBAR', '0240 CGAERRBAR', '0250 CCTL.IVALL'])
+- FAIL fence after sc_sys M=0: one sc_sys fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL) (fence ['0210 MEMBAR.ALL.CTA', '0220 MEMBAR.SC.SYS'] + ['0230 ERRBAR', '0240 CGAERRBAR', '0250 CCTL.IVALL'])
+- FAIL fence after sc_sys M=64: one sc_sys fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL) (fence ['0210 MEMBAR.ALL.CTA', '0220 MEMBAR.SC.SYS'] + ['0230 ERRBAR', '0240 CGAERRBAR', '0250 CCTL.IVALL'])
+- FAIL fence after sc_sys M=256: one sc_sys fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL) (fence ['0210 MEMBAR.ALL.CTA', '0220 MEMBAR.SC.SYS'] + ['0230 ERRBAR', '0240 CGAERRBAR', '0250 CCTL.IVALL'])
+- FAIL fence after sc_sys M=1024: one sc_sys fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL) (fence ['0210 MEMBAR.ALL.CTA', '0220 MEMBAR.SC.SYS'] + ['0230 ERRBAR', '0240 CGAERRBAR', '0250 CCTL.IVALL'])
+- FAIL fence after acqrel_gpu M=0: one acqrel_gpu fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL) (fence ['0210 MEMBAR.ALL.CTA', '0220 MEMBAR.ALL.GPU'] + ['0230 ERRBAR', '0240 CGAERRBAR', '0250 CCTL.IVALL'])
+- FAIL fence after acqrel_gpu M=64: one acqrel_gpu fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL) (fence ['0210 MEMBAR.ALL.CTA', '0220 MEMBAR.ALL.GPU'] + ['0230 ERRBAR', '0240 CGAERRBAR', '0250 CCTL.IVALL'])
+- FAIL fence after acqrel_gpu M=256: one acqrel_gpu fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL) (fence ['0210 MEMBAR.ALL.CTA', '0220 MEMBAR.ALL.GPU'] + ['0230 ERRBAR', '0240 CGAERRBAR', '0250 CCTL.IVALL'])
+- FAIL fence after acqrel_gpu M=1024: one acqrel_gpu fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL) (fence ['0210 MEMBAR.ALL.CTA', '0220 MEMBAR.ALL.GPU'] + ['0230 ERRBAR', '0240 CGAERRBAR', '0250 CCTL.IVALL'])
+binary: /root/.cache/tickbound/bin/tickbound_probe_sm90_cuda12.2.140_5ea01065c6c8
+sass --reorder exit 1 (0 = PASS, 1 = a FAIL)
+  FAIL     bar pre M=64                             2 bracket(s), FFMA before the barrier [64, 1024], after it {'early': ['touch'], 'late': ['touch']}
+           FAIL the barrier is BAR.SYNC.DEFER_BLOCKING: barrier forms ['BAR.SYNC']
+  FAIL     bar pre M=256                            2 bracket(s), FFMA before the barrier [256, 1024], after it {'early': ['touch'], 'late': ['touch']}
+           FAIL the barrier is BAR.SYNC.DEFER_BLOCKING: barrier forms ['BAR.SYNC']
+  FAIL     bar post M=64                            2 bracket(s), FFMA before the barrier [0, 1024], after it {'early': ['work'], 'late': ['touch']}
+           FAIL the barrier is BAR.SYNC.DEFER_BLOCKING: barrier forms ['BAR.SYNC']
+  FAIL     bar post M=256                           2 bracket(s), FFMA before the barrier [0, 1024], after it {'early': ['work'], 'late': ['touch']}
+           FAIL the barrier is BAR.SYNC.DEFER_BLOCKING: barrier forms ['BAR.SYNC']
+  FAIL     bar post_mem M=64                        2 bracket(s), FFMA before the barrier [0, 1024], after it {'early': ['work'], 'late': ['touch']}
+           FAIL the barrier is BAR.SYNC.DEFER_BLOCKING: barrier forms ['BAR.SYNC']
+  FAIL     bar post_mem M=256                       2 bracket(s), FFMA before the barrier [0, 1024], after it {'early': ['work'], 'late': ['touch']}
+           FAIL the barrier is BAR.SYNC.DEFER_BLOCKING: barrier forms ['BAR.SYNC']
+  FAIL     bar late_sink M=64                       2 bracket(s), FFMA before the barrier [0, 960], after it {'early': ['touch'], 'late': ['work']}
+           FAIL the barrier is BAR.SYNC.DEFER_BLOCKING: barrier forms ['BAR.SYNC']
+  FAIL     bar late_sink M=256                      2 bracket(s), FFMA before the barrier [0, 768], after it {'early': ['touch'], 'late': ['work']}
+           FAIL the barrier is BAR.SYNC.DEFER_BLOCKING: barrier forms ['BAR.SYNC']
+  FAIL     fence after sc_gpu M=0                   1 bracket(s), fence ['MEMBAR.ALL.CTA', 'MEMBAR.SC.GPU', 'ERRBAR', 'CGAERRBAR', 'CCTL.IVALL'], 0 cy store -> fence
+           FAIL one sc_gpu fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL): fence ['0210 MEMBAR.ALL.CTA', '0220 MEMBAR.SC.GPU'] + ['0230 ERRBAR', '0240 CGAERRBAR', '0250 CCTL.IVALL']
+  FAIL     fence after sc_gpu M=64                  1 bracket(s), fence ['MEMBAR.ALL.CTA', 'MEMBAR.SC.GPU', 'ERRBAR', 'CGAERRBAR', 'CCTL.IVALL'], 0 cy store -> fence
+           FAIL one sc_gpu fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL): fence ['0210 MEMBAR.ALL.CTA', '0220 MEMBAR.SC.GPU'] + ['0230 ERRBAR', '0240 CGAERRBAR', '0250 CCTL.IVALL']
+  FAIL     fence after sc_gpu M=256                 1 bracket(s), fence ['MEMBAR.ALL.CTA', 'MEMBAR.SC.GPU', 'ERRBAR', 'CGAERRBAR', 'CCTL.IVALL'], 0 cy store -> fence
+           FAIL one sc_gpu fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL): fence ['0210 MEMBAR.ALL.CTA', '0220 MEMBAR.SC.GPU'] + ['0230 ERRBAR', '0240 CGAERRBAR', '0250 CCTL.IVALL']
+  FAIL     fence after sc_gpu M=1024                1 bracket(s), fence ['MEMBAR.ALL.CTA', 'MEMBAR.SC.GPU', 'ERRBAR', 'CGAERRBAR', 'CCTL.IVALL'], 0 cy store -> fence
+           FAIL one sc_gpu fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL): fence ['0210 MEMBAR.ALL.CTA', '0220 MEMBAR.SC.GPU'] + ['0230 ERRBAR', '0240 CGAERRBAR', '0250 CCTL.IVALL']
+  FAIL     fence after sc_sys M=0                   1 bracket(s), fence ['MEMBAR.ALL.CTA', 'MEMBAR.SC.SYS', 'ERRBAR', 'CGAERRBAR', 'CCTL.IVALL'], 0 cy store -> fence
+           FAIL one sc_sys fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL): fence ['0210 MEMBAR.ALL.CTA', '0220 MEMBAR.SC.SYS'] + ['0230 ERRBAR', '0240 CGAERRBAR', '0250 CCTL.IVALL']
+  FAIL     fence after sc_sys M=64                  1 bracket(s), fence ['MEMBAR.ALL.CTA', 'MEMBAR.SC.SYS', 'ERRBAR', 'CGAERRBAR', 'CCTL.IVALL'], 0 cy store -> fence
+           FAIL one sc_sys fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL): fence ['0210 MEMBAR.ALL.CTA', '0220 MEMBAR.SC.SYS'] + ['0230 ERRBAR', '0240 CGAERRBAR', '0250 CCTL.IVALL']
+  FAIL     fence after sc_sys M=256                 1 bracket(s), fence ['MEMBAR.ALL.CTA', 'MEMBAR.SC.SYS', 'ERRBAR', 'CGAERRBAR', 'CCTL.IVALL'], 0 cy store -> fence
+           FAIL one sc_sys fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL): fence ['0210 MEMBAR.ALL.CTA', '0220 MEMBAR.SC.SYS'] + ['0230 ERRBAR', '0240 CGAERRBAR', '0250 CCTL.IVALL']
+  FAIL     fence after sc_sys M=1024                1 bracket(s), fence ['MEMBAR.ALL.CTA', 'MEMBAR.SC.SYS', 'ERRBAR', 'CGAERRBAR', 'CCTL.IVALL'], 0 cy store -> fence
+           FAIL one sc_sys fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL): fence ['0210 MEMBAR.ALL.CTA', '0220 MEMBAR.SC.SYS'] + ['0230 ERRBAR', '0240 CGAERRBAR', '0250 CCTL.IVALL']
+  FAIL     fence after acqrel_gpu M=0               1 bracket(s), fence ['MEMBAR.ALL.CTA', 'MEMBAR.ALL.GPU', 'ERRBAR', 'CGAERRBAR', 'CCTL.IVALL'], 0 cy store -> fence
+           FAIL one acqrel_gpu fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL): fence ['0210 MEMBAR.ALL.CTA', '0220 MEMBAR.ALL.GPU'] + ['0230 ERRBAR', '0240 CGAERRBAR', '0250 CCTL.IVALL']
+  FAIL     fence after acqrel_gpu M=64              1 bracket(s), fence ['MEMBAR.ALL.CTA', 'MEMBAR.ALL.GPU', 'ERRBAR', 'CGAERRBAR', 'CCTL.IVALL'], 0 cy store -> fence
+           FAIL one acqrel_gpu fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL): fence ['0210 MEMBAR.ALL.CTA', '0220 MEMBAR.ALL.GPU'] + ['0230 ERRBAR', '0240 CGAERRBAR', '0250 CCTL.IVALL']
+  FAIL     fence after acqrel_gpu M=256             1 bracket(s), fence ['MEMBAR.ALL.CTA', 'MEMBAR.ALL.GPU', 'ERRBAR', 'CGAERRBAR', 'CCTL.IVALL'], 0 cy store -> fence
+           FAIL one acqrel_gpu fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL): fence ['0210 MEMBAR.ALL.CTA', '0220 MEMBAR.ALL.GPU'] + ['0230 ERRBAR', '0240 CGAERRBAR', '0250 CCTL.IVALL']
+  FAIL     fence after acqrel_gpu M=1024            1 bracket(s), fence ['MEMBAR.ALL.CTA', 'MEMBAR.ALL.GPU', 'ERRBAR', 'CGAERRBAR', 'CCTL.IVALL'], 0 cy store -> fence
+           FAIL one acqrel_gpu fence (MEMBAR + ERRBAR / CGAERRBAR / CCTL): fence ['0210 MEMBAR.ALL.CTA', '0220 MEMBAR.ALL.GPU'] + ['0230 ERRBAR', '0240 CGAERRBAR', '0250 CCTL.IVALL']
+
+===== 18:00:06 3. ktrace profile, CUDA 12.6 (timer step census on this H100 host)
+GPU 0: NVIDIA H100 80GB HBM3 (sm_90), 1 GPU(s), profile ktrace, output /root/res/ktrace126/
+  ktrace (0 s): ktrace ±542 ns (edge): B=132: load 401 | bar1 wait 40/221 rel 28 | compute 1032 | store+fence 1561 | atomic 534 cy; span 2.3 us, block bound 20/25 ns p50/max, SM 1.966-2.011 GHz, rate incons 0 ns, ticket 0+0/660 viol (floor 221 ns), launch->first 4.5 us warm, flag->seen 0.59 us, flag store 2 cy, writer fence 2156 cy, 4.03 cy/FFMA || B=528: load 633 | bar1 wait 183/2310 rel 64 | compute 1056 | store+fence 1509 | atomic 592 cy; span 9.4 us, block bound 12/22 ns p50/max, SM 1.977-1.983 GHz, rate incons 3 ns, ticket 0+0/2640 viol (floor 214 ns), launch->first 4.4 us warm, flag->seen 0.64 us, flag store 1 cy, writer fence 2266 cy, 4.12 cy/FFMA
+  ktrace_long (0 s): ktrace ±556 ns (edge): B=528: load 618 | bar1 wait 175/16215 rel 53 | compute 16835 | store+fence 1368 | atomic 478 cy; span 28.3 us, block bound 32/121 ns p50/max, SM 1.982-1.986 GHz, rate incons 100 ns, ticket 0+0/1584 viol (floor 226 ns), launch->first 5.0 us warm, flag->seen 0.60 us, flag store -1 cy, writer fence 1717 cy, 4.05 cy/FFMA
+  ktrace_idle (1 s): ktrace ±560 ns (edge): B=132: load 394 | bar1 wait 42/260 rel 29 | compute 1032 | store+fence 1531 | atomic 484 cy; span 2.3 us, block bound 21/25 ns p50/max, SM 1.974-2.034 GHz, rate incons 0 ns, ticket 0+0/660 viol (floor 218 ns), launch->first 31.0 us warm, flag->seen 0.60 us, flag store 2 cy, writer fence 1896 cy, 4.03 cy/FFMA
+ktrace SASS check: PASS (4 k_ktrace instantiation(s), 56 exact checks on the binary that measured; 16 scoreboard wait(s) in checkpoint brackets, 8 on a cycle read (listed in the ktrace_sass JSON))
+
+/root/res/ktrace126/report.md written; 3/3 runs analysed in 2.6 min
+timeline: /root/res/ktrace126/timeline.html
+ktrace SASS check: PASS (4 k_ktrace instantiation(s), 56 exact checks on the binary that measured; 16 scoreboard wait(s) in checkpoint brackets, 8 on a cycle read (listed in the ktrace_sass JSON))
+ktrace exit 0
+
+===== 18:05:40 pack

@@ -1,0 +1,2 @@
+gputrace hog: NVIDIA H100 80GB HBM3 sms=66 recs=15048 events=686 kernels=228 in 11.87 s (sync pre ok post ok)
+gputrace instr: NVIDIA H100 80GB HBM3 sms=132 recs=40736 events=479 kernels=175 in 12.60 s (sync pre ok post ok)

@@ -1,0 +1,351 @@
+{
+ "where_time_goes": {
+  "head": [
+   "GPU",
+   "launch \u2192 first warp (\u00b5s)",
+   "kernel span (\u00b5s)",
+   "last exit \u2192 sync return (\u00b5s)",
+   "flag write \u2192 seen (\u00b5s)"
+  ],
+  "rows": [
+   [
+    "A100-SXM4-40GB",
+    "6.42",
+    "6.27",
+    "4.62",
+    "0.93"
+   ],
+   [
+    "H100 80GB HBM3",
+    "5.19",
+    "4.02",
+    "3.37",
+    "0.72"
+   ]
+  ]
+ },
+ "kernel_phases": {
+  "head": [
+   "GPU",
+   "load (2 dependent loads)",
+   "barrier 1",
+   "compute (FFMA chain)",
+   "barrier 2",
+   "store + GPU fence",
+   "atomic ticket",
+   "barrier 3 + ticket read",
+   "flag store"
+  ],
+  "rows": [
+   [
+    "A100-SXM4-40GB",
+    "338",
+    "58",
+    "1027",
+    "41",
+    "628",
+    "403",
+    "281",
+    "-2"
+   ],
+   [
+    "H100 80GB HBM3",
+    "386",
+    "54",
+    "1032",
+    "38",
+    "1534",
+    "498",
+    "528",
+    "2"
+   ]
+  ]
+ },
+ "warp_timeline": {
+  "head": [
+   "launch",
+   "blocks",
+   "SMs",
+   "span (\u00b5s)"
+  ],
+  "rows": [
+   [
+    "2",
+    "132",
+    "132",
+    "2.27"
+   ]
+  ]
+ },
+ "placement": {
+  "head": [
+   "run",
+   "timer tick (ns)",
+   "placement \u00b1 (ns, median)"
+  ],
+  "rows": [
+   [
+    "A100-SXM4-40GB \u00b7 1 block/SM",
+    "1024",
+    "77"
+   ],
+   [
+    "A100-SXM4-40GB \u00b7 4 blocks/SM",
+    "1024",
+    "40"
+   ],
+   [
+    "H100 80GB HBM3 \u00b7 1 block/SM",
+    "64",
+    "21"
+   ],
+   [
+    "H100 80GB HBM3 \u00b7 4 blocks/SM",
+    "64",
+    "20"
+   ]
+  ]
+ },
+ "idle_penalty": {
+  "head": [
+   "GPU",
+   "warm (\u00b5s)",
+   "after 50 ms idle (\u00b5s)",
+   "cold (\u00b5s)"
+  ],
+  "rows": [
+   [
+    "A100-SXM4-40GB",
+    "6.4",
+    "9.8",
+    "32.6"
+   ],
+   [
+    "H100 80GB HBM3",
+    "5.2",
+    "24.4",
+    "39.6"
+   ]
+  ]
+ },
+ "fence": {
+  "head": [
+   "GPU",
+   "fence (cycles)",
+   "fence (\u00b5s)",
+   "flag write \u2192 seen (\u00b5s)"
+  ],
+  "rows": [
+   [
+    "A100-SXM4-40GB",
+    "3056",
+    "2.85",
+    "0.93"
+   ],
+   [
+    "H100 80GB HBM3",
+    "3374",
+    "1.74",
+    "0.72"
+   ]
+  ]
+ },
+ "ffma_sweep": {
+  "head": [
+   "GPU",
+   "blocks",
+   "FFMA_N",
+   "compute (cycles)",
+   "cycles per FFMA"
+  ],
+  "rows": [
+   [
+    "A100-SXM4-40GB",
+    "1 block in total",
+    "64",
+    "260",
+    "4.06"
+   ],
+   [
+    "A100-SXM4-40GB",
+    "1 block per SM",
+    "64",
+    "259",
+    "4.05"
+   ],
+   [
+    "A100-SXM4-40GB",
+    "4 blocks per SM",
+    "64",
+    "279",
+    "4.36"
+   ],
+   [
+    "A100-SXM4-40GB",
+    "1 block in total",
+    "256",
+    "1028",
+    "4.01"
+   ],
+   [
+    "A100-SXM4-40GB",
+    "1 block per SM",
+    "256",
+    "1027",
+    "4.01"
+   ],
+   [
+    "A100-SXM4-40GB",
+    "4 blocks per SM",
+    "256",
+    "1472",
+    "5.75"
+   ],
+   [
+    "A100-SXM4-40GB",
+    "1 block in total",
+    "1024",
+    "4100",
+    "4.00"
+   ],
+   [
+    "A100-SXM4-40GB",
+    "1 block per SM",
+    "1024",
+    "4099",
+    "4.00"
+   ],
+   [
+    "A100-SXM4-40GB",
+    "4 blocks per SM",
+    "1024",
+    "6362",
+    "6.21"
+   ],
+   [
+    "A100-SXM4-40GB",
+    "1 block in total",
+    "4096",
+    "16387",
+    "4.00"
+   ],
+   [
+    "A100-SXM4-40GB",
+    "1 block per SM",
+    "4096",
+    "16387",
+    "4.00"
+   ],
+   [
+    "A100-SXM4-40GB",
+    "4 blocks per SM",
+    "4096",
+    "24818",
+    "6.06"
+   ],
+   [
+    "H100 80GB HBM3",
+    "1 block in total",
+    "64",
+    "264",
+    "4.12"
+   ],
+   [
+    "H100 80GB HBM3",
+    "1 block per SM",
+    "64",
+    "264",
+    "4.12"
+   ],
+   [
+    "H100 80GB HBM3",
+    "4 blocks per SM",
+    "64",
+    "284",
+    "4.44"
+   ],
+   [
+    "H100 80GB HBM3",
+    "1 block in total",
+    "256",
+    "1032",
+    "4.03"
+   ],
+   [
+    "H100 80GB HBM3",
+    "1 block per SM",
+    "256",
+    "1032",
+    "4.03"
+   ],
+   [
+    "H100 80GB HBM3",
+    "4 blocks per SM",
+    "256",
+    "1056",
+    "4.12"
+   ],
+   [
+    "H100 80GB HBM3",
+    "1 block in total",
+    "1024",
+    "4104",
+    "4.01"
+   ],
+   [
+    "H100 80GB HBM3",
+    "1 block per SM",
+    "1024",
+    "4106",
+    "4.01"
+   ],
+   [
+    "H100 80GB HBM3",
+    "4 blocks per SM",
+    "1024",
+    "4170",
+    "4.07"
+   ],
+   [
+    "H100 80GB HBM3",
+    "1 block in total",
+    "4096",
+    "16396",
+    "4.00"
+   ],
+   [
+    "H100 80GB HBM3",
+    "1 block per SM",
+    "4096",
+    "16396",
+    "4.00"
+   ],
+   [
+    "H100 80GB HBM3",
+    "4 blocks per SM",
+    "4096",
+    "16458",
+    "4.02"
+   ]
+  ]
+ },
+ "before_after": {
+  "head": [
+   "phase",
+   "A100 \u00b7 6 Oct (layout 1)",
+   "A100 \u00b7 8 Oct (layout 2)"
+  ],
+  "rows": [
+   [
+    "load (2 dependent loads)",
+    "479",
+    "338"
+   ],
+   [
+    "compute (FFMA chain)",
+    "1238",
+    "1027"
+   ]
+  ]
+ }
+}

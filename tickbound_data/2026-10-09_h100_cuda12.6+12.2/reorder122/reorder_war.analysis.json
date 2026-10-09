@@ -1,0 +1,1165 @@
+{
+ "prefix": "C:\\Users\\pierr\\AppData\\Local\\Temp\\claude\\C--Users-pierr\\5c9f69cd-4ab2-4054-ba7c-33d14cfa0fa5\\scratchpad\\box_9oct\\out_h100\\res\\reorder122\\reorder_war",
+ "strategy": "reorder",
+ "gpu": "NVIDIA H100 80GB HBM3",
+ "sms": 132,
+ "host": "aed87a1b0dd5",
+ "clock": {
+  "tick_ns": 64,
+  "method": "edge",
+  "bound_ns": 570.1952753402293,
+  "rate_ppm": 9.884529172943246,
+  "feasible": true,
+  "windows": {
+   "pre": {
+    "edge_bound_ns": 588.1809169340413,
+    "edge_feasible": true,
+    "n_up": 3000,
+    "n_down": 3000,
+    "rate_ppm": 9.76664834340113
+   },
+   "post": {
+    "edge_bound_ns": 570.1952753411606,
+    "edge_feasible": true,
+    "n_up": 3000,
+    "n_down": 3000,
+    "rate_ppm": 9.884529174275514
+   }
+  },
+  "width_ns": 1140.3905506804585
+ },
+ "n_gpu_recs": 42240,
+ "gpu_recs_dropped": 0,
+ "n_host_events": 162,
+ "result": {
+  "reorder_layout": 1,
+  "cc": "9.0",
+  "tick_ns": 64.0,
+  "bound_ns": 570.1952753402293,
+  "toolkit": {
+   "cuda_runtime": 12020,
+   "driver": 13020
+  },
+  "gate": {
+   "status": "FAIL",
+   "label": "FAIL",
+   "file": "reorder_sass.json",
+   "source": "directory",
+   "error": null,
+   "kernels_in_gate": 295,
+   "unparsed_kernels": [],
+   "group_labels": {
+    "PASS": 40
+   }
+  },
+  "n_records": 42240,
+  "experiments": {
+   "war": {
+    "groups": [
+     {
+      "variant": "reuse",
+      "v": 0,
+      "kind": "STS.32",
+      "N": 16,
+      "warps": 1,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 394.0,
+       "p50": 398.0,
+       "p90": 404.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 3.0
+     },
+     {
+      "variant": "reuse",
+      "v": 0,
+      "kind": "STS.32",
+      "N": 16,
+      "warps": 32,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 2048,
+       "p10": 449.70000000000005,
+       "p50": 508.0,
+       "p90": 557.3
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 4.0
+     },
+     {
+      "variant": "reuse",
+      "v": 0,
+      "kind": "STS.128",
+      "N": 16,
+      "warps": 1,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 397.0,
+       "p50": 400.0,
+       "p90": 407.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 3.5
+     },
+     {
+      "variant": "reuse",
+      "v": 0,
+      "kind": "STS.128",
+      "N": 16,
+      "warps": 32,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 2048,
+       "p10": 465.0,
+       "p50": 528.0,
+       "p90": 571.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 4.5
+     },
+     {
+      "variant": "reuse",
+      "v": 0,
+      "kind": "STG.32",
+      "N": 16,
+      "warps": 1,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 394.0,
+       "p50": 397.0,
+       "p90": 404.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 3.0
+     },
+     {
+      "variant": "reuse",
+      "v": 0,
+      "kind": "STG.32",
+      "N": 16,
+      "warps": 32,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 2048,
+       "p10": 465.0,
+       "p50": 497.0,
+       "p90": 875.3
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 4.0
+     },
+     {
+      "variant": "reuse",
+      "v": 0,
+      "kind": "STG.128",
+      "N": 16,
+      "warps": 1,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 401.0,
+       "p50": 408.0,
+       "p90": 410.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 3.5
+     },
+     {
+      "variant": "reuse",
+      "v": 0,
+      "kind": "STG.128",
+      "N": 16,
+      "warps": 32,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 2048,
+       "p10": 435.0,
+       "p50": 571.0,
+       "p90": 869.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 4.5
+     },
+     {
+      "variant": "fresh",
+      "v": 1,
+      "kind": "STS.32",
+      "N": 16,
+      "warps": 1,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 396.0,
+       "p50": 403.5,
+       "p90": 405.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 3.25
+     },
+     {
+      "variant": "fresh",
+      "v": 1,
+      "kind": "STS.32",
+      "N": 16,
+      "warps": 32,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 2048,
+       "p10": 445.0,
+       "p50": 503.0,
+       "p90": 558.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 4.0
+     },
+     {
+      "variant": "fresh",
+      "v": 1,
+      "kind": "STS.128",
+      "N": 16,
+      "warps": 1,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 395.3,
+       "p50": 404.0,
+       "p90": 405.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 3.5
+     },
+     {
+      "variant": "fresh",
+      "v": 1,
+      "kind": "STS.128",
+      "N": 16,
+      "warps": 32,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 2048,
+       "p10": 477.0,
+       "p50": 527.0,
+       "p90": 573.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 4.5
+     },
+     {
+      "variant": "fresh",
+      "v": 1,
+      "kind": "STG.32",
+      "N": 16,
+      "warps": 1,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 396.0,
+       "p50": 403.5,
+       "p90": 405.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 3.5
+     },
+     {
+      "variant": "fresh",
+      "v": 1,
+      "kind": "STG.32",
+      "N": 16,
+      "warps": 32,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 2048,
+       "p10": 465.0,
+       "p50": 497.5,
+       "p90": 846.8999999999999
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 4.0
+     },
+     {
+      "variant": "fresh",
+      "v": 1,
+      "kind": "STG.128",
+      "N": 16,
+      "warps": 1,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 396.0,
+       "p50": 403.0,
+       "p90": 405.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 3.5
+     },
+     {
+      "variant": "fresh",
+      "v": 1,
+      "kind": "STG.128",
+      "N": 16,
+      "warps": 32,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 2048,
+       "p10": 469.0,
+       "p50": 541.0,
+       "p90": 670.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 4.5
+     },
+     {
+      "variant": "nostore",
+      "v": 2,
+      "kind": "STS.32",
+      "N": 16,
+      "warps": 1,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 396.0,
+       "p50": 402.5,
+       "p90": 405.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 3.5
+     },
+     {
+      "variant": "nostore",
+      "v": 2,
+      "kind": "STS.32",
+      "N": 16,
+      "warps": 32,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 2048,
+       "p10": 460.0,
+       "p50": 487.0,
+       "p90": 521.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 4.0
+     },
+     {
+      "variant": "nostore",
+      "v": 2,
+      "kind": "STS.128",
+      "N": 16,
+      "warps": 1,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 395.0,
+       "p50": 403.5,
+       "p90": 405.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 3.25
+     },
+     {
+      "variant": "nostore",
+      "v": 2,
+      "kind": "STS.128",
+      "N": 16,
+      "warps": 32,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 2048,
+       "p10": 454.0,
+       "p50": 486.0,
+       "p90": 520.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 4.0
+     },
+     {
+      "variant": "nostore",
+      "v": 2,
+      "kind": "STG.32",
+      "N": 16,
+      "warps": 1,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 395.3,
+       "p50": 404.0,
+       "p90": 405.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 3.0
+     },
+     {
+      "variant": "nostore",
+      "v": 2,
+      "kind": "STG.32",
+      "N": 16,
+      "warps": 32,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 2048,
+       "p10": 454.0,
+       "p50": 488.0,
+       "p90": 520.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 4.0
+     },
+     {
+      "variant": "nostore",
+      "v": 2,
+      "kind": "STG.128",
+      "N": 16,
+      "warps": 1,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 396.0,
+       "p50": 403.0,
+       "p90": 405.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 3.5
+     },
+     {
+      "variant": "nostore",
+      "v": 2,
+      "kind": "STG.128",
+      "N": 16,
+      "warps": 32,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 2048,
+       "p10": 454.0,
+       "p50": 487.0,
+       "p90": 519.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 4.0
+     },
+     {
+      "variant": "reuse_clock",
+      "v": 3,
+      "kind": "STS.32",
+      "N": 16,
+      "warps": 1,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 398.0,
+       "p50": 406.0,
+       "p90": 407.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 3.5
+     },
+     {
+      "variant": "reuse_clock",
+      "v": 3,
+      "kind": "STS.32",
+      "N": 16,
+      "warps": 32,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 2048,
+       "p10": 453.0,
+       "p50": 500.0,
+       "p90": 553.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 4.0
+     },
+     {
+      "variant": "reuse_clock",
+      "v": 3,
+      "kind": "STS.128",
+      "N": 16,
+      "warps": 1,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 404.3,
+       "p50": 410.5,
+       "p90": 413.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 3.5
+     },
+     {
+      "variant": "reuse_clock",
+      "v": 3,
+      "kind": "STS.128",
+      "N": 16,
+      "warps": 32,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 2048,
+       "p10": 473.0,
+       "p50": 535.0,
+       "p90": 576.3
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 4.5
+     },
+     {
+      "variant": "reuse_clock",
+      "v": 3,
+      "kind": "STG.32",
+      "N": 16,
+      "warps": 1,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 396.0,
+       "p50": 402.5,
+       "p90": 405.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 3.0
+     },
+     {
+      "variant": "reuse_clock",
+      "v": 3,
+      "kind": "STG.32",
+      "N": 16,
+      "warps": 32,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 2048,
+       "p10": 467.0,
+       "p50": 498.0,
+       "p90": 847.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 4.0
+     },
+     {
+      "variant": "reuse_clock",
+      "v": 3,
+      "kind": "STG.128",
+      "N": 16,
+      "warps": 1,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 396.0,
+       "p50": 403.0,
+       "p90": 405.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 3.5
+     },
+     {
+      "variant": "reuse_clock",
+      "v": 3,
+      "kind": "STG.128",
+      "N": 16,
+      "warps": 32,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 2048,
+       "p10": 483.0,
+       "p50": 509.0,
+       "p90": 699.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 4.5
+     },
+     {
+      "variant": "fresh_clock",
+      "v": 4,
+      "kind": "STS.32",
+      "N": 16,
+      "warps": 1,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 396.0,
+       "p50": 403.0,
+       "p90": 405.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 3.0
+     },
+     {
+      "variant": "fresh_clock",
+      "v": 4,
+      "kind": "STS.32",
+      "N": 16,
+      "warps": 32,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 2048,
+       "p10": 445.0,
+       "p50": 504.0,
+       "p90": 558.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 4.0
+     },
+     {
+      "variant": "fresh_clock",
+      "v": 4,
+      "kind": "STS.128",
+      "N": 16,
+      "warps": 1,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 395.0,
+       "p50": 404.0,
+       "p90": 405.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 3.25
+     },
+     {
+      "variant": "fresh_clock",
+      "v": 4,
+      "kind": "STS.128",
+      "N": 16,
+      "warps": 32,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 2048,
+       "p10": 475.0,
+       "p50": 528.0,
+       "p90": 573.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 4.5
+     },
+     {
+      "variant": "fresh_clock",
+      "v": 4,
+      "kind": "STG.32",
+      "N": 16,
+      "warps": 1,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 395.3,
+       "p50": 402.5,
+       "p90": 405.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 3.25
+     },
+     {
+      "variant": "fresh_clock",
+      "v": 4,
+      "kind": "STG.32",
+      "N": 16,
+      "warps": 32,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 2048,
+       "p10": 466.0,
+       "p50": 497.0,
+       "p90": 886.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 4.0
+     },
+     {
+      "variant": "fresh_clock",
+      "v": 4,
+      "kind": "STG.128",
+      "N": 16,
+      "warps": 1,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 396.0,
+       "p50": 404.0,
+       "p90": 405.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 3.25
+     },
+     {
+      "variant": "fresh_clock",
+      "v": 4,
+      "kind": "STG.128",
+      "N": 16,
+      "warps": 32,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 2048,
+       "p10": 473.0,
+       "p50": 539.0,
+       "p90": 671.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 4.5
+     }
+    ],
+    "pairs": [
+     {
+      "form": "reuse",
+      "kind": "STS.32",
+      "N": 16,
+      "warps": 1,
+      "reuse": 398.0,
+      "fresh": 403.5,
+      "nostore": 402.5,
+      "n": {
+       "reuse": 64,
+       "fresh": 64,
+       "nostore": 64
+      },
+      "reuse_minus_fresh": -5.5,
+      "fresh_minus_nostore": 1.0,
+      "reuse_minus_nostore": -4.5,
+      "war_wait_reuse": true,
+      "war_wait_fresh": false,
+      "war_gate": "provoked",
+      "war_distance_cycles": 14.0,
+      "war_measurement": true,
+      "label": "WAR measurement: the WAR stall beyond D = 14 issue cycles from the store to its first overwrite"
+     },
+     {
+      "form": "reuse",
+      "kind": "STS.32",
+      "N": 16,
+      "warps": 32,
+      "reuse": 508.0,
+      "fresh": 503.0,
+      "nostore": 487.0,
+      "n": {
+       "reuse": 2048,
+       "fresh": 2048,
+       "nostore": 2048
+      },
+      "reuse_minus_fresh": 5.0,
+      "fresh_minus_nostore": 16.0,
+      "reuse_minus_nostore": 21.0,
+      "war_wait_reuse": true,
+      "war_wait_fresh": false,
+      "war_gate": "provoked",
+      "war_distance_cycles": 14.0,
+      "war_measurement": true,
+      "label": "WAR measurement: the WAR stall beyond D = 14 issue cycles from the store to its first overwrite"
+     },
+     {
+      "form": "reuse",
+      "kind": "STS.128",
+      "N": 16,
+      "warps": 1,
+      "reuse": 400.0,
+      "fresh": 404.0,
+      "nostore": 403.5,
+      "n": {
+       "reuse": 64,
+       "fresh": 64,
+       "nostore": 64
+      },
+      "reuse_minus_fresh": -4.0,
+      "fresh_minus_nostore": 0.5,
+      "reuse_minus_nostore": -3.5,
+      "war_wait_reuse": true,
+      "war_wait_fresh": false,
+      "war_gate": "provoked",
+      "war_distance_cycles": 14.0,
+      "war_measurement": true,
+      "label": "WAR measurement: the WAR stall beyond D = 14 issue cycles from the store to its first overwrite"
+     },
+     {
+      "form": "reuse",
+      "kind": "STS.128",
+      "N": 16,
+      "warps": 32,
+      "reuse": 528.0,
+      "fresh": 527.0,
+      "nostore": 486.0,
+      "n": {
+       "reuse": 2048,
+       "fresh": 2048,
+       "nostore": 2048
+      },
+      "reuse_minus_fresh": 1.0,
+      "fresh_minus_nostore": 41.0,
+      "reuse_minus_nostore": 42.0,
+      "war_wait_reuse": true,
+      "war_wait_fresh": false,
+      "war_gate": "provoked",
+      "war_distance_cycles": 14.0,
+      "war_measurement": true,
+      "label": "WAR measurement: the WAR stall beyond D = 14 issue cycles from the store to its first overwrite"
+     },
+     {
+      "form": "reuse",
+      "kind": "STG.32",
+      "N": 16,
+      "warps": 1,
+      "reuse": 397.0,
+      "fresh": 403.5,
+      "nostore": 404.0,
+      "n": {
+       "reuse": 64,
+       "fresh": 64,
+       "nostore": 64
+      },
+      "reuse_minus_fresh": -6.5,
+      "fresh_minus_nostore": -0.5,
+      "reuse_minus_nostore": -7.0,
+      "war_wait_reuse": true,
+      "war_wait_fresh": false,
+      "war_gate": "provoked",
+      "war_distance_cycles": 14.0,
+      "war_measurement": true,
+      "label": "WAR measurement: the WAR stall beyond D = 14 issue cycles from the store to its first overwrite"
+     },
+     {
+      "form": "reuse",
+      "kind": "STG.32",
+      "N": 16,
+      "warps": 32,
+      "reuse": 497.0,
+      "fresh": 497.5,
+      "nostore": 488.0,
+      "n": {
+       "reuse": 2048,
+       "fresh": 2048,
+       "nostore": 2048
+      },
+      "reuse_minus_fresh": -0.5,
+      "fresh_minus_nostore": 9.5,
+      "reuse_minus_nostore": 9.0,
+      "war_wait_reuse": true,
+      "war_wait_fresh": false,
+      "war_gate": "provoked",
+      "war_distance_cycles": 14.0,
+      "war_measurement": true,
+      "label": "WAR measurement: the WAR stall beyond D = 14 issue cycles from the store to its first overwrite"
+     },
+     {
+      "form": "reuse",
+      "kind": "STG.128",
+      "N": 16,
+      "warps": 1,
+      "reuse": 408.0,
+      "fresh": 403.0,
+      "nostore": 403.0,
+      "n": {
+       "reuse": 64,
+       "fresh": 64,
+       "nostore": 64
+      },
+      "reuse_minus_fresh": 5.0,
+      "fresh_minus_nostore": 0.0,
+      "reuse_minus_nostore": 5.0,
+      "war_wait_reuse": true,
+      "war_wait_fresh": false,
+      "war_gate": "provoked",
+      "war_distance_cycles": 14.0,
+      "war_measurement": true,
+      "label": "WAR measurement: the WAR stall beyond D = 14 issue cycles from the store to its first overwrite"
+     },
+     {
+      "form": "reuse",
+      "kind": "STG.128",
+      "N": 16,
+      "warps": 32,
+      "reuse": 571.0,
+      "fresh": 541.0,
+      "nostore": 487.0,
+      "n": {
+       "reuse": 2048,
+       "fresh": 2048,
+       "nostore": 2048
+      },
+      "reuse_minus_fresh": 30.0,
+      "fresh_minus_nostore": 54.0,
+      "reuse_minus_nostore": 84.0,
+      "war_wait_reuse": true,
+      "war_wait_fresh": false,
+      "war_gate": "provoked",
+      "war_distance_cycles": 14.0,
+      "war_measurement": true,
+      "label": "WAR measurement: the WAR stall beyond D = 14 issue cycles from the store to its first overwrite"
+     },
+     {
+      "form": "reuse_clock",
+      "kind": "STS.32",
+      "N": 16,
+      "warps": 1,
+      "reuse": 406.0,
+      "fresh": 403.0,
+      "nostore": 402.5,
+      "n": {
+       "reuse": 64,
+       "fresh": 64,
+       "nostore": 64
+      },
+      "reuse_minus_fresh": 3.0,
+      "fresh_minus_nostore": 0.5,
+      "reuse_minus_nostore": 3.5,
+      "war_wait_reuse": true,
+      "war_wait_fresh": false,
+      "war_gate": "provoked",
+      "war_distance_cycles": 9.0,
+      "war_measurement": true,
+      "label": "WAR measurement: the WAR stall beyond D = 9 issue cycles from the store to its first overwrite"
+     },
+     {
+      "form": "reuse_clock",
+      "kind": "STS.32",
+      "N": 16,
+      "warps": 32,
+      "reuse": 500.0,
+      "fresh": 504.0,
+      "nostore": 487.0,
+      "n": {
+       "reuse": 2048,
+       "fresh": 2048,
+       "nostore": 2048
+      },
+      "reuse_minus_fresh": -4.0,
+      "fresh_minus_nostore": 17.0,
+      "reuse_minus_nostore": 13.0,
+      "war_wait_reuse": true,
+      "war_wait_fresh": false,
+      "war_gate": "provoked",
+      "war_distance_cycles": 9.0,
+      "war_measurement": true,
+      "label": "WAR measurement: the WAR stall beyond D = 9 issue cycles from the store to its first overwrite"
+     },
+     {
+      "form": "reuse_clock",
+      "kind": "STS.128",
+      "N": 16,
+      "warps": 1,
+      "reuse": 410.5,
+      "fresh": 404.0,
+      "nostore": 403.5,
+      "n": {
+       "reuse": 64,
+       "fresh": 64,
+       "nostore": 64
+      },
+      "reuse_minus_fresh": 6.5,
+      "fresh_minus_nostore": 0.5,
+      "reuse_minus_nostore": 7.0,
+      "war_wait_reuse": true,
+      "war_wait_fresh": false,
+      "war_gate": "provoked",
+      "war_distance_cycles": 9.0,
+      "war_measurement": true,
+      "label": "WAR measurement: the WAR stall beyond D = 9 issue cycles from the store to its first overwrite"
+     },
+     {
+      "form": "reuse_clock",
+      "kind": "STS.128",
+      "N": 16,
+      "warps": 32,
+      "reuse": 535.0,
+      "fresh": 528.0,
+      "nostore": 486.0,
+      "n": {
+       "reuse": 2048,
+       "fresh": 2048,
+       "nostore": 2048
+      },
+      "reuse_minus_fresh": 7.0,
+      "fresh_minus_nostore": 42.0,
+      "reuse_minus_nostore": 49.0,
+      "war_wait_reuse": true,
+      "war_wait_fresh": false,
+      "war_gate": "provoked",
+      "war_distance_cycles": 9.0,
+      "war_measurement": true,
+      "label": "WAR measurement: the WAR stall beyond D = 9 issue cycles from the store to its first overwrite"
+     },
+     {
+      "form": "reuse_clock",
+      "kind": "STG.32",
+      "N": 16,
+      "warps": 1,
+      "reuse": 402.5,
+      "fresh": 402.5,
+      "nostore": 404.0,
+      "n": {
+       "reuse": 64,
+       "fresh": 64,
+       "nostore": 64
+      },
+      "reuse_minus_fresh": 0.0,
+      "fresh_minus_nostore": -1.5,
+      "reuse_minus_nostore": -1.5,
+      "war_wait_reuse": true,
+      "war_wait_fresh": false,
+      "war_gate": "provoked",
+      "war_distance_cycles": 74.0,
+      "war_measurement": true,
+      "label": "WAR measurement: the WAR stall beyond D = 74 issue cycles from the store to its first overwrite"
+     },
+     {
+      "form": "reuse_clock",
+      "kind": "STG.32",
+      "N": 16,
+      "warps": 32,
+      "reuse": 498.0,
+      "fresh": 497.0,
+      "nostore": 488.0,
+      "n": {
+       "reuse": 2048,
+       "fresh": 2048,
+       "nostore": 2048
+      },
+      "reuse_minus_fresh": 1.0,
+      "fresh_minus_nostore": 9.0,
+      "reuse_minus_nostore": 10.0,
+      "war_wait_reuse": true,
+      "war_wait_fresh": false,
+      "war_gate": "provoked",
+      "war_distance_cycles": 74.0,
+      "war_measurement": true,
+      "label": "WAR measurement: the WAR stall beyond D = 74 issue cycles from the store to its first overwrite"
+     },
+     {
+      "form": "reuse_clock",
+      "kind": "STG.128",
+      "N": 16,
+      "warps": 1,
+      "reuse": 403.0,
+      "fresh": 404.0,
+      "nostore": 403.0,
+      "n": {
+       "reuse": 64,
+       "fresh": 64,
+       "nostore": 64
+      },
+      "reuse_minus_fresh": -1.0,
+      "fresh_minus_nostore": 1.0,
+      "reuse_minus_nostore": 0.0,
+      "war_wait_reuse": false,
+      "war_wait_fresh": false,
+      "war_gate": "not provoked",
+      "war_distance_cycles": null,
+      "war_measurement": false,
+      "label": "not provoked: the reuse_clock build has no WAR wait, not a WAR measurement"
+     },
+     {
+      "form": "reuse_clock",
+      "kind": "STG.128",
+      "N": 16,
+      "warps": 32,
+      "reuse": 509.0,
+      "fresh": 539.0,
+      "nostore": 487.0,
+      "n": {
+       "reuse": 2048,
+       "fresh": 2048,
+       "nostore": 2048
+      },
+      "reuse_minus_fresh": -30.0,
+      "fresh_minus_nostore": 52.0,
+      "reuse_minus_nostore": 22.0,
+      "war_wait_reuse": false,
+      "war_wait_fresh": false,
+      "war_gate": "not provoked",
+      "war_distance_cycles": null,
+      "war_measurement": false,
+      "label": "not provoked: the reuse_clock build has no WAR wait, not a WAR measurement"
+     }
+    ]
+   }
+  },
+  "dropped": [],
+  "inconsistencies": [],
+  "notes": [
+   "orders: each intended order is forced in the kernel by data dependencies or asm volatile clock reads; it holds for this run only where the reorder SASS gate of the binary that measured says PASS (label 'gate' per instantiation). FAIL (E1-E5) and EXCLUDED (E6) instantiations are dropped from every derived figure and listed in 'dropped'; 'gate not run' = no usable PREFIX.reorder_sass.json / reorder_sass.json next to the run; 'not in gate' = the gate lists no such kernel. The gate also fails compared variants whose brackets wait on different scoreboards left outstanding before c0 (pre-bracket waits)",
+   "cycles = the bracket c0 .. c1 in SM cycles (body + consume: the closing clock read waits for the consumed results); p10 / p50 / p90 with the sample count n per (variant, params); derived differences are p50 - p50. ns only where a group's brackets span >= 8 %globaltimer ticks, through that group's own SM clock (sum of cycles / sum of timer spans); shorter brackets are cycles only",
+   "load_use: L = overlap(0) - chain_only(0) (the load's latency exposed at N = 0, with its dependent address arithmetic, its issue and the consume of its value; serial(0) - chain_only(0) is the cross-check), c = chain_only(0). The overlap chain cannot start before the load is issued: d = the cycles from the seed's data to its first FFMA (the load's address arithmetic, its issue, the clock read that orders the chain after it; 26-27 issue cycles with NVRTC 12.9), which serial's and chain_only's chains do not pay. Model overlap = max(L, 4N + d) + c, serial = L + 4N + c, saving = serial - overlap = min(4N, L - d): L - d is the part of the load's latency a chain can hide. Crossover N* = the knee of overlap(N), least squares a + b * max(N*, N) with b = chain_only's slope (at the top of the measured N it lies beyond the range); model N* = (L - d) / 4. d comes from the knee fit (its intercept - chain_only's) when the knee is inside the range, else from the gate (chain_start_cycles, the binary's issue cycles); both are reported, and a fit that differs from the issue count by more than max(8, d / 4) is an inconsistency (overlap holds a cost the SASS does not explain). overlap2 - overlap = the second independent load's extra cost (both in flight at once)",
+   "war: reuse - fresh = the cost of overwriting a register a store has not read yet (stores read their operands late, through the MIO queue). It is a WAR measurement only where the gate decoded a wait on the store's read scoreboard in the reuse build (war_wait true) and none in the fresh build; a reuse build without it is 'not provoked'. The overwrite issues D cycles after the store (war_distance_cycles, the gate's issue count; reuse: the clock read and its LOP3 that order the chain lie between, 12-13 cycles), so the figure is the WAR stall beyond D: an operand read done within D costs 0. reuse_clock - fresh_clock is the same with the first overwrite right after the store where ptxas gave the clock read (or the chain seed's LOP3) the stored register (D = 2-5 with NVRTC 12.9; the gate says per build). fresh - nostore = the store's own cost in the bracket",
+   "bar: per rep the late warp (1024 FFMA before the barrier) arrives last. Early warps' c_end - the late warp's c_arrive: pre = release + touch; post = pre when the M register-only FFMA after BAR.SYNC.DEFER_BLOCKING ran during the wait (exposed fraction (post - pre) / 4M near 0), pre + 4M when they waited for the release; post_mem puts a shared load + store before them (expected not to overlap). post's FFMA are ordered after the barrier by a clock read, assumed not to end the deferral (it is not a memory instruction); each warp records when that clock read issued (flags >> 16 = it - c_arrive), and post_clock_during_wait is the fraction of early-warp samples where it issued before the late warp arrived: near 1 the assumption holds; near 0 post cannot tell a clock read that ends the deferral from no deferral at all (post_reading says which). late_sink shift = pre - late_sink of the early warps' c_end - the late warp's c_start (expected 4M). Reps are rebuilt per SM from the arrival stamps (every arrival of a rep precedes its release, a warp's next arrival follows it); incomplete reps are counted and not used. The per-group bracket (groups) is every warp's c_end - c_start, early and late warps pooled; the comparisons use the per-rep stamps",
+   "fence: fence cycles = after(M = 0) - chain_only(M = 0): the same clock read, LOP3 and consume STS, plus one fence after one store (the store's drain included). fence_only lacks that scaffolding: fence_only(0) - chain_only(0) + the scaffolding's issue cycles (the gate's after_store_cycles of chain_only(0)) is the cross-check. after - before = what moving the work ahead of the fence saves, against min(fence, W), W = the issue cycles before keeps between its store and its fence (the gate's store_to_fence_cycles: 4M plus the clock read, its LOP3 and the consume STS; else 4M); before's fence also covers that STS, which in after issues behind the fence and nothing waits for. before - chain_only = the fence's exposed part, against max(0, fence - W)",
+   "pipe: cycles per FFMA = (c1 - c0) / 1024 per warp (the consume adds ~0.02). k = the time-weighted number of recorded warps on the same SM and sub-partition (%warpid % 4) during that warp's bracket, itself included (unrecorded warm-up brackets are not counted). Expectation max(4 / ILP, p * k), p = 32 / FP32 lanes per sub-partition: 2 on cc 7.x and 8.0, 1 on cc 8.6 / 8.7 / 8.9, 9.0 and later; limit = the term that binds at the median k (the chain's latency, which interleaving ILP chains hides, or the shared FP32 pipe, which it cannot)",
+   "stall: slope of cycles = a + b * N over the per-N medians per (OP, MODE). dep_consumed (the chain consumed before c1): slope_cycles_per_link = the issue interval of one dependent link. One warp waits exactly the stall count ptxas encoded before its next instruction, so for the fixed-latency ops the slope reproduces the encoding (encoded_cycles_per_link, the gate's static_cycles_per_link) unless the hardware adds to it (hardware_extra_cycles); the encoding is ptxas's choice, an upper bound on the op's minimum stall, which CuAsmRL finds by lowering stall counts until results go wrong (Tier B's stall-lowering edits test that on the GPU). op_encoded_stall = the stall ptxas put on the op itself (the gate's target_stalls), compared with CuAsmRL's dependency-based A100 table (IADD3, IMAD.IADD, IADD3.X, MOV, IABS, IMAD, FADD, HADD2, IMNMX, SEL, LEA 4; IMAD.WIDE(.U32) 5; the other OPs are not in it): encoded_minus_cuasmrl. A link of IABS (LOP3.LUT + IABS) or IMAD_WIDE (IMAD.WIDE.U32 + the IADD3 of the 64-bit add, its IADD3.X off the chain) holds a helper, so its slope is the link's, not the op's. Variable-latency ops (DADD, DFMA on sm_80 / sm_86) wait on a scoreboard, not on the stall count. dep_unconsumed keeps the slope (each instruction still waits for its predecessor) but the closing clock read does not wait for the last result (intercept about one latency lower); indep's slope is the issue interval of one update (IABS's and IMAD_WIDE's updates issue their helpers too), what a clock-based method without dependencies reports (CuAsmRL measured 2.6 cycles per IADD3 that way); naive_cycles_per_instr = p50 / N at the largest N. An (OP, MODE) with an instantiation the gate EXCLUDED (opcode count != N, or a dependency structure other than the mode's) is dropped from the fits' use and from the table"
+  ]
+ }
+}

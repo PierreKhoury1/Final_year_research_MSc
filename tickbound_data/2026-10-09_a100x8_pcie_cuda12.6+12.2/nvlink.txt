@@ -1,0 +1,16 @@
+GPU 0: NVIDIA A100-PCIE-40GB (UUID: GPU-fd7d192a-6ac3-ae3c-0105-6d66ffafd645)
+NVML: Unable to retrieve Nvlink information as all links are inActive
+GPU 1: NVIDIA A100-PCIE-40GB (UUID: GPU-eea9343d-8510-ccab-7430-b8b2790e46f5)
+NVML: Unable to retrieve Nvlink information as all links are inActive
+GPU 2: NVIDIA A100-PCIE-40GB (UUID: GPU-340fe3aa-b6a5-2c4a-f4ed-f844cdbcf8c2)
+NVML: Unable to retrieve Nvlink information as all links are inActive
+GPU 3: NVIDIA A100-PCIE-40GB (UUID: GPU-808df975-5fbc-99f8-d1fe-b72a9d08c85f)
+NVML: Unable to retrieve Nvlink information as all links are inActive
+GPU 4: NVIDIA A100-PCIE-40GB (UUID: GPU-c328c731-a896-8e60-419e-7b27bcfbb2f1)
+NVML: Unable to retrieve Nvlink information as all links are inActive
+GPU 5: NVIDIA A100-PCIE-40GB (UUID: GPU-7ff6ef4a-4478-7864-c51d-140221427621)
+NVML: Unable to retrieve Nvlink information as all links are inActive
+GPU 6: NVIDIA A100-PCIE-40GB (UUID: GPU-cd557544-742d-76fa-89aa-9330386efbc2)
+NVML: Unable to retrieve Nvlink information as all links are inActive
+GPU 7: NVIDIA A100-PCIE-40GB (UUID: GPU-e32c15b2-fc0f-91b3-b5d0-4e23ee842047)
+NVML: Unable to retrieve Nvlink information as all links are inActive

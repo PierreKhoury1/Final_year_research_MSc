@@ -1,0 +1,20 @@
+{
+ "kernel": "ek_slide",
+ "edited": "/root/tb/cuasm_edits/sm_80/slide_k36.cubin",
+ "reference": "/root/tb/cuasm_edits/sm_80/reference.cubin",
+ "reps": 200,
+ "threads": 32,
+ "param": 0,
+ "samples": 6400,
+ "load_error": null,
+ "launch_error": null,
+ "compared": true,
+ "match": true,
+ "launches_compared": 200,
+ "mismatching_launches": 0,
+ "first_mismatch_launch": -1,
+ "first_mismatch_word": -1,
+ "cycles_min": 377,
+ "cycles_p50": 380,
+ "cycles_max": 521
+}

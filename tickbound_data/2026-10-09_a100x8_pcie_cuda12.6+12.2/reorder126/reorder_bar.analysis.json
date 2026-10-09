@@ -1,0 +1,589 @@
+{
+ "prefix": "C:\\Users\\pierr\\AppData\\Local\\Temp\\claude\\C--Users-pierr\\5c9f69cd-4ab2-4054-ba7c-33d14cfa0fa5\\scratchpad\\box_9oct\\out_a100x8\\res\\reorder126\\reorder_bar",
+ "strategy": "reorder",
+ "gpu": "NVIDIA A100-PCIE-40GB",
+ "sms": 108,
+ "host": "3990b2003192",
+ "clock": {
+  "tick_ns": 1024,
+  "method": "edge",
+  "bound_ns": 771.1348843537271,
+  "rate_ppm": -20.348640032308296,
+  "feasible": true,
+  "windows": {
+   "pre": {
+    "edge_bound_ns": 784.690620565787,
+    "edge_feasible": true,
+    "n_up": 3000,
+    "n_down": 2931,
+    "rate_ppm": -19.402738356211202
+   },
+   "post": {
+    "edge_bound_ns": 773.8796278273221,
+    "edge_feasible": true,
+    "n_up": 3000,
+    "n_down": 2868,
+    "rate_ppm": -20.83373885630735
+   }
+  },
+  "width_ns": 1542.2697687074542
+ },
+ "n_gpu_recs": 221184,
+ "gpu_recs_dropped": 0,
+ "n_host_events": 34,
+ "result": {
+  "reorder_layout": 1,
+  "cc": "8.0",
+  "tick_ns": 1024.0,
+  "bound_ns": 771.1348843537271,
+  "toolkit": {
+   "cuda_runtime": 12060,
+   "driver": 13020
+  },
+  "gate": {
+   "status": "FAIL",
+   "label": "FAIL",
+   "file": "reorder_bar.reorder_sass.json",
+   "source": "run",
+   "error": null,
+   "kernels_in_gate": 295,
+   "unparsed_kernels": [],
+   "group_labels": {
+    "PASS": 8
+   }
+  },
+  "n_records": 221184,
+  "experiments": {
+   "bar": {
+    "groups": [
+     {
+      "variant": "pre",
+      "v": 0,
+      "M": 64,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 27648,
+       "p10": 4355.0,
+       "p50": 4381.0,
+       "p90": 4537.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 6.0
+     },
+     {
+      "variant": "pre",
+      "v": 0,
+      "M": 256,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 27648,
+       "p10": 4355.0,
+       "p50": 4380.0,
+       "p90": 4542.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 6.0
+     },
+     {
+      "variant": "post",
+      "v": 1,
+      "M": 64,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 27648,
+       "p10": 4353.0,
+       "p50": 4377.0,
+       "p90": 4538.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 6.0
+     },
+     {
+      "variant": "post",
+      "v": 1,
+      "M": 256,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 27648,
+       "p10": 4352.0,
+       "p50": 4376.0,
+       "p90": 4536.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 6.0
+     },
+     {
+      "variant": "post_mem",
+      "v": 2,
+      "M": 64,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 27648,
+       "p10": 4528.0,
+       "p50": 4667.0,
+       "p90": 4825.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 6.0
+     },
+     {
+      "variant": "post_mem",
+      "v": 2,
+      "M": 256,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 27648,
+       "p10": 4530.0,
+       "p50": 5437.0,
+       "p90": 5599.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 7.0
+     },
+     {
+      "variant": "late_sink",
+      "v": 3,
+      "M": 64,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 27648,
+       "p10": 4108.0,
+       "p50": 4138.0,
+       "p90": 4377.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 5.0
+     },
+     {
+      "variant": "late_sink",
+      "v": 3,
+      "M": 256,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 27648,
+       "p10": 3339.0,
+       "p50": 3367.0,
+       "p90": 4387.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 4.0
+     }
+    ],
+    "variants": [
+     {
+      "variant": "pre",
+      "v": 0,
+      "M": 64,
+      "gate": "PASS",
+      "used": true,
+      "reps": 3456,
+      "early_end_minus_late_arrive": {
+       "n": 24192,
+       "p10": 52.0,
+       "p50": 55.0,
+       "p90": 59.0
+      },
+      "early_end_minus_late_start": {
+       "n": 24192,
+       "p10": 4356.0,
+       "p50": 4381.0,
+       "p90": 4538.0
+      },
+      "late_arrive_minus_late_start": {
+       "n": 3456,
+       "p10": 4301.0,
+       "p50": 4325.0,
+       "p90": 4482.0
+      },
+      "late_end_minus_late_arrive": {
+       "n": 3456,
+       "p10": 60.0,
+       "p50": 60.0,
+       "p90": 60.0
+      },
+      "late_ffma_before_barrier": 1024,
+      "late_cycles_per_ffma_before_barrier": 4.2236328125,
+      "post_clock_minus_late_arrive": null,
+      "post_clock_during_wait": null,
+      "late_post_clock_minus_arrive": null
+     },
+     {
+      "variant": "pre",
+      "v": 0,
+      "M": 256,
+      "gate": "PASS",
+      "used": true,
+      "reps": 3456,
+      "early_end_minus_late_arrive": {
+       "n": 24192,
+       "p10": 52.0,
+       "p50": 55.0,
+       "p90": 59.0
+      },
+      "early_end_minus_late_start": {
+       "n": 24192,
+       "p10": 4356.0,
+       "p50": 4381.0,
+       "p90": 4543.0
+      },
+      "late_arrive_minus_late_start": {
+       "n": 3456,
+       "p10": 4301.0,
+       "p50": 4325.0,
+       "p90": 4487.0
+      },
+      "late_end_minus_late_arrive": {
+       "n": 3456,
+       "p10": 60.0,
+       "p50": 60.0,
+       "p90": 60.0
+      },
+      "late_ffma_before_barrier": 1024,
+      "late_cycles_per_ffma_before_barrier": 4.2236328125,
+      "post_clock_minus_late_arrive": null,
+      "post_clock_during_wait": null,
+      "late_post_clock_minus_arrive": null
+     },
+     {
+      "variant": "post",
+      "v": 1,
+      "M": 64,
+      "gate": "PASS",
+      "used": true,
+      "reps": 3456,
+      "early_end_minus_late_arrive": {
+       "n": 24192,
+       "p10": 52.0,
+       "p50": 55.0,
+       "p90": 59.0
+      },
+      "early_end_minus_late_start": {
+       "n": 24192,
+       "p10": 4355.0,
+       "p50": 4379.0,
+       "p90": 4539.0
+      },
+      "late_arrive_minus_late_start": {
+       "n": 3456,
+       "p10": 4300.0,
+       "p50": 4324.0,
+       "p90": 4484.0
+      },
+      "late_end_minus_late_arrive": {
+       "n": 3456,
+       "p10": 60.0,
+       "p50": 60.0,
+       "p90": 60.0
+      },
+      "late_ffma_before_barrier": 1024,
+      "late_cycles_per_ffma_before_barrier": 4.22265625,
+      "post_clock_minus_late_arrive": {
+       "n": 24192,
+       "p10": -4087.0,
+       "p50": -4079.0,
+       "p90": -4071.0
+      },
+      "post_clock_during_wait": {
+       "n": 24192,
+       "during": 24192,
+       "fraction": 1.0,
+       "early_wait": {
+        "n": 24192,
+        "p10": 4082.0,
+        "p50": 4091.0,
+        "p90": 4098.0
+       }
+      },
+      "late_post_clock_minus_arrive": null
+     },
+     {
+      "variant": "post",
+      "v": 1,
+      "M": 256,
+      "gate": "PASS",
+      "used": true,
+      "reps": 3456,
+      "early_end_minus_late_arrive": {
+       "n": 24192,
+       "p10": 52.0,
+       "p50": 55.0,
+       "p90": 59.0
+      },
+      "early_end_minus_late_start": {
+       "n": 24192,
+       "p10": 4355.0,
+       "p50": 4379.0,
+       "p90": 4537.9000000000015
+      },
+      "late_arrive_minus_late_start": {
+       "n": 3456,
+       "p10": 4300.0,
+       "p50": 4323.0,
+       "p90": 4482.0
+      },
+      "late_end_minus_late_arrive": {
+       "n": 3456,
+       "p10": 60.0,
+       "p50": 60.0,
+       "p90": 60.0
+      },
+      "late_ffma_before_barrier": 1024,
+      "late_cycles_per_ffma_before_barrier": 4.2216796875,
+      "post_clock_minus_late_arrive": {
+       "n": 24192,
+       "p10": -4087.0,
+       "p50": -4080.0,
+       "p90": -4071.0
+      },
+      "post_clock_during_wait": {
+       "n": 24192,
+       "during": 24192,
+       "fraction": 1.0,
+       "early_wait": {
+        "n": 24192,
+        "p10": 4083.0,
+        "p50": 4091.0,
+        "p90": 4098.0
+       }
+      },
+      "late_post_clock_minus_arrive": null
+     },
+     {
+      "variant": "post_mem",
+      "v": 2,
+      "M": 64,
+      "gate": "PASS",
+      "used": true,
+      "reps": 3456,
+      "early_end_minus_late_arrive": {
+       "n": 24192,
+       "p10": 349.0,
+       "p50": 353.0,
+       "p90": 355.0
+      },
+      "early_end_minus_late_start": {
+       "n": 24192,
+       "p10": 4651.0,
+       "p50": 4675.0,
+       "p90": 4831.0
+      },
+      "late_arrive_minus_late_start": {
+       "n": 3456,
+       "p10": 4298.0,
+       "p50": 4322.0,
+       "p90": 4478.0
+      },
+      "late_end_minus_late_arrive": {
+       "n": 3456,
+       "p10": 59.0,
+       "p50": 59.0,
+       "p90": 59.0
+      },
+      "late_ffma_before_barrier": 1024,
+      "late_cycles_per_ffma_before_barrier": 4.220703125,
+      "post_clock_minus_late_arrive": null,
+      "post_clock_during_wait": null,
+      "late_post_clock_minus_arrive": null
+     },
+     {
+      "variant": "post_mem",
+      "v": 2,
+      "M": 256,
+      "gate": "PASS",
+      "used": true,
+      "reps": 3456,
+      "early_end_minus_late_arrive": {
+       "n": 24192,
+       "p10": 1117.0,
+       "p50": 1121.0,
+       "p90": 1136.0
+      },
+      "early_end_minus_late_start": {
+       "n": 24192,
+       "p10": 5420.0,
+       "p50": 5446.0,
+       "p90": 5605.0
+      },
+      "late_arrive_minus_late_start": {
+       "n": 3456,
+       "p10": 4299.0,
+       "p50": 4323.0,
+       "p90": 4481.0
+      },
+      "late_end_minus_late_arrive": {
+       "n": 3456,
+       "p10": 59.0,
+       "p50": 59.0,
+       "p90": 59.0
+      },
+      "late_ffma_before_barrier": 1024,
+      "late_cycles_per_ffma_before_barrier": 4.2216796875,
+      "post_clock_minus_late_arrive": null,
+      "post_clock_during_wait": null,
+      "late_post_clock_minus_arrive": null
+     },
+     {
+      "variant": "late_sink",
+      "v": 3,
+      "M": 64,
+      "gate": "PASS",
+      "used": true,
+      "reps": 3456,
+      "early_end_minus_late_arrive": {
+       "n": 24192,
+       "p10": 53.0,
+       "p50": 57.0,
+       "p90": 60.0
+      },
+      "early_end_minus_late_start": {
+       "n": 24192,
+       "p10": 4101.0,
+       "p50": 4127.0,
+       "p90": 4282.0
+      },
+      "late_arrive_minus_late_start": {
+       "n": 3456,
+       "p10": 4045.0,
+       "p50": 4070.0,
+       "p90": 4226.0
+      },
+      "late_end_minus_late_arrive": {
+       "n": 3456,
+       "p10": 323.0,
+       "p50": 323.0,
+       "p90": 323.0
+      },
+      "late_ffma_before_barrier": 960,
+      "late_cycles_per_ffma_before_barrier": 4.239583333333333,
+      "post_clock_minus_late_arrive": null,
+      "post_clock_during_wait": null,
+      "late_post_clock_minus_arrive": {
+       "n": 3456,
+       "p10": 11.0,
+       "p50": 11.0,
+       "p90": 11.0
+      }
+     },
+     {
+      "variant": "late_sink",
+      "v": 3,
+      "M": 256,
+      "gate": "PASS",
+      "used": true,
+      "reps": 3456,
+      "early_end_minus_late_arrive": {
+       "n": 24192,
+       "p10": 53.0,
+       "p50": 57.0,
+       "p90": 60.0
+      },
+      "early_end_minus_late_start": {
+       "n": 24192,
+       "p10": 3333.0,
+       "p50": 3356.0,
+       "p90": 3511.0
+      },
+      "late_arrive_minus_late_start": {
+       "n": 3456,
+       "p10": 3277.0,
+       "p50": 3299.0,
+       "p90": 3454.0
+      },
+      "late_end_minus_late_arrive": {
+       "n": 3456,
+       "p10": 1101.0,
+       "p50": 1103.0,
+       "p90": 1105.0
+      },
+      "late_ffma_before_barrier": 768,
+      "late_cycles_per_ffma_before_barrier": 4.295572916666667,
+      "post_clock_minus_late_arrive": null,
+      "post_clock_during_wait": null,
+      "late_post_clock_minus_arrive": {
+       "n": 3456,
+       "p10": 11.0,
+       "p50": 11.0,
+       "p90": 11.0
+      }
+     }
+    ],
+    "comparisons": [
+     {
+      "M": 64,
+      "four_M": 256.0,
+      "post_minus_pre": 0.0,
+      "post_mem_minus_pre": 298.0,
+      "post_exposed_fraction": 0.0,
+      "post_mem_exposed_fraction": 1.1640625,
+      "late_sink_shift": 254.0,
+      "late_sink_arrival_shift": 255.0,
+      "post_clock_during_wait": 1.0,
+      "post_reading": "the clock read after BAR.SYNC issued during the wait in 24192 of 24192 early-warp samples: it did not end the deferral, so post - pre speaks for register-only work",
+      "n": {
+       "pre": 24192,
+       "post": 24192,
+       "post_mem": 24192,
+       "late_sink": 24192,
+       "post_clock": 24192
+      }
+     },
+     {
+      "M": 256,
+      "four_M": 1024.0,
+      "post_minus_pre": 0.0,
+      "post_mem_minus_pre": 1066.0,
+      "post_exposed_fraction": 0.0,
+      "post_mem_exposed_fraction": 1.041015625,
+      "late_sink_shift": 1025.0,
+      "late_sink_arrival_shift": 1026.0,
+      "post_clock_during_wait": 1.0,
+      "post_reading": "the clock read after BAR.SYNC issued during the wait in 24192 of 24192 early-warp samples: it did not end the deferral, so post - pre speaks for register-only work",
+      "n": {
+       "pre": 24192,
+       "post": 24192,
+       "post_mem": 24192,
+       "late_sink": 24192,
+       "post_clock": 24192
+      }
+     }
+    ],
+    "checks": {
+     "reps": 27648,
+     "incomplete_reps": 0,
+     "release_before_last_arrival": 0,
+     "late_not_last": 0,
+     "sm_launches": 864,
+     "sm_launches_with_extra_records": 0
+    }
+   }
+  },
+  "dropped": [],
+  "inconsistencies": [],
+  "notes": [
+   "orders: each intended order is forced in the kernel by data dependencies or asm volatile clock reads; it holds for this run only where the reorder SASS gate of the binary that measured says PASS (label 'gate' per instantiation). FAIL (E1-E5) and EXCLUDED (E6) instantiations are dropped from every derived figure and listed in 'dropped'; 'gate not run' = no usable PREFIX.reorder_sass.json / reorder_sass.json next to the run; 'not in gate' = the gate lists no such kernel. The gate also fails compared variants whose brackets wait on different scoreboards left outstanding before c0 (pre-bracket waits)",
+   "cycles = the bracket c0 .. c1 in SM cycles (body + consume: the closing clock read waits for the consumed results); p10 / p50 / p90 with the sample count n per (variant, params); derived differences are p50 - p50. ns only where a group's brackets span >= 8 %globaltimer ticks, through that group's own SM clock (sum of cycles / sum of timer spans); shorter brackets are cycles only",
+   "load_use: L = overlap(0) - chain_only(0) (the load's latency exposed at N = 0, with its dependent address arithmetic, its issue and the consume of its value; serial(0) - chain_only(0) is the cross-check), c = chain_only(0). The overlap chain cannot start before the load is issued: d = the cycles from the seed's data to its first FFMA (the load's address arithmetic, its issue, the clock read that orders the chain after it; 26-27 issue cycles with NVRTC 12.9), which serial's and chain_only's chains do not pay. Model overlap = max(L, 4N + d) + c, serial = L + 4N + c, saving = serial - overlap = min(4N, L - d): L - d is the part of the load's latency a chain can hide. Crossover N* = the knee of overlap(N), least squares a + b * max(N*, N) with b = chain_only's slope (at the top of the measured N it lies beyond the range); model N* = (L - d) / 4. d comes from the knee fit (its intercept - chain_only's) when the knee is inside the range, else from the gate (chain_start_cycles, the binary's issue cycles); both are reported, and a fit that differs from the issue count by more than max(8, d / 4) is an inconsistency (overlap holds a cost the SASS does not explain). overlap2 - overlap = the second independent load's extra cost (both in flight at once)",
+   "war: reuse - fresh = the cost of overwriting a register a store has not read yet (stores read their operands late, through the MIO queue). It is a WAR measurement only where the gate decoded a wait on the store's read scoreboard in the reuse build (war_wait true) and none in the fresh build; a reuse build without it is 'not provoked'. The overwrite issues D cycles after the store (war_distance_cycles, the gate's issue count; reuse: the clock read and its LOP3 that order the chain lie between, 12-13 cycles), so the figure is the WAR stall beyond D: an operand read done within D costs 0. reuse_clock - fresh_clock is the same with the first overwrite right after the store where ptxas gave the clock read (or the chain seed's LOP3) the stored register (D = 2-5 with NVRTC 12.9; the gate says per build). fresh - nostore = the store's own cost in the bracket",
+   "bar: per rep the late warp (1024 FFMA before the barrier) arrives last. Early warps' c_end - the late warp's c_arrive: pre = release + touch; post = pre when the M register-only FFMA after BAR.SYNC.DEFER_BLOCKING ran during the wait (exposed fraction (post - pre) / 4M near 0), pre + 4M when they waited for the release; post_mem puts a shared load + store before them (expected not to overlap). post's FFMA are ordered after the barrier by a clock read, assumed not to end the deferral (it is not a memory instruction); each warp records when that clock read issued (flags >> 16 = it - c_arrive), and post_clock_during_wait is the fraction of early-warp samples where it issued before the late warp arrived: near 1 the assumption holds; near 0 post cannot tell a clock read that ends the deferral from no deferral at all (post_reading says which). late_sink shift = pre - late_sink of the early warps' c_end - the late warp's c_start (expected 4M). Reps are rebuilt per SM from the arrival stamps (every arrival of a rep precedes its release, a warp's next arrival follows it); incomplete reps are counted and not used. The per-group bracket (groups) is every warp's c_end - c_start, early and late warps pooled; the comparisons use the per-rep stamps",
+   "fence: fence cycles = after(M = 0) - chain_only(M = 0): the same clock read, LOP3 and consume STS, plus one fence after one store (the store's drain included). fence_only lacks that scaffolding: fence_only(0) - chain_only(0) + the scaffolding's issue cycles (the gate's after_store_cycles of chain_only(0)) is the cross-check. after - before = what moving the work ahead of the fence saves, against min(fence, W), W = the issue cycles before keeps between its store and its fence (the gate's store_to_fence_cycles: 4M plus the clock read, its LOP3 and the consume STS; else 4M); before's fence also covers that STS, which in after issues behind the fence and nothing waits for. before - chain_only = the fence's exposed part, against max(0, fence - W)",
+   "pipe: cycles per FFMA = (c1 - c0) / 1024 per warp (the consume adds ~0.02). k = the time-weighted number of recorded warps on the same SM and sub-partition (%warpid % 4) during that warp's bracket, itself included (unrecorded warm-up brackets are not counted). Expectation max(4 / ILP, p * k), p = 32 / FP32 lanes per sub-partition: 2 on cc 7.x and 8.0, 1 on cc 8.6 / 8.7 / 8.9, 9.0 and later; limit = the term that binds at the median k (the chain's latency, which interleaving ILP chains hides, or the shared FP32 pipe, which it cannot)",
+   "stall: slope of cycles = a + b * N over the per-N medians per (OP, MODE). dep_consumed (the chain consumed before c1): slope_cycles_per_link = the issue interval of one dependent link. One warp waits exactly the stall count ptxas encoded before its next instruction, so for the fixed-latency ops the slope reproduces the encoding (encoded_cycles_per_link, the gate's static_cycles_per_link) unless the hardware adds to it (hardware_extra_cycles); the encoding is ptxas's choice, an upper bound on the op's minimum stall, which CuAsmRL finds by lowering stall counts until results go wrong (Tier B's stall-lowering edits test that on the GPU). op_encoded_stall = the stall ptxas put on the op itself (the gate's target_stalls), compared with CuAsmRL's dependency-based A100 table (IADD3, IMAD.IADD, IADD3.X, MOV, IABS, IMAD, FADD, HADD2, IMNMX, SEL, LEA 4; IMAD.WIDE(.U32) 5; the other OPs are not in it): encoded_minus_cuasmrl. A link of IABS (LOP3.LUT + IABS) or IMAD_WIDE (IMAD.WIDE.U32 + the IADD3 of the 64-bit add, its IADD3.X off the chain) holds a helper, so its slope is the link's, not the op's. Variable-latency ops (DADD, DFMA on sm_80 / sm_86) wait on a scoreboard, not on the stall count. dep_unconsumed keeps the slope (each instruction still waits for its predecessor) but the closing clock read does not wait for the last result (intercept about one latency lower); indep's slope is the issue interval of one update (IABS's and IMAD_WIDE's updates issue their helpers too), what a clock-based method without dependencies reports (CuAsmRL measured 2.6 cycles per IADD3 that way); naive_cycles_per_instr = p50 / N at the largest N. An (OP, MODE) with an instantiation the gate EXCLUDED (opcode count != N, or a dependency structure other than the mode's) is dropped from the fits' use and from the table"
+  ]
+ }
+}

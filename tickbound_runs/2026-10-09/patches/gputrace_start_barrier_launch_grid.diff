@@ -1,0 +1,24 @@
+--- a/src/tickbound/cuda/gputrace.cu
++++ b/src/tickbound/cuda/gputrace.cu
+@@ -717,6 +717,9 @@
+     CK(cudaMalloc(&ticket, 64));
+     CK(cudaMemset(in, 0, sizeof(float4) * ((size_t)maxB * T + 1024)));
+     uint64_t seen = 0;
++    // box-only (9 Oct 2026, multi-GPU run): TB_START_AT_NS = a CLOCK_MONOTONIC_RAW instant shared by every process; spin until
++    // it, so the per-GPU processes start their launch loops together.
++    if (const char *s0 = getenv("TB_START_AT_NS")) { const int64_t t0 = atoll(s0); if (t0 > now_ns()) spin_until(t0); }
+     for (int B : Bs) {
+         for (int r = 0; r < g_args.reps; r++) {
+             uint32_t kid = ++g_kid;
+@@ -724,6 +727,11 @@
+             CK(cudaMemsetAsync(ticket, 0, 64, st));
+             CK(cudaStreamSynchronize(st));
+             idle(g_args.idle_us);
++            // box-only: TB_ALIGN_US = P launches on the next multiple of P us of CLOCK_MONOTONIC_RAW (one grid for all processes)
++            if (const char *al = getenv("TB_ALIGN_US")) {
++                const int64_t p = (int64_t)(atof(al) * 1000);
++                if (p > 0) { const int64_t t = now_ns(); spin_until((t / p + 1) * p); }
++            }
+             ev(EV_LAUNCH_ENTER, kid, (uint64_t)B, (uint64_t)T);
+             kern<<<B, T, 0, st>>>(g_dev.td, kid, in, out, ticket, flag_d, (uint32_t)B);
+             ev(EV_LAUNCH_RETURN, kid);

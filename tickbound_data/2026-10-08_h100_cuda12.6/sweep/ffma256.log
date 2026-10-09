@@ -1,0 +1,2 @@
+gputrace ktrace: NVIDIA H100 80GB HBM3 sms=132 recs=317280 events=77 kernels=15 in 0.21 s (sync pre ok post ok)
+ktrace SASS check: PASS (4 k_ktrace instantiation(s), 28 exact checks on the binary that measured)

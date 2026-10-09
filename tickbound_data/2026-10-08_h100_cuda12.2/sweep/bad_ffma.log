@@ -1,0 +1,10 @@
+gputrace: --ffma 100 is not supported by ktrace: the FFMA chain is unrolled at compile time, one of 64, 256, 1024, 4096
+ktrace SASS check: FAIL (8 of 28 checks): this build breaks the layout-2 promises (exact phases, no spill); the ktrace phase notes do not hold for it
+    FAIL k_ktrace<64>: load: 2 LDG + 1 STS + address arithmetic (LDG=2 STS=1 not allowed: ['02c0 DEPBAR.LE SB0, 0x0'])
+    FAIL k_ktrace<64>: flag -> exit: one STG (+ ISETP/PLOP3) only (STG=1 ISETP/PLOP3=0 other={'DEPBAR.LE': 1})
+    FAIL k_ktrace<256>: load: 2 LDG + 1 STS + address arithmetic (LDG=2 STS=1 not allowed: ['02c0 DEPBAR.LE SB0, 0x0'])
+    FAIL k_ktrace<256>: flag -> exit: one STG (+ ISETP/PLOP3) only (STG=1 ISETP/PLOP3=0 other={'DEPBAR.LE': 1})
+    FAIL k_ktrace<1024>: load: 2 LDG + 1 STS + address arithmetic (LDG=2 STS=1 not allowed: ['02c0 DEPBAR.LE SB0, 0x0'])
+    FAIL k_ktrace<1024>: flag -> exit: one STG (+ ISETP/PLOP3) only (STG=1 ISETP/PLOP3=0 other={'DEPBAR.LE': 1})
+    FAIL k_ktrace<4096>: load: 2 LDG + 1 STS + address arithmetic (LDG=2 STS=1 not allowed: ['02c0 DEPBAR.LE SB0, 0x0'])
+    FAIL k_ktrace<4096>: flag -> exit: one STG (+ ISETP/PLOP3) only (STG=1 ISETP/PLOP3=0 other={'DEPBAR.LE': 1})

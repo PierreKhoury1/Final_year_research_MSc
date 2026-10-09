@@ -1,0 +1,124 @@
+_ZN2sb2gt8k_ktraceILj64EEEvNS0_8TraceDevEjPK6float4PS3_PjPVmj: 12 checkpoints, layout 2, FFMA_N=64
+  entry -> cal                    0 instr  {}
+  cal -> loaded                   6 instr  {'LDG.E.CONSTANT': 1, 'LOP3.LUT': 1, 'LEA': 1, 'LEA.HI.X': 1, 'LDG.E.128.CONSTANT': 1, 'STS.128': 1}
+  loaded -> bar1_arrive           2 instr  {'LDS.128': 1, 'STS.128': 1}
+  bar1_arrive -> bar1_release     3 instr  {'BAR.SYNC.DEFER_BLOCKING': 1, 'LDS.128': 1, 'STS.128': 1}
+  bar1_release -> computed       65 instr  {'FFMA': 64, 'FADD': 1}
+  computed -> bar2_arrive         2 instr  {'LDS.128': 1, 'STS.128': 1}
+  bar2_arrive -> bar2_release     3 instr  {'BAR.SYNC.DEFER_BLOCKING': 1, 'LDS.128': 1, 'STS.128': 1}
+  bar2_release -> stored          5 instr  {'MOV': 1, 'STG.E.128': 1, 'MEMBAR.SC.GPU': 1, 'ERRBAR': 1, 'CCTL.IVALL': 1}
+  stored -> ticket                8 instr  {'MOV': 2, 'BSSY': 1, 'BRA': 1, 'HFMA2.MMA': 1, 'ATOMG.E.ADD.STRONG.GPU': 1, 'STS': 1, 'BSYNC': 1}
+  ticket -> flag                  3 instr  {'BAR.SYNC.DEFER_BLOCKING': 1, 'LDS.128': 1, 'ISETP.NE.AND': 1}
+  flag -> exit                    1 instr  {'STG.E.64.STRONG.SYS': 1}
+  exit -> writer fence clock     11 instr  {'MOV': 2, 'S2R': 1, 'LOP3.LUT': 1, 'EXIT': 1, 'BSSY': 1, 'CS2R': 1, 'BRA': 1, 'MEMBAR.SC.SYS': 1, 'ERRBAR': 1, 'CCTL.IVALL': 1}
+  check ok   checkpoints == 12                            found 12
+  check ok   brackets: timer, clock, timer                all
+  check ok   no STL/LDL in the function                   none
+  check ok   entry -> cal empty                           0 instr
+  check ok   load: 2 LDG + 1 STS + <= 3 address           LDG=2 STS=1 address=3
+  check ok   calibration chain: LDS + STS                 {'LDS.128': 1, 'STS.128': 1}
+  check ok   barrier1 = BAR + calibration chain           found {'BAR.SYNC.DEFER_BLOCKING': 1, 'LDS.128': 1, 'STS.128': 1}
+  check ok   barrier2 = BAR + calibration chain           found {'BAR.SYNC.DEFER_BLOCKING': 1, 'LDS.128': 1, 'STS.128': 1}
+  check ok   compute: exactly FADD x1 + FFMA x64          found {'FFMA': 64, 'FADD': 1}
+  check ok   store: STG + device fence (+ 1 move)         STG=1 MEMBAR.GPU=1 moves=1
+  check ok   tail: BAR, LDS, predicate on it              BAR=1 LDS=1 predicate reads the LDS: True ISETP/PLOP3=1 address=0
+  check ok   flag -> exit: one @P STG.SYS (+ ISETP/PLOP3) STG=1 (@!P1 STG.E.64.STRONG.SYS [R38.64], R66) ISETP/PLOP3=0
+  check ok   writer fence: MEMBAR.SYS, clock, timer       11 instr, fence MEMBAR.SC.SYS + {'ERRBAR': 1, 'CCTL.IVALL': 1}
+  check ok   no other clock read                          none
+  wait  bar1_release clock         02f0 CS2R R10, SR_CLOCKLO                on SB0: 0270 STS.128 [R43.X16], R8 (operand read) (cycle value)
+  wait  computed     opening timer 0720 CS2R R6, SR_GLOBALTIMERLO           on SB1: 02d0 STS.128 [R43.X16], R4 (operand read) (cycle value)
+  wait  bar2_release closing timer 07f0 CS2R R42, SR_GLOBALTIMERLO          on SB0: 07c0 STS.128 [R43.X16], R36 (operand read) (window only)
+  wait  ticket       closing timer 0920 CS2R R54, SR_GLOBALTIMERLO          on SB0: 08e0 STS [0x1000], R36 (operand read) (window only)
+_ZN2sb2gt8k_ktraceILj256EEEvNS0_8TraceDevEjPK6float4PS3_PjPVmj: 12 checkpoints, layout 2, FFMA_N=256
+  entry -> cal                    0 instr  {}
+  cal -> loaded                   6 instr  {'LDG.E.CONSTANT': 1, 'LOP3.LUT': 1, 'LEA': 1, 'LEA.HI.X': 1, 'LDG.E.128.CONSTANT': 1, 'STS.128': 1}
+  loaded -> bar1_arrive           2 instr  {'LDS.128': 1, 'STS.128': 1}
+  bar1_arrive -> bar1_release     3 instr  {'BAR.SYNC.DEFER_BLOCKING': 1, 'LDS.128': 1, 'STS.128': 1}
+  bar1_release -> computed      257 instr  {'FFMA': 256, 'FADD': 1}
+  computed -> bar2_arrive         2 instr  {'LDS.128': 1, 'STS.128': 1}
+  bar2_arrive -> bar2_release     3 instr  {'BAR.SYNC.DEFER_BLOCKING': 1, 'LDS.128': 1, 'STS.128': 1}
+  bar2_release -> stored          5 instr  {'MOV': 1, 'STG.E.128': 1, 'MEMBAR.SC.GPU': 1, 'ERRBAR': 1, 'CCTL.IVALL': 1}
+  stored -> ticket                8 instr  {'MOV': 2, 'BSSY': 1, 'BRA': 1, 'HFMA2.MMA': 1, 'ATOMG.E.ADD.STRONG.GPU': 1, 'STS': 1, 'BSYNC': 1}
+  ticket -> flag                  3 instr  {'BAR.SYNC.DEFER_BLOCKING': 1, 'LDS.128': 1, 'ISETP.NE.AND': 1}
+  flag -> exit                    1 instr  {'STG.E.64.STRONG.SYS': 1}
+  exit -> writer fence clock     11 instr  {'MOV': 2, 'S2R': 1, 'LOP3.LUT': 1, 'EXIT': 1, 'BSSY': 1, 'CS2R': 1, 'BRA': 1, 'MEMBAR.SC.SYS': 1, 'ERRBAR': 1, 'CCTL.IVALL': 1}
+  check ok   checkpoints == 12                            found 12
+  check ok   brackets: timer, clock, timer                all
+  check ok   no STL/LDL in the function                   none
+  check ok   entry -> cal empty                           0 instr
+  check ok   load: 2 LDG + 1 STS + <= 3 address           LDG=2 STS=1 address=3
+  check ok   calibration chain: LDS + STS                 {'LDS.128': 1, 'STS.128': 1}
+  check ok   barrier1 = BAR + calibration chain           found {'BAR.SYNC.DEFER_BLOCKING': 1, 'LDS.128': 1, 'STS.128': 1}
+  check ok   barrier2 = BAR + calibration chain           found {'BAR.SYNC.DEFER_BLOCKING': 1, 'LDS.128': 1, 'STS.128': 1}
+  check ok   compute: exactly FADD x1 + FFMA x256         found {'FFMA': 256, 'FADD': 1}
+  check ok   store: STG + device fence (+ 1 move)         STG=1 MEMBAR.GPU=1 moves=1
+  check ok   tail: BAR, LDS, predicate on it              BAR=1 LDS=1 predicate reads the LDS: True ISETP/PLOP3=1 address=0
+  check ok   flag -> exit: one @P STG.SYS (+ ISETP/PLOP3) STG=1 (@!P1 STG.E.64.STRONG.SYS [R38.64], R66) ISETP/PLOP3=0
+  check ok   writer fence: MEMBAR.SYS, clock, timer       11 instr, fence MEMBAR.SC.SYS + {'ERRBAR': 1, 'CCTL.IVALL': 1}
+  check ok   no other clock read                          none
+  wait  bar1_release clock         02f0 CS2R R10, SR_CLOCKLO                on SB0: 0270 STS.128 [R43.X16], R8 (operand read) (cycle value)
+  wait  computed     opening timer 1320 CS2R R6, SR_GLOBALTIMERLO           on SB1: 02d0 STS.128 [R43.X16], R4 (operand read) (cycle value)
+  wait  bar2_release closing timer 13f0 CS2R R42, SR_GLOBALTIMERLO          on SB0: 13c0 STS.128 [R43.X16], R36 (operand read) (window only)
+  wait  ticket       closing timer 1520 CS2R R54, SR_GLOBALTIMERLO          on SB0: 14e0 STS [0x1000], R36 (operand read) (window only)
+_ZN2sb2gt8k_ktraceILj1024EEEvNS0_8TraceDevEjPK6float4PS3_PjPVmj: 12 checkpoints, layout 2, FFMA_N=1024
+  entry -> cal                    0 instr  {}
+  cal -> loaded                   6 instr  {'LDG.E.CONSTANT': 1, 'LOP3.LUT': 1, 'LEA': 1, 'LEA.HI.X': 1, 'LDG.E.128.CONSTANT': 1, 'STS.128': 1}
+  loaded -> bar1_arrive           2 instr  {'LDS.128': 1, 'STS.128': 1}
+  bar1_arrive -> bar1_release     3 instr  {'BAR.SYNC.DEFER_BLOCKING': 1, 'LDS.128': 1, 'STS.128': 1}
+  bar1_release -> computed     1025 instr  {'FFMA': 1024, 'FADD': 1}
+  computed -> bar2_arrive         2 instr  {'LDS.128': 1, 'STS.128': 1}
+  bar2_arrive -> bar2_release     3 instr  {'BAR.SYNC.DEFER_BLOCKING': 1, 'LDS.128': 1, 'STS.128': 1}
+  bar2_release -> stored          5 instr  {'MOV': 1, 'STG.E.128': 1, 'MEMBAR.SC.GPU': 1, 'ERRBAR': 1, 'CCTL.IVALL': 1}
+  stored -> ticket                8 instr  {'MOV': 2, 'BSSY': 1, 'BRA': 1, 'HFMA2.MMA': 1, 'ATOMG.E.ADD.STRONG.GPU': 1, 'STS': 1, 'BSYNC': 1}
+  ticket -> flag                  3 instr  {'BAR.SYNC.DEFER_BLOCKING': 1, 'LDS.128': 1, 'ISETP.NE.AND': 1}
+  flag -> exit                    1 instr  {'STG.E.64.STRONG.SYS': 1}
+  exit -> writer fence clock     11 instr  {'MOV': 2, 'S2R': 1, 'LOP3.LUT': 1, 'EXIT': 1, 'BSSY': 1, 'CS2R': 1, 'BRA': 1, 'MEMBAR.SC.SYS': 1, 'ERRBAR': 1, 'CCTL.IVALL': 1}
+  check ok   checkpoints == 12                            found 12
+  check ok   brackets: timer, clock, timer                all
+  check ok   no STL/LDL in the function                   none
+  check ok   entry -> cal empty                           0 instr
+  check ok   load: 2 LDG + 1 STS + <= 3 address           LDG=2 STS=1 address=3
+  check ok   calibration chain: LDS + STS                 {'LDS.128': 1, 'STS.128': 1}
+  check ok   barrier1 = BAR + calibration chain           found {'BAR.SYNC.DEFER_BLOCKING': 1, 'LDS.128': 1, 'STS.128': 1}
+  check ok   barrier2 = BAR + calibration chain           found {'BAR.SYNC.DEFER_BLOCKING': 1, 'LDS.128': 1, 'STS.128': 1}
+  check ok   compute: exactly FADD x1 + FFMA x1024        found {'FFMA': 1024, 'FADD': 1}
+  check ok   store: STG + device fence (+ 1 move)         STG=1 MEMBAR.GPU=1 moves=1
+  check ok   tail: BAR, LDS, predicate on it              BAR=1 LDS=1 predicate reads the LDS: True ISETP/PLOP3=1 address=0
+  check ok   flag -> exit: one @P STG.SYS (+ ISETP/PLOP3) STG=1 (@!P1 STG.E.64.STRONG.SYS [R38.64], R66) ISETP/PLOP3=0
+  check ok   writer fence: MEMBAR.SYS, clock, timer       11 instr, fence MEMBAR.SC.SYS + {'ERRBAR': 1, 'CCTL.IVALL': 1}
+  check ok   no other clock read                          none
+  wait  bar1_release clock         02f0 CS2R R10, SR_CLOCKLO                on SB0: 0270 STS.128 [R43.X16], R8 (operand read) (cycle value)
+  wait  computed     opening timer 4320 CS2R R6, SR_GLOBALTIMERLO           on SB1: 02d0 STS.128 [R43.X16], R4 (operand read) (cycle value)
+  wait  bar2_release closing timer 43f0 CS2R R42, SR_GLOBALTIMERLO          on SB0: 43c0 STS.128 [R43.X16], R36 (operand read) (window only)
+  wait  ticket       closing timer 4520 CS2R R54, SR_GLOBALTIMERLO          on SB0: 44e0 STS [0x1000], R36 (operand read) (window only)
+_ZN2sb2gt8k_ktraceILj4096EEEvNS0_8TraceDevEjPK6float4PS3_PjPVmj: 12 checkpoints, layout 2, FFMA_N=4096
+  entry -> cal                    0 instr  {}
+  cal -> loaded                   6 instr  {'LDG.E.CONSTANT': 1, 'LOP3.LUT': 1, 'LEA': 1, 'LEA.HI.X': 1, 'LDG.E.128.CONSTANT': 1, 'STS.128': 1}
+  loaded -> bar1_arrive           2 instr  {'LDS.128': 1, 'STS.128': 1}
+  bar1_arrive -> bar1_release     3 instr  {'BAR.SYNC.DEFER_BLOCKING': 1, 'LDS.128': 1, 'STS.128': 1}
+  bar1_release -> computed     4097 instr  {'FFMA': 4096, 'FADD': 1}
+  computed -> bar2_arrive         2 instr  {'LDS.128': 1, 'STS.128': 1}
+  bar2_arrive -> bar2_release     3 instr  {'BAR.SYNC.DEFER_BLOCKING': 1, 'LDS.128': 1, 'STS.128': 1}
+  bar2_release -> stored          5 instr  {'MOV': 1, 'STG.E.128': 1, 'MEMBAR.SC.GPU': 1, 'ERRBAR': 1, 'CCTL.IVALL': 1}
+  stored -> ticket                8 instr  {'MOV': 2, 'BSSY': 1, 'BRA': 1, 'HFMA2.MMA': 1, 'ATOMG.E.ADD.STRONG.GPU': 1, 'STS': 1, 'BSYNC': 1}
+  ticket -> flag                  3 instr  {'BAR.SYNC.DEFER_BLOCKING': 1, 'LDS.128': 1, 'ISETP.NE.AND': 1}
+  flag -> exit                    1 instr  {'STG.E.64.STRONG.SYS': 1}
+  exit -> writer fence clock     11 instr  {'MOV': 2, 'S2R': 1, 'LOP3.LUT': 1, 'EXIT': 1, 'BSSY': 1, 'CS2R': 1, 'BRA': 1, 'MEMBAR.SC.SYS': 1, 'ERRBAR': 1, 'CCTL.IVALL': 1}
+  check ok   checkpoints == 12                            found 12
+  check ok   brackets: timer, clock, timer                all
+  check ok   no STL/LDL in the function                   none
+  check ok   entry -> cal empty                           0 instr
+  check ok   load: 2 LDG + 1 STS + <= 3 address           LDG=2 STS=1 address=3
+  check ok   calibration chain: LDS + STS                 {'LDS.128': 1, 'STS.128': 1}
+  check ok   barrier1 = BAR + calibration chain           found {'BAR.SYNC.DEFER_BLOCKING': 1, 'LDS.128': 1, 'STS.128': 1}
+  check ok   barrier2 = BAR + calibration chain           found {'BAR.SYNC.DEFER_BLOCKING': 1, 'LDS.128': 1, 'STS.128': 1}
+  check ok   compute: exactly FADD x1 + FFMA x4096        found {'FFMA': 4096, 'FADD': 1}
+  check ok   store: STG + device fence (+ 1 move)         STG=1 MEMBAR.GPU=1 moves=1
+  check ok   tail: BAR, LDS, predicate on it              BAR=1 LDS=1 predicate reads the LDS: True ISETP/PLOP3=1 address=0
+  check ok   flag -> exit: one @P STG.SYS (+ ISETP/PLOP3) STG=1 (@!P1 STG.E.64.STRONG.SYS [R38.64], R66) ISETP/PLOP3=0
+  check ok   writer fence: MEMBAR.SYS, clock, timer       11 instr, fence MEMBAR.SC.SYS + {'ERRBAR': 1, 'CCTL.IVALL': 1}
+  check ok   no other clock read                          none
+  wait  bar1_release clock         02f0 CS2R R10, SR_CLOCKLO                on SB0: 0270 STS.128 [R43.X16], R8 (operand read) (cycle value)
+  wait  computed     opening timer 10320 CS2R R6, SR_GLOBALTIMERLO          on SB1: 02d0 STS.128 [R43.X16], R4 (operand read) (cycle value)
+  wait  bar2_release closing timer 103f0 CS2R R42, SR_GLOBALTIMERLO         on SB0: 103c0 STS.128 [R43.X16], R36 (operand read) (window only)
+  wait  ticket       closing timer 10520 CS2R R54, SR_GLOBALTIMERLO         on SB0: 104e0 STS [0x1000], R36 (operand read) (window only)

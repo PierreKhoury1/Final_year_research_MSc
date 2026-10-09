@@ -1,0 +1,2275 @@
+{
+ "prefix": "C:\\Users\\pierr\\AppData\\Local\\Temp\\claude\\C--Users-pierr\\5c9f69cd-4ab2-4054-ba7c-33d14cfa0fa5\\scratchpad\\box_9oct\\out_a100x8\\res\\reorder126\\reorder_load_use",
+ "strategy": "reorder",
+ "gpu": "NVIDIA A100-PCIE-40GB",
+ "sms": 108,
+ "host": "3990b2003192",
+ "clock": {
+  "tick_ns": 1024,
+  "method": "edge",
+  "bound_ns": 564.3339928388596,
+  "rate_ppm": -15.521643552451891,
+  "feasible": true,
+  "windows": {
+   "pre": {
+    "edge_bound_ns": 764.6527102793334,
+    "edge_feasible": true,
+    "n_up": 3000,
+    "n_down": 2928,
+    "rate_ppm": -15.990070093563347
+   },
+   "post": {
+    "edge_bound_ns": 565.4248704658239,
+    "edge_feasible": true,
+    "n_up": 3000,
+    "n_down": 3000,
+    "rate_ppm": -15.4029592731586
+   }
+  },
+  "width_ns": 1128.6679856777191
+ },
+ "n_gpu_recs": 5382,
+ "gpu_recs_dropped": 0,
+ "n_host_events": 338,
+ "result": {
+  "reorder_layout": 1,
+  "cc": "8.0",
+  "tick_ns": 1024.0,
+  "bound_ns": 564.3339928388596,
+  "toolkit": {
+   "cuda_runtime": 12060,
+   "driver": 13020
+  },
+  "gate": {
+   "status": "FAIL",
+   "label": "FAIL",
+   "file": "reorder_load_use.reorder_sass.json",
+   "source": "run",
+   "error": null,
+   "kernels_in_gate": 295,
+   "unparsed_kernels": [],
+   "group_labels": {
+    "FAIL": 9,
+    "PASS": 75
+   }
+  },
+  "n_records": 5376,
+  "experiments": {
+   "load_use": {
+    "groups": [
+     {
+      "variant": "overlap",
+      "v": 0,
+      "tier": "L1",
+      "N": 0,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 250.0,
+       "p50": 251.0,
+       "p90": 251.7
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "variant": "overlap",
+      "v": 0,
+      "tier": "L1",
+      "N": 16,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 296.0,
+       "p50": 297.0,
+       "p90": 297.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "variant": "overlap",
+      "v": 0,
+      "tier": "L1",
+      "N": 32,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 360.0,
+       "p50": 361.0,
+       "p90": 361.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "variant": "overlap",
+      "v": 0,
+      "tier": "L1",
+      "N": 64,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 488.0,
+       "p50": 489.0,
+       "p90": 489.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "variant": "overlap",
+      "v": 0,
+      "tier": "L1",
+      "N": 96,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 616.0,
+       "p50": 616.5,
+       "p90": 618.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "variant": "overlap",
+      "v": 0,
+      "tier": "L1",
+      "N": 128,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 744.0,
+       "p50": 745.0,
+       "p90": 745.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "variant": "overlap",
+      "v": 0,
+      "tier": "L1",
+      "N": 192,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 1000.0,
+       "p50": 1000.0,
+       "p90": 1001.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "variant": "overlap",
+      "v": 0,
+      "tier": "L2",
+      "N": 0,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 414.0,
+       "p50": 555.0,
+       "p90": 585.4
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "variant": "overlap",
+      "v": 0,
+      "tier": "L2",
+      "N": 16,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 419.0,
+       "p50": 493.5,
+       "p90": 586.1
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "variant": "overlap",
+      "v": 0,
+      "tier": "L2",
+      "N": 32,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 414.0,
+       "p50": 560.0,
+       "p90": 583.4
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "variant": "overlap",
+      "v": 0,
+      "tier": "L2",
+      "N": 64,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 488.0,
+       "p50": 490.0,
+       "p90": 582.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "variant": "overlap",
+      "v": 0,
+      "tier": "L2",
+      "N": 96,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 616.0,
+       "p50": 617.0,
+       "p90": 618.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "variant": "overlap",
+      "v": 0,
+      "tier": "L2",
+      "N": 128,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 744.0,
+       "p50": 745.0,
+       "p90": 746.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "variant": "overlap",
+      "v": 0,
+      "tier": "L2",
+      "N": 192,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 1000.0,
+       "p50": 1001.0,
+       "p90": 1002.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "variant": "overlap",
+      "v": 0,
+      "tier": "DRAM",
+      "N": 0,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 680.0,
+       "p50": 813.5,
+       "p90": 851.4
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "variant": "overlap",
+      "v": 0,
+      "tier": "DRAM",
+      "N": 16,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 683.0,
+       "p50": 809.0,
+       "p90": 869.8
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "variant": "overlap",
+      "v": 0,
+      "tier": "DRAM",
+      "N": 32,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 678.9,
+       "p50": 753.0,
+       "p90": 851.8
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "variant": "overlap",
+      "v": 0,
+      "tier": "DRAM",
+      "N": 64,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 682.0,
+       "p50": 835.0,
+       "p90": 884.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "variant": "overlap",
+      "v": 0,
+      "tier": "DRAM",
+      "N": 96,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 677.6,
+       "p50": 811.0,
+       "p90": 853.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "variant": "overlap",
+      "v": 0,
+      "tier": "DRAM",
+      "N": 128,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 743.0,
+       "p50": 744.5,
+       "p90": 852.7
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "variant": "overlap",
+      "v": 0,
+      "tier": "DRAM",
+      "N": 192,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 999.0,
+       "p50": 999.0,
+       "p90": 1000.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "variant": "serial",
+      "v": 1,
+      "tier": "L1",
+      "N": 0,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 250.0,
+       "p50": 251.0,
+       "p90": 252.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "variant": "serial",
+      "v": 1,
+      "tier": "L1",
+      "N": 16,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 314.0,
+       "p50": 315.0,
+       "p90": 316.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "variant": "serial",
+      "v": 1,
+      "tier": "L1",
+      "N": 32,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 378.0,
+       "p50": 379.0,
+       "p90": 379.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "variant": "serial",
+      "v": 1,
+      "tier": "L1",
+      "N": 64,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 506.0,
+       "p50": 507.0,
+       "p90": 508.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "variant": "serial",
+      "v": 1,
+      "tier": "L1",
+      "N": 96,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 634.0,
+       "p50": 635.0,
+       "p90": 635.7
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "variant": "serial",
+      "v": 1,
+      "tier": "L1",
+      "N": 128,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 762.0,
+       "p50": 762.5,
+       "p90": 763.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "variant": "serial",
+      "v": 1,
+      "tier": "L1",
+      "N": 192,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 1018.0,
+       "p50": 1019.0,
+       "p90": 1019.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "variant": "serial",
+      "v": 1,
+      "tier": "L2",
+      "N": 0,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 413.0,
+       "p50": 430.0,
+       "p90": 581.7
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "variant": "serial",
+      "v": 1,
+      "tier": "L2",
+      "N": 16,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 481.3,
+       "p50": 628.5,
+       "p90": 648.7
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "variant": "serial",
+      "v": 1,
+      "tier": "L2",
+      "N": 32,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 544.0,
+       "p50": 557.5,
+       "p90": 712.7
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "variant": "serial",
+      "v": 1,
+      "tier": "L2",
+      "N": 64,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 671.0,
+       "p50": 687.5,
+       "p90": 839.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "variant": "serial",
+      "v": 1,
+      "tier": "L2",
+      "N": 96,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 805.3,
+       "p50": 812.0,
+       "p90": 963.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "variant": "serial",
+      "v": 1,
+      "tier": "L2",
+      "N": 128,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 926.6,
+       "p50": 943.5,
+       "p90": 1097.4
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "variant": "serial",
+      "v": 1,
+      "tier": "L2",
+      "N": 192,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 1183.3,
+       "p50": 1195.0,
+       "p90": 1347.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 2.0
+     },
+     {
+      "variant": "serial",
+      "v": 1,
+      "tier": "DRAM",
+      "N": 0,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 685.0,
+       "p50": 828.0,
+       "p90": 847.7
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "variant": "serial",
+      "v": 1,
+      "tier": "DRAM",
+      "N": 16,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 752.0,
+       "p50": 886.0,
+       "p90": 934.8
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "variant": "serial",
+      "v": 1,
+      "tier": "DRAM",
+      "N": 32,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 816.6,
+       "p50": 959.0,
+       "p90": 985.7
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "variant": "serial",
+      "v": 1,
+      "tier": "DRAM",
+      "N": 64,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 937.6,
+       "p50": 1068.0,
+       "p90": 1126.7
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "variant": "serial",
+      "v": 1,
+      "tier": "DRAM",
+      "N": 96,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 1061.3,
+       "p50": 1198.0,
+       "p90": 1269.2
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "variant": "serial",
+      "v": 1,
+      "tier": "DRAM",
+      "N": 128,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 1191.0,
+       "p50": 1223.0,
+       "p90": 1366.1
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "variant": "serial",
+      "v": 1,
+      "tier": "DRAM",
+      "N": 192,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 1451.3,
+       "p50": 1594.0,
+       "p90": 1636.2
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "variant": "chain_only",
+      "v": 2,
+      "tier": "L1",
+      "N": 0,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 201.0,
+       "p50": 201.5,
+       "p90": 202.7
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "variant": "chain_only",
+      "v": 2,
+      "tier": "L1",
+      "N": 16,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 266.0,
+       "p50": 266.0,
+       "p90": 267.7
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "variant": "chain_only",
+      "v": 2,
+      "tier": "L1",
+      "N": 32,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 330.0,
+       "p50": 331.0,
+       "p90": 331.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.5
+     },
+     {
+      "variant": "chain_only",
+      "v": 2,
+      "tier": "L1",
+      "N": 64,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 458.0,
+       "p50": 458.0,
+       "p90": 459.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "variant": "chain_only",
+      "v": 2,
+      "tier": "L1",
+      "N": 96,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 586.0,
+       "p50": 587.0,
+       "p90": 587.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "variant": "chain_only",
+      "v": 2,
+      "tier": "L1",
+      "N": 128,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 714.0,
+       "p50": 714.0,
+       "p90": 715.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "variant": "chain_only",
+      "v": 2,
+      "tier": "L1",
+      "N": 192,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 970.0,
+       "p50": 971.0,
+       "p90": 971.7
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "variant": "chain_only",
+      "v": 2,
+      "tier": "L2",
+      "N": 0,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 201.0,
+       "p50": 202.0,
+       "p90": 202.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "variant": "chain_only",
+      "v": 2,
+      "tier": "L2",
+      "N": 16,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 266.0,
+       "p50": 266.5,
+       "p90": 267.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "variant": "chain_only",
+      "v": 2,
+      "tier": "L2",
+      "N": 32,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 330.0,
+       "p50": 330.0,
+       "p90": 331.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "variant": "chain_only",
+      "v": 2,
+      "tier": "L2",
+      "N": 64,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 458.0,
+       "p50": 459.0,
+       "p90": 459.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "variant": "chain_only",
+      "v": 2,
+      "tier": "L2",
+      "N": 96,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 586.0,
+       "p50": 586.0,
+       "p90": 587.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "variant": "chain_only",
+      "v": 2,
+      "tier": "L2",
+      "N": 128,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 714.0,
+       "p50": 714.0,
+       "p90": 715.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "variant": "chain_only",
+      "v": 2,
+      "tier": "L2",
+      "N": 192,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 970.0,
+       "p50": 971.0,
+       "p90": 972.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "variant": "chain_only",
+      "v": 2,
+      "tier": "DRAM",
+      "N": 0,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 200.0,
+       "p50": 200.0,
+       "p90": 201.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "variant": "chain_only",
+      "v": 2,
+      "tier": "DRAM",
+      "N": 16,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 265.0,
+       "p50": 265.0,
+       "p90": 266.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "variant": "chain_only",
+      "v": 2,
+      "tier": "DRAM",
+      "N": 32,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 329.0,
+       "p50": 329.0,
+       "p90": 330.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "variant": "chain_only",
+      "v": 2,
+      "tier": "DRAM",
+      "N": 64,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 457.0,
+       "p50": 458.0,
+       "p90": 458.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "variant": "chain_only",
+      "v": 2,
+      "tier": "DRAM",
+      "N": 96,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 585.0,
+       "p50": 585.0,
+       "p90": 586.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "variant": "chain_only",
+      "v": 2,
+      "tier": "DRAM",
+      "N": 128,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 713.0,
+       "p50": 713.0,
+       "p90": 714.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.5
+     },
+     {
+      "variant": "chain_only",
+      "v": 2,
+      "tier": "DRAM",
+      "N": 192,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 969.0,
+       "p50": 969.0,
+       "p90": 970.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "variant": "overlap2",
+      "v": 3,
+      "tier": "L1",
+      "N": 0,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 273.0,
+       "p50": 274.0,
+       "p90": 275.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "variant": "overlap2",
+      "v": 3,
+      "tier": "L1",
+      "N": 16,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 319.0,
+       "p50": 320.0,
+       "p90": 321.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "variant": "overlap2",
+      "v": 3,
+      "tier": "L1",
+      "N": 32,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 384.0,
+       "p50": 385.0,
+       "p90": 385.7
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "variant": "overlap2",
+      "v": 3,
+      "tier": "L1",
+      "N": 64,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 512.0,
+       "p50": 513.0,
+       "p90": 513.7
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "variant": "overlap2",
+      "v": 3,
+      "tier": "L1",
+      "N": 96,
+      "gate": "FAIL",
+      "used": false,
+      "gate_failed": [
+       "overlap: the loaded data is first used after the last FFMA: used before the chain ends: ['0840 R2UR UR10, R18']"
+      ],
+      "cycles": {
+       "n": 64,
+       "p10": 673.0,
+       "p50": 673.0,
+       "p90": 674.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "variant": "overlap2",
+      "v": 3,
+      "tier": "L1",
+      "N": 128,
+      "gate": "FAIL",
+      "used": false,
+      "gate_failed": [
+       "overlap: the loaded data is first used after the last FFMA: used before the chain ends: ['0840 R2UR UR10, R18']"
+      ],
+      "cycles": {
+       "n": 64,
+       "p10": 801.0,
+       "p50": 802.0,
+       "p90": 802.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "variant": "overlap2",
+      "v": 3,
+      "tier": "L1",
+      "N": 192,
+      "gate": "FAIL",
+      "used": false,
+      "gate_failed": [
+       "overlap: the loaded data is first used after the last FFMA: used before the chain ends: ['0840 R2UR UR10, R18']"
+      ],
+      "cycles": {
+       "n": 64,
+       "p10": 1057.0,
+       "p50": 1058.0,
+       "p90": 1058.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "variant": "overlap2",
+      "v": 3,
+      "tier": "L2",
+      "N": 0,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 442.0,
+       "p50": 594.0,
+       "p90": 605.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "variant": "overlap2",
+      "v": 3,
+      "tier": "L2",
+      "N": 16,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 449.3,
+       "p50": 598.0,
+       "p90": 614.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "variant": "overlap2",
+      "v": 3,
+      "tier": "L2",
+      "N": 32,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 444.0,
+       "p50": 591.0,
+       "p90": 606.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "variant": "overlap2",
+      "v": 3,
+      "tier": "L2",
+      "N": 64,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 513.0,
+       "p50": 593.0,
+       "p90": 605.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "variant": "overlap2",
+      "v": 3,
+      "tier": "L2",
+      "N": 96,
+      "gate": "FAIL",
+      "used": false,
+      "gate_failed": [
+       "overlap: the loaded data is first used after the last FFMA: used before the chain ends: ['0840 R2UR UR10, R18']"
+      ],
+      "cycles": {
+       "n": 64,
+       "p10": 834.6,
+       "p50": 850.0,
+       "p90": 1010.7
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "variant": "overlap2",
+      "v": 3,
+      "tier": "L2",
+      "N": 128,
+      "gate": "FAIL",
+      "used": false,
+      "gate_failed": [
+       "overlap: the loaded data is first used after the last FFMA: used before the chain ends: ['0840 R2UR UR10, R18']"
+      ],
+      "cycles": {
+       "n": 64,
+       "p10": 968.3,
+       "p50": 1110.5,
+       "p90": 1136.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "variant": "overlap2",
+      "v": 3,
+      "tier": "L2",
+      "N": 192,
+      "gate": "FAIL",
+      "used": false,
+      "gate_failed": [
+       "overlap: the loaded data is first used after the last FFMA: used before the chain ends: ['0840 R2UR UR10, R18']"
+      ],
+      "cycles": {
+       "n": 64,
+       "p10": 1223.3,
+       "p50": 1240.0,
+       "p90": 1390.4
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 2.0
+     },
+     {
+      "variant": "overlap2",
+      "v": 3,
+      "tier": "DRAM",
+      "N": 0,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 717.3,
+       "p50": 862.5,
+       "p90": 897.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "variant": "overlap2",
+      "v": 3,
+      "tier": "DRAM",
+      "N": 16,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 713.6,
+       "p50": 857.5,
+       "p90": 890.4
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "variant": "overlap2",
+      "v": 3,
+      "tier": "DRAM",
+      "N": 32,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 716.0,
+       "p50": 864.0,
+       "p90": 895.1
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "variant": "overlap2",
+      "v": 3,
+      "tier": "DRAM",
+      "N": 64,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 717.3,
+       "p50": 862.5,
+       "p90": 888.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "variant": "overlap2",
+      "v": 3,
+      "tier": "DRAM",
+      "N": 96,
+      "gate": "FAIL",
+      "used": false,
+      "gate_failed": [
+       "overlap: the loaded data is first used after the last FFMA: used before the chain ends: ['0840 R2UR UR10, R18']"
+      ],
+      "cycles": {
+       "n": 64,
+       "p10": 1092.3,
+       "p50": 1238.0,
+       "p90": 1306.7
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "variant": "overlap2",
+      "v": 3,
+      "tier": "DRAM",
+      "N": 128,
+      "gate": "FAIL",
+      "used": false,
+      "gate_failed": [
+       "overlap: the loaded data is first used after the last FFMA: used before the chain ends: ['0840 R2UR UR10, R18']"
+      ],
+      "cycles": {
+       "n": 64,
+       "p10": 1227.6,
+       "p50": 1266.5,
+       "p90": 1405.4
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "variant": "overlap2",
+      "v": 3,
+      "tier": "DRAM",
+      "N": 192,
+      "gate": "FAIL",
+      "used": false,
+      "gate_failed": [
+       "overlap: the loaded data is first used after the last FFMA: used before the chain ends: ['0840 R2UR UR10, R18']"
+      ],
+      "cycles": {
+       "n": 64,
+       "p10": 1484.3,
+       "p50": 1522.0,
+       "p90": 1672.4
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     }
+    ],
+    "tiers": {
+     "L1": {
+      "tier": 0,
+      "L_cycles": 49.5,
+      "L_from": "overlap(0) - chain_only(0)",
+      "c_cycles": 201.5,
+      "L_serial0_cycles": 49.5,
+      "L_n": {
+       "overlap0": 64,
+       "serial0": 64,
+       "chain_only0": 64
+      },
+      "chain_fit": {
+       "intercept": 202.00326370757176,
+       "cycles_per_ffma": 4.004691579634465,
+       "max_residual": 0.846605744125327,
+       "points": 7
+      },
+      "chain_start": {
+       "cycles": 30.339740593528518,
+       "source": "knee fit intercept - chain_only intercept",
+       "gate": 27.0,
+       "gate_instantiations": 6,
+       "data": 30.339740593528518,
+       "data_minus_gate": 3.339740593528518,
+       "overlap2_gate": 35.0
+      },
+      "hideable_latency_cycles": 19.160259406471482,
+      "curves": [
+       {
+        "N": 0,
+        "overlap": 251.0,
+        "serial": 251.0,
+        "chain_only": 201.5,
+        "overlap2": 274.0,
+        "n": {
+         "overlap": 64,
+         "serial": 64,
+         "chain_only": 64,
+         "overlap2": 64
+        },
+        "saving": 0.0,
+        "overlap2_minus_overlap": 23.0,
+        "exposed_load": 49.5,
+        "overlap_minus_chain_only": 49.5,
+        "model_overlap": 251.0,
+        "model_serial": 251.0,
+        "model_saving": 0.0,
+        "overlap_minus_model": 0.0,
+        "serial_minus_model": 0.0
+       },
+       {
+        "N": 16,
+        "overlap": 297.0,
+        "serial": 315.0,
+        "chain_only": 266.0,
+        "overlap2": 320.0,
+        "n": {
+         "overlap": 64,
+         "serial": 64,
+         "chain_only": 64,
+         "overlap2": 64
+        },
+        "saving": 18.0,
+        "overlap2_minus_overlap": 23.0,
+        "exposed_load": 31.0,
+        "overlap_minus_chain_only": 31.0,
+        "model_overlap": 295.8397405935285,
+        "model_serial": 315.0,
+        "model_saving": 19.160259406471482,
+        "overlap_minus_model": 1.1602594064714822,
+        "serial_minus_model": 0.0
+       },
+       {
+        "N": 32,
+        "overlap": 361.0,
+        "serial": 379.0,
+        "chain_only": 331.0,
+        "overlap2": 385.0,
+        "n": {
+         "overlap": 64,
+         "serial": 64,
+         "chain_only": 64,
+         "overlap2": 64
+        },
+        "saving": 18.0,
+        "overlap2_minus_overlap": 24.0,
+        "exposed_load": 30.0,
+        "overlap_minus_chain_only": 30.0,
+        "model_overlap": 359.8397405935285,
+        "model_serial": 379.0,
+        "model_saving": 19.160259406471482,
+        "overlap_minus_model": 1.1602594064714822,
+        "serial_minus_model": 0.0
+       },
+       {
+        "N": 64,
+        "overlap": 489.0,
+        "serial": 507.0,
+        "chain_only": 458.0,
+        "overlap2": 513.0,
+        "n": {
+         "overlap": 64,
+         "serial": 64,
+         "chain_only": 64,
+         "overlap2": 64
+        },
+        "saving": 18.0,
+        "overlap2_minus_overlap": 24.0,
+        "exposed_load": 31.0,
+        "overlap_minus_chain_only": 31.0,
+        "model_overlap": 487.8397405935285,
+        "model_serial": 507.0,
+        "model_saving": 19.160259406471482,
+        "overlap_minus_model": 1.1602594064714822,
+        "serial_minus_model": 0.0
+       },
+       {
+        "N": 96,
+        "overlap": 616.5,
+        "serial": 635.0,
+        "chain_only": 587.0,
+        "overlap2": null,
+        "n": {
+         "overlap": 64,
+         "serial": 64,
+         "chain_only": 64,
+         "overlap2": 64
+        },
+        "saving": 18.5,
+        "overlap2_minus_overlap": null,
+        "exposed_load": 29.5,
+        "overlap_minus_chain_only": 29.5,
+        "model_overlap": 615.8397405935285,
+        "model_serial": 635.0,
+        "model_saving": 19.160259406471482,
+        "overlap_minus_model": 0.6602594064714822,
+        "serial_minus_model": 0.0
+       },
+       {
+        "N": 128,
+        "overlap": 745.0,
+        "serial": 762.5,
+        "chain_only": 714.0,
+        "overlap2": null,
+        "n": {
+         "overlap": 64,
+         "serial": 64,
+         "chain_only": 64,
+         "overlap2": 64
+        },
+        "saving": 17.5,
+        "overlap2_minus_overlap": null,
+        "exposed_load": 31.0,
+        "overlap_minus_chain_only": 31.0,
+        "model_overlap": 743.8397405935285,
+        "model_serial": 763.0,
+        "model_saving": 19.160259406471482,
+        "overlap_minus_model": 1.1602594064714822,
+        "serial_minus_model": -0.5
+       },
+       {
+        "N": 192,
+        "overlap": 1000.0,
+        "serial": 1019.0,
+        "chain_only": 971.0,
+        "overlap2": null,
+        "n": {
+         "overlap": 64,
+         "serial": 64,
+         "chain_only": 64,
+         "overlap2": 64
+        },
+        "saving": 19.0,
+        "overlap2_minus_overlap": null,
+        "exposed_load": 29.0,
+        "overlap_minus_chain_only": 29.0,
+        "model_overlap": 999.8397405935285,
+        "model_serial": 1019.0,
+        "model_saving": 19.160259406471482,
+        "overlap_minus_model": 0.16025940647148218,
+        "serial_minus_model": 0.0
+       }
+      ],
+      "crossover": {
+       "N_star": 4.65,
+       "beyond_measured_range": false,
+       "at_lower_end": false,
+       "slope_used": 4.004691579634465,
+       "slope_from": "chain_only fit",
+       "points": 7,
+       "samples": 448,
+       "knee_latency_cycles": 18.621815845300265,
+       "L_minus_knee_latency": 30.878184154699735
+      },
+      "crossover_model": {
+       "N_star": 4.7900648516178705,
+       "L_minus_d_over_4": 4.7900648516178705,
+       "L_over_4": 12.375,
+       "L_minus_d_over_chain_slope": 4.784453190829834
+      },
+      "saving_max": {
+       "cycles": 19.0,
+       "N": 192
+      },
+      "second_load_extra_at_N0": 23.0,
+      "model_max_abs_residual": {
+       "overlap": 1.1602594064714822,
+       "serial": 0.5
+      }
+     },
+     "L2": {
+      "tier": 1,
+      "L_cycles": 353.0,
+      "L_from": "overlap(0) - chain_only(0)",
+      "c_cycles": 202.0,
+      "L_serial0_cycles": 228.0,
+      "L_n": {
+       "overlap0": 64,
+       "serial0": 64,
+       "chain_only0": 64
+      },
+      "chain_fit": {
+       "intercept": 202.154046997389,
+       "cycles_per_ffma": 4.002692558746737,
+       "max_residual": 0.6736292428198567,
+       "points": 7
+      },
+      "chain_start": {
+       "cycles": 30.47369684819094,
+       "source": "knee fit intercept - chain_only intercept",
+       "gate": 27.0,
+       "gate_instantiations": 6,
+       "data": 30.47369684819094,
+       "data_minus_gate": 3.47369684819094,
+       "overlap2_gate": 35.0
+      },
+      "hideable_latency_cycles": 322.5263031518091,
+      "curves": [
+       {
+        "N": 0,
+        "overlap": 555.0,
+        "serial": 430.0,
+        "chain_only": 202.0,
+        "overlap2": 594.0,
+        "n": {
+         "overlap": 64,
+         "serial": 64,
+         "chain_only": 64,
+         "overlap2": 64
+        },
+        "saving": -125.0,
+        "overlap2_minus_overlap": 39.0,
+        "exposed_load": 353.0,
+        "overlap_minus_chain_only": 353.0,
+        "model_overlap": 555.0,
+        "model_serial": 555.0,
+        "model_saving": 0.0,
+        "overlap_minus_model": 0.0,
+        "serial_minus_model": -125.0
+       },
+       {
+        "N": 16,
+        "overlap": 493.5,
+        "serial": 628.5,
+        "chain_only": 266.5,
+        "overlap2": 598.0,
+        "n": {
+         "overlap": 64,
+         "serial": 64,
+         "chain_only": 64,
+         "overlap2": 64
+        },
+        "saving": 135.0,
+        "overlap2_minus_overlap": 104.5,
+        "exposed_load": 227.0,
+        "overlap_minus_chain_only": 227.0,
+        "model_overlap": 555.0,
+        "model_serial": 619.0,
+        "model_saving": 64.0,
+        "overlap_minus_model": -61.5,
+        "serial_minus_model": 9.5
+       },
+       {
+        "N": 32,
+        "overlap": 560.0,
+        "serial": 557.5,
+        "chain_only": 330.0,
+        "overlap2": 591.0,
+        "n": {
+         "overlap": 64,
+         "serial": 64,
+         "chain_only": 64,
+         "overlap2": 64
+        },
+        "saving": -2.5,
+        "overlap2_minus_overlap": 31.0,
+        "exposed_load": 230.0,
+        "overlap_minus_chain_only": 230.0,
+        "model_overlap": 555.0,
+        "model_serial": 683.0,
+        "model_saving": 128.0,
+        "overlap_minus_model": 5.0,
+        "serial_minus_model": -125.5
+       },
+       {
+        "N": 64,
+        "overlap": 490.0,
+        "serial": 687.5,
+        "chain_only": 459.0,
+        "overlap2": 593.0,
+        "n": {
+         "overlap": 64,
+         "serial": 64,
+         "chain_only": 64,
+         "overlap2": 64
+        },
+        "saving": 197.5,
+        "overlap2_minus_overlap": 103.0,
+        "exposed_load": 31.0,
+        "overlap_minus_chain_only": 31.0,
+        "model_overlap": 555.0,
+        "model_serial": 811.0,
+        "model_saving": 256.0,
+        "overlap_minus_model": -65.0,
+        "serial_minus_model": -123.5
+       },
+       {
+        "N": 96,
+        "overlap": 617.0,
+        "serial": 812.0,
+        "chain_only": 586.0,
+        "overlap2": null,
+        "n": {
+         "overlap": 64,
+         "serial": 64,
+         "chain_only": 64,
+         "overlap2": 64
+        },
+        "saving": 195.0,
+        "overlap2_minus_overlap": null,
+        "exposed_load": 31.0,
+        "overlap_minus_chain_only": 31.0,
+        "model_overlap": 616.4736968481909,
+        "model_serial": 939.0,
+        "model_saving": 322.5263031518091,
+        "overlap_minus_model": 0.5263031518090884,
+        "serial_minus_model": -127.0
+       },
+       {
+        "N": 128,
+        "overlap": 745.0,
+        "serial": 943.5,
+        "chain_only": 714.0,
+        "overlap2": null,
+        "n": {
+         "overlap": 64,
+         "serial": 64,
+         "chain_only": 64,
+         "overlap2": 64
+        },
+        "saving": 198.5,
+        "overlap2_minus_overlap": null,
+        "exposed_load": 31.0,
+        "overlap_minus_chain_only": 31.0,
+        "model_overlap": 744.4736968481909,
+        "model_serial": 1067.0,
+        "model_saving": 322.5263031518091,
+        "overlap_minus_model": 0.5263031518090884,
+        "serial_minus_model": -123.5
+       },
+       {
+        "N": 192,
+        "overlap": 1001.0,
+        "serial": 1195.0,
+        "chain_only": 971.0,
+        "overlap2": null,
+        "n": {
+         "overlap": 64,
+         "serial": 64,
+         "chain_only": 64,
+         "overlap2": 64
+        },
+        "saving": 194.0,
+        "overlap2_minus_overlap": null,
+        "exposed_load": 30.0,
+        "overlap_minus_chain_only": 30.0,
+        "model_overlap": 1000.4736968481909,
+        "model_serial": 1323.0,
+        "model_saving": 322.5263031518091,
+        "overlap_minus_model": 0.5263031518090884,
+        "serial_minus_model": -128.0
+       }
+      ],
+      "crossover": {
+       "N_star": 72.95,
+       "beyond_measured_range": false,
+       "at_lower_end": false,
+       "slope_used": 4.002692558746737,
+       "slope_from": "chain_only fit",
+       "points": 7,
+       "samples": 448,
+       "knee_latency_cycles": 291.99642216057447,
+       "L_minus_knee_latency": 61.00357783942553
+      },
+      "crossover_model": {
+       "N_star": 80.63157578795227,
+       "L_minus_d_over_4": 80.63157578795227,
+       "L_over_4": 88.25,
+       "L_minus_d_over_chain_slope": 80.57733598525331
+      },
+      "saving_max": {
+       "cycles": 198.5,
+       "N": 128
+      },
+      "second_load_extra_at_N0": 39.0,
+      "model_max_abs_residual": {
+       "overlap": 65.0,
+       "serial": 128.0
+      }
+     },
+     "DRAM": {
+      "tier": 2,
+      "L_cycles": 613.5,
+      "L_from": "overlap(0) - chain_only(0)",
+      "c_cycles": 200.0,
+      "L_serial0_cycles": 628.0,
+      "L_n": {
+       "overlap0": 64,
+       "serial0": 64,
+       "chain_only0": 64
+      },
+      "chain_fit": {
+       "intercept": 200.82767624020886,
+       "cycles_per_ffma": 4.002284595300261,
+       "max_residual": 1.0261096605744342,
+       "points": 7
+      },
+      "chain_start": {
+       "cycles": 29.776701790376762,
+       "source": "knee fit intercept - chain_only intercept",
+       "gate": 27.0,
+       "gate_instantiations": 6,
+       "data": 29.776701790376762,
+       "data_minus_gate": 2.7767017903767623,
+       "overlap2_gate": 35.0
+      },
+      "hideable_latency_cycles": 583.7232982096232,
+      "curves": [
+       {
+        "N": 0,
+        "overlap": 813.5,
+        "serial": 828.0,
+        "chain_only": 200.0,
+        "overlap2": 862.5,
+        "n": {
+         "overlap": 64,
+         "serial": 64,
+         "chain_only": 64,
+         "overlap2": 64
+        },
+        "saving": 14.5,
+        "overlap2_minus_overlap": 49.0,
+        "exposed_load": 613.5,
+        "overlap_minus_chain_only": 613.5,
+        "model_overlap": 813.5,
+        "model_serial": 813.5,
+        "model_saving": 0.0,
+        "overlap_minus_model": 0.0,
+        "serial_minus_model": 14.5
+       },
+       {
+        "N": 16,
+        "overlap": 809.0,
+        "serial": 886.0,
+        "chain_only": 265.0,
+        "overlap2": 857.5,
+        "n": {
+         "overlap": 64,
+         "serial": 64,
+         "chain_only": 64,
+         "overlap2": 64
+        },
+        "saving": 77.0,
+        "overlap2_minus_overlap": 48.5,
+        "exposed_load": 544.0,
+        "overlap_minus_chain_only": 544.0,
+        "model_overlap": 813.5,
+        "model_serial": 877.5,
+        "model_saving": 64.0,
+        "overlap_minus_model": -4.5,
+        "serial_minus_model": 8.5
+       },
+       {
+        "N": 32,
+        "overlap": 753.0,
+        "serial": 959.0,
+        "chain_only": 329.0,
+        "overlap2": 864.0,
+        "n": {
+         "overlap": 64,
+         "serial": 64,
+         "chain_only": 64,
+         "overlap2": 64
+        },
+        "saving": 206.0,
+        "overlap2_minus_overlap": 111.0,
+        "exposed_load": 424.0,
+        "overlap_minus_chain_only": 424.0,
+        "model_overlap": 813.5,
+        "model_serial": 941.5,
+        "model_saving": 128.0,
+        "overlap_minus_model": -60.5,
+        "serial_minus_model": 17.5
+       },
+       {
+        "N": 64,
+        "overlap": 835.0,
+        "serial": 1068.0,
+        "chain_only": 458.0,
+        "overlap2": 862.5,
+        "n": {
+         "overlap": 64,
+         "serial": 64,
+         "chain_only": 64,
+         "overlap2": 64
+        },
+        "saving": 233.0,
+        "overlap2_minus_overlap": 27.5,
+        "exposed_load": 377.0,
+        "overlap_minus_chain_only": 377.0,
+        "model_overlap": 813.5,
+        "model_serial": 1069.5,
+        "model_saving": 256.0,
+        "overlap_minus_model": 21.5,
+        "serial_minus_model": -1.5
+       },
+       {
+        "N": 96,
+        "overlap": 811.0,
+        "serial": 1198.0,
+        "chain_only": 585.0,
+        "overlap2": null,
+        "n": {
+         "overlap": 64,
+         "serial": 64,
+         "chain_only": 64,
+         "overlap2": 64
+        },
+        "saving": 387.0,
+        "overlap2_minus_overlap": null,
+        "exposed_load": 226.0,
+        "overlap_minus_chain_only": 226.0,
+        "model_overlap": 813.5,
+        "model_serial": 1197.5,
+        "model_saving": 384.0,
+        "overlap_minus_model": -2.5,
+        "serial_minus_model": 0.5
+       },
+       {
+        "N": 128,
+        "overlap": 744.5,
+        "serial": 1223.0,
+        "chain_only": 713.0,
+        "overlap2": null,
+        "n": {
+         "overlap": 64,
+         "serial": 64,
+         "chain_only": 64,
+         "overlap2": 64
+        },
+        "saving": 478.5,
+        "overlap2_minus_overlap": null,
+        "exposed_load": 31.5,
+        "overlap_minus_chain_only": 31.5,
+        "model_overlap": 813.5,
+        "model_serial": 1325.5,
+        "model_saving": 512.0,
+        "overlap_minus_model": -69.0,
+        "serial_minus_model": -102.5
+       },
+       {
+        "N": 192,
+        "overlap": 999.0,
+        "serial": 1594.0,
+        "chain_only": 969.0,
+        "overlap2": null,
+        "n": {
+         "overlap": 64,
+         "serial": 64,
+         "chain_only": 64,
+         "overlap2": 64
+        },
+        "saving": 595.0,
+        "overlap2_minus_overlap": null,
+        "exposed_load": 30.0,
+        "overlap_minus_chain_only": 30.0,
+        "model_overlap": 997.7767017903768,
+        "model_serial": 1581.5,
+        "model_saving": 583.7232982096232,
+        "overlap_minus_model": 1.2232982096231808,
+        "serial_minus_model": 12.5
+       }
+      ],
+      "crossover": {
+       "N_star": 140.85,
+       "beyond_measured_range": false,
+       "at_lower_end": false,
+       "slope_used": 4.002284595300261,
+       "slope_from": "chain_only fit",
+       "points": 7,
+       "samples": 448,
+       "knee_latency_cycles": 563.7217852480418,
+       "L_minus_knee_latency": 49.77821475195822
+      },
+      "crossover_model": {
+       "N_star": 145.9308245524058,
+       "L_minus_d_over_4": 145.9308245524058,
+       "L_over_4": 153.375,
+       "L_minus_d_over_chain_slope": 145.84752391048565
+      },
+      "saving_max": {
+       "cycles": 595.0,
+       "N": 192
+      },
+      "second_load_extra_at_N0": 49.0,
+      "model_max_abs_residual": {
+       "overlap": 69.0,
+       "serial": 102.5
+      }
+     }
+    }
+   }
+  },
+  "dropped": [
+   {
+    "variant": "overlap2",
+    "v": 3,
+    "tier": "L1",
+    "N": 96,
+    "experiment": "load_use",
+    "gate": "FAIL",
+    "failed": [
+     "overlap: the loaded data is first used after the last FFMA: used before the chain ends: ['0840 R2UR UR10, R18']"
+    ],
+    "samples": 64
+   },
+   {
+    "variant": "overlap2",
+    "v": 3,
+    "tier": "L1",
+    "N": 128,
+    "experiment": "load_use",
+    "gate": "FAIL",
+    "failed": [
+     "overlap: the loaded data is first used after the last FFMA: used before the chain ends: ['0840 R2UR UR10, R18']"
+    ],
+    "samples": 64
+   },
+   {
+    "variant": "overlap2",
+    "v": 3,
+    "tier": "L1",
+    "N": 192,
+    "experiment": "load_use",
+    "gate": "FAIL",
+    "failed": [
+     "overlap: the loaded data is first used after the last FFMA: used before the chain ends: ['0840 R2UR UR10, R18']"
+    ],
+    "samples": 64
+   },
+   {
+    "variant": "overlap2",
+    "v": 3,
+    "tier": "L2",
+    "N": 96,
+    "experiment": "load_use",
+    "gate": "FAIL",
+    "failed": [
+     "overlap: the loaded data is first used after the last FFMA: used before the chain ends: ['0840 R2UR UR10, R18']"
+    ],
+    "samples": 64
+   },
+   {
+    "variant": "overlap2",
+    "v": 3,
+    "tier": "L2",
+    "N": 128,
+    "experiment": "load_use",
+    "gate": "FAIL",
+    "failed": [
+     "overlap: the loaded data is first used after the last FFMA: used before the chain ends: ['0840 R2UR UR10, R18']"
+    ],
+    "samples": 64
+   },
+   {
+    "variant": "overlap2",
+    "v": 3,
+    "tier": "L2",
+    "N": 192,
+    "experiment": "load_use",
+    "gate": "FAIL",
+    "failed": [
+     "overlap: the loaded data is first used after the last FFMA: used before the chain ends: ['0840 R2UR UR10, R18']"
+    ],
+    "samples": 64
+   },
+   {
+    "variant": "overlap2",
+    "v": 3,
+    "tier": "DRAM",
+    "N": 96,
+    "experiment": "load_use",
+    "gate": "FAIL",
+    "failed": [
+     "overlap: the loaded data is first used after the last FFMA: used before the chain ends: ['0840 R2UR UR10, R18']"
+    ],
+    "samples": 64
+   },
+   {
+    "variant": "overlap2",
+    "v": 3,
+    "tier": "DRAM",
+    "N": 128,
+    "experiment": "load_use",
+    "gate": "FAIL",
+    "failed": [
+     "overlap: the loaded data is first used after the last FFMA: used before the chain ends: ['0840 R2UR UR10, R18']"
+    ],
+    "samples": 64
+   },
+   {
+    "variant": "overlap2",
+    "v": 3,
+    "tier": "DRAM",
+    "N": 192,
+    "experiment": "load_use",
+    "gate": "FAIL",
+    "failed": [
+     "overlap: the loaded data is first used after the last FFMA: used before the chain ends: ['0840 R2UR UR10, R18']"
+    ],
+    "samples": 64
+   }
+  ],
+  "inconsistencies": [
+   "load_use L2: L from overlap(0) 353 cy vs serial(0) 228 cy (n {'overlap0': 64, 'serial0': 64, 'chain_only0': 64})",
+   "load_use L2: serial faster than overlap at N = 0 (-125 cy)"
+  ],
+  "notes": [
+   "orders: each intended order is forced in the kernel by data dependencies or asm volatile clock reads; it holds for this run only where the reorder SASS gate of the binary that measured says PASS (label 'gate' per instantiation). FAIL (E1-E5) and EXCLUDED (E6) instantiations are dropped from every derived figure and listed in 'dropped'; 'gate not run' = no usable PREFIX.reorder_sass.json / reorder_sass.json next to the run; 'not in gate' = the gate lists no such kernel. The gate also fails compared variants whose brackets wait on different scoreboards left outstanding before c0 (pre-bracket waits)",
+   "cycles = the bracket c0 .. c1 in SM cycles (body + consume: the closing clock read waits for the consumed results); p10 / p50 / p90 with the sample count n per (variant, params); derived differences are p50 - p50. ns only where a group's brackets span >= 8 %globaltimer ticks, through that group's own SM clock (sum of cycles / sum of timer spans); shorter brackets are cycles only",
+   "load_use: L = overlap(0) - chain_only(0) (the load's latency exposed at N = 0, with its dependent address arithmetic, its issue and the consume of its value; serial(0) - chain_only(0) is the cross-check), c = chain_only(0). The overlap chain cannot start before the load is issued: d = the cycles from the seed's data to its first FFMA (the load's address arithmetic, its issue, the clock read that orders the chain after it; 26-27 issue cycles with NVRTC 12.9), which serial's and chain_only's chains do not pay. Model overlap = max(L, 4N + d) + c, serial = L + 4N + c, saving = serial - overlap = min(4N, L - d): L - d is the part of the load's latency a chain can hide. Crossover N* = the knee of overlap(N), least squares a + b * max(N*, N) with b = chain_only's slope (at the top of the measured N it lies beyond the range); model N* = (L - d) / 4. d comes from the knee fit (its intercept - chain_only's) when the knee is inside the range, else from the gate (chain_start_cycles, the binary's issue cycles); both are reported, and a fit that differs from the issue count by more than max(8, d / 4) is an inconsistency (overlap holds a cost the SASS does not explain). overlap2 - overlap = the second independent load's extra cost (both in flight at once)",
+   "war: reuse - fresh = the cost of overwriting a register a store has not read yet (stores read their operands late, through the MIO queue). It is a WAR measurement only where the gate decoded a wait on the store's read scoreboard in the reuse build (war_wait true) and none in the fresh build; a reuse build without it is 'not provoked'. The overwrite issues D cycles after the store (war_distance_cycles, the gate's issue count; reuse: the clock read and its LOP3 that order the chain lie between, 12-13 cycles), so the figure is the WAR stall beyond D: an operand read done within D costs 0. reuse_clock - fresh_clock is the same with the first overwrite right after the store where ptxas gave the clock read (or the chain seed's LOP3) the stored register (D = 2-5 with NVRTC 12.9; the gate says per build). fresh - nostore = the store's own cost in the bracket",
+   "bar: per rep the late warp (1024 FFMA before the barrier) arrives last. Early warps' c_end - the late warp's c_arrive: pre = release + touch; post = pre when the M register-only FFMA after BAR.SYNC.DEFER_BLOCKING ran during the wait (exposed fraction (post - pre) / 4M near 0), pre + 4M when they waited for the release; post_mem puts a shared load + store before them (expected not to overlap). post's FFMA are ordered after the barrier by a clock read, assumed not to end the deferral (it is not a memory instruction); each warp records when that clock read issued (flags >> 16 = it - c_arrive), and post_clock_during_wait is the fraction of early-warp samples where it issued before the late warp arrived: near 1 the assumption holds; near 0 post cannot tell a clock read that ends the deferral from no deferral at all (post_reading says which). late_sink shift = pre - late_sink of the early warps' c_end - the late warp's c_start (expected 4M). Reps are rebuilt per SM from the arrival stamps (every arrival of a rep precedes its release, a warp's next arrival follows it); incomplete reps are counted and not used. The per-group bracket (groups) is every warp's c_end - c_start, early and late warps pooled; the comparisons use the per-rep stamps",
+   "fence: fence cycles = after(M = 0) - chain_only(M = 0): the same clock read, LOP3 and consume STS, plus one fence after one store (the store's drain included). fence_only lacks that scaffolding: fence_only(0) - chain_only(0) + the scaffolding's issue cycles (the gate's after_store_cycles of chain_only(0)) is the cross-check. after - before = what moving the work ahead of the fence saves, against min(fence, W), W = the issue cycles before keeps between its store and its fence (the gate's store_to_fence_cycles: 4M plus the clock read, its LOP3 and the consume STS; else 4M); before's fence also covers that STS, which in after issues behind the fence and nothing waits for. before - chain_only = the fence's exposed part, against max(0, fence - W)",
+   "pipe: cycles per FFMA = (c1 - c0) / 1024 per warp (the consume adds ~0.02). k = the time-weighted number of recorded warps on the same SM and sub-partition (%warpid % 4) during that warp's bracket, itself included (unrecorded warm-up brackets are not counted). Expectation max(4 / ILP, p * k), p = 32 / FP32 lanes per sub-partition: 2 on cc 7.x and 8.0, 1 on cc 8.6 / 8.7 / 8.9, 9.0 and later; limit = the term that binds at the median k (the chain's latency, which interleaving ILP chains hides, or the shared FP32 pipe, which it cannot)",
+   "stall: slope of cycles = a + b * N over the per-N medians per (OP, MODE). dep_consumed (the chain consumed before c1): slope_cycles_per_link = the issue interval of one dependent link. One warp waits exactly the stall count ptxas encoded before its next instruction, so for the fixed-latency ops the slope reproduces the encoding (encoded_cycles_per_link, the gate's static_cycles_per_link) unless the hardware adds to it (hardware_extra_cycles); the encoding is ptxas's choice, an upper bound on the op's minimum stall, which CuAsmRL finds by lowering stall counts until results go wrong (Tier B's stall-lowering edits test that on the GPU). op_encoded_stall = the stall ptxas put on the op itself (the gate's target_stalls), compared with CuAsmRL's dependency-based A100 table (IADD3, IMAD.IADD, IADD3.X, MOV, IABS, IMAD, FADD, HADD2, IMNMX, SEL, LEA 4; IMAD.WIDE(.U32) 5; the other OPs are not in it): encoded_minus_cuasmrl. A link of IABS (LOP3.LUT + IABS) or IMAD_WIDE (IMAD.WIDE.U32 + the IADD3 of the 64-bit add, its IADD3.X off the chain) holds a helper, so its slope is the link's, not the op's. Variable-latency ops (DADD, DFMA on sm_80 / sm_86) wait on a scoreboard, not on the stall count. dep_unconsumed keeps the slope (each instruction still waits for its predecessor) but the closing clock read does not wait for the last result (intercept about one latency lower); indep's slope is the issue interval of one update (IABS's and IMAD_WIDE's updates issue their helpers too), what a clock-based method without dependencies reports (CuAsmRL measured 2.6 cycles per IADD3 that way); naive_cycles_per_instr = p50 / N at the largest N. An (OP, MODE) with an instantiation the gate EXCLUDED (opcode count != N, or a dependency structure other than the mode's) is dropped from the fits' use and from the table"
+  ]
+ }
+}

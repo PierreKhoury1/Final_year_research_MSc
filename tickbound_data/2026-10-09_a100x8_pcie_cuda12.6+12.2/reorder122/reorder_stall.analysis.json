@@ -1,0 +1,3913 @@
+{
+ "prefix": "C:\\Users\\pierr\\AppData\\Local\\Temp\\claude\\C--Users-pierr\\5c9f69cd-4ab2-4054-ba7c-33d14cfa0fa5\\scratchpad\\box_9oct\\out_a100x8\\res\\reorder122\\reorder_stall",
+ "strategy": "reorder",
+ "gpu": "NVIDIA A100-PCIE-40GB",
+ "sms": 108,
+ "host": "3990b2003192",
+ "clock": {
+  "tick_ns": 1024,
+  "method": "edge",
+  "bound_ns": 737.2345342412591,
+  "rate_ppm": -17.64941709314627,
+  "feasible": true,
+  "windows": {
+   "pre": {
+    "edge_bound_ns": 788.7775413310155,
+    "edge_feasible": true,
+    "n_up": 3000,
+    "n_down": 2931,
+    "rate_ppm": -18.22362498016261
+   },
+   "post": {
+    "edge_bound_ns": 739.5968219973147,
+    "edge_feasible": true,
+    "n_up": 3000,
+    "n_down": 2712,
+    "rate_ppm": -13.58793533090541
+   }
+  },
+  "width_ns": 1474.4690684825182
+ },
+ "n_gpu_recs": 9024,
+ "gpu_recs_dropped": 0,
+ "n_host_events": 566,
+ "result": {
+  "reorder_layout": 1,
+  "cc": "8.0",
+  "tick_ns": 1024.0,
+  "bound_ns": 737.2345342412591,
+  "toolkit": {
+   "cuda_runtime": 12020,
+   "driver": 13020
+  },
+  "gate": {
+   "status": "FAIL",
+   "label": "FAIL",
+   "file": "reorder_stall.reorder_sass.json",
+   "source": "run",
+   "error": null,
+   "kernels_in_gate": 295,
+   "unparsed_kernels": [],
+   "group_labels": {
+    "PASS": 141
+   }
+  },
+  "n_records": 9024,
+  "experiments": {
+   "stall": {
+    "groups": [
+     {
+      "op": "IADD3",
+      "OP": 0,
+      "mode": "dep_consumed",
+      "MODE": 0,
+      "N": 8,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 238.0,
+       "p50": 240.0,
+       "p90": 242.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "op": "IADD3",
+      "OP": 0,
+      "mode": "dep_consumed",
+      "MODE": 0,
+      "N": 32,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 333.3,
+       "p50": 336.0,
+       "p90": 338.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "op": "IADD3",
+      "OP": 0,
+      "mode": "dep_consumed",
+      "MODE": 0,
+      "N": 128,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 717.0,
+       "p50": 719.5,
+       "p90": 722.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "op": "IADD3",
+      "OP": 0,
+      "mode": "dep_unconsumed",
+      "MODE": 1,
+      "N": 8,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 232.0,
+       "p50": 235.0,
+       "p90": 237.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "op": "IADD3",
+      "OP": 0,
+      "mode": "dep_unconsumed",
+      "MODE": 1,
+      "N": 32,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 328.0,
+       "p50": 330.5,
+       "p90": 334.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "op": "IADD3",
+      "OP": 0,
+      "mode": "dep_unconsumed",
+      "MODE": 1,
+      "N": 128,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 712.0,
+       "p50": 715.0,
+       "p90": 717.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "op": "IADD3",
+      "OP": 0,
+      "mode": "indep",
+      "MODE": 2,
+      "N": 8,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 225.0,
+       "p50": 227.5,
+       "p90": 230.7
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "op": "IADD3",
+      "OP": 0,
+      "mode": "indep",
+      "MODE": 2,
+      "N": 32,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 266.0,
+       "p50": 269.0,
+       "p90": 271.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "op": "IADD3",
+      "OP": 0,
+      "mode": "indep",
+      "MODE": 2,
+      "N": 128,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 457.0,
+       "p50": 460.0,
+       "p90": 462.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "op": "LOP3",
+      "OP": 1,
+      "mode": "dep_consumed",
+      "MODE": 0,
+      "N": 8,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 238.0,
+       "p50": 240.5,
+       "p90": 243.7
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "op": "LOP3",
+      "OP": 1,
+      "mode": "dep_consumed",
+      "MODE": 0,
+      "N": 32,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 334.0,
+       "p50": 337.0,
+       "p90": 339.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "op": "LOP3",
+      "OP": 1,
+      "mode": "dep_consumed",
+      "MODE": 0,
+      "N": 128,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 718.0,
+       "p50": 720.5,
+       "p90": 723.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "op": "LOP3",
+      "OP": 1,
+      "mode": "dep_unconsumed",
+      "MODE": 1,
+      "N": 8,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 233.0,
+       "p50": 235.5,
+       "p90": 238.7
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "op": "LOP3",
+      "OP": 1,
+      "mode": "dep_unconsumed",
+      "MODE": 1,
+      "N": 32,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 329.0,
+       "p50": 332.0,
+       "p90": 334.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "op": "LOP3",
+      "OP": 1,
+      "mode": "dep_unconsumed",
+      "MODE": 1,
+      "N": 128,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 713.0,
+       "p50": 716.0,
+       "p90": 718.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "op": "LOP3",
+      "OP": 1,
+      "mode": "indep",
+      "MODE": 2,
+      "N": 8,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 225.0,
+       "p50": 228.0,
+       "p90": 230.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "op": "LOP3",
+      "OP": 1,
+      "mode": "indep",
+      "MODE": 2,
+      "N": 32,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 267.0,
+       "p50": 270.0,
+       "p90": 272.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "op": "LOP3",
+      "OP": 1,
+      "mode": "indep",
+      "MODE": 2,
+      "N": 128,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 458.0,
+       "p50": 460.5,
+       "p90": 463.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "op": "SHF",
+      "OP": 2,
+      "mode": "dep_consumed",
+      "MODE": 0,
+      "N": 8,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 237.0,
+       "p50": 239.5,
+       "p90": 242.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "op": "SHF",
+      "OP": 2,
+      "mode": "dep_consumed",
+      "MODE": 0,
+      "N": 32,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 333.0,
+       "p50": 335.0,
+       "p90": 338.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "op": "SHF",
+      "OP": 2,
+      "mode": "dep_consumed",
+      "MODE": 0,
+      "N": 128,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 717.0,
+       "p50": 719.5,
+       "p90": 722.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "op": "SHF",
+      "OP": 2,
+      "mode": "dep_unconsumed",
+      "MODE": 1,
+      "N": 8,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 232.0,
+       "p50": 235.0,
+       "p90": 237.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "op": "SHF",
+      "OP": 2,
+      "mode": "dep_unconsumed",
+      "MODE": 1,
+      "N": 32,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 328.0,
+       "p50": 331.0,
+       "p90": 333.7
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.5
+     },
+     {
+      "op": "SHF",
+      "OP": 2,
+      "mode": "dep_unconsumed",
+      "MODE": 1,
+      "N": 128,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 712.0,
+       "p50": 714.5,
+       "p90": 717.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "op": "SHF",
+      "OP": 2,
+      "mode": "indep",
+      "MODE": 2,
+      "N": 8,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 225.0,
+       "p50": 227.5,
+       "p90": 230.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "op": "SHF",
+      "OP": 2,
+      "mode": "indep",
+      "MODE": 2,
+      "N": 32,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 266.0,
+       "p50": 269.0,
+       "p90": 271.7
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "op": "SHF",
+      "OP": 2,
+      "mode": "indep",
+      "MODE": 2,
+      "N": 128,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 457.0,
+       "p50": 459.5,
+       "p90": 462.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "op": "LEA",
+      "OP": 3,
+      "mode": "dep_consumed",
+      "MODE": 0,
+      "N": 8,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 237.0,
+       "p50": 240.0,
+       "p90": 242.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "op": "LEA",
+      "OP": 3,
+      "mode": "dep_consumed",
+      "MODE": 0,
+      "N": 32,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 334.0,
+       "p50": 335.5,
+       "p90": 338.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "op": "LEA",
+      "OP": 3,
+      "mode": "dep_consumed",
+      "MODE": 0,
+      "N": 128,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 717.0,
+       "p50": 720.0,
+       "p90": 722.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "op": "LEA",
+      "OP": 3,
+      "mode": "dep_unconsumed",
+      "MODE": 1,
+      "N": 8,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 232.0,
+       "p50": 235.0,
+       "p90": 237.7
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "op": "LEA",
+      "OP": 3,
+      "mode": "dep_unconsumed",
+      "MODE": 1,
+      "N": 32,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 328.0,
+       "p50": 330.5,
+       "p90": 333.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.5
+     },
+     {
+      "op": "LEA",
+      "OP": 3,
+      "mode": "dep_unconsumed",
+      "MODE": 1,
+      "N": 128,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 712.0,
+       "p50": 715.0,
+       "p90": 717.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "op": "LEA",
+      "OP": 3,
+      "mode": "indep",
+      "MODE": 2,
+      "N": 8,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 225.0,
+       "p50": 228.0,
+       "p90": 230.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "op": "LEA",
+      "OP": 3,
+      "mode": "indep",
+      "MODE": 2,
+      "N": 32,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 266.0,
+       "p50": 268.5,
+       "p90": 271.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "op": "LEA",
+      "OP": 3,
+      "mode": "indep",
+      "MODE": 2,
+      "N": 128,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 457.0,
+       "p50": 460.0,
+       "p90": 462.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "op": "SEL",
+      "OP": 4,
+      "mode": "dep_consumed",
+      "MODE": 0,
+      "N": 8,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 237.0,
+       "p50": 239.5,
+       "p90": 242.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "op": "SEL",
+      "OP": 4,
+      "mode": "dep_consumed",
+      "MODE": 0,
+      "N": 32,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 334.0,
+       "p50": 335.5,
+       "p90": 338.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "op": "SEL",
+      "OP": 4,
+      "mode": "dep_consumed",
+      "MODE": 0,
+      "N": 128,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 717.0,
+       "p50": 719.5,
+       "p90": 722.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "op": "SEL",
+      "OP": 4,
+      "mode": "dep_unconsumed",
+      "MODE": 1,
+      "N": 8,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 232.0,
+       "p50": 234.5,
+       "p90": 237.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "op": "SEL",
+      "OP": 4,
+      "mode": "dep_unconsumed",
+      "MODE": 1,
+      "N": 32,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 328.0,
+       "p50": 330.5,
+       "p90": 333.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "op": "SEL",
+      "OP": 4,
+      "mode": "dep_unconsumed",
+      "MODE": 1,
+      "N": 128,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 712.0,
+       "p50": 714.5,
+       "p90": 717.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "op": "SEL",
+      "OP": 4,
+      "mode": "indep",
+      "MODE": 2,
+      "N": 8,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 225.0,
+       "p50": 227.5,
+       "p90": 230.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "op": "SEL",
+      "OP": 4,
+      "mode": "indep",
+      "MODE": 2,
+      "N": 32,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 266.0,
+       "p50": 269.0,
+       "p90": 271.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "op": "SEL",
+      "OP": 4,
+      "mode": "indep",
+      "MODE": 2,
+      "N": 128,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 457.0,
+       "p50": 460.0,
+       "p90": 462.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "op": "IMNMX",
+      "OP": 5,
+      "mode": "dep_consumed",
+      "MODE": 0,
+      "N": 8,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 237.0,
+       "p50": 240.0,
+       "p90": 242.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "op": "IMNMX",
+      "OP": 5,
+      "mode": "dep_consumed",
+      "MODE": 0,
+      "N": 32,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 333.3,
+       "p50": 336.0,
+       "p90": 338.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "op": "IMNMX",
+      "OP": 5,
+      "mode": "dep_consumed",
+      "MODE": 0,
+      "N": 128,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 717.0,
+       "p50": 720.0,
+       "p90": 722.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "op": "IMNMX",
+      "OP": 5,
+      "mode": "dep_unconsumed",
+      "MODE": 1,
+      "N": 8,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 232.3,
+       "p50": 235.0,
+       "p90": 237.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "op": "IMNMX",
+      "OP": 5,
+      "mode": "dep_unconsumed",
+      "MODE": 1,
+      "N": 32,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 328.0,
+       "p50": 331.0,
+       "p90": 333.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.5
+     },
+     {
+      "op": "IMNMX",
+      "OP": 5,
+      "mode": "dep_unconsumed",
+      "MODE": 1,
+      "N": 128,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 712.0,
+       "p50": 715.0,
+       "p90": 717.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "op": "IMNMX",
+      "OP": 5,
+      "mode": "indep",
+      "MODE": 2,
+      "N": 8,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 225.0,
+       "p50": 227.5,
+       "p90": 230.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "op": "IMNMX",
+      "OP": 5,
+      "mode": "indep",
+      "MODE": 2,
+      "N": 32,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 266.0,
+       "p50": 269.0,
+       "p90": 271.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "op": "IMNMX",
+      "OP": 5,
+      "mode": "indep",
+      "MODE": 2,
+      "N": 128,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 457.0,
+       "p50": 459.5,
+       "p90": 462.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "op": "IABS",
+      "OP": 6,
+      "mode": "dep_consumed",
+      "MODE": 0,
+      "N": 8,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 269.0,
+       "p50": 272.0,
+       "p90": 274.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "op": "IABS",
+      "OP": 6,
+      "mode": "dep_consumed",
+      "MODE": 0,
+      "N": 32,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 461.0,
+       "p50": 464.0,
+       "p90": 466.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "op": "IABS",
+      "OP": 6,
+      "mode": "dep_consumed",
+      "MODE": 0,
+      "N": 128,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 1229.0,
+       "p50": 1231.5,
+       "p90": 1234.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 2.0
+     },
+     {
+      "op": "IABS",
+      "OP": 6,
+      "mode": "dep_unconsumed",
+      "MODE": 1,
+      "N": 8,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 264.0,
+       "p50": 266.5,
+       "p90": 269.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "op": "IABS",
+      "OP": 6,
+      "mode": "dep_unconsumed",
+      "MODE": 1,
+      "N": 32,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 456.0,
+       "p50": 459.0,
+       "p90": 461.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "op": "IABS",
+      "OP": 6,
+      "mode": "dep_unconsumed",
+      "MODE": 1,
+      "N": 128,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 1224.0,
+       "p50": 1226.5,
+       "p90": 1229.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 2.0
+     },
+     {
+      "op": "IABS",
+      "OP": 6,
+      "mode": "indep",
+      "MODE": 2,
+      "N": 8,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 241.0,
+       "p50": 243.5,
+       "p90": 246.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "op": "IABS",
+      "OP": 6,
+      "mode": "indep",
+      "MODE": 2,
+      "N": 32,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 330.0,
+       "p50": 332.5,
+       "p90": 335.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "op": "IABS",
+      "OP": 6,
+      "mode": "indep",
+      "MODE": 2,
+      "N": 128,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 713.0,
+       "p50": 715.5,
+       "p90": 718.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "op": "HADD2",
+      "OP": 7,
+      "mode": "dep_consumed",
+      "MODE": 0,
+      "N": 8,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 238.0,
+       "p50": 240.5,
+       "p90": 243.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "op": "HADD2",
+      "OP": 7,
+      "mode": "dep_consumed",
+      "MODE": 0,
+      "N": 32,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 334.0,
+       "p50": 336.5,
+       "p90": 339.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "op": "HADD2",
+      "OP": 7,
+      "mode": "dep_consumed",
+      "MODE": 0,
+      "N": 128,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 718.0,
+       "p50": 720.5,
+       "p90": 723.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "op": "HADD2",
+      "OP": 7,
+      "mode": "dep_unconsumed",
+      "MODE": 1,
+      "N": 8,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 233.0,
+       "p50": 236.0,
+       "p90": 238.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "op": "HADD2",
+      "OP": 7,
+      "mode": "dep_unconsumed",
+      "MODE": 1,
+      "N": 32,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 329.0,
+       "p50": 331.5,
+       "p90": 334.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "op": "HADD2",
+      "OP": 7,
+      "mode": "dep_unconsumed",
+      "MODE": 1,
+      "N": 128,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 713.3,
+       "p50": 716.0,
+       "p90": 718.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "op": "HADD2",
+      "OP": 7,
+      "mode": "indep",
+      "MODE": 2,
+      "N": 8,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 225.0,
+       "p50": 227.5,
+       "p90": 230.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "op": "HADD2",
+      "OP": 7,
+      "mode": "indep",
+      "MODE": 2,
+      "N": 32,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 267.0,
+       "p50": 270.0,
+       "p90": 272.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "op": "HADD2",
+      "OP": 7,
+      "mode": "indep",
+      "MODE": 2,
+      "N": 128,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 458.0,
+       "p50": 461.0,
+       "p90": 463.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "op": "HFMA2",
+      "OP": 8,
+      "mode": "dep_consumed",
+      "MODE": 0,
+      "N": 8,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 239.0,
+       "p50": 241.0,
+       "p90": 243.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "op": "HFMA2",
+      "OP": 8,
+      "mode": "dep_consumed",
+      "MODE": 0,
+      "N": 32,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 334.0,
+       "p50": 336.5,
+       "p90": 339.7
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "op": "HFMA2",
+      "OP": 8,
+      "mode": "dep_consumed",
+      "MODE": 0,
+      "N": 128,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 718.0,
+       "p50": 721.0,
+       "p90": 723.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "op": "HFMA2",
+      "OP": 8,
+      "mode": "dep_unconsumed",
+      "MODE": 1,
+      "N": 8,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 233.0,
+       "p50": 236.0,
+       "p90": 238.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "op": "HFMA2",
+      "OP": 8,
+      "mode": "dep_unconsumed",
+      "MODE": 1,
+      "N": 32,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 329.0,
+       "p50": 332.0,
+       "p90": 335.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "op": "HFMA2",
+      "OP": 8,
+      "mode": "dep_unconsumed",
+      "MODE": 1,
+      "N": 128,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 713.0,
+       "p50": 716.0,
+       "p90": 718.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "op": "HFMA2",
+      "OP": 8,
+      "mode": "indep",
+      "MODE": 2,
+      "N": 8,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 225.0,
+       "p50": 227.5,
+       "p90": 230.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "op": "HFMA2",
+      "OP": 8,
+      "mode": "indep",
+      "MODE": 2,
+      "N": 32,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 267.0,
+       "p50": 270.0,
+       "p90": 272.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "op": "HFMA2",
+      "OP": 8,
+      "mode": "indep",
+      "MODE": 2,
+      "N": 128,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 458.0,
+       "p50": 461.0,
+       "p90": 463.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "op": "IMAD_WIDE",
+      "OP": 9,
+      "mode": "dep_consumed",
+      "MODE": 0,
+      "N": 8,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 315.0,
+       "p50": 317.5,
+       "p90": 320.7
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "op": "IMAD_WIDE",
+      "OP": 9,
+      "mode": "dep_consumed",
+      "MODE": 0,
+      "N": 32,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 627.0,
+       "p50": 629.5,
+       "p90": 632.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "op": "IMAD_WIDE",
+      "OP": 9,
+      "mode": "dep_consumed",
+      "MODE": 0,
+      "N": 128,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 1875.0,
+       "p50": 1877.5,
+       "p90": 1880.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 2.0
+     },
+     {
+      "op": "IMAD_WIDE",
+      "OP": 9,
+      "mode": "dep_unconsumed",
+      "MODE": 1,
+      "N": 8,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 308.0,
+       "p50": 311.0,
+       "p90": 313.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "op": "IMAD_WIDE",
+      "OP": 9,
+      "mode": "dep_unconsumed",
+      "MODE": 1,
+      "N": 32,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 620.0,
+       "p50": 623.0,
+       "p90": 625.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "op": "IMAD_WIDE",
+      "OP": 9,
+      "mode": "dep_unconsumed",
+      "MODE": 1,
+      "N": 128,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 1868.0,
+       "p50": 1870.5,
+       "p90": 1873.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 2.0
+     },
+     {
+      "op": "IMAD_WIDE",
+      "OP": 9,
+      "mode": "indep",
+      "MODE": 2,
+      "N": 8,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 317.0,
+       "p50": 319.5,
+       "p90": 322.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "op": "IMAD_WIDE",
+      "OP": 9,
+      "mode": "indep",
+      "MODE": 2,
+      "N": 32,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 449.0,
+       "p50": 452.0,
+       "p90": 454.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "op": "FMUL",
+      "OP": 10,
+      "mode": "dep_consumed",
+      "MODE": 0,
+      "N": 8,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 238.0,
+       "p50": 241.0,
+       "p90": 243.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "op": "FMUL",
+      "OP": 10,
+      "mode": "dep_consumed",
+      "MODE": 0,
+      "N": 32,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 334.0,
+       "p50": 337.0,
+       "p90": 339.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "op": "FMUL",
+      "OP": 10,
+      "mode": "dep_consumed",
+      "MODE": 0,
+      "N": 128,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 718.0,
+       "p50": 721.0,
+       "p90": 723.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "op": "FMUL",
+      "OP": 10,
+      "mode": "dep_unconsumed",
+      "MODE": 1,
+      "N": 8,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 233.0,
+       "p50": 236.0,
+       "p90": 238.7
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "op": "FMUL",
+      "OP": 10,
+      "mode": "dep_unconsumed",
+      "MODE": 1,
+      "N": 32,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 329.0,
+       "p50": 332.0,
+       "p90": 334.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "op": "FMUL",
+      "OP": 10,
+      "mode": "dep_unconsumed",
+      "MODE": 1,
+      "N": 128,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 713.0,
+       "p50": 715.5,
+       "p90": 718.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "op": "FMUL",
+      "OP": 10,
+      "mode": "indep",
+      "MODE": 2,
+      "N": 8,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 226.0,
+       "p50": 228.5,
+       "p90": 231.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "op": "FMUL",
+      "OP": 10,
+      "mode": "indep",
+      "MODE": 2,
+      "N": 32,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 267.0,
+       "p50": 269.5,
+       "p90": 272.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "op": "FMUL",
+      "OP": 10,
+      "mode": "indep",
+      "MODE": 2,
+      "N": 128,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 458.0,
+       "p50": 460.5,
+       "p90": 463.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "op": "FADD",
+      "OP": 11,
+      "mode": "dep_consumed",
+      "MODE": 0,
+      "N": 8,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 238.0,
+       "p50": 240.5,
+       "p90": 243.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "op": "FADD",
+      "OP": 11,
+      "mode": "dep_consumed",
+      "MODE": 0,
+      "N": 32,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 334.0,
+       "p50": 336.5,
+       "p90": 339.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "op": "FADD",
+      "OP": 11,
+      "mode": "dep_consumed",
+      "MODE": 0,
+      "N": 128,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 718.0,
+       "p50": 720.5,
+       "p90": 723.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "op": "FADD",
+      "OP": 11,
+      "mode": "dep_unconsumed",
+      "MODE": 1,
+      "N": 8,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 234.0,
+       "p50": 235.5,
+       "p90": 238.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "op": "FADD",
+      "OP": 11,
+      "mode": "dep_unconsumed",
+      "MODE": 1,
+      "N": 32,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 329.0,
+       "p50": 331.0,
+       "p90": 334.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "op": "FADD",
+      "OP": 11,
+      "mode": "dep_unconsumed",
+      "MODE": 1,
+      "N": 128,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 713.0,
+       "p50": 716.0,
+       "p90": 718.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "op": "FADD",
+      "OP": 11,
+      "mode": "indep",
+      "MODE": 2,
+      "N": 8,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 226.0,
+       "p50": 228.5,
+       "p90": 231.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "op": "FADD",
+      "OP": 11,
+      "mode": "indep",
+      "MODE": 2,
+      "N": 32,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 267.0,
+       "p50": 269.5,
+       "p90": 272.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "op": "FADD",
+      "OP": 11,
+      "mode": "indep",
+      "MODE": 2,
+      "N": 128,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 458.0,
+       "p50": 460.5,
+       "p90": 463.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "op": "FFMA",
+      "OP": 12,
+      "mode": "dep_consumed",
+      "MODE": 0,
+      "N": 8,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 238.0,
+       "p50": 240.5,
+       "p90": 243.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "op": "FFMA",
+      "OP": 12,
+      "mode": "dep_consumed",
+      "MODE": 0,
+      "N": 32,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 334.0,
+       "p50": 337.0,
+       "p90": 339.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "op": "FFMA",
+      "OP": 12,
+      "mode": "dep_consumed",
+      "MODE": 0,
+      "N": 128,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 718.0,
+       "p50": 721.0,
+       "p90": 723.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "op": "FFMA",
+      "OP": 12,
+      "mode": "dep_unconsumed",
+      "MODE": 1,
+      "N": 8,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 233.0,
+       "p50": 236.0,
+       "p90": 238.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "op": "FFMA",
+      "OP": 12,
+      "mode": "dep_unconsumed",
+      "MODE": 1,
+      "N": 32,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 329.0,
+       "p50": 332.0,
+       "p90": 334.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "op": "FFMA",
+      "OP": 12,
+      "mode": "dep_unconsumed",
+      "MODE": 1,
+      "N": 128,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 713.3,
+       "p50": 716.0,
+       "p90": 718.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "op": "FFMA",
+      "OP": 12,
+      "mode": "indep",
+      "MODE": 2,
+      "N": 8,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 226.0,
+       "p50": 229.0,
+       "p90": 231.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "op": "FFMA",
+      "OP": 12,
+      "mode": "indep",
+      "MODE": 2,
+      "N": 32,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 267.0,
+       "p50": 270.0,
+       "p90": 273.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "op": "FFMA",
+      "OP": 12,
+      "mode": "indep",
+      "MODE": 2,
+      "N": 128,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 458.0,
+       "p50": 460.5,
+       "p90": 463.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "op": "IMAD",
+      "OP": 13,
+      "mode": "dep_consumed",
+      "MODE": 0,
+      "N": 8,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 238.0,
+       "p50": 241.0,
+       "p90": 243.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "op": "IMAD",
+      "OP": 13,
+      "mode": "dep_consumed",
+      "MODE": 0,
+      "N": 32,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 334.0,
+       "p50": 336.5,
+       "p90": 339.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "op": "IMAD",
+      "OP": 13,
+      "mode": "dep_consumed",
+      "MODE": 0,
+      "N": 128,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 718.0,
+       "p50": 721.0,
+       "p90": 723.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "op": "IMAD",
+      "OP": 13,
+      "mode": "dep_unconsumed",
+      "MODE": 1,
+      "N": 8,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 233.0,
+       "p50": 235.5,
+       "p90": 238.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "op": "IMAD",
+      "OP": 13,
+      "mode": "dep_unconsumed",
+      "MODE": 1,
+      "N": 32,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 329.0,
+       "p50": 332.0,
+       "p90": 334.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "op": "IMAD",
+      "OP": 13,
+      "mode": "dep_unconsumed",
+      "MODE": 1,
+      "N": 128,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 714.0,
+       "p50": 715.5,
+       "p90": 718.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "op": "IMAD",
+      "OP": 13,
+      "mode": "indep",
+      "MODE": 2,
+      "N": 8,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 226.0,
+       "p50": 228.0,
+       "p90": 231.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "op": "IMAD",
+      "OP": 13,
+      "mode": "indep",
+      "MODE": 2,
+      "N": 32,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 267.0,
+       "p50": 270.0,
+       "p90": 272.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "op": "IMAD",
+      "OP": 13,
+      "mode": "indep",
+      "MODE": 2,
+      "N": 128,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 458.0,
+       "p50": 461.0,
+       "p90": 463.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "op": "DADD",
+      "OP": 14,
+      "mode": "dep_consumed",
+      "MODE": 0,
+      "N": 8,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 258.0,
+       "p50": 261.0,
+       "p90": 263.7
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "op": "DADD",
+      "OP": 14,
+      "mode": "dep_consumed",
+      "MODE": 0,
+      "N": 32,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 402.0,
+       "p50": 404.5,
+       "p90": 407.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "op": "DADD",
+      "OP": 14,
+      "mode": "dep_consumed",
+      "MODE": 0,
+      "N": 128,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 978.0,
+       "p50": 981.0,
+       "p90": 983.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "op": "DADD",
+      "OP": 14,
+      "mode": "dep_unconsumed",
+      "MODE": 1,
+      "N": 8,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 251.0,
+       "p50": 254.0,
+       "p90": 256.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "op": "DADD",
+      "OP": 14,
+      "mode": "dep_unconsumed",
+      "MODE": 1,
+      "N": 32,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 395.0,
+       "p50": 398.0,
+       "p90": 400.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.5
+     },
+     {
+      "op": "DADD",
+      "OP": 14,
+      "mode": "dep_unconsumed",
+      "MODE": 1,
+      "N": 128,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 971.0,
+       "p50": 973.5,
+       "p90": 976.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "op": "DADD",
+      "OP": 14,
+      "mode": "indep",
+      "MODE": 2,
+      "N": 8,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 242.0,
+       "p50": 244.5,
+       "p90": 247.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "op": "DADD",
+      "OP": 14,
+      "mode": "indep",
+      "MODE": 2,
+      "N": 32,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 338.0,
+       "p50": 341.0,
+       "p90": 343.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "op": "DFMA",
+      "OP": 15,
+      "mode": "dep_consumed",
+      "MODE": 0,
+      "N": 8,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 258.0,
+       "p50": 260.5,
+       "p90": 263.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "op": "DFMA",
+      "OP": 15,
+      "mode": "dep_consumed",
+      "MODE": 0,
+      "N": 32,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 402.0,
+       "p50": 404.5,
+       "p90": 407.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "op": "DFMA",
+      "OP": 15,
+      "mode": "dep_consumed",
+      "MODE": 0,
+      "N": 128,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 978.0,
+       "p50": 980.5,
+       "p90": 983.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "op": "DFMA",
+      "OP": 15,
+      "mode": "dep_unconsumed",
+      "MODE": 1,
+      "N": 8,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 251.0,
+       "p50": 254.0,
+       "p90": 256.7
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "op": "DFMA",
+      "OP": 15,
+      "mode": "dep_unconsumed",
+      "MODE": 1,
+      "N": 32,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 395.0,
+       "p50": 398.0,
+       "p90": 400.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "op": "DFMA",
+      "OP": 15,
+      "mode": "dep_unconsumed",
+      "MODE": 1,
+      "N": 128,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 971.0,
+       "p50": 974.0,
+       "p90": 977.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     },
+     {
+      "op": "DFMA",
+      "OP": 15,
+      "mode": "indep",
+      "MODE": 2,
+      "N": 8,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 242.0,
+       "p50": 244.5,
+       "p90": 247.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 0.0
+     },
+     {
+      "op": "DFMA",
+      "OP": 15,
+      "mode": "indep",
+      "MODE": 2,
+      "N": 32,
+      "gate": "PASS",
+      "used": true,
+      "cycles": {
+       "n": 64,
+       "p10": 338.0,
+       "p50": 340.5,
+       "p90": 343.0
+      },
+      "ns": null,
+      "sm_ghz": null,
+      "timer_ticks_p50": 1.0
+     }
+    ],
+    "fits": [
+     {
+      "op": "IADD3",
+      "OP": 0,
+      "mode": "dep_consumed",
+      "MODE": 0,
+      "used": true,
+      "slope": 3.9955357142857144,
+      "intercept": 208.08333333333331,
+      "max_residual": 0.05952380952385283,
+      "slope_p10": 3.9931547619047616,
+      "naive_cycles_per_instr": 5.62109375,
+      "N": [
+       8,
+       32,
+       128
+      ],
+      "samples": 192
+     },
+     {
+      "op": "IADD3",
+      "OP": 0,
+      "mode": "dep_unconsumed",
+      "MODE": 1,
+      "used": true,
+      "slope": 4.001488095238095,
+      "intercept": 202.75,
+      "max_residual": 0.2976190476190368,
+      "slope_p10": 4.0,
+      "naive_cycles_per_instr": 5.5859375,
+      "N": [
+       8,
+       32,
+       128
+      ],
+      "samples": 192
+     },
+     {
+      "op": "IADD3",
+      "OP": 0,
+      "mode": "indep",
+      "MODE": 2,
+      "used": true,
+      "slope": 1.9523809523809523,
+      "intercept": 209.5,
+      "max_residual": 2.9761904761904816,
+      "slope_p10": 1.9494047619047619,
+      "naive_cycles_per_instr": 3.59375,
+      "N": [
+       8,
+       32,
+       128
+      ],
+      "samples": 192
+     },
+     {
+      "op": "LOP3",
+      "OP": 1,
+      "mode": "dep_consumed",
+      "MODE": 0,
+      "used": true,
+      "slope": 3.9985119047619047,
+      "intercept": 208.75000000000003,
+      "max_residual": 0.2976190476190368,
+      "slope_p10": 4.0,
+      "naive_cycles_per_instr": 5.62890625,
+      "N": [
+       8,
+       32,
+       128
+      ],
+      "samples": 192
+     },
+     {
+      "op": "LOP3",
+      "OP": 1,
+      "mode": "dep_unconsumed",
+      "MODE": 1,
+      "used": true,
+      "slope": 4.002976190476191,
+      "intercept": 203.66666666666663,
+      "max_residual": 0.23809523809529765,
+      "slope_p10": 4.0,
+      "naive_cycles_per_instr": 5.59375,
+      "N": [
+       8,
+       32,
+       128
+      ],
+      "samples": 192
+     },
+     {
+      "op": "LOP3",
+      "OP": 1,
+      "mode": "indep",
+      "MODE": 2,
+      "used": true,
+      "slope": 1.9508928571428572,
+      "intercept": 210.25,
+      "max_residual": 2.678571428571445,
+      "slope_p10": 1.9553571428571428,
+      "naive_cycles_per_instr": 3.59765625,
+      "N": [
+       8,
+       32,
+       128
+      ],
+      "samples": 192
+     },
+     {
+      "op": "SHF",
+      "OP": 2,
+      "mode": "dep_consumed",
+      "MODE": 0,
+      "used": true,
+      "slope": 4.001488095238095,
+      "intercept": 207.25,
+      "max_residual": 0.2976190476190368,
+      "slope_p10": 4.0,
+      "naive_cycles_per_instr": 5.62109375,
+      "N": [
+       8,
+       32,
+       128
+      ],
+      "samples": 192
+     },
+     {
+      "op": "SHF",
+      "OP": 2,
+      "mode": "dep_unconsumed",
+      "MODE": 1,
+      "used": true,
+      "slope": 3.9955357142857144,
+      "intercept": 203.08333333333331,
+      "max_residual": 0.05952380952385283,
+      "slope_p10": 4.0,
+      "naive_cycles_per_instr": 5.58203125,
+      "N": [
+       8,
+       32,
+       128
+      ],
+      "samples": 192
+     },
+     {
+      "op": "SHF",
+      "OP": 2,
+      "mode": "indep",
+      "MODE": 2,
+      "used": true,
+      "slope": 1.9479166666666667,
+      "intercept": 209.58333333333334,
+      "max_residual": 2.9166666666666856,
+      "slope_p10": 1.9494047619047619,
+      "naive_cycles_per_instr": 3.58984375,
+      "N": [
+       8,
+       32,
+       128
+      ],
+      "samples": 192
+     },
+     {
+      "op": "LEA",
+      "OP": 3,
+      "mode": "dep_consumed",
+      "MODE": 0,
+      "used": true,
+      "slope": 4.001488095238095,
+      "intercept": 207.75,
+      "max_residual": 0.2976190476190368,
+      "slope_p10": 3.9970238095238093,
+      "naive_cycles_per_instr": 5.625,
+      "N": [
+       8,
+       32,
+       128
+      ],
+      "samples": 192
+     },
+     {
+      "op": "LEA",
+      "OP": 3,
+      "mode": "dep_unconsumed",
+      "MODE": 1,
+      "used": true,
+      "slope": 4.001488095238095,
+      "intercept": 202.75,
+      "max_residual": 0.2976190476190368,
+      "slope_p10": 4.0,
+      "naive_cycles_per_instr": 5.5859375,
+      "N": [
+       8,
+       32,
+       128
+      ],
+      "samples": 192
+     },
+     {
+      "op": "LEA",
+      "OP": 3,
+      "mode": "indep",
+      "MODE": 2,
+      "used": true,
+      "slope": 1.9508928571428572,
+      "intercept": 209.58333333333331,
+      "max_residual": 3.511904761904759,
+      "slope_p10": 1.9494047619047619,
+      "naive_cycles_per_instr": 3.59375,
+      "N": [
+       8,
+       32,
+       128
+      ],
+      "samples": 192
+     },
+     {
+      "op": "SEL",
+      "OP": 4,
+      "mode": "dep_consumed",
+      "MODE": 0,
+      "used": true,
+      "slope": 4.0,
+      "intercept": 207.5,
+      "max_residual": 0.0,
+      "slope_p10": 3.9970238095238093,
+      "naive_cycles_per_instr": 5.62109375,
+      "N": [
+       8,
+       32,
+       128
+      ],
+      "samples": 192
+     },
+     {
+      "op": "SEL",
+      "OP": 4,
+      "mode": "dep_unconsumed",
+      "MODE": 1,
+      "used": true,
+      "slope": 4.0,
+      "intercept": 202.5,
+      "max_residual": 0.0,
+      "slope_p10": 4.0,
+      "naive_cycles_per_instr": 5.58203125,
+      "N": [
+       8,
+       32,
+       128
+      ],
+      "samples": 192
+     },
+     {
+      "op": "SEL",
+      "OP": 4,
+      "mode": "indep",
+      "MODE": 2,
+      "used": true,
+      "slope": 1.9523809523809523,
+      "intercept": 209.5,
+      "max_residual": 2.9761904761904816,
+      "slope_p10": 1.9494047619047619,
+      "naive_cycles_per_instr": 3.59375,
+      "N": [
+       8,
+       32,
+       128
+      ],
+      "samples": 192
+     },
+     {
+      "op": "IMNMX",
+      "OP": 5,
+      "mode": "dep_consumed",
+      "MODE": 0,
+      "used": true,
+      "slope": 4.0,
+      "intercept": 208.0,
+      "max_residual": 0.0,
+      "slope_p10": 3.9991071428571434,
+      "naive_cycles_per_instr": 5.625,
+      "N": [
+       8,
+       32,
+       128
+      ],
+      "samples": 192
+     },
+     {
+      "op": "IMNMX",
+      "OP": 5,
+      "mode": "dep_unconsumed",
+      "MODE": 1,
+      "used": true,
+      "slope": 4.0,
+      "intercept": 203.0,
+      "max_residual": 0.0,
+      "slope_p10": 3.9982142857142855,
+      "naive_cycles_per_instr": 5.5859375,
+      "N": [
+       8,
+       32,
+       128
+      ],
+      "samples": 192
+     },
+     {
+      "op": "IMNMX",
+      "OP": 5,
+      "mode": "indep",
+      "MODE": 2,
+      "used": true,
+      "slope": 1.9479166666666667,
+      "intercept": 209.58333333333334,
+      "max_residual": 2.9166666666666856,
+      "slope_p10": 1.9494047619047619,
+      "naive_cycles_per_instr": 3.58984375,
+      "N": [
+       8,
+       32,
+       128
+      ],
+      "samples": 192
+     },
+     {
+      "op": "IABS",
+      "OP": 6,
+      "mode": "dep_consumed",
+      "MODE": 0,
+      "used": true,
+      "slope": 7.995535714285714,
+      "intercept": 208.08333333333337,
+      "max_residual": 0.059523809523739146,
+      "slope_p10": 8.0,
+      "naive_cycles_per_instr": 9.62109375,
+      "N": [
+       8,
+       32,
+       128
+      ],
+      "samples": 192
+     },
+     {
+      "op": "IABS",
+      "OP": 6,
+      "mode": "dep_unconsumed",
+      "MODE": 1,
+      "used": true,
+      "slope": 7.998511904761905,
+      "intercept": 202.74999999999994,
+      "max_residual": 0.29761904761909364,
+      "slope_p10": 8.0,
+      "naive_cycles_per_instr": 9.58203125,
+      "N": [
+       8,
+       32,
+       128
+      ],
+      "samples": 192
+     },
+     {
+      "op": "IABS",
+      "OP": 6,
+      "mode": "indep",
+      "MODE": 2,
+      "used": true,
+      "slope": 3.949404761904762,
+      "intercept": 209.33333333333334,
+      "max_residual": 3.2142857142857224,
+      "slope_p10": 3.949404761904762,
+      "naive_cycles_per_instr": 5.58984375,
+      "N": [
+       8,
+       32,
+       128
+      ],
+      "samples": 192
+     },
+     {
+      "op": "HADD2",
+      "OP": 7,
+      "mode": "dep_consumed",
+      "MODE": 0,
+      "used": true,
+      "slope": 4.0,
+      "intercept": 208.5,
+      "max_residual": 0.0,
+      "slope_p10": 4.0,
+      "naive_cycles_per_instr": 5.62890625,
+      "N": [
+       8,
+       32,
+       128
+      ],
+      "samples": 192
+     },
+     {
+      "op": "HADD2",
+      "OP": 7,
+      "mode": "dep_unconsumed",
+      "MODE": 1,
+      "used": true,
+      "slope": 4.001488095238095,
+      "intercept": 203.75,
+      "max_residual": 0.2976190476190368,
+      "slope_p10": 4.0026785714285715,
+      "naive_cycles_per_instr": 5.59375,
+      "N": [
+       8,
+       32,
+       128
+      ],
+      "samples": 192
+     },
+     {
+      "op": "HADD2",
+      "OP": 7,
+      "mode": "indep",
+      "MODE": 2,
+      "used": true,
+      "slope": 1.9583333333333333,
+      "intercept": 209.83333333333334,
+      "max_residual": 2.5,
+      "slope_p10": 1.9553571428571428,
+      "naive_cycles_per_instr": 3.6015625,
+      "N": [
+       8,
+       32,
+       128
+      ],
+      "samples": 192
+     },
+     {
+      "op": "HFMA2",
+      "OP": 8,
+      "mode": "dep_consumed",
+      "MODE": 0,
+      "used": true,
+      "slope": 4.001488095238095,
+      "intercept": 208.75,
+      "max_residual": 0.2976190476190368,
+      "slope_p10": 3.994047619047619,
+      "naive_cycles_per_instr": 5.6328125,
+      "N": [
+       8,
+       32,
+       128
+      ],
+      "samples": 192
+     },
+     {
+      "op": "HFMA2",
+      "OP": 8,
+      "mode": "dep_unconsumed",
+      "MODE": 1,
+      "used": true,
+      "slope": 4.0,
+      "intercept": 204.0,
+      "max_residual": 0.0,
+      "slope_p10": 4.0,
+      "naive_cycles_per_instr": 5.59375,
+      "N": [
+       8,
+       32,
+       128
+      ],
+      "samples": 192
+     },
+     {
+      "op": "HFMA2",
+      "OP": 8,
+      "mode": "indep",
+      "MODE": 2,
+      "used": true,
+      "slope": 1.9583333333333333,
+      "intercept": 209.83333333333334,
+      "max_residual": 2.5,
+      "slope_p10": 1.9553571428571428,
+      "naive_cycles_per_instr": 3.6015625,
+      "N": [
+       8,
+       32,
+       128
+      ],
+      "samples": 192
+     },
+     {
+      "op": "IMAD_WIDE",
+      "OP": 9,
+      "mode": "dep_consumed",
+      "MODE": 0,
+      "used": true,
+      "slope": 13.0,
+      "intercept": 213.5,
+      "max_residual": 0.0,
+      "slope_p10": 13.0,
+      "naive_cycles_per_instr": 14.66796875,
+      "N": [
+       8,
+       32,
+       128
+      ],
+      "samples": 192
+     },
+     {
+      "op": "IMAD_WIDE",
+      "OP": 9,
+      "mode": "dep_unconsumed",
+      "MODE": 1,
+      "used": true,
+      "slope": 12.995535714285714,
+      "intercept": 207.08333333333337,
+      "max_residual": 0.05952380952385283,
+      "slope_p10": 13.0,
+      "naive_cycles_per_instr": 14.61328125,
+      "N": [
+       8,
+       32,
+       128
+      ],
+      "samples": 192
+     },
+     {
+      "op": "IMAD_WIDE",
+      "OP": 9,
+      "mode": "indep",
+      "MODE": 2,
+      "used": true,
+      "slope": 5.520833333333333,
+      "intercept": 275.33333333333337,
+      "max_residual": 5.684341886080802e-14,
+      "slope_p10": 5.5,
+      "naive_cycles_per_instr": 14.125,
+      "N": [
+       8,
+       32
+      ],
+      "samples": 128
+     },
+     {
+      "op": "FMUL",
+      "OP": 10,
+      "mode": "dep_consumed",
+      "MODE": 0,
+      "used": true,
+      "slope": 4.0,
+      "intercept": 209.0,
+      "max_residual": 0.0,
+      "slope_p10": 4.0,
+      "naive_cycles_per_instr": 5.6328125,
+      "N": [
+       8,
+       32,
+       128
+      ],
+      "samples": 192
+     },
+     {
+      "op": "FMUL",
+      "OP": 10,
+      "mode": "dep_unconsumed",
+      "MODE": 1,
+      "used": true,
+      "slope": 3.9955357142857144,
+      "intercept": 204.08333333333331,
+      "max_residual": 0.05952380952385283,
+      "slope_p10": 4.0,
+      "naive_cycles_per_instr": 5.58984375,
+      "N": [
+       8,
+       32,
+       128
+      ],
+      "samples": 192
+     },
+     {
+      "op": "FMUL",
+      "OP": 10,
+      "mode": "indep",
+      "MODE": 2,
+      "used": true,
+      "slope": 1.9494047619047619,
+      "intercept": 210.33333333333334,
+      "max_residual": 3.2142857142857224,
+      "slope_p10": 1.9494047619047619,
+      "naive_cycles_per_instr": 3.59765625,
+      "N": [
+       8,
+       32,
+       128
+      ],
+      "samples": 192
+     },
+     {
+      "op": "FADD",
+      "OP": 11,
+      "mode": "dep_consumed",
+      "MODE": 0,
+      "used": true,
+      "slope": 4.0,
+      "intercept": 208.5,
+      "max_residual": 0.0,
+      "slope_p10": 4.0,
+      "naive_cycles_per_instr": 5.62890625,
+      "N": [
+       8,
+       32,
+       128
+      ],
+      "samples": 192
+     },
+     {
+      "op": "FADD",
+      "OP": 11,
+      "mode": "dep_unconsumed",
+      "MODE": 1,
+      "used": true,
+      "slope": 4.005952380952381,
+      "intercept": 203.16666666666663,
+      "max_residual": 0.3571428571428328,
+      "slope_p10": 3.994047619047619,
+      "naive_cycles_per_instr": 5.59375,
+      "N": [
+       8,
+       32,
+       128
+      ],
+      "samples": 192
+     },
+     {
+      "op": "FADD",
+      "OP": 11,
+      "mode": "indep",
+      "MODE": 2,
+      "used": true,
+      "slope": 1.9494047619047619,
+      "intercept": 210.33333333333334,
+      "max_residual": 3.2142857142857224,
+      "slope_p10": 1.9494047619047619,
+      "naive_cycles_per_instr": 3.59765625,
+      "N": [
+       8,
+       32,
+       128
+      ],
+      "samples": 192
+     },
+     {
+      "op": "FFMA",
+      "OP": 12,
+      "mode": "dep_consumed",
+      "MODE": 0,
+      "used": true,
+      "slope": 4.002976190476191,
+      "intercept": 208.66666666666663,
+      "max_residual": 0.23809523809529765,
+      "slope_p10": 4.0,
+      "naive_cycles_per_instr": 5.6328125,
+      "N": [
+       8,
+       32,
+       128
+      ],
+      "samples": 192
+     },
+     {
+      "op": "FFMA",
+      "OP": 12,
+      "mode": "dep_unconsumed",
+      "MODE": 1,
+      "used": true,
+      "slope": 4.0,
+      "intercept": 204.0,
+      "max_residual": 0.0,
+      "slope_p10": 4.0026785714285715,
+      "naive_cycles_per_instr": 5.59375,
+      "N": [
+       8,
+       32,
+       128
+      ],
+      "samples": 192
+     },
+     {
+      "op": "FFMA",
+      "OP": 12,
+      "mode": "indep",
+      "MODE": 2,
+      "used": true,
+      "slope": 1.9449404761904763,
+      "intercept": 210.91666666666663,
+      "max_residual": 3.1547619047618696,
+      "slope_p10": 1.9494047619047619,
+      "naive_cycles_per_instr": 3.59765625,
+      "N": [
+       8,
+       32,
+       128
+      ],
+      "samples": 192
+     },
+     {
+      "op": "IMAD",
+      "OP": 13,
+      "mode": "dep_consumed",
+      "MODE": 0,
+      "used": true,
+      "slope": 4.001488095238095,
+      "intercept": 208.75,
+      "max_residual": 0.2976190476190368,
+      "slope_p10": 4.0,
+      "naive_cycles_per_instr": 5.6328125,
+      "N": [
+       8,
+       32,
+       128
+      ],
+      "samples": 192
+     },
+     {
+      "op": "IMAD",
+      "OP": 13,
+      "mode": "dep_unconsumed",
+      "MODE": 1,
+      "used": true,
+      "slope": 3.9985119047619047,
+      "intercept": 203.75000000000003,
+      "max_residual": 0.2976190476190368,
+      "slope_p10": 4.008928571428571,
+      "naive_cycles_per_instr": 5.58984375,
+      "N": [
+       8,
+       32,
+       128
+      ],
+      "samples": 192
+     },
+     {
+      "op": "IMAD",
+      "OP": 13,
+      "mode": "indep",
+      "MODE": 2,
+      "used": true,
+      "slope": 1.9553571428571428,
+      "intercept": 210.16666666666669,
+      "max_residual": 2.738095238095241,
+      "slope_p10": 1.9494047619047619,
+      "naive_cycles_per_instr": 3.6015625,
+      "N": [
+       8,
+       32,
+       128
+      ],
+      "samples": 192
+     },
+     {
+      "op": "DADD",
+      "OP": 14,
+      "mode": "dep_consumed",
+      "MODE": 0,
+      "used": true,
+      "slope": 6.001488095238095,
+      "intercept": 212.75000000000006,
+      "max_residual": 0.29761904761909364,
+      "slope_p10": 6.0,
+      "naive_cycles_per_instr": 7.6640625,
+      "N": [
+       8,
+       32,
+       128
+      ],
+      "samples": 192
+     },
+     {
+      "op": "DADD",
+      "OP": 14,
+      "mode": "dep_unconsumed",
+      "MODE": 1,
+      "used": true,
+      "slope": 5.995535714285714,
+      "intercept": 206.08333333333337,
+      "max_residual": 0.059523809523739146,
+      "slope_p10": 6.0,
+      "naive_cycles_per_instr": 7.60546875,
+      "N": [
+       8,
+       32,
+       128
+      ],
+      "samples": 192
+     },
+     {
+      "op": "DADD",
+      "OP": 14,
+      "mode": "indep",
+      "MODE": 2,
+      "used": true,
+      "slope": 4.020833333333333,
+      "intercept": 212.33333333333334,
+      "max_residual": 0.0,
+      "slope_p10": 4.0,
+      "naive_cycles_per_instr": 10.65625,
+      "N": [
+       8,
+       32
+      ],
+      "samples": 128
+     },
+     {
+      "op": "DFMA",
+      "OP": 15,
+      "mode": "dep_consumed",
+      "MODE": 0,
+      "used": true,
+      "slope": 6.0,
+      "intercept": 212.5,
+      "max_residual": 0.0,
+      "slope_p10": 6.0,
+      "naive_cycles_per_instr": 7.66015625,
+      "N": [
+       8,
+       32,
+       128
+      ],
+      "samples": 192
+     },
+     {
+      "op": "DFMA",
+      "OP": 15,
+      "mode": "dep_unconsumed",
+      "MODE": 1,
+      "used": true,
+      "slope": 6.0,
+      "intercept": 206.0,
+      "max_residual": 0.0,
+      "slope_p10": 6.0,
+      "naive_cycles_per_instr": 7.609375,
+      "N": [
+       8,
+       32,
+       128
+      ],
+      "samples": 192
+     },
+     {
+      "op": "DFMA",
+      "OP": 15,
+      "mode": "indep",
+      "MODE": 2,
+      "used": true,
+      "slope": 4.0,
+      "intercept": 212.5,
+      "max_residual": 0.0,
+      "slope_p10": 4.0,
+      "naive_cycles_per_instr": 10.640625,
+      "N": [
+       8,
+       32
+      ],
+      "samples": 128
+     }
+    ],
+    "table": [
+     {
+      "op": "IADD3",
+      "slope_cycles_per_link": 3.9955357142857144,
+      "slope_p10": 3.9931547619047616,
+      "intercept": 208.08333333333331,
+      "link": [
+       "IADD3"
+      ],
+      "encoded_cycles_per_link": 4.0,
+      "hardware_extra_cycles": -0.004464285714285587,
+      "op_encoded_stall": 4,
+      "cuasmrl_cycles": 4,
+      "encoded_minus_cuasmrl": 0,
+      "dep_unconsumed_slope": 4.001488095238095,
+      "dep_unconsumed_minus_consumed_intercept": -5.333333333333314,
+      "indep_slope": 1.9523809523809523,
+      "naive_cycles_per_instr": {
+       "dep_consumed": 5.62109375,
+       "dep_unconsumed": 5.5859375,
+       "indep": 3.59375
+      },
+      "samples": {
+       "dep_consumed": 192,
+       "dep_unconsumed": 192,
+       "indep": 192
+      }
+     },
+     {
+      "op": "LOP3",
+      "slope_cycles_per_link": 3.9985119047619047,
+      "slope_p10": 4.0,
+      "intercept": 208.75000000000003,
+      "link": [
+       "LOP3"
+      ],
+      "encoded_cycles_per_link": 4.0,
+      "hardware_extra_cycles": -0.0014880952380953438,
+      "op_encoded_stall": 4,
+      "cuasmrl_cycles": null,
+      "encoded_minus_cuasmrl": null,
+      "dep_unconsumed_slope": 4.002976190476191,
+      "dep_unconsumed_minus_consumed_intercept": -5.0833333333334,
+      "indep_slope": 1.9508928571428572,
+      "naive_cycles_per_instr": {
+       "dep_consumed": 5.62890625,
+       "dep_unconsumed": 5.59375,
+       "indep": 3.59765625
+      },
+      "samples": {
+       "dep_consumed": 192,
+       "dep_unconsumed": 192,
+       "indep": 192
+      }
+     },
+     {
+      "op": "SHF",
+      "slope_cycles_per_link": 4.001488095238095,
+      "slope_p10": 4.0,
+      "intercept": 207.25,
+      "link": [
+       "SHF"
+      ],
+      "encoded_cycles_per_link": 4.0,
+      "hardware_extra_cycles": 0.0014880952380948997,
+      "op_encoded_stall": 4,
+      "cuasmrl_cycles": null,
+      "encoded_minus_cuasmrl": null,
+      "dep_unconsumed_slope": 3.9955357142857144,
+      "dep_unconsumed_minus_consumed_intercept": -4.166666666666686,
+      "indep_slope": 1.9479166666666667,
+      "naive_cycles_per_instr": {
+       "dep_consumed": 5.62109375,
+       "dep_unconsumed": 5.58203125,
+       "indep": 3.58984375
+      },
+      "samples": {
+       "dep_consumed": 192,
+       "dep_unconsumed": 192,
+       "indep": 192
+      }
+     },
+     {
+      "op": "LEA",
+      "slope_cycles_per_link": 4.001488095238095,
+      "slope_p10": 3.9970238095238093,
+      "intercept": 207.75,
+      "link": [
+       "LEA"
+      ],
+      "encoded_cycles_per_link": 4.0,
+      "hardware_extra_cycles": 0.0014880952380948997,
+      "op_encoded_stall": 4,
+      "cuasmrl_cycles": 4,
+      "encoded_minus_cuasmrl": 0,
+      "dep_unconsumed_slope": 4.001488095238095,
+      "dep_unconsumed_minus_consumed_intercept": -5.0,
+      "indep_slope": 1.9508928571428572,
+      "naive_cycles_per_instr": {
+       "dep_consumed": 5.625,
+       "dep_unconsumed": 5.5859375,
+       "indep": 3.59375
+      },
+      "samples": {
+       "dep_consumed": 192,
+       "dep_unconsumed": 192,
+       "indep": 192
+      }
+     },
+     {
+      "op": "SEL",
+      "slope_cycles_per_link": 4.0,
+      "slope_p10": 3.9970238095238093,
+      "intercept": 207.5,
+      "link": [
+       "SEL"
+      ],
+      "encoded_cycles_per_link": 4.0,
+      "hardware_extra_cycles": 0.0,
+      "op_encoded_stall": 4,
+      "cuasmrl_cycles": 4,
+      "encoded_minus_cuasmrl": 0,
+      "dep_unconsumed_slope": 4.0,
+      "dep_unconsumed_minus_consumed_intercept": -5.0,
+      "indep_slope": 1.9523809523809523,
+      "naive_cycles_per_instr": {
+       "dep_consumed": 5.62109375,
+       "dep_unconsumed": 5.58203125,
+       "indep": 3.59375
+      },
+      "samples": {
+       "dep_consumed": 192,
+       "dep_unconsumed": 192,
+       "indep": 192
+      }
+     },
+     {
+      "op": "IMNMX",
+      "slope_cycles_per_link": 4.0,
+      "slope_p10": 3.9991071428571434,
+      "intercept": 208.0,
+      "link": [
+       "IMNMX"
+      ],
+      "encoded_cycles_per_link": 4.0,
+      "hardware_extra_cycles": 0.0,
+      "op_encoded_stall": 4,
+      "cuasmrl_cycles": 4,
+      "encoded_minus_cuasmrl": 0,
+      "dep_unconsumed_slope": 4.0,
+      "dep_unconsumed_minus_consumed_intercept": -5.0,
+      "indep_slope": 1.9479166666666667,
+      "naive_cycles_per_instr": {
+       "dep_consumed": 5.625,
+       "dep_unconsumed": 5.5859375,
+       "indep": 3.58984375
+      },
+      "samples": {
+       "dep_consumed": 192,
+       "dep_unconsumed": 192,
+       "indep": 192
+      }
+     },
+     {
+      "op": "IABS",
+      "slope_cycles_per_link": 7.995535714285714,
+      "slope_p10": 8.0,
+      "intercept": 208.08333333333337,
+      "link": [
+       "LOP3",
+       "IABS"
+      ],
+      "encoded_cycles_per_link": 8.0,
+      "hardware_extra_cycles": -0.004464285714285587,
+      "op_encoded_stall": 4,
+      "cuasmrl_cycles": 4,
+      "encoded_minus_cuasmrl": 0,
+      "dep_unconsumed_slope": 7.998511904761905,
+      "dep_unconsumed_minus_consumed_intercept": -5.333333333333428,
+      "indep_slope": 3.949404761904762,
+      "naive_cycles_per_instr": {
+       "dep_consumed": 9.62109375,
+       "dep_unconsumed": 9.58203125,
+       "indep": 5.58984375
+      },
+      "samples": {
+       "dep_consumed": 192,
+       "dep_unconsumed": 192,
+       "indep": 192
+      }
+     },
+     {
+      "op": "HADD2",
+      "slope_cycles_per_link": 4.0,
+      "slope_p10": 4.0,
+      "intercept": 208.5,
+      "link": [
+       "HADD2"
+      ],
+      "encoded_cycles_per_link": 4.0,
+      "hardware_extra_cycles": 0.0,
+      "op_encoded_stall": 4,
+      "cuasmrl_cycles": 4,
+      "encoded_minus_cuasmrl": 0,
+      "dep_unconsumed_slope": 4.001488095238095,
+      "dep_unconsumed_minus_consumed_intercept": -4.75,
+      "indep_slope": 1.9583333333333333,
+      "naive_cycles_per_instr": {
+       "dep_consumed": 5.62890625,
+       "dep_unconsumed": 5.59375,
+       "indep": 3.6015625
+      },
+      "samples": {
+       "dep_consumed": 192,
+       "dep_unconsumed": 192,
+       "indep": 192
+      }
+     },
+     {
+      "op": "HFMA2",
+      "slope_cycles_per_link": 4.001488095238095,
+      "slope_p10": 3.994047619047619,
+      "intercept": 208.75,
+      "link": [
+       "HFMA2"
+      ],
+      "encoded_cycles_per_link": 4.0,
+      "hardware_extra_cycles": 0.0014880952380948997,
+      "op_encoded_stall": 4,
+      "cuasmrl_cycles": null,
+      "encoded_minus_cuasmrl": null,
+      "dep_unconsumed_slope": 4.0,
+      "dep_unconsumed_minus_consumed_intercept": -4.75,
+      "indep_slope": 1.9583333333333333,
+      "naive_cycles_per_instr": {
+       "dep_consumed": 5.6328125,
+       "dep_unconsumed": 5.59375,
+       "indep": 3.6015625
+      },
+      "samples": {
+       "dep_consumed": 192,
+       "dep_unconsumed": 192,
+       "indep": 192
+      }
+     },
+     {
+      "op": "IMAD_WIDE",
+      "slope_cycles_per_link": 13.0,
+      "slope_p10": 13.0,
+      "intercept": 213.5,
+      "link": [
+       "IADD3",
+       "IMAD_WIDE"
+      ],
+      "encoded_cycles_per_link": 10.0,
+      "hardware_extra_cycles": 3.0,
+      "op_encoded_stall": 5,
+      "cuasmrl_cycles": 5,
+      "encoded_minus_cuasmrl": 0,
+      "dep_unconsumed_slope": 12.995535714285714,
+      "dep_unconsumed_minus_consumed_intercept": -6.416666666666629,
+      "indep_slope": 5.520833333333333,
+      "naive_cycles_per_instr": {
+       "dep_consumed": 14.66796875,
+       "dep_unconsumed": 14.61328125,
+       "indep": 14.125
+      },
+      "samples": {
+       "dep_consumed": 192,
+       "dep_unconsumed": 192,
+       "indep": 128
+      }
+     },
+     {
+      "op": "FMUL",
+      "slope_cycles_per_link": 4.0,
+      "slope_p10": 4.0,
+      "intercept": 209.0,
+      "link": [
+       "FMUL"
+      ],
+      "encoded_cycles_per_link": 4.0,
+      "hardware_extra_cycles": 0.0,
+      "op_encoded_stall": 4,
+      "cuasmrl_cycles": null,
+      "encoded_minus_cuasmrl": null,
+      "dep_unconsumed_slope": 3.9955357142857144,
+      "dep_unconsumed_minus_consumed_intercept": -4.916666666666686,
+      "indep_slope": 1.9494047619047619,
+      "naive_cycles_per_instr": {
+       "dep_consumed": 5.6328125,
+       "dep_unconsumed": 5.58984375,
+       "indep": 3.59765625
+      },
+      "samples": {
+       "dep_consumed": 192,
+       "dep_unconsumed": 192,
+       "indep": 192
+      }
+     },
+     {
+      "op": "FADD",
+      "slope_cycles_per_link": 4.0,
+      "slope_p10": 4.0,
+      "intercept": 208.5,
+      "link": [
+       "FADD"
+      ],
+      "encoded_cycles_per_link": 4.0,
+      "hardware_extra_cycles": 0.0,
+      "op_encoded_stall": 4,
+      "cuasmrl_cycles": 4,
+      "encoded_minus_cuasmrl": 0,
+      "dep_unconsumed_slope": 4.005952380952381,
+      "dep_unconsumed_minus_consumed_intercept": -5.333333333333371,
+      "indep_slope": 1.9494047619047619,
+      "naive_cycles_per_instr": {
+       "dep_consumed": 5.62890625,
+       "dep_unconsumed": 5.59375,
+       "indep": 3.59765625
+      },
+      "samples": {
+       "dep_consumed": 192,
+       "dep_unconsumed": 192,
+       "indep": 192
+      }
+     },
+     {
+      "op": "FFMA",
+      "slope_cycles_per_link": 4.002976190476191,
+      "slope_p10": 4.0,
+      "intercept": 208.66666666666663,
+      "link": [
+       "FFMA"
+      ],
+      "encoded_cycles_per_link": 4.0,
+      "hardware_extra_cycles": 0.0029761904761906877,
+      "op_encoded_stall": 4,
+      "cuasmrl_cycles": null,
+      "encoded_minus_cuasmrl": null,
+      "dep_unconsumed_slope": 4.0,
+      "dep_unconsumed_minus_consumed_intercept": -4.666666666666629,
+      "indep_slope": 1.9449404761904763,
+      "naive_cycles_per_instr": {
+       "dep_consumed": 5.6328125,
+       "dep_unconsumed": 5.59375,
+       "indep": 3.59765625
+      },
+      "samples": {
+       "dep_consumed": 192,
+       "dep_unconsumed": 192,
+       "indep": 192
+      }
+     },
+     {
+      "op": "IMAD",
+      "slope_cycles_per_link": 4.001488095238095,
+      "slope_p10": 4.0,
+      "intercept": 208.75,
+      "link": [
+       "IMAD"
+      ],
+      "encoded_cycles_per_link": 4.0,
+      "hardware_extra_cycles": 0.0014880952380948997,
+      "op_encoded_stall": 4,
+      "cuasmrl_cycles": 4,
+      "encoded_minus_cuasmrl": 0,
+      "dep_unconsumed_slope": 3.9985119047619047,
+      "dep_unconsumed_minus_consumed_intercept": -4.999999999999972,
+      "indep_slope": 1.9553571428571428,
+      "naive_cycles_per_instr": {
+       "dep_consumed": 5.6328125,
+       "dep_unconsumed": 5.58984375,
+       "indep": 3.6015625
+      },
+      "samples": {
+       "dep_consumed": 192,
+       "dep_unconsumed": 192,
+       "indep": 192
+      }
+     },
+     {
+      "op": "DADD",
+      "slope_cycles_per_link": 6.001488095238095,
+      "slope_p10": 6.0,
+      "intercept": 212.75000000000006,
+      "link": [
+       "DADD"
+      ],
+      "encoded_cycles_per_link": 6.0,
+      "hardware_extra_cycles": 0.0014880952380948997,
+      "op_encoded_stall": 6,
+      "cuasmrl_cycles": null,
+      "encoded_minus_cuasmrl": null,
+      "dep_unconsumed_slope": 5.995535714285714,
+      "dep_unconsumed_minus_consumed_intercept": -6.666666666666686,
+      "indep_slope": 4.020833333333333,
+      "naive_cycles_per_instr": {
+       "dep_consumed": 7.6640625,
+       "dep_unconsumed": 7.60546875,
+       "indep": 10.65625
+      },
+      "samples": {
+       "dep_consumed": 192,
+       "dep_unconsumed": 192,
+       "indep": 128
+      }
+     },
+     {
+      "op": "DFMA",
+      "slope_cycles_per_link": 6.0,
+      "slope_p10": 6.0,
+      "intercept": 212.5,
+      "link": [
+       "DFMA"
+      ],
+      "encoded_cycles_per_link": 6.0,
+      "hardware_extra_cycles": 0.0,
+      "op_encoded_stall": 6,
+      "cuasmrl_cycles": null,
+      "encoded_minus_cuasmrl": null,
+      "dep_unconsumed_slope": 6.0,
+      "dep_unconsumed_minus_consumed_intercept": -6.5,
+      "indep_slope": 4.0,
+      "naive_cycles_per_instr": {
+       "dep_consumed": 7.66015625,
+       "dep_unconsumed": 7.609375,
+       "indep": 10.640625
+      },
+      "samples": {
+       "dep_consumed": 192,
+       "dep_unconsumed": 192,
+       "indep": 128
+      }
+     }
+    ],
+    "excluded": []
+   }
+  },
+  "dropped": [],
+  "inconsistencies": [],
+  "notes": [
+   "orders: each intended order is forced in the kernel by data dependencies or asm volatile clock reads; it holds for this run only where the reorder SASS gate of the binary that measured says PASS (label 'gate' per instantiation). FAIL (E1-E5) and EXCLUDED (E6) instantiations are dropped from every derived figure and listed in 'dropped'; 'gate not run' = no usable PREFIX.reorder_sass.json / reorder_sass.json next to the run; 'not in gate' = the gate lists no such kernel. The gate also fails compared variants whose brackets wait on different scoreboards left outstanding before c0 (pre-bracket waits)",
+   "cycles = the bracket c0 .. c1 in SM cycles (body + consume: the closing clock read waits for the consumed results); p10 / p50 / p90 with the sample count n per (variant, params); derived differences are p50 - p50. ns only where a group's brackets span >= 8 %globaltimer ticks, through that group's own SM clock (sum of cycles / sum of timer spans); shorter brackets are cycles only",
+   "load_use: L = overlap(0) - chain_only(0) (the load's latency exposed at N = 0, with its dependent address arithmetic, its issue and the consume of its value; serial(0) - chain_only(0) is the cross-check), c = chain_only(0). The overlap chain cannot start before the load is issued: d = the cycles from the seed's data to its first FFMA (the load's address arithmetic, its issue, the clock read that orders the chain after it; 26-27 issue cycles with NVRTC 12.9), which serial's and chain_only's chains do not pay. Model overlap = max(L, 4N + d) + c, serial = L + 4N + c, saving = serial - overlap = min(4N, L - d): L - d is the part of the load's latency a chain can hide. Crossover N* = the knee of overlap(N), least squares a + b * max(N*, N) with b = chain_only's slope (at the top of the measured N it lies beyond the range); model N* = (L - d) / 4. d comes from the knee fit (its intercept - chain_only's) when the knee is inside the range, else from the gate (chain_start_cycles, the binary's issue cycles); both are reported, and a fit that differs from the issue count by more than max(8, d / 4) is an inconsistency (overlap holds a cost the SASS does not explain). overlap2 - overlap = the second independent load's extra cost (both in flight at once)",
+   "war: reuse - fresh = the cost of overwriting a register a store has not read yet (stores read their operands late, through the MIO queue). It is a WAR measurement only where the gate decoded a wait on the store's read scoreboard in the reuse build (war_wait true) and none in the fresh build; a reuse build without it is 'not provoked'. The overwrite issues D cycles after the store (war_distance_cycles, the gate's issue count; reuse: the clock read and its LOP3 that order the chain lie between, 12-13 cycles), so the figure is the WAR stall beyond D: an operand read done within D costs 0. reuse_clock - fresh_clock is the same with the first overwrite right after the store where ptxas gave the clock read (or the chain seed's LOP3) the stored register (D = 2-5 with NVRTC 12.9; the gate says per build). fresh - nostore = the store's own cost in the bracket",
+   "bar: per rep the late warp (1024 FFMA before the barrier) arrives last. Early warps' c_end - the late warp's c_arrive: pre = release + touch; post = pre when the M register-only FFMA after BAR.SYNC.DEFER_BLOCKING ran during the wait (exposed fraction (post - pre) / 4M near 0), pre + 4M when they waited for the release; post_mem puts a shared load + store before them (expected not to overlap). post's FFMA are ordered after the barrier by a clock read, assumed not to end the deferral (it is not a memory instruction); each warp records when that clock read issued (flags >> 16 = it - c_arrive), and post_clock_during_wait is the fraction of early-warp samples where it issued before the late warp arrived: near 1 the assumption holds; near 0 post cannot tell a clock read that ends the deferral from no deferral at all (post_reading says which). late_sink shift = pre - late_sink of the early warps' c_end - the late warp's c_start (expected 4M). Reps are rebuilt per SM from the arrival stamps (every arrival of a rep precedes its release, a warp's next arrival follows it); incomplete reps are counted and not used. The per-group bracket (groups) is every warp's c_end - c_start, early and late warps pooled; the comparisons use the per-rep stamps",
+   "fence: fence cycles = after(M = 0) - chain_only(M = 0): the same clock read, LOP3 and consume STS, plus one fence after one store (the store's drain included). fence_only lacks that scaffolding: fence_only(0) - chain_only(0) + the scaffolding's issue cycles (the gate's after_store_cycles of chain_only(0)) is the cross-check. after - before = what moving the work ahead of the fence saves, against min(fence, W), W = the issue cycles before keeps between its store and its fence (the gate's store_to_fence_cycles: 4M plus the clock read, its LOP3 and the consume STS; else 4M); before's fence also covers that STS, which in after issues behind the fence and nothing waits for. before - chain_only = the fence's exposed part, against max(0, fence - W)",
+   "pipe: cycles per FFMA = (c1 - c0) / 1024 per warp (the consume adds ~0.02). k = the time-weighted number of recorded warps on the same SM and sub-partition (%warpid % 4) during that warp's bracket, itself included (unrecorded warm-up brackets are not counted). Expectation max(4 / ILP, p * k), p = 32 / FP32 lanes per sub-partition: 2 on cc 7.x and 8.0, 1 on cc 8.6 / 8.7 / 8.9, 9.0 and later; limit = the term that binds at the median k (the chain's latency, which interleaving ILP chains hides, or the shared FP32 pipe, which it cannot)",
+   "stall: slope of cycles = a + b * N over the per-N medians per (OP, MODE). dep_consumed (the chain consumed before c1): slope_cycles_per_link = the issue interval of one dependent link. One warp waits exactly the stall count ptxas encoded before its next instruction, so for the fixed-latency ops the slope reproduces the encoding (encoded_cycles_per_link, the gate's static_cycles_per_link) unless the hardware adds to it (hardware_extra_cycles); the encoding is ptxas's choice, an upper bound on the op's minimum stall, which CuAsmRL finds by lowering stall counts until results go wrong (Tier B's stall-lowering edits test that on the GPU). op_encoded_stall = the stall ptxas put on the op itself (the gate's target_stalls), compared with CuAsmRL's dependency-based A100 table (IADD3, IMAD.IADD, IADD3.X, MOV, IABS, IMAD, FADD, HADD2, IMNMX, SEL, LEA 4; IMAD.WIDE(.U32) 5; the other OPs are not in it): encoded_minus_cuasmrl. A link of IABS (LOP3.LUT + IABS) or IMAD_WIDE (IMAD.WIDE.U32 + the IADD3 of the 64-bit add, its IADD3.X off the chain) holds a helper, so its slope is the link's, not the op's. Variable-latency ops (DADD, DFMA on sm_80 / sm_86) wait on a scoreboard, not on the stall count. dep_unconsumed keeps the slope (each instruction still waits for its predecessor) but the closing clock read does not wait for the last result (intercept about one latency lower); indep's slope is the issue interval of one update (IABS's and IMAD_WIDE's updates issue their helpers too), what a clock-based method without dependencies reports (CuAsmRL measured 2.6 cycles per IADD3 that way); naive_cycles_per_instr = p50 / N at the largest N. An (OP, MODE) with an instantiation the gate EXCLUDED (opcode count != N, or a dependency structure other than the mode's) is dropped from the fits' use and from the table"
+  ]
+ }
+}

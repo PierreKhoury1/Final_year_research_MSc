@@ -1,0 +1,1684 @@
+{
+ "prefix": "/root/res/sweep/ffma4096",
+ "strategy": "ktrace",
+ "gpu": "NVIDIA H100 80GB HBM3",
+ "sms": 132,
+ "host": "82fbfcd49b63",
+ "clock": {
+  "tick_ns": 64,
+  "method": "edge",
+  "bound_ns": 645.1492802351713,
+  "rate_ppm": 6.982993835613627,
+  "feasible": true,
+  "windows": {
+   "pre": {
+    "edge_bound_ns": 715.1714337617159,
+    "edge_feasible": true,
+    "n_up": 3000,
+    "n_down": 3000,
+    "rate_ppm": 6.705073851698273
+   },
+   "post": {
+    "edge_bound_ns": 645.149280237034,
+    "edge_feasible": true,
+    "n_up": 3000,
+    "n_down": 3000,
+    "rate_ppm": 6.982993836945894
+   }
+  },
+  "width_ns": 1290.2985604703426
+ },
+ "n_gpu_recs": 317280,
+ "gpu_recs_dropped": 0,
+ "n_host_events": 77,
+ "result": {
+  "ffma": 4096,
+  "kt_layout": 2,
+  "tick_ns": 64,
+  "bound_ns": 645.1492802351713,
+  "by_blocks": {
+   "1": {
+    "kernels": 5,
+    "checkpoint_cost_cycles": {
+     "p50": 16.0,
+     "p90": 20.0,
+     "p99": 20.0,
+     "p100": 20.0,
+     "n": 40,
+     "mean": 16.1
+    },
+    "touch_chain_cycles": {
+     "p50": 72.0,
+     "p90": 76.0,
+     "p99": 78.0,
+     "p100": 78.0,
+     "n": 40,
+     "mean": 71.35
+    },
+    "phases_cycles": {
+     "load": {
+      "p50": 373.0,
+      "p90": 392.2,
+      "p99": 397.22,
+      "p100": 398.0,
+      "n": 40,
+      "mean": 372.15
+     },
+     "barrier1": {
+      "p50": 35.0,
+      "p90": 52.2,
+      "p99": 56.0,
+      "p100": 56.0,
+      "n": 40,
+      "mean": 35.05
+     },
+     "compute": {
+      "p50": 16392.0,
+      "p90": 16494.0,
+      "p99": 16504.44,
+      "p100": 16506.0,
+      "n": 40,
+      "mean": 16415.65
+     },
+     "barrier2": {
+      "p50": 38.0,
+      "p90": 46.0,
+      "p99": 50.0,
+      "p100": 50.0,
+      "n": 40,
+      "mean": 38.85
+     },
+     "store_fence": {
+      "p50": 1227.0,
+      "p90": 1238.2,
+      "p99": 1243.22,
+      "p100": 1244.0,
+      "n": 40,
+      "mean": 1117.8
+     },
+     "ticket": {
+      "p50": 514.0,
+      "p90": 588.0,
+      "p99": 631.2,
+      "p100": 636.0,
+      "n": 5,
+      "mean": 538.0
+     },
+     "tail": {
+      "p50": 542.0,
+      "p90": 998.0,
+      "p99": 1116.44,
+      "p100": 1118.0,
+      "n": 40,
+      "mean": 612.55
+     },
+     "flag_store": {
+      "p50": 10.0,
+      "p90": 14.0,
+      "p99": 14.0,
+      "p100": 14.0,
+      "n": 40,
+      "mean": 9.35
+     }
+    },
+    "barrier1": {
+     "wait_cycles": {
+      "p50": 22.0,
+      "p90": 46.400000000000006,
+      "p99": 49.31999999999999,
+      "p100": 50.0,
+      "n": 35,
+      "mean": 24.114285714285714
+     },
+     "release_cycles": {
+      "p50": 16.200000000000003,
+      "p90": 32.04,
+      "p99": 34.42,
+      "p100": 35.2,
+      "n": 40,
+      "mean": 17.3
+     },
+     "arrival_spread_cycles": {
+      "p50": 48.0,
+      "p90": 49.2,
+      "p99": 49.92,
+      "p100": 50.0,
+      "n": 5,
+      "mean": 47.6
+     }
+    },
+    "barrier2": {
+     "wait_cycles": {
+      "p50": 20.0,
+      "p90": 30.0,
+      "p99": 34.0,
+      "p100": 34.0,
+      "n": 35,
+      "mean": 18.742857142857144
+     },
+     "release_cycles": {
+      "p50": 25.6,
+      "p90": 37.2,
+      "p99": 39.2,
+      "p100": 39.2,
+      "n": 40,
+      "mean": 25.8
+     },
+     "arrival_spread_cycles": {
+      "p50": 32.0,
+      "p90": 34.0,
+      "p99": 34.0,
+      "p100": 34.0,
+      "n": 5,
+      "mean": 32.0
+     }
+    },
+    "barrier_release_before_last_arrival": 0,
+    "kernel_span_ns": {
+     "p50": 9622.044290040365,
+     "p90": 9710.287246595104,
+     "p99": 9751.247327575791,
+     "p100": 9755.798447684756,
+     "n": 5,
+     "mean": 9651.643014826554
+    },
+    "block_start_spread_ns": {
+     "p50": 0.0,
+     "p90": 0.0,
+     "p99": 0.0,
+     "p100": 0.0,
+     "n": 5,
+     "mean": 0.0
+    },
+    "sm_ghz_lo": {
+     "p50": 1.9692837688708915,
+     "p90": 1.9699766148407947,
+     "p99": 1.9699766894605855,
+     "p100": 1.9699766977516733,
+     "n": 5,
+     "mean": 1.9689835185218503
+    },
+    "sm_ghz_hi": {
+     "p50": 1.9889935844881392,
+     "p90": 1.9897090809536782,
+     "p99": 1.9898612426678977,
+     "p100": 1.989878149525033,
+     "n": 5,
+     "mean": 1.988667143714105
+    },
+    "rate_inconsistency_ns": {
+     "p50": 0.0,
+     "p90": 0.0,
+     "p99": 0.0,
+     "p100": 0.0,
+     "n": 5,
+     "mean": 0.0
+    },
+    "block_bound_ns": {
+     "p50_over_launches": {
+      "p50": 19.613150029887038,
+      "p90": 21.333627462816366,
+      "p99": 21.7622149394585,
+      "p100": 21.809835770196514,
+      "n": 5,
+      "mean": 19.885836055629262
+     },
+     "max_over_launches": {
+      "p50": 19.613150029887038,
+      "p90": 21.333627462816366,
+      "p99": 21.7622149394585,
+      "p100": 21.809835770196514,
+      "n": 5,
+      "mean": 19.885836055629262
+     }
+    },
+    "ticket": {
+     "n": 5,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "cross_sm_floor_ns": {
+      "p50": null,
+      "p90": null,
+      "p99": null,
+      "p100": null,
+      "n": 0
+     }
+    },
+    "launch_to_first_entry_ns": {
+     "p50": 5196.0,
+     "p90": 5458.0,
+     "p99": 5512.0,
+     "p100": 5518.0,
+     "n": 4,
+     "mean": 5184.5
+    },
+    "launch_to_first_entry_cold_ns": {
+     "p50": 120002.0,
+     "p90": 120002.0,
+     "p99": 120002.0,
+     "p100": 120002.0,
+     "n": 1,
+     "mean": 120002.0
+    },
+    "flag_write_to_flag_seen_ns": {
+     "p50": 716.0,
+     "p90": 1102.0,
+     "p99": 1328.8,
+     "p100": 1354.0,
+     "n": 5,
+     "mean": 840.8
+    },
+    "flag_write_to_flag_seen_min_ns": {
+     "p50": 688.0,
+     "p90": 1076.0,
+     "p99": 1302.8,
+     "p100": 1328.0,
+     "n": 5,
+     "mean": 814.0
+    },
+    "flag_write_to_flag_seen_max_ns": {
+     "p50": 746.0,
+     "p90": 1127.6000000000001,
+     "p99": 1352.96,
+     "p100": 1378.0,
+     "n": 5,
+     "mean": 868.4
+    },
+    "last_exit_to_sync_return_ns": {
+     "p50": 4719.0,
+     "p90": 4781.4,
+     "p99": 4798.14,
+     "p100": 4800.0,
+     "n": 4,
+     "mean": 4723.0
+    },
+    "compute_cycles_per_ffma": {
+     "p50": 4.001953125,
+     "p90": 4.02685546875,
+     "p99": 4.029404296875,
+     "p100": 4.02978515625,
+     "n": 40,
+     "mean": 4.00772705078125
+    },
+    "writer_fence_cycles": {
+     "p50": 2782.0,
+     "p90": 3712.4,
+     "p99": 4095.44,
+     "p100": 4138.0,
+     "n": 5,
+     "mean": 3109.6
+    },
+    "kernel_span_incl_writer_fence_ns": {
+     "p50": 11028.397511375464,
+     "p90": 11587.192450357257,
+     "p99": 11822.624315126806,
+     "p100": 11848.783411212313,
+     "n": 5,
+     "mean": 11223.224147087449
+    },
+    "last_exit_incl_writer_fence_to_sync_return_ns": {
+     "p50": 3275.0,
+     "p90": 3321.2,
+     "p99": 3330.92,
+     "p100": 3332.0,
+     "n": 4,
+     "mean": 3282.5
+    }
+   },
+   "132": {
+    "kernels": 5,
+    "checkpoint_cost_cycles": {
+     "p50": 16.0,
+     "p90": 20.0,
+     "p99": 28.0,
+     "p100": 28.0,
+     "n": 5280,
+     "mean": 15.895454545454545
+    },
+    "touch_chain_cycles": {
+     "p50": 66.0,
+     "p90": 74.0,
+     "p99": 80.0,
+     "p100": 90.0,
+     "n": 5280,
+     "mean": 67.64090909090909
+    },
+    "phases_cycles": {
+     "load": {
+      "p50": 380.0,
+      "p90": 426.0,
+      "p99": 584.0,
+      "p100": 624.0,
+      "n": 5280,
+      "mean": 391.1787878787879
+     },
+     "barrier1": {
+      "p50": 60.0,
+      "p90": 134.0,
+      "p99": 318.0,
+      "p100": 540.0,
+      "n": 5280,
+      "mean": 75.43409090909091
+     },
+     "compute": {
+      "p50": 16390.0,
+      "p90": 16454.0,
+      "p99": 16720.0,
+      "p100": 16910.0,
+      "n": 5280,
+      "mean": 16411.219696969696
+     },
+     "barrier2": {
+      "p50": 42.0,
+      "p90": 48.0,
+      "p99": 50.0,
+      "p100": 54.0,
+      "n": 5280,
+      "mean": 42.26931818181818
+     },
+     "store_fence": {
+      "p50": 1484.0,
+      "p90": 1674.0,
+      "p99": 1792.0,
+      "p100": 1844.0,
+      "n": 5280,
+      "mean": 1427.3128787878788
+     },
+     "ticket": {
+      "p50": 507.0,
+      "p90": 566.0,
+      "p99": 638.4599999999998,
+      "p100": 688.0,
+      "n": 660,
+      "mean": 461.4909090909091
+     },
+     "tail": {
+      "p50": 382.0,
+      "p90": 862.0,
+      "p99": 1114.0,
+      "p100": 1208.0,
+      "n": 5280,
+      "mean": 396.1068181818182
+     },
+     "flag_store": {
+      "p50": 8.0,
+      "p90": 14.0,
+      "p99": 20.0,
+      "p100": 22.0,
+      "n": 5280,
+      "mean": 8.610984848484849
+     }
+    },
+    "barrier1": {
+     "wait_cycles": {
+      "p50": 50.0,
+      "p90": 128.0,
+      "p99": 310.0,
+      "p100": 538.0,
+      "n": 4620,
+      "mean": 66.76796536796537
+     },
+     "release_cycles": {
+      "p50": 21.0,
+      "p90": 34.0,
+      "p99": 38.0,
+      "p100": 38.0,
+      "n": 5280,
+      "mean": 20.653030303030302
+     },
+     "arrival_spread_cycles": {
+      "p50": 113.0,
+      "p90": 268.20000000000005,
+      "p99": 353.27999999999975,
+      "p100": 538.0,
+      "n": 660,
+      "mean": 131.54848484848486
+     }
+    },
+    "barrier2": {
+     "wait_cycles": {
+      "p50": 20.0,
+      "p90": 32.0,
+      "p99": 36.0,
+      "p100": 36.0,
+      "n": 4620,
+      "mean": 17.96883116883117
+     },
+     "release_cycles": {
+      "p50": 30.0,
+      "p90": 42.0,
+      "p99": 44.0,
+      "p100": 48.0,
+      "n": 5280,
+      "mean": 30.1875
+     },
+     "arrival_spread_cycles": {
+      "p50": 32.0,
+      "p90": 36.0,
+      "p99": 36.0,
+      "p100": 36.0,
+      "n": 660,
+      "mean": 32.554545454545455
+     }
+    },
+    "barrier_release_before_last_arrival": 0,
+    "kernel_span_ns": {
+     "p50": 10158.415365435736,
+     "p90": 10249.980533125246,
+     "p99": 10280.066109971916,
+     "p100": 10283.408951843769,
+     "n": 5,
+     "mean": 10182.21161523324
+    },
+    "block_start_spread_ns": {
+     "p50": 271.9796026208787,
+     "p90": 297.1298489750072,
+     "p99": 311.508765292993,
+     "p100": 313.10642266165814,
+     "n": 5,
+     "mean": 267.17083702611274
+    },
+    "sm_ghz_lo": {
+     "p50": 1.9666724461866887,
+     "p90": 1.9686204601638937,
+     "p99": 1.9687748407243328,
+     "p100": 1.9687919941199372,
+     "n": 5,
+     "mean": 1.9665090097442846
+    },
+    "sm_ghz_hi": {
+     "p50": 1.9706098694464635,
+     "p90": 1.9725618066152961,
+     "p99": 1.9727165088879504,
+     "p100": 1.9727336980293564,
+     "n": 5,
+     "mean": 1.9704460976423817
+    },
+    "rate_inconsistency_ns": {
+     "p50": 8.466064453125,
+     "p90": 11.227392578125,
+     "p99": 12.62037109375,
+     "p100": 12.775146484375,
+     "n": 5,
+     "mean": 9.1427734375
+    },
+    "block_bound_ns": {
+     "p50_over_launches": {
+      "p50": 14.043556968012126,
+      "p90": 14.885956539773906,
+      "p99": 15.113101319484995,
+      "p100": 15.138339628341782,
+      "n": 5,
+      "mean": 13.534133875272527
+     },
+     "max_over_launches": {
+      "p50": 27.707004188167048,
+      "p90": 30.06622639563284,
+      "p99": 31.3747897678928,
+      "p100": 31.520185698143905,
+      "n": 5,
+      "mean": 28.15906409843883
+     }
+    },
+    "ticket": {
+     "n": 660,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "cross_sm_floor_ns": {
+      "p50": 192.92190106751514,
+      "p90": 196.70636669874074,
+      "p99": 197.39346418219966,
+      "p100": 197.46980834702845,
+      "n": 5,
+      "mean": 191.4112316286948
+     }
+    },
+    "launch_to_first_entry_ns": {
+     "p50": 4812.0,
+     "p90": 4906.8,
+     "p99": 4956.48,
+     "p100": 4962.0,
+     "n": 5,
+     "mean": 4804.0
+    },
+    "launch_to_first_entry_cold_ns": {
+     "p50": null,
+     "p90": null,
+     "p99": null,
+     "p100": null,
+     "n": 0
+    },
+    "flag_write_to_flag_seen_ns": {
+     "p50": 700.0,
+     "p90": 757.6,
+     "p99": 759.76,
+     "p100": 760.0,
+     "n": 5,
+     "mean": 709.2
+    },
+    "flag_write_to_flag_seen_min_ns": {
+     "p50": 678.0,
+     "p90": 734.4,
+     "p99": 735.84,
+     "p100": 736.0,
+     "n": 5,
+     "mean": 687.6
+    },
+    "flag_write_to_flag_seen_max_ns": {
+     "p50": 722.0,
+     "p90": 780.4,
+     "p99": 781.84,
+     "p100": 782.0,
+     "n": 5,
+     "mean": 730.8
+    },
+    "last_exit_to_sync_return_ns": {
+     "p50": 4958.0,
+     "p90": 5051.6,
+     "p99": 5107.76,
+     "p100": 5114.0,
+     "n": 5,
+     "mean": 4952.8
+    },
+    "compute_cycles_per_ffma": {
+     "p50": 4.00146484375,
+     "p90": 4.01708984375,
+     "p99": 4.08203125,
+     "p100": 4.12841796875,
+     "n": 5280,
+     "mean": 4.006645433830492
+    },
+    "writer_fence_cycles": {
+     "p50": 3416.0,
+     "p90": 3590.4,
+     "p99": 3678.24,
+     "p100": 3688.0,
+     "n": 5,
+     "mean": 3377.6
+    },
+    "kernel_span_incl_writer_fence_ns": {
+     "p50": 11851.148601225956,
+     "p90": 12043.818719924351,
+     "p99": 12148.955956774276,
+     "p100": 12160.637871979823,
+     "n": 5,
+     "mean": 11889.449609597836
+    },
+    "last_exit_incl_writer_fence_to_sync_return_ns": {
+     "p50": 3238.0,
+     "p90": 3296.0,
+     "p99": 3328.4,
+     "p100": 3332.0,
+     "n": 5,
+     "mean": 3246.0
+    }
+   },
+   "528": {
+    "kernels": 5,
+    "checkpoint_cost_cycles": {
+     "p50": 14.0,
+     "p90": 26.0,
+     "p99": 56.0,
+     "p100": 9862.0,
+     "n": 21120,
+     "mean": 25.71619318181818
+    },
+    "touch_chain_cycles": {
+     "p50": 88.0,
+     "p90": 148.0,
+     "p99": 9114.880000000063,
+     "p100": 16530.0,
+     "n": 21120,
+     "mean": 271.90179924242426
+    },
+    "phases_cycles": {
+     "load": {
+      "p50": 556.0,
+      "p90": 1130.2000000000044,
+      "p99": 9994.0,
+      "p100": 17192.0,
+      "n": 21120,
+      "mean": 923.1045454545455
+     },
+     "barrier1": {
+      "p50": 202.0,
+      "p90": 16356.0,
+      "p99": 16589.620000000003,
+      "p100": 16970.0,
+      "n": 21120,
+      "mean": 3068.8788825757574
+     },
+     "compute": {
+      "p50": 16482.0,
+      "p90": 18942.200000000004,
+      "p99": 33881.62,
+      "p100": 36084.0,
+      "n": 21120,
+      "mean": 18132.941950757577
+     },
+     "barrier2": {
+      "p50": 72.0,
+      "p90": 160.0,
+      "p99": 298.0,
+      "p100": 536.0,
+      "n": 21120,
+      "mean": -92.01013257575758
+     },
+     "store_fence": {
+      "p50": 1338.0,
+      "p90": 1626.0,
+      "p99": 1808.0,
+      "p100": 2018.0,
+      "n": 21120,
+      "mean": 1302.7647727272727
+     },
+     "ticket": {
+      "p50": 510.0,
+      "p90": 622.0,
+      "p99": 690.0,
+      "p100": 1052.0,
+      "n": 2640,
+      "mean": 482.13863636363635
+     },
+     "tail": {
+      "p50": 540.0,
+      "p90": 992.0,
+      "p99": 1213.6200000000026,
+      "p100": 1640.0,
+      "n": 21120,
+      "mean": 523.9962121212121
+     },
+     "flag_store": {
+      "p50": 16.0,
+      "p90": 24.0,
+      "p99": 40.0,
+      "p100": 50.0,
+      "n": 21120,
+      "mean": 1.7710227272727272
+     }
+    },
+    "barrier1": {
+     "wait_cycles": {
+      "p50": 148.0,
+      "p90": 480.0,
+      "p99": 16466.0,
+      "p100": 16966.0,
+      "n": 18480,
+      "mean": 646.4524891774892
+     },
+     "release_cycles": {
+      "p50": 42.0,
+      "p90": 16264.0,
+      "p99": 16412.0,
+      "p100": 16460.0,
+      "n": 21120,
+      "mean": 2707.1347537878787
+     },
+     "arrival_spread_cycles": {
+      "p50": 288.0,
+      "p90": 734.0,
+      "p99": 16558.0,
+      "p100": 16966.0,
+      "n": 2640,
+      "mean": 922.0659090909091
+     }
+    },
+    "barrier2": {
+     "wait_cycles": {
+      "p50": 42.0,
+      "p90": 164.0,
+      "p99": 298.0,
+      "p100": 528.0,
+      "n": 18480,
+      "mean": 67.82251082251082
+     },
+     "release_cycles": {
+      "p50": 44.0,
+      "p90": 100.0,
+      "p99": 156.0,
+      "p100": 278.0,
+      "n": 21120,
+      "mean": 52.5469696969697
+     },
+     "arrival_spread_cycles": {
+      "p50": 86.0,
+      "p90": 228.0,
+      "p99": 360.0,
+      "p100": 528.0,
+      "n": 2640,
+      "mean": 117.79772727272727
+     }
+    },
+    "barrier_release_before_last_arrival": 0,
+    "kernel_span_ns": {
+     "p50": 28699.232611848623,
+     "p90": 28770.25472410581,
+     "p99": 28792.163757133232,
+     "p100": 28794.59809413628,
+     "n": 5,
+     "mean": 28693.0069828838
+    },
+    "block_start_spread_ns": {
+     "p50": 17974.58541866194,
+     "p90": 18055.570239390516,
+     "p99": 18095.06322595301,
+     "p100": 18099.451335571066,
+     "n": 5,
+     "mean": 17960.524352301447
+    },
+    "sm_ghz_lo": {
+     "p50": 1.9632530115681746,
+     "p90": 1.9635462891174982,
+     "p99": 1.9636525960870006,
+     "p100": 1.9636644079725007,
+     "n": 5,
+     "mean": 1.9630673761703243
+    },
+    "sm_ghz_hi": {
+     "p50": 1.967183555739343,
+     "p90": 1.9674773572217423,
+     "p99": 1.9675838678171016,
+     "p100": 1.967595702327697,
+     "n": 5,
+     "mean": 1.9669974971389663
+    },
+    "rate_inconsistency_ns": {
+     "p50": 46.482177734375,
+     "p90": 49.75419921875,
+     "p99": 50.585380859375,
+     "p100": 50.677734375,
+     "n": 5,
+     "mean": 47.334375
+    },
+    "block_bound_ns": {
+     "p50_over_launches": {
+      "p50": 41.026296718162484,
+      "p90": 43.75440742762294,
+      "p99": 44.82912153242505,
+      "p100": 44.9485342107364,
+      "n": 5,
+      "mean": 41.6005332308996
+     },
+     "max_over_launches": {
+      "p50": 66.57108804746531,
+      "p90": 69.23621083729377,
+      "p99": 70.34308012651047,
+      "p100": 70.4660656030901,
+      "n": 5,
+      "mean": 67.18729241924885
+     }
+    },
+    "ticket": {
+     "n": 2640,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "cross_sm_floor_ns": {
+      "p50": 199.2100203357404,
+      "p90": 205.1695560859749,
+      "p99": 207.3576541358512,
+      "p100": 207.600776141393,
+      "n": 5,
+      "mean": 197.72600315707967
+     }
+    },
+    "launch_to_first_entry_ns": {
+     "p50": 4672.0,
+     "p90": 4798.4,
+     "p99": 4799.84,
+     "p100": 4800.0,
+     "n": 5,
+     "mean": 4702.4
+    },
+    "launch_to_first_entry_cold_ns": {
+     "p50": null,
+     "p90": null,
+     "p99": null,
+     "p100": null,
+     "n": 0
+    },
+    "flag_write_to_flag_seen_ns": {
+     "p50": 710.0,
+     "p90": 736.8,
+     "p99": 743.28,
+     "p100": 744.0,
+     "n": 5,
+     "mean": 709.6
+    },
+    "flag_write_to_flag_seen_min_ns": {
+     "p50": 672.0,
+     "p90": 692.8,
+     "p99": 695.68,
+     "p100": 696.0,
+     "n": 5,
+     "mean": 667.2
+    },
+    "flag_write_to_flag_seen_max_ns": {
+     "p50": 748.0,
+     "p90": 781.6,
+     "p99": 790.96,
+     "p100": 792.0,
+     "n": 5,
+     "mean": 752.4
+    },
+    "last_exit_to_sync_return_ns": {
+     "p50": 4764.0,
+     "p90": 4804.0,
+     "p99": 4818.4,
+     "p100": 4820.0,
+     "n": 5,
+     "mean": 4720.0
+    },
+    "compute_cycles_per_ffma": {
+     "p50": 4.02392578125,
+     "p90": 4.624560546875001,
+     "p99": 8.2718798828125,
+     "p100": 8.8095703125,
+     "n": 21120,
+     "mean": 4.426987780946674
+    },
+    "writer_fence_cycles": {
+     "p50": 3186.0,
+     "p90": 3262.4,
+     "p99": 3274.64,
+     "p100": 3276.0,
+     "n": 5,
+     "mean": 3059.2
+    },
+    "kernel_span_incl_writer_fence_ns": {
+     "p50": 30259.225495995255,
+     "p90": 30316.05131052233,
+     "p99": 30345.325503112832,
+     "p100": 30348.578191178443,
+     "n": 5,
+     "mean": 30249.83038455212
+    },
+    "last_exit_incl_writer_fence_to_sync_return_ns": {
+     "p50": 3192.0,
+     "p90": 3198.0,
+     "p99": 3198.0,
+     "p100": 3198.0,
+     "n": 5,
+     "mean": 3163.2
+    }
+   }
+  },
+  "kernels": [
+   {
+    "kid": 1,
+    "blocks": 1,
+    "cold": true,
+    "span_gpu_ns": 9755.798447684756,
+    "block_start_spread_ns": 0.0,
+    "sm_fit": {
+     "n": 1,
+     "bound_ns_p50": 17.41802872936637,
+     "bound_ns_max": 18.29666988363715,
+     "block_max_bound_p50": 18.29666988363715,
+     "block_max_bound_max": 18.29666988363715,
+     "ghz_lo": 1.9678272542840318,
+     "ghz_hi": 1.9864214125452142,
+     "ghz_lo_exact": 1.9697878228782288,
+     "ghz_hi_exact": 1.9844276094276094,
+     "ghz_p50": 1.977124333414623,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 1,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 305.0712181075054,
+     "slack_min_ns": null,
+     "slack_p50_ns": null,
+     "worst_margin_ns": null,
+     "cross_sm_floor_ns": null
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 120002.0,
+     "call_ns": 114702,
+     "last_exit_to_sync_return_ns": 5676.0,
+     "bound_ns": 645.1492802351713,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 3582.0,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      9760.0,
+      9808.687507317645
+     ],
+     "flag_write_to_flag_seen_ns": 1354.0,
+     "flag_write_to_flag_seen_min_ns": 1328.0,
+     "flag_write_to_flag_seen_max_ns": 1378.0,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 4138.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 11848.783411212313
+   },
+   {
+    "kid": 2,
+    "blocks": 1,
+    "cold": false,
+    "span_gpu_ns": 9622.044290040365,
+    "block_start_spread_ns": 0.0,
+    "sm_fit": {
+     "n": 1,
+     "bound_ns_p50": 19.3597105795925,
+     "bound_ns_max": 20.619315001746145,
+     "block_max_bound_p50": 20.619315001746145,
+     "block_max_bound_max": 20.619315001746145,
+     "ghz_lo": 1.9678533812281784,
+     "ghz_hi": 1.988587093915494,
+     "ghz_lo_exact": 1.9698129251700678,
+     "ghz_hi_exact": 1.9865900383141775,
+     "ghz_p50": 1.9782202375718363,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 1,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 242.3831480525956,
+     "slack_min_ns": null,
+     "slack_p50_ns": null,
+     "worst_margin_ns": null,
+     "cross_sm_floor_ns": null
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 5318.0,
+     "call_ns": 2334,
+     "last_exit_to_sync_return_ns": 4738.0,
+     "bound_ns": 645.1492802351713,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 3332.0,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      37419.72999035679,
+      37477.07662421757
+     ],
+     "flag_write_to_flag_seen_ns": 700.0,
+     "flag_write_to_flag_seen_min_ns": 672.0,
+     "flag_write_to_flag_seen_max_ns": 730.0,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 2782.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 11028.397511375464
+   },
+   {
+    "kid": 3,
+    "blocks": 1,
+    "cold": false,
+    "span_gpu_ns": 9618.777340749402,
+    "block_start_spread_ns": 0.0,
+    "sm_fit": {
+     "n": 1,
+     "bound_ns_p50": 18.376574888645337,
+     "bound_ns_max": 19.613150029887038,
+     "block_max_bound_p50": 19.613150029887038,
+     "block_max_bound_max": 19.613150029887038,
+     "ghz_lo": 1.9699766977516733,
+     "ghz_hi": 1.989878149525033,
+     "ghz_lo_exact": 1.9719387755102038,
+     "ghz_hi_exact": 1.9878802281368821,
+     "ghz_p50": 1.9799274236383533,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 1,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 243.23097377370905,
+     "slack_min_ns": null,
+     "slack_p50_ns": null,
+     "worst_margin_ns": null,
+     "cross_sm_floor_ns": null
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 4828.0,
+     "call_ns": 1943,
+     "last_exit_to_sync_return_ns": 4700.0,
+     "bound_ns": 645.1492802351713,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 3296.0,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      62664.67615062761,
+      62720.0
+     ],
+     "flag_write_to_flag_seen_ns": 724.0,
+     "flag_write_to_flag_seen_min_ns": 698.0,
+     "flag_write_to_flag_seen_max_ns": 752.0,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 2780.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 11022.90467782582
+   },
+   {
+    "kid": 4,
+    "blocks": 1,
+    "cold": false,
+    "span_gpu_ns": 9642.020444960624,
+    "block_start_spread_ns": 0.0,
+    "sm_fit": {
+     "n": 1,
+     "bound_ns_p50": 18.239667673697113,
+     "bound_ns_max": 19.090209592679457,
+     "block_max_bound_p50": 19.090209592679457,
+     "block_max_bound_max": 19.090209592679457,
+     "ghz_lo": 1.9699764904744765,
+     "ghz_hi": 1.9894554780966458,
+     "ghz_lo_exact": 1.9719387755102016,
+     "ghz_hi_exact": 1.9874581939799334,
+     "ghz_p50": 1.9797159842855612,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 1,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 244.28794981879489,
+     "slack_min_ns": null,
+     "slack_p50_ns": null,
+     "worst_margin_ns": null,
+     "cross_sm_floor_ns": null
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 5518.0,
+     "call_ns": 2384,
+     "last_exit_to_sync_return_ns": 4800.0,
+     "bound_ns": 645.1492802351713,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 3248.0,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      88320.0,
+      88370.25614489004
+     ],
+     "flag_write_to_flag_seen_ns": 710.0,
+     "flag_write_to_flag_seen_min_ns": 684.0,
+     "flag_write_to_flag_seen_max_ns": 736.0,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 3074.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 11194.806009074673
+   },
+   {
+    "kid": 5,
+    "blocks": 1,
+    "cold": false,
+    "span_gpu_ns": 9619.574550697624,
+    "block_start_spread_ns": 0.0,
+    "sm_fit": {
+     "n": 1,
+     "bound_ns_p50": 18.546144334868586,
+     "bound_ns_max": 21.809835770196514,
+     "block_max_bound_p50": 21.809835770196514,
+     "block_max_bound_max": 21.809835770196514,
+     "ghz_lo": 1.9692837688708915,
+     "ghz_hi": 1.9889935844881392,
+     "ghz_lo_exact": 1.9712452471482869,
+     "ghz_hi_exact": 1.9869966442953035,
+     "ghz_p50": 1.9791386766795154,
+     "common_rate": true,
+     "rate_inconsistency_ns": 0.0,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 1,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 242.33361221426014,
+     "slack_min_ns": null,
+     "slack_p50_ns": null,
+     "worst_margin_ns": null,
+     "cross_sm_floor_ns": null
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 5074.0,
+     "call_ns": 1842,
+     "last_exit_to_sync_return_ns": 4654.0,
+     "bound_ns": 645.1492802351713,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 3254.0,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      113576.05235381043,
+      113635.77673297167
+     ],
+     "flag_write_to_flag_seen_ns": 716.0,
+     "flag_write_to_flag_seen_min_ns": 688.0,
+     "flag_write_to_flag_seen_max_ns": 746.0,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 2774.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 11021.229125948972
+   },
+   {
+    "kid": 6,
+    "blocks": 132,
+    "cold": false,
+    "span_gpu_ns": 10283.408951843769,
+    "block_start_spread_ns": 271.9796026208787,
+    "sm_fit": {
+     "n": 132,
+     "bound_ns_p50": 14.56156556525093,
+     "bound_ns_max": 31.520185698143905,
+     "block_max_bound_p50": 15.138339628341782,
+     "block_max_bound_max": 31.520185698143905,
+     "ghz_lo": 1.9626352407084429,
+     "ghz_hi": 1.9665644946527234,
+     "ghz_lo_exact": 1.964597875922074,
+     "ghz_hi_exact": 1.964597930130939,
+     "ghz_p50": 1.9645998676805831,
+     "common_rate": true,
+     "rate_inconsistency_ns": 12.775146484375,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 132,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 155.6013041179393,
+     "slack_min_ns": 171.0803014281264,
+     "slack_p50_ns": 265.8114911589364,
+     "worst_margin_ns": 197.46980834702845,
+     "cross_sm_floor_ns": 197.46980834702845
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 4812.0,
+     "call_ns": 1823,
+     "last_exit_to_sync_return_ns": 5114.0,
+     "bound_ns": 645.1492802351713,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 3238.0,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      141376.0,
+      141423.54749116092
+     ],
+     "flag_write_to_flag_seen_ns": 754.0,
+     "flag_write_to_flag_seen_min_ns": 732.0,
+     "flag_write_to_flag_seen_max_ns": 778.0,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 3688.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 12160.637871979823
+   },
+   {
+    "kid": 7,
+    "blocks": 132,
+    "cold": false,
+    "span_gpu_ns": 10158.415365435736,
+    "block_start_spread_ns": 273.16498844503076,
+    "sm_fit": {
+     "n": 132,
+     "bound_ns_p50": 10.731195628097339,
+     "bound_ns_max": 27.72326456027804,
+     "block_max_bound_p50": 11.282062720376416,
+     "block_max_bound_max": 27.707004188167048,
+     "ghz_lo": 1.9660822084765261,
+     "ghz_hi": 1.970018456589159,
+     "ghz_lo_exact": 1.9680482906113528,
+     "ghz_hi_exact": 1.9680484380587722,
+     "ghz_p50": 1.9680503325328425,
+     "common_rate": true,
+     "rate_inconsistency_ns": 8.1142578125,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 132,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 146.19152375792257,
+     "slack_min_ns": 166.4196256576397,
+     "slack_p50_ns": 247.30478724674322,
+     "worst_margin_ns": 185.6072527502256,
+     "cross_sm_floor_ns": 185.6072527502256
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 4824.0,
+     "call_ns": 1813,
+     "last_exit_to_sync_return_ns": 4898.0,
+     "bound_ns": 645.1492802351713,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 3188.0,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      167303.38749442092,
+      167340.7978788162
+     ],
+     "flag_write_to_flag_seen_ns": 660.0,
+     "flag_write_to_flag_seen_min_ns": 642.0,
+     "flag_write_to_flag_seen_max_ns": 680.0,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 3444.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 11868.589991841145
+   },
+   {
+    "kid": 8,
+    "blocks": 132,
+    "cold": false,
+    "span_gpu_ns": 10147.932900995947,
+    "block_start_spread_ns": 221.0898263216368,
+    "sm_fit": {
+     "n": 132,
+     "bound_ns_p50": 14.212307380730635,
+     "bound_ns_max": 27.88528744186624,
+     "block_max_bound_p50": 14.507381906922092,
+     "block_max_bound_max": 27.88528744186624,
+     "ghz_lo": 1.9666724461866887,
+     "ghz_hi": 1.9706098694464635,
+     "ghz_lo_exact": 1.9686391185624736,
+     "ghz_hi_exact": 1.9686392595064748,
+     "ghz_p50": 1.9686411578165761,
+     "common_rate": true,
+     "rate_inconsistency_ns": 8.90576171875,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 132,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 142.08799232221997,
+     "slack_min_ns": 156.17694734912948,
+     "slack_p50_ns": 249.11252452631015,
+     "worst_margin_ns": 185.49599175239564,
+     "cross_sm_floor_ns": 185.49599175239564
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 4794.0,
+     "call_ns": 1722,
+     "last_exit_to_sync_return_ns": 4836.0,
+     "bound_ns": 645.1492802351713,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 3242.0,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      193049.31261122864,
+      193096.90576171875
+     ],
+     "flag_write_to_flag_seen_ns": 760.0,
+     "flag_write_to_flag_seen_min_ns": 736.0,
+     "flag_write_to_flag_seen_max_ns": 782.0,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 3136.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 11740.911450578744
+   },
+   {
+    "kid": 9,
+    "blocks": 132,
+    "cold": false,
+    "span_gpu_ns": 10199.837905047461,
+    "block_start_spread_ns": 256.51334508135915,
+    "sm_fit": {
+     "n": 132,
+     "bound_ns_p50": 12.27580259880051,
+     "bound_ns_max": 26.668637435213896,
+     "block_max_bound_p50": 12.699328152710223,
+     "block_max_bound_max": 26.668637435213896,
+     "ghz_lo": 1.9683631592298283,
+     "ghz_hi": 1.9723039694942057,
+     "ghz_lo_exact": 1.9703315223175621,
+     "ghz_hi_exact": 1.970331665453072,
+     "ghz_p50": 1.970333564362017,
+     "common_rate": true,
+     "rate_inconsistency_ns": 8.466064453125,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 132,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 143.99403154516358,
+     "slack_min_ns": 167.53302523455932,
+     "slack_p50_ns": 251.30971678433707,
+     "worst_margin_ns": 192.92190106751514,
+     "cross_sm_floor_ns": 192.92190106751514
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 4962.0,
+     "call_ns": 1853,
+     "last_exit_to_sync_return_ns": 4958.0,
+     "bound_ns": 645.1492802351713,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 3332.0,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      218987.63957819695,
+      219032.72322708592
+     ],
+     "flag_write_to_flag_seen_ns": 700.0,
+     "flag_write_to_flag_seen_min_ns": 678.0,
+     "flag_write_to_flag_seen_max_ns": 722.0,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 3204.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 11825.960132363514
+   },
+   {
+    "kid": 10,
+    "blocks": 132,
+    "cold": false,
+    "span_gpu_ns": 10121.462952843285,
+    "block_start_spread_ns": 313.10642266165814,
+    "sm_fit": {
+     "n": 132,
+     "bound_ns_p50": 13.559182702003454,
+     "bound_ns_max": 27.014205728803063,
+     "block_max_bound_p50": 14.043556968012126,
+     "block_max_bound_max": 27.014205728803063,
+     "ghz_lo": 1.9687919941199372,
+     "ghz_hi": 1.9727336980293564,
+     "ghz_lo_exact": 1.9707607860250376,
+     "ghz_hi_exact": 1.9707609642421293,
+     "ghz_p50": 1.970762846074647,
+     "common_rate": true,
+     "rate_inconsistency_ns": 7.45263671875,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 132,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 147.0041294928417,
+     "slack_min_ns": 165.71402958745603,
+     "slack_p50_ns": 242.73598786379443,
+     "worst_margin_ns": 195.5612042263092,
+     "cross_sm_floor_ns": 195.5612042263092
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 4628.0,
+     "call_ns": 1693,
+     "last_exit_to_sync_return_ns": 4958.0,
+     "bound_ns": 645.1492802351713,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 3230.0,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      244576.0,
+      244617.78818068389
+     ],
+     "flag_write_to_flag_seen_ns": 672.0,
+     "flag_write_to_flag_seen_min_ns": 650.0,
+     "flag_write_to_flag_seen_max_ns": 692.0,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 3416.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 11851.148601225956
+   },
+   {
+    "kid": 11,
+    "blocks": 528,
+    "cold": false,
+    "span_gpu_ns": 28591.303279324668,
+    "block_start_spread_ns": 17959.99770650966,
+    "sm_fit": {
+     "n": 528,
+     "bound_ns_p50": 40.30527135972079,
+     "bound_ns_max": 70.47074330845498,
+     "block_max_bound_p50": 41.016615250046016,
+     "block_max_bound_max": 70.4660656030901,
+     "ghz_lo": 1.9621581946859292,
+     "ghz_hi": 1.9660864720193945,
+     "ghz_lo_exact": 1.9641203528642979,
+     "ghz_hi_exact": 1.9641203855310254,
+     "ghz_p50": 1.9641223333526618,
+     "common_rate": true,
+     "rate_inconsistency_ns": 50.677734375,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 528,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 140.38039726529252,
+     "slack_min_ns": 140.0394131373032,
+     "slack_p50_ns": 275.64090985199437,
+     "worst_margin_ns": 199.2100203357404,
+     "cross_sm_floor_ns": 199.2100203357404
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 4796.0,
+     "call_ns": 1833,
+     "last_exit_to_sync_return_ns": 4780.0,
+     "bound_ns": 645.1492802351713,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 3112.0,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      288625.54248756537,
+      288700.87059245043
+     ],
+     "flag_write_to_flag_seen_ns": 710.0,
+     "flag_write_to_flag_seen_min_ns": 672.0,
+     "flag_write_to_flag_seen_max_ns": 748.0,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 3276.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 30259.225495995255
+   },
+   {
+    "kid": 12,
+    "blocks": 528,
+    "cold": false,
+    "span_gpu_ns": 28646.161260049324,
+    "block_start_spread_ns": 17778.838705644885,
+    "sm_fit": {
+     "n": 528,
+     "bound_ns_p50": 40.51261477335356,
+     "bound_ns_max": 66.60161769689876,
+     "block_max_bound_p50": 41.026296718162484,
+     "block_max_bound_max": 66.57108804746531,
+     "ghz_lo": 1.9633691108349944,
+     "ghz_hi": 1.9672998395628103,
+     "ghz_lo_exact": 1.9653324799159706,
+     "ghz_hi_exact": 1.9653325396933288,
+     "ghz_p50": 1.9653344751989024,
+     "common_rate": true,
+     "rate_inconsistency_ns": 45.92724609375,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 528,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 139.27719328279443,
+     "slack_min_ns": 141.80173754889984,
+     "slack_p50_ns": 257.098382649594,
+     "worst_margin_ns": 198.0121843011584,
+     "cross_sm_floor_ns": 198.0121843011584
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 4620.0,
+     "call_ns": 1682,
+     "last_exit_to_sync_return_ns": 4820.0,
+     "bound_ns": 645.1492802351713,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 3198.0,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      332659.56843498425,
+      332755.0205318874
+     ],
+     "flag_write_to_flag_seen_ns": 744.0,
+     "flag_write_to_flag_seen_min_ns": 696.0,
+     "flag_write_to_flag_seen_max_ns": 792.0,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 3186.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 30267.26098953816
+   },
+   {
+    "kid": 13,
+    "blocks": 528,
+    "cold": false,
+    "span_gpu_ns": 28794.59809413628,
+    "block_start_spread_ns": 17974.58541866194,
+    "sm_fit": {
+     "n": 528,
+     "bound_ns_p50": 44.41040270263329,
+     "bound_ns_max": 67.39465203459258,
+     "block_max_bound_p50": 44.9485342107364,
+     "block_max_bound_max": 67.39142868859926,
+     "ghz_lo": 1.962892155790021,
+     "ghz_hi": 1.9668219160455864,
+     "ghz_lo_exact": 1.9648550479227425,
+     "ghz_hi_exact": 1.9648550941064256,
+     "ghz_p50": 1.9648570359178037,
+     "common_rate": true,
+     "rate_inconsistency_ns": 48.368896484375,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 528,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 0.0,
+     "slack_min_ns": 143.24401098303497,
+     "slack_p50_ns": 257.5275248226244,
+     "worst_margin_ns": 182.28430900425883,
+     "cross_sm_floor_ns": 182.28430900425883
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 4800.0,
+     "call_ns": 1853,
+     "last_exit_to_sync_return_ns": 4614.0,
+     "bound_ns": 645.1492802351713,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 3192.0,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      376883.05325303663,
+      376974.74424352817
+     ],
+     "flag_write_to_flag_seen_ns": 686.0,
+     "flag_write_to_flag_seen_min_ns": 640.0,
+     "flag_write_to_flag_seen_max_ns": 732.0,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 2792.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 30215.5680380204
+   },
+   {
+    "kid": 14,
+    "blocks": 528,
+    "cold": false,
+    "span_gpu_ns": 28733.7396690601,
+    "block_start_spread_ns": 17989.748595119687,
+    "sm_fit": {
+     "n": 528,
+     "bound_ns_p50": 40.95660492556635,
+     "bound_ns_max": 65.72093714866787,
+     "block_max_bound_p50": 41.963217252952745,
+     "block_max_bound_max": 65.72093714866787,
+     "ghz_lo": 1.9632530115681746,
+     "ghz_hi": 1.967183555739343,
+     "ghz_lo_exact": 1.9652162645259947,
+     "ghz_hi_exact": 1.9652163721297475,
+     "ghz_p50": 1.9652182836537588,
+     "common_rate": true,
+     "rate_inconsistency_ns": 46.482177734375,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 528,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 146.40219981493215,
+     "slack_min_ns": 147.86444166168803,
+     "slack_p50_ns": 256.4317062511109,
+     "worst_margin_ns": 207.600776141393,
+     "cross_sm_floor_ns": 207.600776141393
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 4672.0,
+     "call_ns": 1793,
+     "last_exit_to_sync_return_ns": 4622.0,
+     "bound_ns": 645.1492802351713,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 3198.0,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      420745.81259757257,
+      420830.781656106
+     ],
+     "flag_write_to_flag_seen_ns": 682.0,
+     "flag_write_to_flag_seen_min_ns": 640.0,
+     "flag_write_to_flag_seen_max_ns": 724.0,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 2800.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 30158.51920802833
+   },
+   {
+    "kid": 15,
+    "blocks": 528,
+    "cold": false,
+    "span_gpu_ns": 28699.232611848623,
+    "block_start_spread_ns": 18099.451335571066,
+    "sm_fit": {
+     "n": 528,
+     "bound_ns_p50": 38.513578408717876,
+     "bound_ns_max": 65.79304758046055,
+     "block_max_bound_p50": 39.04800272260036,
+     "block_max_bound_max": 65.78694260842167,
+     "ghz_lo": 1.9636644079725007,
+     "ghz_hi": 1.967595702327697,
+     "ghz_lo_exact": 1.965628072363368,
+     "ghz_hi_exact": 1.96562810660823,
+     "ghz_p50": 1.965630055150099,
+     "common_rate": true,
+     "rate_inconsistency_ns": 45.2158203125,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 528,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 132.14096762481026,
+     "slack_min_ns": 137.61455982649932,
+     "slack_p50_ns": 258.7148698589299,
+     "worst_margin_ns": 201.52272600284778,
+     "cross_sm_floor_ns": 201.52272600284778
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 4624.0,
+     "call_ns": 1713,
+     "last_exit_to_sync_return_ns": 4764.0,
+     "bound_ns": 645.1492802351713,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 3116.0,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      464490.74867901945,
+      464568.419364009
+     ],
+     "flag_write_to_flag_seen_ns": 726.0,
+     "flag_write_to_flag_seen_min_ns": 688.0,
+     "flag_write_to_flag_seen_max_ns": 766.0,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 3242.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 30348.578191178443
+   }
+  ],
+  "notes": [
+   "phase cycles subtract the entry checkpoint cost (c1 - c0), which may overstate the in-phase checkpoint cost by a few cycles: phases may be a few cy short",
+   "load = a 4 B .nc load + the dependent address (LOP3, LEA, LEA.HI.X) + a dependent 16 B .nc load + the consuming shared store; every index and address is computed before entry",
+   "compute = the seed FADD + 4096 dependent FFMA, fully unrolled (no loop control); compute_cycles_per_ffma per block count. Hypotheses, not established: at 1 block/SM a rise of cycles/FFMA with FFMA_N (64..4096 = 1-64 KB of straight-line code) points at instruction-cache overflow; at 3 blocks/SM issue contention between overlapping warps also grows with FFMA_N; a cold sequential fetch cost per instruction is constant in FFMA_N and cannot be separated from the FFMA latency by the sweep (compare with the instr profile's isolated FFMA latency); Ampere/Hopper L0/L1 i-cache sizes are undocumented",
+   "barrier1/2 = the barrier + exactly the calibrated touch chain; tail = third barrier + shared load of (ticket, flag pointer) + writer predicate; flag_store = the predicated flag store alone",
+   "scoreboard waits (SASS control bits, NVRTC 12.9): the computed stamp's opening timer read waits on the barrier-1 touch's STS register read (hidden behind >= 64 dependent FFMA); the stamp after the flag store may wait on the STG's operand read if ptxas reuses its register (not in the checked build)",
+   "ticket = warp 0 only (the atomic with return); the other 7 warps branch around it",
+   "flag write window = [max(flag checkpoint, flag value), exit checkpoint] of the writer warp (no value + tick bound)",
+   "exit excludes the writer's system fence (layout 1 included it: ~3.5k cy A100, ~1.8k cy RTX 3060): kernel_span_ns and last_exit_to_sync_return_ns are not comparable with layout 1; kernel_span_incl_writer_fence_ns and last_exit_incl_writer_fence_to_sync_return_ns are; writer_fence_cycles = writer's exit -> fence done (MEMBAR.SC.SYS + ERRBAR, as in layout 1, plus ~10 setup instructions incl. an S2R: a few tens of cycles)",
+   "host-axis latencies carry the run's host<->GPU bound (bound_ns) in addition to the block bound"
+  ]
+ }
+}

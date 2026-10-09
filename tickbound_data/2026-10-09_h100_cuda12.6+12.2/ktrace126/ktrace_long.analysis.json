@@ -1,0 +1,519 @@
+{
+ "prefix": "/root/res/ktrace126/ktrace_long",
+ "strategy": "ktrace",
+ "gpu": "NVIDIA H100 80GB HBM3",
+ "sms": 132,
+ "host": "aed87a1b0dd5",
+ "clock": {
+  "tick_ns": 64,
+  "method": "edge",
+  "bound_ns": 555.5001183375716,
+  "rate_ppm": 11.094258794308587,
+  "feasible": true,
+  "windows": {
+   "pre": {
+    "edge_bound_ns": 622.6496543679386,
+    "edge_feasible": true,
+    "n_up": 3000,
+    "n_down": 3000,
+    "rate_ppm": 9.870858794780446
+   },
+   "post": {
+    "edge_bound_ns": 558.3829904877348,
+    "edge_feasible": true,
+    "n_up": 3000,
+    "n_down": 3000,
+    "rate_ppm": 12.353538052956026
+   }
+  },
+  "width_ns": 1111.0002366751432
+ },
+ "n_gpu_recs": 152064,
+ "gpu_recs_dropped": 0,
+ "n_host_events": 17,
+ "result": {
+  "ffma": 4096,
+  "kt_layout": 2,
+  "tick_ns": 64,
+  "bound_ns": 555.5001183375716,
+  "by_blocks": {
+   "528": {
+    "kernels": 3,
+    "checkpoint_cost_cycles": {
+     "p50": 24.0,
+     "p90": 33.0,
+     "p99": 59.0,
+     "p100": 9186.0,
+     "n": 12672,
+     "mean": 31.05350378787879
+    },
+    "touch_chain_cycles": {
+     "p50": 80.0,
+     "p90": 121.0,
+     "p99": 4141.059999999798,
+     "p100": 16526.0,
+     "n": 12672,
+     "mean": 216.3817866161616
+    },
+    "phases_cycles": {
+     "load": {
+      "p50": 618.0,
+      "p90": 1145.0,
+      "p99": 9788.869999999997,
+      "p100": 17203.0,
+      "n": 12672,
+      "mean": 927.56194760101
+     },
+     "barrier1": {
+      "p50": 218.0,
+      "p90": 16250.9,
+      "p99": 16621.0,
+      "p100": 17236.0,
+      "n": 12672,
+      "mean": 2264.370659722222
+     },
+     "compute": {
+      "p50": 16835.0,
+      "p90": 33619.0,
+      "p99": 34345.58,
+      "p100": 36498.0,
+      "n": 12672,
+      "mean": 19178.712594696968
+     },
+     "barrier2": {
+      "p50": 61.0,
+      "p90": 147.0,
+      "p99": 278.0,
+      "p100": 430.0,
+      "n": 12672,
+      "mean": -59.43434343434343
+     },
+     "store_fence": {
+      "p50": 1368.0,
+      "p90": 1695.0,
+      "p99": 1891.0,
+      "p100": 1958.0,
+      "n": 12672,
+      "mean": 1354.386600378788
+     },
+     "ticket": {
+      "p50": 478.0,
+      "p90": 606.7,
+      "p99": 713.1700000000001,
+      "p100": 896.0,
+      "n": 1584,
+      "mean": 468.81691919191917
+     },
+     "tail": {
+      "p50": 548.0,
+      "p90": 968.0,
+      "p99": 1201.0,
+      "p100": 1497.0,
+      "n": 12672,
+      "mean": 534.9229797979798
+     },
+     "flag_store": {
+      "p50": -1.0,
+      "p90": 3.0,
+      "p99": 4.0,
+      "p100": 8.0,
+      "n": 12672,
+      "mean": -6.785984848484849
+     }
+    },
+    "barrier1": {
+     "wait_cycles": {
+      "p50": 175.0,
+      "p90": 512.3000000000011,
+      "p99": 16214.649999999996,
+      "p100": 16813.0,
+      "n": 11088,
+      "mean": 602.4320887445888
+     },
+     "release_cycles": {
+      "p50": 53.0,
+      "p90": 16134.9,
+      "p99": 16437.0,
+      "p100": 16461.0,
+      "n": 12672,
+      "mean": 1895.6243686868686
+     },
+     "arrival_spread_cycles": {
+      "p50": 329.0,
+      "p90": 807.7,
+      "p99": 16460.74,
+      "p100": 16813.0,
+      "n": 1584,
+      "mean": 896.3573232323232
+     }
+    },
+    "barrier2": {
+     "wait_cycles": {
+      "p50": 37.0,
+      "p90": 156.0,
+      "p99": 279.0,
+      "p100": 426.0,
+      "n": 11088,
+      "mean": 62.43975468975469
+     },
+     "release_cycles": {
+      "p50": 40.0,
+      "p90": 72.0,
+      "p99": 111.0,
+      "p100": 152.0,
+      "n": 12672,
+      "mean": 44.31265782828283
+     },
+     "arrival_spread_cycles": {
+      "p50": 77.0,
+      "p90": 221.4000000000001,
+      "p99": 329.0,
+      "p100": 426.0,
+      "n": 1584,
+      "mean": 108.29924242424242
+     }
+    },
+    "barrier_release_before_last_arrival": 0,
+    "kernel_span_ns": {
+     "p50": 28344.070800035275,
+     "p90": 28696.501279369048,
+     "p99": 28775.798137219146,
+     "p100": 28784.60889920249,
+     "n": 3,
+     "mean": 28397.354530292418
+    },
+    "block_start_spread_ns": {
+     "p50": 17653.212671882917,
+     "p90": 17936.46392942047,
+     "p99": 18000.195462366424,
+     "p100": 18007.27674380486,
+     "n": 3,
+     "mean": 16224.587656207581
+    },
+    "sm_ghz_lo": {
+     "p50": 1.9819523029397828,
+     "p90": 1.9835520134004119,
+     "p99": 1.9839119482540533,
+     "p100": 1.983951941015569,
+     "n": 3,
+     "mean": 1.9749987635829882
+    },
+    "sm_ghz_hi": {
+     "p50": 1.9859201819612935,
+     "p90": 1.987523134743879,
+     "p99": 1.9878837991199607,
+     "p100": 1.9879238729395254,
+     "n": 3,
+     "mean": 1.9789527515582177
+    },
+    "rate_inconsistency_ns": {
+     "p50": 28.841796875,
+     "p90": 85.5291015625,
+     "p99": 98.2837451171875,
+     "p100": 99.700927734375,
+     "n": 3,
+     "mean": 50.390055338541664
+    },
+    "block_bound_ns": {
+     "p50_over_launches": {
+      "p50": 31.80865555763262,
+      "p90": 74.92079817746757,
+      "p99": 84.62103026693045,
+      "p100": 85.69883383242632,
+      "n": 3,
+      "mean": 48.360108969233124
+     },
+     "max_over_launches": {
+      "p50": 50.21428444221692,
+      "p90": 106.9587255718181,
+      "p99": 119.72622482597836,
+      "p100": 121.1448358542184,
+      "n": 3,
+      "mean": 71.46476594165051
+     }
+    },
+    "ticket": {
+     "n": 1584,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "cross_sm_floor_ns": {
+      "p50": 211.44536861468805,
+      "p90": 222.81907408203696,
+      "p99": 225.37815781219047,
+      "p100": 225.6625004488742,
+      "n": 3,
+      "mean": 211.71737612135135
+     }
+    },
+    "launch_to_first_entry_ns": {
+     "p50": 4984.25,
+     "p90": 5265.25,
+     "p99": 5328.475,
+     "p100": 5335.5,
+     "n": 2,
+     "mean": 4984.25
+    },
+    "launch_to_first_entry_cold_ns": {
+     "p50": 136339.0,
+     "p90": 136339.0,
+     "p99": 136339.0,
+     "p100": 136339.0,
+     "n": 1,
+     "mean": 136339.0
+    },
+    "flag_write_to_flag_seen_ns": {
+     "p50": 596.0,
+     "p90": 952.4,
+     "p99": 1032.59,
+     "p100": 1041.5,
+     "n": 3,
+     "mean": 709.0
+    },
+    "flag_write_to_flag_seen_min_ns": {
+     "p50": 560.0,
+     "p90": 926.4,
+     "p99": 1008.84,
+     "p100": 1018.0,
+     "n": 3,
+     "mean": 669.1666666666666
+    },
+    "flag_write_to_flag_seen_max_ns": {
+     "p50": 632.0,
+     "p90": 978.0,
+     "p99": 1055.85,
+     "p100": 1064.5,
+     "n": 3,
+     "mean": 748.5
+    },
+    "last_exit_to_sync_return_ns": {
+     "p50": 4032.25,
+     "p90": 4051.65,
+     "p99": 4056.015,
+     "p100": 4056.5,
+     "n": 2,
+     "mean": 4032.25
+    },
+    "compute_cycles_per_ffma": {
+     "p50": 4.053955078125,
+     "p90": 8.2094482421875,
+     "p99": 8.37109375,
+     "p100": 8.742431640625,
+     "n": 8448,
+     "mean": 4.635729211749452
+    },
+    "compute_cycles_per_ffma_cold": {
+     "p50": 4.117431640625,
+     "p90": 8.2062255859375,
+     "p99": 8.78192626953125,
+     "p100": 8.91064453125,
+     "n": 4224,
+     "mean": 4.775450215195164
+    },
+    "writer_fence_cycles": {
+     "p50": 1717.0,
+     "p90": 1781.8,
+     "p99": 1796.38,
+     "p100": 1798.0,
+     "n": 2,
+     "mean": 1717.0
+    },
+    "writer_fence_cycles_cold": {
+     "p50": 2160.0,
+     "p90": 2160.0,
+     "p99": 2160.0,
+     "p100": 2160.0,
+     "n": 1,
+     "mean": 2160.0
+    },
+    "kernel_span_incl_writer_fence_ns": {
+     "p50": 29249.437373549663,
+     "p90": 29544.9717661796,
+     "p99": 29611.467004521335,
+     "p100": 29618.855364337083,
+     "n": 3,
+     "mean": 29340.140794480947
+    },
+    "last_exit_incl_writer_fence_to_sync_return_ns": {
+     "p50": 3162.25,
+     "p90": 3171.25,
+     "p99": 3173.275,
+     "p100": 3173.5,
+     "n": 2,
+     "mean": 3162.25
+    }
+   }
+  },
+  "kernels": [
+   {
+    "kid": 1,
+    "blocks": 528,
+    "cold": true,
+    "span_gpu_ns": 28063.383891639493,
+    "block_start_spread_ns": 13013.27355293497,
+    "sm_fit": {
+     "n": 528,
+     "bound_ns_p50": 31.397317343024497,
+     "bound_ns_max": 50.22704320253979,
+     "block_max_bound_p50": 31.80865555763262,
+     "block_max_bound_max": 50.21428444221692,
+     "ghz_lo": 1.9819523029397828,
+     "ghz_hi": 1.9859201819612935,
+     "ghz_lo_exact": 1.9839342552394574,
+     "ghz_hi_exact": 1.9839342617760607,
+     "ghz_p50": 1.9839362424505382,
+     "common_rate": true,
+     "rate_inconsistency_ns": 28.841796875,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 528,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 0.0,
+     "slack_min_ns": 172.85980189270413,
+     "slack_p50_ns": 250.57531598818605,
+     "worst_margin_ns": 198.04425930049183,
+     "cross_sm_floor_ns": 198.04425930049183
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 136339.0,
+     "call_ns": 133941,
+     "last_exit_to_sync_return_ns": 4320.0,
+     "bound_ns": 555.5001183375716,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 3231.5,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      28045.56223237265,
+      28092.145619903164
+     ],
+     "flag_write_to_flag_seen_ns": 1041.5,
+     "flag_write_to_flag_seen_min_ns": 1018.0,
+     "flag_write_to_flag_seen_max_ns": 1064.5,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 2160.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 29152.12964555609,
+    "compute_cycles_per_ffma_p50": 4.117431640625
+   },
+   {
+    "kid": 2,
+    "blocks": 528,
+    "cold": false,
+    "span_gpu_ns": 28344.070800035275,
+    "block_start_spread_ns": 17653.212671882917,
+    "sm_fit": {
+     "n": 528,
+     "bound_ns_p50": 27.2293047714993,
+     "bound_ns_max": 43.035177528516215,
+     "block_max_bound_p50": 27.572837517640437,
+     "block_max_bound_max": 43.035177528516215,
+     "ghz_lo": 1.983951941015569,
+     "ghz_hi": 1.9879238729395254,
+     "ghz_lo_exact": 1.9859358929285575,
+     "ghz_hi_exact": 1.9859359490385031,
+     "ghz_p50": 1.9859379069775471,
+     "common_rate": true,
+     "rate_inconsistency_ns": 22.62744140625,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 528,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 133.3049034760807,
+     "slack_min_ns": 176.41179463999288,
+     "slack_p50_ns": 262.59775650252413,
+     "worst_margin_ns": 211.44536861468805,
+     "cross_sm_floor_ns": 211.44536861468805
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 5335.5,
+     "call_ns": 2504,
+     "last_exit_to_sync_return_ns": 4056.5,
+     "bound_ns": 555.5001183375716,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 3151.0,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      72224.0,
+      72295.76495330717
+     ],
+     "flag_write_to_flag_seen_ns": 596.0,
+     "flag_write_to_flag_seen_min_ns": 560.0,
+     "flag_write_to_flag_seen_max_ns": 632.0,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 1798.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 29249.437373549663,
+    "compute_cycles_per_ffma_p50": 4.0556640625
+   },
+   {
+    "kid": 3,
+    "blocks": 528,
+    "cold": false,
+    "span_gpu_ns": 28784.60889920249,
+    "block_start_spread_ns": 18007.27674380486,
+    "sm_fit": {
+     "n": 528,
+     "bound_ns_p50": 81.7476385895643,
+     "bound_ns_max": 121.18665066183166,
+     "block_max_bound_p50": 85.69883383242632,
+     "block_max_bound_max": 121.1448358542184,
+     "ghz_lo": 1.9590920467936126,
+     "ghz_hi": 1.9630141997738342,
+     "ghz_lo_exact": 1.9610511388170626,
+     "ghz_hi_exact": 1.96105118555067,
+     "ghz_p50": 1.9610531232837234,
+     "common_rate": true,
+     "rate_inconsistency_ns": 99.700927734375,
+     "infeasible": 0
+    },
+    "ticket": {
+     "n": 528,
+     "violations": 0,
+     "violations_roundtrip": 0,
+     "rt_min_ns": 112.58196707158929,
+     "slack_min_ns": 150.0690287834732,
+     "slack_p50_ns": 254.38307600229746,
+     "worst_margin_ns": 225.6625004488742,
+     "cross_sm_floor_ns": 225.6625004488742
+    },
+    "host_view": {
+     "launch_to_first_entry_ns": 4633.0,
+     "call_ns": 1702,
+     "last_exit_to_sync_return_ns": 4008.0,
+     "bound_ns": 555.5001183375716,
+     "flag_writer_present": true,
+     "last_exit_incl_writer_fence_to_sync_return_ns": 3173.5,
+     "flag_value_is_flag_stamp": true,
+     "flag_write_gpu_window_ns": [
+      115020.3395973052,
+      115139.70092773438
+     ],
+     "flag_write_to_flag_seen_ns": 489.5,
+     "flag_write_to_flag_seen_min_ns": 429.5,
+     "flag_write_to_flag_seen_max_ns": 549.0,
+     "flag_seen_after_write": true
+    },
+    "writer_fence_cycles": 1636.0,
+    "writer_fence_timer_consistent": true,
+    "span_incl_writer_fence_gpu_ns": 29618.855364337083,
+    "compute_cycles_per_ffma_p50": 4.0537109375
+   }
+  ],
+  "notes": [
+   "phase cycles subtract the entry checkpoint cost (c1 - c0), which may overstate the in-phase checkpoint cost by a few cycles: phases may be a few cy short",
+   "load = a 4 B .nc load + the dependent address (LOP3, LEA, LEA.HI.X) + a dependent 16 B .nc load + the consuming shared store; every index and address is computed before entry",
+   "compute = the seed FADD + 4096 dependent FFMA, fully unrolled (no loop control); compute_cycles_per_ffma per block count (warm launches; the first launch, the first fetch of this instantiation's code, in compute_cycles_per_ffma_cold) and per launch. It is compute / FFMA_N, so it carries a fixed per-warp term (the seed FADD and the checkpoint-cost residual, a few cycles: ~0.1 cy/FFMA at 64, ~0 at 4096) that falls with FFMA_N: compare across an --ffma sweep with a fit a + b * FFMA_N, not point by point. Hypotheses, not established: at 1 block/SM a rise of cycles/FFMA with FFMA_N (64..4096 = 1-64 KB of straight-line code) points at instruction-cache overflow; at 3 blocks/SM issue contention between overlapping warps also grows with FFMA_N; a cold sequential fetch cost per instruction is constant in FFMA_N and cannot be separated from the FFMA latency by the sweep (compare with the instr profile's isolated FFMA latency); Ampere/Hopper L0/L1 i-cache sizes are undocumented",
+   "barrier1/2 = the barrier + exactly the calibrated touch chain; tail = third barrier + shared load of (ticket, flag pointer) + writer predicate; flag_store = the predicated flag store alone (each checked on the measuring binary by its ktrace SASS check: these hold only if it says PASS)",
+   "scoreboard waits (SASS control bits): a timer or clock read inside a checkpoint may wait on an earlier instruction (usually a store's operand read). On a closing timer read it only widens that checkpoint's window; on an opening timer or clock read it delays the cycle value. NVRTC 12.9 builds: the bar1_release clock read (sm_80/86) waits on the pre-barrier calibration STS (already satisfied: the release LDS behind it has returned), the computed stamp's opening timer read on the barrier-1 touch STS (behind >= 64 dependent FFMA), the bar2_release and ticket closing timer reads (window only); the ktrace SASS check lists the waits of the binary that measured",
+   "ticket = warp 0 only (the atomic with return); the other 7 warps branch around it",
+   "flag write window = [max(flag checkpoint, flag value), exit checkpoint] of the writer warp (no value + tick bound); the writer is warp 0 of the block with ticket n_blocks - 1: a launch whose writer warp is missing (flag_writer_present false) or whose flag value is not that warp's flag-stamp timer read (flag_value_is_flag_stamp false) gets no window and no flag -> seen",
+   "exit excludes the writer's system fence (layout 1 included it: ~3.5k cy A100, ~1.8k cy RTX 3060): kernel_span_ns and last_exit_to_sync_return_ns are not comparable with layout 1; kernel_span_incl_writer_fence_ns and last_exit_incl_writer_fence_to_sync_return_ns are; writer_fence_cycles = writer's exit -> fence done (MEMBAR.SC.SYS + ERRBAR, as in layout 1, plus ~10 setup instructions incl. an S2R: a few tens of cycles), warm launches; the first launch's in writer_fence_cycles_cold",
+   "host-axis latencies carry the run's host<->GPU bound (bound_ns) in addition to the block bound"
+  ]
+ }
+}

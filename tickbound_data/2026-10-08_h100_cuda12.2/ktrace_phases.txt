@@ -1,0 +1,80 @@
+_ZN2sb2gt8k_ktraceILj64EEEvNS0_8TraceDevEjPK6float4PS3_PjPVmj: 12 checkpoints, layout 2, FFMA_N=64
+  entry -> cal                    0 instr  {}
+  cal -> loaded                   7 instr  {'LDG.E.CONSTANT': 1, 'LOP3.LUT': 1, 'LEA': 1, 'LEA.HI.X': 1, 'LDG.E.128.CONSTANT': 1, 'STS.128': 1, 'DEPBAR.LE': 1}
+  loaded -> bar1_arrive           3 instr  {'LDS.128': 1, 'STS.128': 1, 'DEPBAR.LE': 1}
+  bar1_arrive -> bar1_release     3 instr  {'BAR.SYNC': 1, 'LDS.128': 1, 'STS.128': 1}
+  bar1_release -> computed       65 instr  {'FFMA': 64, 'FADD': 1}
+  computed -> bar2_arrive         2 instr  {'LDS.128': 1, 'STS.128': 1}
+  bar2_arrive -> bar2_release     4 instr  {'BAR.SYNC': 1, 'LDS.128': 1, 'STS.128': 1, 'DEPBAR.LE': 1}
+  bar2_release -> stored          7 instr  {'MOV': 1, 'STG.E.128': 1, 'MEMBAR.ALL.CTA': 1, 'MEMBAR.SC.GPU': 1, 'ERRBAR': 1, 'CGAERRBAR': 1, 'CCTL.IVALL': 1}
+  stored -> ticket                9 instr  {'BSSY': 1, 'BRA': 1, 'LDC.64': 1, 'HFMA2.MMA': 1, 'ATOMG.E.ADD.STRONG.GPU': 1, 'UIADD3': 1, 'UPRMT': 1, 'STS': 1, 'BSYNC': 1}
+  ticket -> flag                  5 instr  {'UIADD3': 1, 'BAR.SYNC': 1, 'UPRMT': 1, 'LDS.128': 1, 'ISETP.NE.AND': 1}
+  flag -> exit                    2 instr  {'STG.E.64.STRONG.SYS': 1, 'DEPBAR.LE': 1}
+  exit -> writer fence clock     13 instr  {'MOV': 2, 'S2R': 1, 'LOP3.LUT': 1, 'EXIT': 1, 'BSSY': 1, 'CS2R': 1, 'BRA': 1, 'MEMBAR.ALL.CTA': 1, 'MEMBAR.SC.SYS': 1, 'ERRBAR': 1, 'CGAERRBAR': 1, 'CCTL.IVALL': 1}
+  check ok   checkpoints == 12                            found 12
+  check ok   no STL/LDL in the function                   none
+  check FAIL load: 2 LDG + 1 STS + address arithmetic     LDG=2 STS=1 not allowed: ['02c0 DEPBAR.LE SB0, 0x0']
+  check ok   compute: exactly FADD x1 + FFMA x64          found {'FFMA': 64, 'FADD': 1}
+  check FAIL flag -> exit: one STG (+ ISETP/PLOP3) only   STG=1 ISETP/PLOP3=0 other={'DEPBAR.LE': 1}
+  check ok   writer fence: MEMBAR.SYS then clock read     13 instr, fence MEMBAR.SC.SYS
+  check ok   no other clock read                          none
+_ZN2sb2gt8k_ktraceILj256EEEvNS0_8TraceDevEjPK6float4PS3_PjPVmj: 12 checkpoints, layout 2, FFMA_N=256
+  entry -> cal                    0 instr  {}
+  cal -> loaded                   7 instr  {'LDG.E.CONSTANT': 1, 'LOP3.LUT': 1, 'LEA': 1, 'LEA.HI.X': 1, 'LDG.E.128.CONSTANT': 1, 'STS.128': 1, 'DEPBAR.LE': 1}
+  loaded -> bar1_arrive           3 instr  {'LDS.128': 1, 'STS.128': 1, 'DEPBAR.LE': 1}
+  bar1_arrive -> bar1_release     3 instr  {'BAR.SYNC': 1, 'LDS.128': 1, 'STS.128': 1}
+  bar1_release -> computed      257 instr  {'FFMA': 256, 'FADD': 1}
+  computed -> bar2_arrive         2 instr  {'LDS.128': 1, 'STS.128': 1}
+  bar2_arrive -> bar2_release     4 instr  {'BAR.SYNC': 1, 'LDS.128': 1, 'STS.128': 1, 'DEPBAR.LE': 1}
+  bar2_release -> stored          7 instr  {'MOV': 1, 'STG.E.128': 1, 'MEMBAR.ALL.CTA': 1, 'MEMBAR.SC.GPU': 1, 'ERRBAR': 1, 'CGAERRBAR': 1, 'CCTL.IVALL': 1}
+  stored -> ticket                9 instr  {'BSSY': 1, 'BRA': 1, 'LDC.64': 1, 'HFMA2.MMA': 1, 'ATOMG.E.ADD.STRONG.GPU': 1, 'UIADD3': 1, 'UPRMT': 1, 'STS': 1, 'BSYNC': 1}
+  ticket -> flag                  5 instr  {'UIADD3': 1, 'BAR.SYNC': 1, 'UPRMT': 1, 'LDS.128': 1, 'ISETP.NE.AND': 1}
+  flag -> exit                    2 instr  {'STG.E.64.STRONG.SYS': 1, 'DEPBAR.LE': 1}
+  exit -> writer fence clock     13 instr  {'MOV': 2, 'S2R': 1, 'LOP3.LUT': 1, 'EXIT': 1, 'BSSY': 1, 'CS2R': 1, 'BRA': 1, 'MEMBAR.ALL.CTA': 1, 'MEMBAR.SC.SYS': 1, 'ERRBAR': 1, 'CGAERRBAR': 1, 'CCTL.IVALL': 1}
+  check ok   checkpoints == 12                            found 12
+  check ok   no STL/LDL in the function                   none
+  check FAIL load: 2 LDG + 1 STS + address arithmetic     LDG=2 STS=1 not allowed: ['02c0 DEPBAR.LE SB0, 0x0']
+  check ok   compute: exactly FADD x1 + FFMA x256         found {'FFMA': 256, 'FADD': 1}
+  check FAIL flag -> exit: one STG (+ ISETP/PLOP3) only   STG=1 ISETP/PLOP3=0 other={'DEPBAR.LE': 1}
+  check ok   writer fence: MEMBAR.SYS then clock read     13 instr, fence MEMBAR.SC.SYS
+  check ok   no other clock read                          none
+_ZN2sb2gt8k_ktraceILj1024EEEvNS0_8TraceDevEjPK6float4PS3_PjPVmj: 12 checkpoints, layout 2, FFMA_N=1024
+  entry -> cal                    0 instr  {}
+  cal -> loaded                   7 instr  {'LDG.E.CONSTANT': 1, 'LOP3.LUT': 1, 'LEA': 1, 'LEA.HI.X': 1, 'LDG.E.128.CONSTANT': 1, 'STS.128': 1, 'DEPBAR.LE': 1}
+  loaded -> bar1_arrive           3 instr  {'LDS.128': 1, 'STS.128': 1, 'DEPBAR.LE': 1}
+  bar1_arrive -> bar1_release     3 instr  {'BAR.SYNC': 1, 'LDS.128': 1, 'STS.128': 1}
+  bar1_release -> computed     1025 instr  {'FFMA': 1024, 'FADD': 1}
+  computed -> bar2_arrive         2 instr  {'LDS.128': 1, 'STS.128': 1}
+  bar2_arrive -> bar2_release     4 instr  {'BAR.SYNC': 1, 'LDS.128': 1, 'STS.128': 1, 'DEPBAR.LE': 1}
+  bar2_release -> stored          7 instr  {'MOV': 1, 'STG.E.128': 1, 'MEMBAR.ALL.CTA': 1, 'MEMBAR.SC.GPU': 1, 'ERRBAR': 1, 'CGAERRBAR': 1, 'CCTL.IVALL': 1}
+  stored -> ticket                9 instr  {'BSSY': 1, 'BRA': 1, 'LDC.64': 1, 'HFMA2.MMA': 1, 'ATOMG.E.ADD.STRONG.GPU': 1, 'UIADD3': 1, 'UPRMT': 1, 'STS': 1, 'BSYNC': 1}
+  ticket -> flag                  5 instr  {'UIADD3': 1, 'BAR.SYNC': 1, 'UPRMT': 1, 'LDS.128': 1, 'ISETP.NE.AND': 1}
+  flag -> exit                    2 instr  {'STG.E.64.STRONG.SYS': 1, 'DEPBAR.LE': 1}
+  exit -> writer fence clock     13 instr  {'MOV': 2, 'S2R': 1, 'LOP3.LUT': 1, 'EXIT': 1, 'BSSY': 1, 'CS2R': 1, 'BRA': 1, 'MEMBAR.ALL.CTA': 1, 'MEMBAR.SC.SYS': 1, 'ERRBAR': 1, 'CGAERRBAR': 1, 'CCTL.IVALL': 1}
+  check ok   checkpoints == 12                            found 12
+  check ok   no STL/LDL in the function                   none
+  check FAIL load: 2 LDG + 1 STS + address arithmetic     LDG=2 STS=1 not allowed: ['02c0 DEPBAR.LE SB0, 0x0']
+  check ok   compute: exactly FADD x1 + FFMA x1024        found {'FFMA': 1024, 'FADD': 1}
+  check FAIL flag -> exit: one STG (+ ISETP/PLOP3) only   STG=1 ISETP/PLOP3=0 other={'DEPBAR.LE': 1}
+  check ok   writer fence: MEMBAR.SYS then clock read     13 instr, fence MEMBAR.SC.SYS
+  check ok   no other clock read                          none
+_ZN2sb2gt8k_ktraceILj4096EEEvNS0_8TraceDevEjPK6float4PS3_PjPVmj: 12 checkpoints, layout 2, FFMA_N=4096
+  entry -> cal                    0 instr  {}
+  cal -> loaded                   7 instr  {'LDG.E.CONSTANT': 1, 'LOP3.LUT': 1, 'LEA': 1, 'LEA.HI.X': 1, 'LDG.E.128.CONSTANT': 1, 'STS.128': 1, 'DEPBAR.LE': 1}
+  loaded -> bar1_arrive           3 instr  {'LDS.128': 1, 'STS.128': 1, 'DEPBAR.LE': 1}
+  bar1_arrive -> bar1_release     3 instr  {'BAR.SYNC': 1, 'LDS.128': 1, 'STS.128': 1}
+  bar1_release -> computed     4097 instr  {'FFMA': 4096, 'FADD': 1}
+  computed -> bar2_arrive         2 instr  {'LDS.128': 1, 'STS.128': 1}
+  bar2_arrive -> bar2_release     4 instr  {'BAR.SYNC': 1, 'LDS.128': 1, 'STS.128': 1, 'DEPBAR.LE': 1}
+  bar2_release -> stored          7 instr  {'MOV': 1, 'STG.E.128': 1, 'MEMBAR.ALL.CTA': 1, 'MEMBAR.SC.GPU': 1, 'ERRBAR': 1, 'CGAERRBAR': 1, 'CCTL.IVALL': 1}
+  stored -> ticket                9 instr  {'BSSY': 1, 'BRA': 1, 'LDC.64': 1, 'HFMA2.MMA': 1, 'ATOMG.E.ADD.STRONG.GPU': 1, 'UIADD3': 1, 'UPRMT': 1, 'STS': 1, 'BSYNC': 1}
+  ticket -> flag                  5 instr  {'UIADD3': 1, 'BAR.SYNC': 1, 'UPRMT': 1, 'LDS.128': 1, 'ISETP.NE.AND': 1}
+  flag -> exit                    2 instr  {'STG.E.64.STRONG.SYS': 1, 'DEPBAR.LE': 1}
+  exit -> writer fence clock     13 instr  {'MOV': 2, 'S2R': 1, 'LOP3.LUT': 1, 'EXIT': 1, 'BSSY': 1, 'CS2R': 1, 'BRA': 1, 'MEMBAR.ALL.CTA': 1, 'MEMBAR.SC.SYS': 1, 'ERRBAR': 1, 'CGAERRBAR': 1, 'CCTL.IVALL': 1}
+  check ok   checkpoints == 12                            found 12
+  check ok   no STL/LDL in the function                   none
+  check FAIL load: 2 LDG + 1 STS + address arithmetic     LDG=2 STS=1 not allowed: ['02c0 DEPBAR.LE SB0, 0x0']
+  check ok   compute: exactly FADD x1 + FFMA x4096        found {'FFMA': 4096, 'FADD': 1}
+  check FAIL flag -> exit: one STG (+ ISETP/PLOP3) only   STG=1 ISETP/PLOP3=0 other={'DEPBAR.LE': 1}
+  check ok   writer fence: MEMBAR.SYS then clock read     13 instr, fence MEMBAR.SC.SYS
+  check ok   no other clock read                          none
