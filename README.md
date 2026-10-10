@@ -27,7 +27,10 @@ correction.
    - **Across SMs.** ±29–285 ns on A100 (median per run). On H100, ±12–23 ns, but empirical, not proven.
    - **Eight GPUs.** Eight GPUs share one host clock with ±0.85–1.2 µs per GPU. Their start order can be proved only
      when they are more than ~1.7–2.3 µs apart.
-3. **Reordering: no speed-up over the compiler is shown.**
+3. **Reordering: one proven speed-up over the compiler, as predicted (10 Oct).** On an A100 microkernel, issuing the
+   next loop iterations' loads before the current work, a move ptxas never makes across a loop branch, ran 1.24–1.46×
+   faster than the compiler's own unrolled schedule, within ~20 cycles per iteration of the prediction (section 5.1).
+   Not yet shown on a production kernel. The rest of what we know:
    - **Latency hiding works.** For each load, hiding work under the load's latency follows the textbook model to
      within 1.5 FFMA.
    - **The compiler already did it.** In our test kernel the compiler had already put the load first.
@@ -278,7 +281,7 @@ p = 1 on H100. With dependent chains, the FP32 pipe fills at 2 warps per schedul
 
 ## 5. Did we learn how to make kernels faster by reordering?
 
-**The rules, in part. A faster kernel, no.**
+**The rules, in part. A faster kernel: yes on one microkernel, as predicted; not yet on a production kernel.**
 
 What the data show:
 
@@ -301,7 +304,30 @@ What the data do not show is **any kernel made faster than the compiler made it*
 - **A fresh register** saved nothing measurable at 1 warp.
 - **CuAsmRL** reports speed-ups from reordering ptxas's SASS for some kernels. We have not reproduced that.
 
-So the claim "we found how to optimise kernels by hiding execution under load time" is **not supported**.
+So the earlier experiments alone did not support "we found how to optimise kernels by hiding execution under load
+time". The proof experiment below does, for one microkernel.
+
+### 5.1 Proof: a reordering that beats the compiler (10 Oct, A100)
+
+Each loop iteration loads one value per thread (L2) and runs a chain of N dependent FFMA that starts from it.
+
+| Cycles per iteration, A100-PCIe, 1 warp per SM | compiler, `#pragma unroll 4` | ours: next group's loads hoisted | speedup | predicted saving | measured saving |
+|---|---|---|---|---|---|
+| N = 16 | 149.1 | 120.9 | 1.24× | 32 | 28 |
+| N = 64 | 248.0 | 170.7 | 1.46× | 97 | 77 |
+| N = 128 | 397.8 | 297.5 | 1.34× | 97 | 100 |
+| N = 128, 16 warps per SM | 1,071.2 | 1,059.2 | 1.01× | ~0 | 12 |
+
+- **What the SASS shows.** The compiler issues the 4 loads of a group back to back, but the next instruction already
+  needs the first one, so the warp stalls about 390 cycles per group. It never moves a load across the loop branch.
+  Ours issues the next group's loads before this group's 4 chains, so the wait runs under them.
+- **Prediction** from the cycle table: saving per iteration = min(L, 8N) / 4, with L ≈ 390 and 8N = 4 chains × N FFMA ×
+  2 cycles of A100 issue. With 16 warps per SM, other warps already hide L, so the gain vanishes, as predicted.
+- **Checks.** Outputs are bit-identical in all 96 configurations. Medians of 7 launches; kernel times give the same
+  ratios.
+- **Limits.** One microkernel, one A100, CUDA 12.6, L2-resident data. The move was written in source (it crosses the
+  loop branch, which our basic-block checker cannot judge), so correctness rests on output comparison.
+- Code, results and SASS: `tickbound_runs/2026-10-10_reorder_proof/`.
 
 What is supported:
 - **A measurement method.** We can measure what a reordering does, with stated error bars.

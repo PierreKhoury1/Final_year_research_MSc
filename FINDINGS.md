@@ -428,6 +428,31 @@ Not shown: any reordering that makes a kernel faster than ptxas.
 
 Whether checker-approved moves speed up real kernels where ptxas leaves latency exposed is the open question.
 
+## 5b. Reordering proof: a speed-up over the compiler (10 Oct)
+
+On one A100-PCIe (CUDA 12.6, sm_80), a microkernel loads one L2 value per thread per iteration and runs N dependent
+FFMA from it. Variants: the natural loop (`#pragma unroll 1`), a one-lap hoist, the compiler's `#pragma unroll 4`, and
+ours: unroll 4 with the next group's 4 loads issued before this group's 4 chains. All read the same lines in the same
+order; outputs are bit-identical in all 96 configurations (`tickbound_runs/2026-10-10_reorder_proof/proof.csv`).
+
+| cycles per iteration, 1 warp per SM | natural loop | one-lap hoist | compiler unroll 4 | ours | ours vs compiler |
+|---|---|---|---|---|---|
+| N = 16 | 431.2 | 392.9 | 149.1 | 120.9 | 1.24× |
+| N = 64 | 624.4 | 430.5 | 248.0 | 170.7 | 1.46× |
+| N = 128 | 886.7 | 557.3 | 397.8 | 297.5 | 1.34× |
+
+- **The natural loop follows L + 4N** (377 + 4N predicts 441 / 633 / 889 against 431–439 / 624–632 / 887–888 over the
+  two runs). The one-lap hoist follows max(L, 4N) + overhead.
+- **The compiler's unroll 4** issues four loads back to back, then interleaves four chains. Its first FFMA needs the
+  first load, so about one L per group stays exposed. ptxas did not move any load across the loop branch.
+- **Ours** hides that L under the next group's chains. The predicted saving per iteration is min(L, 8N) / 4 with
+  L ≈ 390: 32 / 97 / 97 against measured 28 / 77 / 100. At N = 64 the shortfall comes near the crossover, where the
+  two L2 latency classes leave part of L exposed.
+- **With more warps.** At 4 warps per SM the gain is the same (1.34× at N = 128). At 16 warps per SM it vanishes
+  (1.01×), because other warps already hide L.
+- **Limits.** One microkernel on one GPU. The move crosses a loop branch, so the basic-block checker cannot judge it;
+  correctness is by output comparison. Not yet shown on a production kernel.
+
 ## 6. H100 `%globaltimer`: a 32 ns step (corrected 10 Oct)
 
 On both H100 hosts, `%globaltimer` advances in 32 ns increments.
